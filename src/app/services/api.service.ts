@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { InterceptorSkipLoaderHeader } from 'src/app/shared/interceptors/loader.interceptor';
 import { InterceptorSkipErrorHeader } from 'src/app/shared/interceptors/error.interceptor';
+import { environment } from 'src/environments/environment';
 
 interface QueryParams {
   [key: string]: string | number;
