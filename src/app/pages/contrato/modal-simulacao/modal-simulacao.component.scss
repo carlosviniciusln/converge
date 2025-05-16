@@ -1,0 +1,32 @@
+label {
+    margin-bottom: 0px !important;
+  }
+  
+  ::ng-deep .custom-class .modal-dialog {
+    position: relative;
+    top: 5%;
+  }
+  
+  ::ng-deep .modal-lg {
+    max-width: 1050px !important;
+  }
+  
+  .is-invalid {
+    border: 1px solid red !important;
+  }
+  .min-height-59 {
+    min-height: 59px;
+  }
+  .div-rubricas {
+    padding: 2px;
+  }
+  
+  p.small-text {
+    position: fixed;
+    font-size: 12px;
+  }
+  
+  h5.modal-title {
+    margin: 12px 0px;
+  }
+  

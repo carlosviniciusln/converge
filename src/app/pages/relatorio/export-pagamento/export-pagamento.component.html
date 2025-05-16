@@ -1,0 +1,35 @@
+<div class="content">
+    <div class="row">
+        <div class="col-12">
+            <div class="table-header">
+                <div class="row">
+                    <div class="col-md-3 table-header-title">
+                        Relatório para Extração de Pagamentos
+                    </div>
+                    <div class="col-md-1 pl-1 pr-1 text-right">
+                        <button type="button" class="btn-sm btn-secondary" (click)="downloadPagamento()"
+                            *ngIf="permissions?.Exportar ?? false">
+                            <i class="tim-icons icon-cloud-download-93"></i> Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 informacoes">
+            <div class="table-header">
+                <div class="row">
+                    <div class="col-md-12 table-header-title title">
+                        <u><b>Atenção</b></u>
+                    </div><br />
+                    <div class="col-md-12 table-header-title body-text">
+                        Esta funcionalidade está disponível exclusivamente para uso da<br />
+                        CEGTI - Equipe Ativos de TI.<br />
+                        Sua utilização para outras finalidades é de responsabilidade<br />
+                        exclusiva do usuário.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

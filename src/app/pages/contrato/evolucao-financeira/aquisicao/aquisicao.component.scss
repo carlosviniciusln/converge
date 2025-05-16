@@ -1,0 +1,42 @@
+.cl-caption {
+  padding-left: 25px;
+}
+
+.legenda {
+  font-weight: bold;
+}
+
+@media print {
+  thead {
+    display: table-header-group;
+  }
+  body * {
+    visibility: hidden;
+  }
+  #section-to-print,
+  #section-to-print * {
+    visibility: visible;
+  }
+  #section-to-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .cl-grafico {
+    max-width: 210mm;
+  }
+
+  highcharts-chart {
+    width: 1050px;
+
+    display: inline-block;
+  }
+
+  #divPDF {
+    font-size: 11px !important;
+  }
+
+  .no-print {
+    display: none;
+  }
+}

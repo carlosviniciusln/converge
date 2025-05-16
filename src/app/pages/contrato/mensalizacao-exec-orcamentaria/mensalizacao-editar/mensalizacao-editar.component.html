@@ -1,0 +1,84 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">
+      <b>{{ titulo }}</b
+      ><br /><small>{{ subTitulo }}</small>
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="activeModal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-12">
+
+          <input formControlName="nuContrato" id="nuContrato" type="text" hidden />
+          <input formControlName="nuVigenciaEditada" id="nuVigenciaEditada" type="text" hidden />
+          <input formControlName="nuVigenciaRubrica" id="nuVigenciaRubrica" type="text" hidden />
+
+          <label for="competencia: ">Competência:</label>
+          <input formControlName="periodo" id="periodo" type="text" class="form-control"
+            [ngClass]="{ 'is-invalid': submitted && f.dtRecebimento?.invalid }" mask="00/0000"
+             placeholder="Ex. 00/0000" readonly />
+        </div>
+
+        <div class="col-md-12">
+        <label for="vrExecutado">Valor Planejado:</label>
+        <input 
+            formControlName="vrExecutado"
+            [ngClass]="{ 'is-invalid': submitted && f.vrExecutado.invalid}"
+            id="vrExecutado" 
+            type="text" 
+            class="form-control"
+            mask="separator.2"
+            [allowNegativeNumbers]="true"
+            [thousandSeparator]="'.'"
+            [decimalMarker]="','"
+            [dropSpecialCharacters]="true"
+            prefix="R$ "
+            readonly >
+        </div> 
+        <div class="col-md-12">
+          <label for="vr_PLANEJADO">Novo Valor Planejado: <span style="font-size: 11px">Vr. Máximo: {{vrDisponivelRubrica | currency: 'BRL'}}</span></label>
+          <input 
+              formControlName="vr_PLANEJADO"
+              [ngClass]="{ 'is-invalid': submitted && f.vr_PLANEJADO.invalid}"
+              id="vr_PLANEJADO" 
+              type="text" 
+              class="form-control"
+              mask="separator.2"
+              [allowNegativeNumbers]="true"
+              [thousandSeparator]="'.'"
+              [decimalMarker]="','"
+              [dropSpecialCharacters]="true"
+              prefix="R$ "
+              >
+          </div> 
+        <div class="col-md-12 pt-2">
+          <h4 class="modal-title" id="modal-basic-title" for="observacao" style="margin-bottom: 8px;">
+            <b>Observa&ccedil;&otilde;es</b>
+          </h4>
+          <textarea formControlName="observacao" id="observacao"
+            [ngClass]="{ 'is-invalid': submitted && f.observacao.invalid }" placeholder="Digite..."
+            class="form-control border border-light rounded" rows="4"></textarea>
+        </div>
+      </div>
+      <br />
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      *ngIf="this.permissions?.Alterar == true"
+      class="btn-sm btn-default"
+      type="submit"
+      (click)="onSubmit()"
+    >
+      Salvar
+    </button>
+  </div>
+  

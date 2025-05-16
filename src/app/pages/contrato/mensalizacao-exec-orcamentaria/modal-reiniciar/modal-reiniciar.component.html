@@ -1,0 +1,36 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">
+      <b>Reiniciar Mensalização</b
+      ><br /><small>Os dados editados da mensalização desse contrato e vigência serão perdidos. Deseja continuar?</small>
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="activeModal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-12">
+          <input formControlName="nuContrato" id="nuContrato" type="text" hidden />
+          <input formControlName="nuVigencia" id="nuVigencia" type="text" hidden />
+          <input formControlName="icReinicio" id="icReinicio" type="text" hidden />
+        </div>
+      </div>
+      <br />
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn-sm btn-default"
+      type="submit"
+      (click)="onSubmit()"
+    >
+      Reiniciar
+    </button>
+  </div>
+  

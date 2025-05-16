@@ -1,0 +1,144 @@
+<div class="content">
+    <div class="row">
+        <div class="col-md-10 text-left pb-1">
+            <button type="button" class="btn-sm btn-secondary no-print"
+                routerLink="/contrato/detalhe/v/{{contrato?.nuContrato}}" mat-raised-button> Detalhar
+            </button>
+            <button type="button" class="btn-sm btn-secondary no-print"
+                routerLink="/contrato/evolucao-financeira/{{contrato?.nuContrato}}" mat-raised-button> Evolução
+                Financeira
+            </button>
+            <button type="button" class="btn-sm btn-secondary no-print" (click)="linkContrato()" mat-raised-button>
+                Documentação
+            </button>
+            <button type="button" class="btn-sm btn-secondary no-print"
+                (click)="openModalSimulacao(this.contrato.nuContrato)" mat-raised-button> Simular Revisão
+            </button>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title text-left">
+                        <b>CONTRATO {{this.contrato?.coContrato}} - {{this.contrato?.noEmpresa}}</b>
+                    </h3>
+                    <h3 class="card-title text-left">
+                        RESUMO DA VIGÊNCIA
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 text-right">Início Vigência:</div>
+                        <div class="col-md-6">
+                            <b *ngIf="!showSelect">{{ vigenciaAtual?.iniciO_VIGENCIA | date: "dd/MM/yyyy" }}</b>
+                            <b *ngIf="showSelect && vigenciaSelecionada">{{ vigenciaSelecionada?.iniciO_VIGENCIA | date:
+                                "dd/MM/yyyy" }}</b>
+                        </div>
+                        <div class="col-md-2 text-right">Total Contrato:</div>
+                        <div class="col-md-2">
+                            <b>{{ this.contrato?.vrGlobal | currency : "BRL" }}</b>
+                        </div>
+                        <div class="col-md-2 text-right">Término Vigência:</div>
+                        <div class="col-md-6">
+                            <b *ngIf="!showSelect">{{ vigenciaAtual?.fiM_VIGENCIA | date : "dd/MM/yyyy" }}</b>
+                            <b *ngIf="showSelect && vigenciaSelecionada">{{ vigenciaSelecionada?.fiM_VIGENCIA | date:
+                                "dd/MM/yyyy" }}</b>
+                        </div>
+                        <div class="col-md-2 text-right">Valor Executado:</div>
+                        <div class="col-md-2">
+                            <b *ngIf="!showSelect">{{ vigenciaAtual?.vR_EXECUTADO | currency: "BRL" }}</b>
+                            <b *ngIf="showSelect && vigenciaSelecionada">{{ vigenciaSelecionada?.vR_EXECUTADO |
+                                currency: "BRL" }}</b>
+                        </div>
+                        <div class="col-md-2 text-right">Prazo Remanescente:</div>
+                        <div class="col-md-6">
+                            <b *ngIf="!showSelect">{{ vigenciaAtual?.prazO_REMANESCENTE }}</b>
+                            <b *ngIf="showSelect && vigenciaSelecionada">{{ vigenciaSelecionada?.prazO_REMANESCENTE
+                                }}</b>
+                        </div>
+                        <div class="col-md-2 text-right">Saldo Contrato:</div>
+                        <div class="col-md-2">
+                            <b *ngIf="!showSelect">{{ vigenciaAtual?.saldO_VIGENCIA | currency: "BRL" }}</b>
+                            <b *ngIf="showSelect && vigenciaSelecionada">{{ vigenciaSelecionada?.saldO_VIGENCIA |
+                                currency: "BRL" }}</b>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-5">
+                        </div>
+                        <div class="col-md-3 text-right">Valor Global Vig. Atual:
+                        </div>
+                        <div class=" col-md-2">
+                            <b *ngIf="!showSelect">{{ vigenciaAtual?.totaL_CONTRATO | currency: 'BRL' }} </b>
+                            <b *ngIf="showSelect">{{ vigenciaSelecionada?.totaL_CONTRATO | currency: 'BRL' }} </b>
+                        </div>
+                        <div class=" col-md-7"></div>
+                        <div class="col-md-3 text-right">Média Mensal Estimada:</div>
+                        <div class="col-md-2">
+                            <b *ngIf="!showSelect">{{ vigenciaAtual?.mediA_MENSAL_ESTIMADA | currency: "BRL" }}</b>
+                            <b *ngIf="showSelect && vigenciaSelecionada">{{ vigenciaSelecionada?.mediA_MENSAL_ESTIMADA |
+                                currency: "BRL" }}</b>
+                        </div>
+                        <div class="col-md-2 text-right">Objeto do Contrato:</div>
+                        <div class="col-md-10">
+                            <b>{{ this.contrato?.noObjeto }}</b>
+                        </div>
+                    </div>
+                    <div class="col-md-2 text-right" *ngIf="semMensalizacao; else exibevigencia">
+                    </div>
+                    <ng-template #exibevigencia>
+                        <div class="col-md-9"></div>
+                        <ul>
+                            <li *ngFor="let item of tblTotalRubrica">
+                                <div class="col-md-12 d-flex justify-content-between p-0 pl-3"
+                                    [ngStyle]="{'font-weight': item.rubrica == 'TOTAL' ? 700 : 300}">
+                                    Rubrica {{item.rubrica}}: <span class="ml-3">{{item.total | currency: 'BRL'
+                                        }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title text-left">MENSALIZAÇÃO</h3>
+                    <div class="row">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3" style="z-index: 5;margin-bottom: -35px;left: -155px;">
+                            <div *ngIf="vigenciasAnteriores?.length > 0">
+                                <div class="section-select">
+                                    <select *ngIf="vigenciasAnteriores.length > 0 && showSelect" class="form-control"
+                                        [(ngModel)]="vigenciaSelecionada" id="nuFilial" style="color:rgba(0, 0, 0, 0.87); font-family: Roboto, 'Helvetica Neue', sans-serif;
+                                        font-size: 14px;
+                                        font-weight: 500;">
+                                        <option value="" disabled selected>Selecione a vigência</option>
+                                        <option *ngFor="let a of vigenciasAnteriores" [ngValue]="a">
+                                            {{a.labeL_VIGENCIA}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <mat-tab-group mat-align-tabs="left" (selectedTabChange)="onTabChange($event)"
+                        style="margin-top: -25px;">
+                        <mat-tab label="{{tituloVigenciaAtual}}" *ngIf="loading == false && vigenciaAtual">
+                            <app-tabela-mensalizacao [vigenciaAtual]="vigenciaAtual"
+                                [nuContrato]="nuContrato"></app-tabela-mensalizacao>
+                        </mat-tab>
+
+                        <mat-tab label="OUTRAS VIGÊNCIAS" *ngIf="loading == false && vigenciaSelecionada">
+                            <app-tabela-mensalizacao [vigenciaSelecionada]="vigenciaSelecionada"
+                                [nuContrato]="nuContrato"></app-tabela-mensalizacao>
+                        </mat-tab>
+                    </mat-tab-group>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

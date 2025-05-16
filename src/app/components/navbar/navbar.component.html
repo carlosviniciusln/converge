@@ -1,0 +1,78 @@
+<nav class=" navbar navbar-expand-lg navbar-absolute navbar-transparent">
+  <div class=" container-fluid">
+    <div class=" navbar-wrapper">
+      <div class=" navbar-toggle d-inline">
+        <button class=" navbar-toggler" type="button" (click)="sidebarToggle()">
+          <span class=" navbar-toggler-bar bar1"> </span>
+          <span class=" navbar-toggler-bar bar2"> </span>
+          <span class=" navbar-toggler-bar bar3"> </span>
+        </button>
+      </div>
+      <div>
+        <p>#INTERNO.TODOS</p>
+      </div>
+    </div>
+    <button aria-label="Toggle navigation" class=" navbar-toggler" (click)="collapse()"
+      [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample" id="navigation" type="button">
+      <span class=" navbar-toggler-bar navbar-kebab"> </span>
+      <span class=" navbar-toggler-bar navbar-kebab"> </span>
+      <span class=" navbar-toggler-bar navbar-kebab"> </span>
+    </button>
+    <div class=" navbar-collapse" [ngbCollapse]="isCollapsed" id="navigation">
+      <ul class=" navbar-nav ml-auto">
+        <li>
+          <span class="nav-link"><a href="https://forms.office.com/Pages/ResponsePage.aspx?id=mLqbq0po-0Ot2Jwr6-3iKdkZ9MzWM6RKoqhsXwBjATZURUpMMzhQU0lYUVZMTExUU1Y4UFIzTUxWMS4u" target="_blank"> <span style="color:rgb(3, 124, 180)">Comentários e Sugestões </span><i class="fa-regular fa-thumbs-up" style="color:rgb(3, 124, 180)"></i></a></span>
+        </li>
+        <li>
+          <span class="nav-link"><a href="https://caixa.sharepoint.com/:b:/r/sites/Arquivos7550/Documentos%20Compartilhados/GERENCIA/PROJETOS/SIGVC/DOCUMENTA%C3%87%C3%83O/SIGVC_Manual%20do%20Usuario/Vers%C3%A3o%201.7/SIGVC_Manual_do_Usu%C3%A1rio_V1.7.pdf?csf=1&web=1&e=JFlWqt" target="_blank"> <span style="color:rgb(3, 124, 180)">Manual do Usuário </span><i class="fab fa-wpforms" style="color:rgb(3, 124, 180)"></i></a></span>
+        </li>
+        <li class=" nav-item" ngbDropdown *ngIf="(this.currentUser | keyvalue)?.length">
+          <a class=" nav-link" data-toggle="dropdown" href="javascript:void(0)" ngbDropdownToggle>
+            <div>
+              {{this.currentUser.coMatricula}} - {{this.currentUser.noUsuario}} - {{this.currentProfile.toUpperCase()}}
+            </div>
+            <b class=" caret d-none d-lg-block d-xl-block"> </b>
+            <p class=" d-lg-none">Log out</p>
+          </a>
+
+          <ul class=" dropdown-navbar" ngbDropdownMenu>
+            <!-- <li class=" nav-link">
+                <a class=" nav-item" href="javascript:void(0)" ngbDropdownItem>
+                  Profile
+                </a>
+              </li>
+              <li class=" nav-link">
+                <a class=" nav-item" href="javascript:void(0)" ngbDropdownItem>
+                  Settings
+                </a>
+              </li> -->
+            <!-- <li class=" dropdown-divider"></li> -->
+            <li class=" nav-link">
+              <a class=" nav-item" href="javascript:void(0)" ngbDropdownItem (click)="signOut()">
+                Log out
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class=" nav-item" *ngIf="!(this.currentUser | keyvalue)?.length">
+          <a class=" nav-link" data-toggle="dropdown" href="javascript:void(0)" (click)="openModalLogin()">
+            <div>
+              Entrar
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<ng-template #content let-modal>
+  <div class=" modal-header">
+    <input class=" form-control" id="inlineFormInputGroup" placeholder="SEARCH" type="text" />
+
+    <button aria-label="Close" class=" close" data-dismiss="modal" type="button" (click)="modal.dismiss('Cross click')">
+      <i class=" tim-icons icon-simple-remove"> </i>
+    </button>
+  </div>
+
+</ng-template>

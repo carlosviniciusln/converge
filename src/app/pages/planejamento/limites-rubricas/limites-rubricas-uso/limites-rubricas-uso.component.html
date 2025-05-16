@@ -1,0 +1,173 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b
+    ><br /><small>{{ subTitulo }}</small>
+  </h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-12">
+      <p-table
+        #dt
+        [value]="listaUsoLimitesRubricaCondensado"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [loading]="loading"
+        [filterDelay]="0"
+      >
+        <!-- <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-12 pl-1 pr-1 table-header-title">
+                {{ this.title }}
+              </div>
+            </div>
+          </div>
+        </ng-template> -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Exercício
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Tipo Planejamento
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Rubrica
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Grupo Remanejamento
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Dotação
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Planejamento
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Saldo Orçamentário
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Uso Percentual
+              </div>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-usolimiteRubrica>
+          <tr class="p-selectable-row">
+            <td style="text-align: center">
+              <span class="p-column-title">Exercício</span>
+              {{ usolimiteRubrica?.gcptb010Orcamento?.nuAnoOrcamento }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Tipo Planejamento</span>
+              {{ usolimiteRubrica?.gcptb019PlanejamentoTipo?.dePlanejamentoTipo }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Rubrica</span>
+              {{ usolimiteRubrica?.gcptb003Rubrica?.coRubrica }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Grupo Remanejamento</span>
+              {{
+                usolimiteRubrica?.gcptb003Rubrica?.gcptb028GrupoRemanejamento
+                  ?.deGrupoRemanejamento
+              }}
+            </td>
+            <td style="text-align: right">
+              <span class="p-column-title">Dotação</span>
+              {{
+                usolimiteRubrica?.vrLimiteRubricaDisponivelAgrupado
+                  | currency: "BRL"
+              }}
+            </td>
+            <td style="text-align: right">
+              <span class="p-column-title">Planejamento</span>
+              {{
+                usolimiteRubrica?.vrLimiteRubricaUtilizadoAgrupado
+                  | currency: "BRL"
+              }}
+            </td>
+            <td style="text-align: right">
+              <span class="p-column-title">Saldo Orçamentário</span>
+              {{
+                usolimiteRubrica?.vrLimiteRubricaDisponivelAgrupado -
+                  usolimiteRubrica?.vrLimiteRubricaUtilizadoAgrupado
+                  | currency: "BRL"
+              }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Uso Percentual</span>
+              {{ usolimiteRubrica?.peUtilizado * 100 | number: "1.2-2" }}%
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="p-selectable-row">
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td rowspan="3" style="text-align: right">
+              <b>Total</b>
+            </td>
+            <td style="text-align: right">
+              {{
+                somaUsoLimitesRubrica?.vrLimiteRubricaDisponivelAgrupado
+                  | currency: "BRL"
+              }}
+            </td>
+            <td style="text-align: right">
+              {{
+                somaUsoLimitesRubrica?.vrLimiteRubricaUtilizadoAgrupado
+                  | currency: "BRL"
+              }}
+            </td>
+            <td style="text-align: right">
+              {{
+                somaUsoLimitesRubrica?.vrLimiteRubricaDisponivelAgrupado -
+                  somaUsoLimitesRubrica?.vrLimiteRubricaUtilizadoAgrupado
+                  | currency: "BRL"
+              }}
+            </td>
+            <td style="text-align: center">
+              {{ somaUsoLimitesRubrica?.peUtilizado * 100 | number: "1.2-2" }}%
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="12">Nenhum limite rubrica cadastrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

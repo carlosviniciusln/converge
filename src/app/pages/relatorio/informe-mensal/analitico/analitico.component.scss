@@ -1,0 +1,10 @@
+::ng-deep .p-datatable-wrapper{
+    overflow: auto !important;
+}
+:host ::ng-deep .p-dropdown {
+    width: 100%;
+  }
+
+  :host ::ng-deep .p-dropdown-panel {
+    width: 100%;
+  }

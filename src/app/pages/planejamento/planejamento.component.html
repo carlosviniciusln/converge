@@ -1,0 +1,200 @@
+<div class="content">
+  <div class="row">
+    <div class="col-12">
+      <p-table #dt [value]="planejamentos" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+        [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0">
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-1 pl-1 pr-1 table-header-title">
+                {{ this.title }}
+              </div>
+              <div class="col-md-1 pl-1 pr-1 text-right">
+                <!-- *ngIf="isAllowedToExport" -->
+                <button type="button" class="btn-sm btn-secondary" (click)="downloadPlanejamentoDesembolso()"
+                  *ngIf="permissions?.Exportar ?? false">
+                  <i class="tim-icons icon-cloud-download-93"></i>
+                </button>
+              </div>
+              <div class="pl-1 pr-1">
+                <div class="col-md-1 pl-1 pr-1 text-right">
+                  <button type="button" class="btn-sm btn-secondary" (click)="openModalPlanejamento('adicionar', true)"
+                    *ngIf="permissions?.Cadastrar ?? false">
+                    <i class="tim-icons icon-simple-add"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
+                  optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 5)" [showClear]="true"
+                  placeholder="Planejamento"></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown [options]="selectAnos" [(ngModel)]="selectedAno" [filter]="true" optionLabel="label"
+                  optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
+                  placeholder="Exercício"></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown [options]="selectFiliais" [(ngModel)]="selectedFilial" [filter]="true" optionLabel="label"
+                  optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
+                  placeholder="GN"></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown [options]="selectContratos" [(ngModel)]="selectedContrato" [filter]="true"
+                  optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 3)" [showClear]="true"
+                  placeholder="Contrato"></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown [options]="selectTiposDemanda" [(ngModel)]="selectedTipoDemanda" [filter]="true"
+                  optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 6)" [showClear]="true"
+                  placeholder="Tipo"></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
+                  optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)" [showClear]="true"
+                  placeholder="Digital"></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
+                  [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 4)"
+                  [showClear]="true" placeholder="Status"></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown class="objet-dropdown" [options]="selectObjeto" [(ngModel)]="selectedObjeto" [filter]="true"
+                  optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)" [showClear]="true"
+                  placeholder="Objeto"></p-dropdown>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">NUORC</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Planejamento</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Exercício</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">GN</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Contrato</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Objeto</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Tipo</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Status</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Valor</div>
+            </th>
+            <!-- <th>
+              <div class="p-d-flex p-jc-between text-center"></div>
+            </th> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-planejamento>
+          <tr class="p-selectable-row"(click)="
+          openModalPlanejamento(
+            'consultar',
+            false,
+            planejamento.nuPlanejamentoOrcamentario
+          )
+        ">
+            <td style="text-align: center">
+              <span class="p-column-title">Código</span>
+              {{ planejamento.coPlanejamentoOrcamentario }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Planejamento</span>
+              {{ planejamento.gcptb019PlanejamentoTipo.dePlanejamentoTipo }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Exercício</span>
+              {{ planejamento.gcptb010Orcamento.nuAnoOrcamento }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">GN</span>
+              {{ planejamento.gcptb005Filial.sgFilial }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Contrato</span>
+              {{ planejamento.gcptb001Contrato?.coContrato }}
+            </td>
+            <td style="width: 40%">
+              <span class="p-column-title">Objeto</span>
+              {{ planejamento.deObjeto }}
+            </td>
+            <td>
+              <span class="p-column-title">Tipo</span>
+              {{ planejamento.gcptb023DemandaTipo.deDemanda }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Status</span>
+              {{ planejamento.gcptb025PlanejamentoStatus.noPlanejamentoStatus }}
+            </td>
+            <td style="text-align: right">
+              <span class="p-column-title">Valor</span>
+              {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
+            </td>
+            <!-- <td style="text-align: center">
+              <i class="pi pi-ellipsis-v" [matMenuTriggerFor]="menu" title="clique para detalhar o planejamento">
+              </i> -->
+              <!-- <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                  <i class="tim-icons icon-zoom-split"></i>
+                  <span> Consultar</span>
+                </button>
+                <button mat-menu-item *ngIf="permissions?.Alterar ?? false" (click)="
+                    openModalPlanejamento(
+                      'editar',
+                      true,
+                      planejamento.nuPlanejamentoOrcamentario
+                    )
+                  ">
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Editar</span>
+                </button>
+                <button mat-menu-item *ngIf="!(permissions?.Alterar ?? false)" disabled>
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Editar</span>
+                </button>
+                <button mat-menu-item *ngIf="permissions?.Excluir ?? false" (click)="Excluir(planejamento)">
+                  <i class="tim-icons icon-trash-simple"></i>
+                  <span> Excluir</span>
+                </button>
+                <button mat-menu-item *ngIf="!(permissions?.Excluir ?? false)" disabled>
+                  <i class="tim-icons icon-trash-simple"></i>
+                  <span> Excluir</span>
+                </button>
+              </mat-menu> -->
+            <!-- </td> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="12">Nenhum planejamento cadastrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div class="paginator-content" *ngIf="quantidadeTotal > 0">
+        <span class="pagination-text">
+          <p>{{ quantidadeTotal }} registro(s) encontrado(s)</p>
+        </span>
+
+        <ngb-pagination *ngIf="quantidadeTotal > planejamentos.length" [collectionSize]="quantidadeTotal"
+          [pageSize]="filtroRegistros.pageSize" [(page)]="filtroRegistros.pageNumber" (pageChange)="loadPage($event)"
+          [maxSize]="4" [boundaryLinks]="true">
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>

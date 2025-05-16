@@ -1,0 +1,77 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b
+    ><br /><small>{{ subTitulo }}</small>
+  </h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-12">
+        <label for="nuAno">Ano:</label>
+        <select
+          class="form-control"
+          id="nuAno"
+          formControlName="nuAno"
+          [ngClass]="{ 'is-invalid': submitted && f.nuAno.invalid }"
+        >
+          <option value="" disabled selected>Selecione o ano</option>
+          <option *ngFor="let a of listaAnos" [ngValue]="a">{{ a }}</option>
+        </select>
+      </div>
+      <div class="col-md-12">
+        <label for="dtRecebimento">Data recebimento</label>
+        <input
+          formControlName="dtRecebimento"
+          id="dtRecebimento"
+          type="date"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.dtRecebimento.invalid }"
+        />
+      </div>
+      <div class="col-md-12">
+        <label for="nuCartaQuitacaoStatus">Status:</label>
+        <select
+          class="form-control"
+          id="nuCartaQuitacaoStatus"
+          formControlName="nuCartaQuitacaoStatus"
+          [ngClass]="{
+            'is-invalid': submitted && f.nuCartaQuitacaoStatus.invalid
+          }"
+        >
+          <option value="" disabled selected>Selecione o status</option>
+          <option *ngFor="let a of listaStatus" [ngValue]="a.nuStatus">
+            {{ a.noStatus }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <br />
+  </form>
+</div>
+<div class="modal-footer">
+  <button
+    class="btn-sm btn-default"
+    type="submit"
+    (click)="onSubmit()"
+    *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false"
+  >
+    Salvar
+  </button>
+  <button
+    type="button"
+    class="btn-sm btn-danger"
+    *ngIf="this.nuCartaQuitacao && (permissions?.Excluir ?? false)"
+    (click)="Excluir(this.nuCartaQuitacao)"
+  >
+    Excluir
+  </button>
+</div>

@@ -1,0 +1,57 @@
+.p-selectable-row-expansion {
+    background-color: #f8f9fa !important;
+}
+
+.p-selectable-row {
+    cursor: pointer;
+}
+
+.p-datatable-contratos>thead>td {
+    font-size: 10px !important;
+}
+
+.p-datatable-scrollable .p-datatable-thead>tr>th,
+.p-datatable-scrollable .p-datatable-tbody>tr>td,
+.p-datatable-scrollable .p-datatable-tfoot>tr>td {
+    display: flex;
+    flex: 0;
+    align-items: center;
+    
+}
+th{
+    width: 6vw !important;
+}
+
+.th-contrato{
+    width: 300px !important;
+}
+
+.th-gn{
+    width: 2vw !important;
+}
+.row-title {
+    margin-bottom: 5px;
+}
+
+.my-freaky-tooltip .arrow::before {
+    border-top-color: red !important;
+}
+
+.my-freaky-tooltip .tooltip-inner {
+    background-color: red !important;
+}
+
+::ng-deep .tooltip-inner {
+
+    background-color: #000;
+    color: white;
+    box-shadow: 0 0 3px #00000040;
+}
+
+
+.p-datatable-contratos th,
+.p-datatable-contratos td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

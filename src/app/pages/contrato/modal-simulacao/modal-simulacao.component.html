@@ -1,0 +1,132 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">
+        <b>{{ titulo }}</b><br /><small>{{ subTitulo }} para o contrato {{coContrato}}</small>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">×</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-md-4">
+                <input formControlName="nuContrato" id="nuContrato" type="text" hidden />
+                <label for="dtIni">Mês/Ano Inicial</label>
+                <input formControlName="dtIni" id="dtIni" type="text" class="form-control"
+                    [ngClass]="{ 'is-invalid': (submitted && f.dtIni.invalid) }" mask="00/0000" placeholder="MM/YYYY" />
+            </div>
+            <div class="col-md-4">
+                <label for="dtFim">Mês/Ano Final</label>
+                <input formControlName="dtFim" id="dtFim" type="text" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.dtFim.invalid }" mask="00/0000" placeholder="MM/YYYY" />
+            </div>
+
+            <div class="col-md-4">
+                <label for="percentSimulacao">Percentual %</label>
+                <input formControlName="percentSimulacao"
+                    [ngClass]="{ 'is-invalid': submitted && f.percentSimulacao.invalid }" id="percentSimulacao"
+                    type="text" class="form-control" mask="99,99%" placeholder="99,99%">
+            </div>
+        </div>
+        <br />
+    </form>
+
+    <div class="modal-footer">
+        <button *ngIf="this.permissions?.Alterar == true" class="btn-sm btn-default" type="submit" (click)="onSubmit()">
+            Gerar Relatório
+        </button>
+        <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()" *ngIf="showData">
+            <i class="tim-icons icon-cloud-download-93"></i> Exportar
+        </button>
+    </div>
+    <div *ngIf="showData && listaSimulacao.length > 0; else elseBlock">
+        <div class="col-md-12">
+            <p-table #dt [value]="listaSimulacao" dataKey="id" [(selection)]="selectedContratos" [paginator]="false"
+                styleClass="p-datatable-customers" [responsive]="true" [rowHover]="true" [loading]="loading"
+                [totalRecords]="listaSimulacao.length" [lazy]="true" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+                [globalFilterFields]="['dE_PERIODO']" [rowHover]="true" (onLazyLoad)="loadPage($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Mês/Ano
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Ateste
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Data Pagamento
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Valor Bruto Faturamento
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Valor Executado
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Retenção
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Valor com Reajuste
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Diferença
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-simulacao>
+                    <tr class="p-selectable-row">
+                        <td>
+                            {{ simulacao.dE_PERIODO}}
+                        </td>
+                        <td>
+                            {{ simulacao.cO_NUMERO_ATESTE}}
+                        </td>
+                        <td>
+                            {{ simulacao.dT_PAGAMENTO_EFETIVO | date: "dd/MM/yyyy" }}
+                        </td>
+                        <td>
+                            {{ simulacao.vR_BRUTO | currency: 'BRL' }}
+                        </td>
+                        <td>
+                            {{ simulacao.vR_PAGAMENTO | currency: 'BRL' }}
+                        </td>
+                        <td>
+                            {{ simulacao.vR_RETENCAO | currency: 'BRL' }}
+                        </td>
+                        <td>
+                            {{ simulacao.vR_COM_REAJUSTE | currency: 'BRL' }}
+                        </td>
+                        <td>
+                            {{ simulacao.diferenca | currency: 'BRL' }}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="4">Nenhuma simulação encontrada para este contrato.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <ng-template #elseBlock>
+        <p *ngIf="showData && listaSimulacao.length == 0">A sua pesquisa retornou 0 registros.</p>
+    </ng-template>
+</div>

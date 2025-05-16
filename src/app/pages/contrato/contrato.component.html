@@ -1,0 +1,167 @@
+<div class="content">
+    <div class=" row">
+        <div class=" col-12">
+            <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
+                styleClass="p-datatable-customers" [rows]="filtroRegistros.pageSize" [paginator]="true"
+                [loading]="loading" [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50]" [lazy]="true"
+                (onLazyLoad)="loadPage($event)" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"
+                [globalFilterFields]="['coContrato','noEmpresa','dhCadastro']" [rowHover]="true">
+                <ng-template pTemplate="caption">
+                    <div class="table-header">
+                        <div class="row">
+                            <div class="col-md-1 pl-1 pr-1 table-header-title">{{tituloPage}}
+                            </div>
+                            <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button> -->
+                            <div class="col-md-1 pl-1 pr-1 text-right">
+                                <!-- *ngIf="isAllowedToExport" -->
+                                <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()"
+                                    *ngIf="permissions?.Exportar ?? false">
+                                    <i class="tim-icons icon-cloud-download-93"></i>
+                                </button>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <p-dropdown [options]="selectTiposContrato" [(ngModel)]="selectedTipoContrato"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 1)" [showClear]="true"
+                                    placeholder="Contrato"></p-dropdown>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <p-dropdown [options]="selectTiposFornecedor" [(ngModel)]="selectedTipoFornecedor"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 2)" [showClear]="true"
+                                    placeholder="Fornecedor"></p-dropdown>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <p-dropdown [options]="selectTiposTpContrato" [(ngModel)]="selectedTipoTpContrato"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 3)" [showClear]="true"
+                                    placeholder="Tipo de Contrato"></p-dropdown>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <p-dropdown [options]="selectTiposGestor" [(ngModel)]="selectedTipoGestor"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 4)" [showClear]="true"
+                                    placeholder="Gestor"></p-dropdown>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <p-dropdown [options]="selectTiposStatus" [(ngModel)]="selectedTipoStatus"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 5)" [showClear]="true"
+                                    placeholder="Status"></p-dropdown>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                {{rota == 'atas' ? 'Nr. Instrumento' : 'Nr. Contrato'}}
+                                <!-- <p-sortIcon field="coContrato"></p-sortIcon> -->
+                            </div>
+                        </th>
+                        <th *ngIf="isRotaAtas">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Nr. Processo
+                                <!-- <p-sortIcon field="coContrato"></p-sortIcon> -->
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Fornecedor
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Tipo de contrato
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Gestor
+
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Status
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Data Início
+
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Data Término
+
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Valor Global
+
+                            </div>
+
+                        </th>
+                        <th *ngIf="!isRotaAtas">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Valor Pago
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-contrato>
+                    <tr class="p-selectable-row" (click)="navegarInfoContrato(contrato.coContrato,contrato.nuContrato)">
+                        <td>
+                            <span class="p-column-title">Código</span>
+                            {{contrato.coContrato}}
+                        </td>
+                        <td *ngIf="isRotaAtas">
+                            <span class="p-column-title">Processo</span>
+                            {{contrato.co_Processo}}
+                        </td>
+                        <td style="width: 200px;">
+                            <span class="p-column-title">NoEmpresa</span>
+                            <span class="image-text">{{contrato.noEmpresa}}</span>
+                        </td>
+                        <td>
+                            <span class="p-column-title">Tipo de contrato</span>
+                            {{contrato.noContratoTipo}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Gestor</span>
+                            {{contrato.sgFilial}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Status</span>
+                            {{contrato.icAtivo == true ? 'Ativo' : 'Encerrado'}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Date</span>
+                            {{contrato.dtInicioContrato | date: 'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Date</span>
+                            {{contrato.dtTerminoContrato | date: 'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            {{contrato.vrGlobal | currency : 'BRL'}}
+                        </td>
+                        <td  *ngIf="!isRotaAtas">
+                            {{contrato.vrExecutado | currency : 'BRL'}}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="10">Nenhum contrato cadastrado.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

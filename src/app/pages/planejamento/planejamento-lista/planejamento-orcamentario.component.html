@@ -1,0 +1,63 @@
+<div class="content">
+
+  <div class="card" style="width: 102%; margin-left: -2%;">
+    <mat-tab-group>
+      <mat-tab *ngFor="let tabCapexOpex of tabsPlanejamento" label="{{ tabCapexOpex }}" class="subtab">
+        <p-table *ngIf="tabCapexOpex == 'Planejamento Orçamentário'" #dt [value]="planejamentos"
+          tyleClass="p-datatable-customers" [rowHover]="true" sortMode="single">
+          <ng-template pTemplate="header">
+            <tr class="bordered-orange">
+              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Exercício</th>
+              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Status</th>
+              <th colspan="3" class="header-extra">CAPEX</th>
+              <th colspan="3" class="header-extra">OPEX</th>
+            </tr>
+            <tr class="bordered-orange">
+              <th>Planejado</th>
+              <th>Execução</th>
+              <th>%EP</th>
+              <th>Planejado</th>
+              <th>Execução</th>
+              <th>%EP</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+            <tr>
+              <td class="text-centered" style="cursor: pointer; color: cornflowerblue;"><a (click)="openModalPlanejamento(item.cO_EXERCICIO)">
+                {{item.cO_EXERCICIO}}</a>
+              </td>
+              <td class="text-centered">
+                {{item.statuS_PLANEJAMENTO == 'Encerrada' ? item.statuS_PLANEJAMENTO : item.tipo}}
+              </td>
+              <td  class="text-centered">
+                {{item.capeX_PLANEJADO | currency : 'BRL'}}
+              </td>
+              <td class="text-centered">
+                {{item.capeX_EXECUTADO | currency : 'BRL'}}
+              </td>
+              <td class="text-centered">
+                {{item.perC_CAPEX}}
+              </td>
+              <td class="text-centered">
+                {{item.opeX_PLANEJADO | currency : 'BRL'}}
+              </td>
+              <td class="text-centered">
+                {{item.opeX_EXECUTADO | currency : 'BRL'}}
+              </td>
+              <td class="text-centered">
+                {{item.perC_OPEX}}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </mat-tab>
+    </mat-tab-group>
+    <div class="row">
+      <div class="col-2" style="margin-top: 30px; align-items: center;">
+        <button class="btn-sm btn-default" (click)="novoExercicio()">
+          Novo Exercício
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

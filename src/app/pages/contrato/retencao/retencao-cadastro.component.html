@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b><br />
+    <small>{{ subTitulo }}</small>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-6 pr-0">
+            <label for="dE_PERIODO">Mês/Ano</label>
+            <input type="text" id="dE_PERIODO" class="form-control" formControlName="dE_PERIODO" readonly />
+          </div>
+          <div class="col-md-6 pr-0">
+            <label for="cO_CONTRATO">Código Contrato</label>
+            <input type="text" id="cO_CONTRATO" class="form-control" formControlName="cO_CONTRATO" readonly />
+          </div>
+          <div class="col-md-6 pr-0">
+            <label for="nU_PEDIDO">Nº Pedido</label>
+            <input type="text" id="nU_PEDIDO" class="form-control" formControlName="nU_PEDIDO" readonly />
+          </div>
+          <div class="col-md-6 pr-0">
+            <label for="nU_ATESTE">Nº Ateste</label>
+            <input type="text" id="nU_ATESTE" class="form-control" formControlName="nU_ATESTE" readonly />
+          </div>
+          <div class="col-md-6 pr-0">
+            <label for="observacao">Observação</label>
+            <input type="text" id="observacao" class="form-control" formControlName="observacao" />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="dE_TIPO_PENALIDADE">Tipo Penalidade</label>
+        <input type="text" id="dE_TIPO_PENALIDADE" class="form-control" formControlName="dE_TIPO_PENALIDADE" readonly />
+        <label for="vR_PENALIDADE">Valor Penalidade</label>
+        <input type="text" id="vR_PENALIDADE" class="form-control" formControlName="vR_PENALIDADE" readonly />
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <div class="modal-footer">
+    <button class="btn-sm btn-default" type="submit" (click)="onSubmit()"
+      *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false; false">
+      Salvar
+    </button>
+  </div>

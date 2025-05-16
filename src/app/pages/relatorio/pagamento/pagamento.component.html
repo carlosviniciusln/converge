@@ -1,0 +1,232 @@
+<div class="content">
+  <div class="row">
+    <div class="col-12">
+      <p-table
+        #dt
+        [value]="listaPagamento"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [loading]="loading"
+        [filterDelay]="0"
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-3 table-header-title">
+                Relatório de Pagamentos
+              </div>
+              <div class="col-md-1 pl-1 pr-1 text-right">
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary"
+                  (click)="downloadPagamento()"
+                  *ngIf="permissions?.Exportar ?? false"
+                >
+                  <i class="tim-icons icon-cloud-download-93"></i>
+                </button>
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectAnos"
+                  [(ngModel)]="selectedAno"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 1)"
+                  [showClear]="true"
+                  placeholder="Todos os Anos Orçamentários"
+                ></p-dropdown>
+
+                <!-- <select class="form-control" id="pAno" name="pAno" [(ngModel)]="selectedAno" (ngModelChange)="updateRelatorio($event, 1)">
+                                <option value="null">Todos os Anos Orçamentários</option>
+                                 <option *ngFor="let a of listaAnos;" [ngValue]="a">{{ a }}</option> 
+                            </select> -->
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectFiliais"
+                  [(ngModel)]="selectedFilial"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 2)"
+                  [showClear]="true"
+                  placeholder="Todas as Gerências"
+                ></p-dropdown>
+
+                <!-- <select class="form-control" id="pFilial" name="pFilial" [(ngModel)]="selectedFilial" (ngModelChange)="updateRelatorio($event, 2)">
+                                <option value="null">Todas as Gerências</option>
+                                 <option *ngFor="let a of listaFiliais;" [ngValue]="a.nuFilial">{{ a.sgFilial }}</option> 
+                            </select> -->
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectRubricas"
+                  [(ngModel)]="selectedRubrica"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 3)"
+                  [showClear]="true"
+                  placeholder="Todas as Rubricas"
+                ></p-dropdown>
+
+                <!-- <select class="form-control" id="pRubrica" name="pRubrica" [(ngModel)]="selectedRubrica" (ngModelChange)="updateRelatorio($event, 3)">
+                                <option value="null">Todas as Rubricas</option>
+                                 <option *ngFor="let a of listaRubricas;" [ngValue]="a.nuRubrica">{{ a.coRubrica }}</option> 
+                            </select> -->
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectContratos"
+                  [(ngModel)]="selectedContrato"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 4)"
+                  [showClear]="true"
+                  placeholder="Todos os Contratos"
+                ></p-dropdown>
+
+                <!-- <select autocomplete="on" class="form-control" id="pContrato" name="pContrato" [(ngModel)]="selectedContrato" (ngModelChange)="updateRelatorio($event, 4)">
+                                <option value="null">Todos os Contratos</option>
+                                 <option *ngFor="let a of listaContratos;" [ngValue]="a.nuContrato">{{ a.coContrato }} - {{ a.noEmpresa }}</option> 
+                            </select> -->
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 7%">
+              <div class="p-d-flex p-jc-between">
+                Contrato
+                <!-- <p-sortIcon field="coContrato"></p-sortIcon> -->
+              </div>
+            </th>
+            <th style="width: 15%">
+              <div class="p-d-flex p-jc-between">Fornecedor</div>
+            </th>
+            <th style="width: 7%">
+              <div class="p-d-flex p-jc-between">Gestor</div>
+            </th>
+            <th style="width: 7%">
+              <div class="p-d-flex p-jc-between">Rubrica</div>
+            </th>
+            <th style="width: 7%">
+              <div class="p-d-flex p-jc-between">Tipo</div>
+            </th>
+            <th style="width: 7%">
+              <div class="p-d-flex p-jc-between">Co.Ateste</div>
+            </th>
+
+            <th style="width: 7%">
+              <div class="p-d-flex p-jc-between">Ano Orçamento</div>
+            </th>
+
+            <th style="width: 7%">
+              <div class="p-d-flex p-jc-between">Competência</div>
+            </th>
+            <th style="width: 10%">
+              <div class="p-d-flex p-jc-between">Data Contratual</div>
+            </th>
+            <th style="width: 10%">
+              <div class="p-d-flex p-jc-between">Data Efetiva Pagamento</div>
+            </th>
+            <th style="width: 11%">
+              <div class="p-d-flex p-jc-between">Valor Pago</div>
+            </th>
+            <th style="width: 11%">
+              <div class="p-d-flex p-jc-between">Valor Retenção</div>
+            </th>
+
+            <!-- <th style="width:1%"></th> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-pagamento>
+          <tr class="p-selectable-row">
+            <td>
+              <span class="p-column-title">Contrato</span>
+              {{ pagamento.coContrato }}
+            </td>
+            <td>
+              <span class="p-column-title">NoEmpresa</span>
+              <span class="image-text">{{ pagamento.noEmpresa }}</span>
+            </td>
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ pagamento.sgFilial }}
+            </td>
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ pagamento.coRubrica }}
+            </td>
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ pagamento.noRubricaTipo }}
+            </td>
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ pagamento.coNumeroAteste }}
+            </td>
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ pagamento.nuAnoOrcamento }}
+            </td>
+
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ pagamento.dePeriodo }}
+            </td>
+
+            <td>
+              <span class="p-column-title">Date</span>
+              {{ pagamento.dtPagamento | date : "dd/MM/yyyy" }}
+            </td>
+            <td>
+              <span class="p-column-title">Date</span>
+              {{ pagamento.dtPagamentoEfetivo | date : "dd/MM/yyyy" }}
+            </td>
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ pagamento.vrExecutado | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ pagamento.vrRetencao | currency : "BRL" }}
+            </td>
+
+            <!-- <td style="text-align: center">
+
+                        <i class="pi pi-ellipsis-v" title="clique para detalhar o contrato"></i>
+                     
+                    </td> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="12">Nenhum registro encontrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div class="paginator-content" *ngIf="quantidadeTotal > 0">
+        <span class="pagination-text">
+          <p>{{ quantidadeTotal }} registro(s) encontrado(s)</p>
+        </span>
+
+        <ngb-pagination
+          *ngIf="quantidadeTotal > listaPagamento.length"
+          [collectionSize]="quantidadeTotal"
+          [pageSize]="filtroRegistros.pageSize"
+          [(page)]="filtroRegistros.pageNumber"
+          (pageChange)="loadPage($event)"
+          [maxSize]="4"
+          [boundaryLinks]="true"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+<div style="
+    background-image: url('../../../../assets/img/BG-novoscontratos.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    width: 1000px;
+    margin-left: -40%;   
+  ">
+  <div class="content">
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')" style="margin-top: 5px !important; margin-right: 5px;">
+      <span aria-hidden="true">x</span>
+    </button>
+
+    <div class="row divCenter">
+
+      <div class="col-11">
+        <div class="row divCenter">
+          <span class="texto1">CEGTI - SIGVC - Alerta de Pendências </span>
+        </div>
+        <div class="row">
+          <span class="texto2">Atenção Equipes CEGTI, GEGAT e gestores demandantes: <br>Apresentamos abaixo a lista de
+            contratos recém capturados do SICLG e que exigem imediata
+            complementação de informações por parte dos fiscais administrativos.</span>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
+              [rows]="filtroRegistros.pageSize" [paginator]="true" [loading]="loading" [totalRecords]="quantidadeTotal"
+              [rowsPerPageOptions]="[4]" [lazy]="true" (onLazyLoad)="loadPage($event)"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"
+              [globalFilterFields]="['coContrato', 'noEmpresa', 'dhCadastro']" [rowHover]="true"
+              class="table-transparent table-alerta">
+              <ng-template pTemplate="header">
+                <tr class="table-transparent border border-black">
+                  <th class="table-transparent">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Nr. Contrato
+                    </div>
+                  </th>
+                  <th class="table-transparent ">
+                    <div class="p-d-flex p-jc-between p-ai-center">Fornecedor</div>
+                  </th>
+                  <th class="table-transparent">
+                    <div class="p-d-flex p-jc-between p-ai-center">Gestor</div>
+                  </th>
+                  <th class="table-transparent">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Data Importação
+                    </div>
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-contrato>
+                <tr class="p-selectable-row table-transparent border border-black"
+                  (click)="navegarParaDetalhes(contrato.nuContrato)">
+                  <td>
+                    {{ contrato.coContrato }}
+                  </td>
+                  <td>
+                    <span class="image-text">{{ contrato.noEmpresa }}</span>
+                  </td>
+                  <td>
+                    {{ contrato.sgFilial }}
+                  </td>
+                  <td>
+                    {{ contrato.dtInicioContrato | date: 'dd/MM/yyyy'}}
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="4">Nenhum contrato cadastrado.</td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="paginatorleft">
+                <div class="table-transparent"></div>
+              </ng-template>
+              <ng-template pTemplate="paginatorright">
+                <div class="table-transparent"></div>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

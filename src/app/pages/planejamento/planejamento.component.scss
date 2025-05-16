@@ -1,0 +1,132 @@
+.card {
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.card-body {
+  padding-top: 0px !important;
+}
+.card-vencimento {
+  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  //background: linear-gradient(90deg, #009a53 0%, #009a53 100%);
+  color: white;
+  margin: 2px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card-vencimento-pai {
+  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  //background: linear-gradient(90deg, #009a53 0%, #009a53 100%);
+  color: white;
+  margin: 2px;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card-executado {
+  background: linear-gradient(0deg, #fa7921 0%, #f0aa7c 100%);
+  //background: linear-gradient(90deg, #009a53 0%, #009a53 100%);
+  color: white;
+  margin: 2px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card-executado-pai {
+  background: linear-gradient(0deg, #fa7921 0%, #f0aa7c 100%);
+  //background: linear-gradient(90deg, #009a53 0%, #009a53 100%);
+  color: white;
+  margin: 2px;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#pAno {
+  margin-bottom: 10px;
+}
+
+.card-header {
+  font-size: 29px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.card-body-valor {
+  font-size: 18px;
+  text-align: center;
+  padding: 10px !important;
+}
+
+.size14 {
+  font-size: 14px;
+}
+
+.padding2px {
+  padding-right: 2px;
+  padding-left: 2px;
+}
+.padding5px {
+  padding-top: 5px;
+  padding-left: 5px;
+}
+::ng-deep .custom-class .modal-dialog {
+  position: relative;
+  top: 5%;
+}
+
+::ng-deep .modal-dialog-full-width .modal-dialog {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  top: 0 !important;
+  max-width: none !important;
+}
+
+::ng-deep .modal-dialog-full-width .modal-content {
+  height: auto !important;
+  min-height: 100% !important;
+  border-radius: 0 !important;
+  //background-color: #ececec !important
+}
+
+.modal-header-full-width {
+  border-bottom: 1px solid #9ea2a2 !important;
+}
+
+.modal-footer-full-width {
+  border-top: 1px solid #9ea2a2 !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.icon-alert-circle-exc {
+  font-size: 18px;
+  color: yellow;
+  margin-left: 10px;
+  animation: animate 0.5s linear infinite;
+}
+
+@keyframes animate {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+  }
+  
+}.p-datatable-customers{
+  font-size: 11px !important;
+}

@@ -1,0 +1,14 @@
+::ng-deep .custom-class .modal-dialog {
+    position: relative;
+    top: 5%;
+  }
+
+::ng-deep .modal-dialog-xl .modal-dialog{
+    width: 70% !important;
+    max-width:none !important;
+}
+
+::ng-deep .modal-dialog-xl .modal-content {
+    height: auto !important;
+    min-height: 100% !important;
+}

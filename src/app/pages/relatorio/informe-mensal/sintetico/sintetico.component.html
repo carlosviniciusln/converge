@@ -1,0 +1,281 @@
+<div class="content" *ngIf="!loading">
+  <div class="row">
+    <div
+      class="col-12"
+      *ngIf="listaInformeMensalPorTipo && listaInformeMensalPorTipo.length > 0"
+    >
+      <p-table
+        #dt
+        [value]="listaInformeMensalPorTipo"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+        [filterDelay]="0"
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-8 table-header-title">
+                Relatório de Rubrica - Sintético
+              </div>
+              <div class="col-md-1 pl-1 pr-1 text-right">
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary"
+                  (click)="downloadInformeMensal()"
+                  *ngIf="permissions?.Exportar ?? false"
+                >
+                  <i class="tim-icons icon-cloud-download-93"></i>
+                </button>
+              </div>
+              <div class="col-md-3 pl-1 pr-1">
+                <select
+                  class="form-control"
+                  id="pAno"
+                  name="pAno"
+                  [(ngModel)]="selectedAno"
+                  (ngModelChange)="updateRelatorio($event)"
+                >
+                  <option value="null">Todos os Anos Orçamentários</option>
+                  <option *ngFor="let a of listaAnos" [ngValue]="a">
+                    {{ a }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th></th>
+            <ng-container
+              *ngFor="
+                let item of listaInformeMensalPorTipo[0]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <th *ngIf="['noRubricaTipo', 'vrTotal'].indexOf(item.key) === -1">
+                {{ item.key }}
+              </th>
+            </ng-container>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th></th>
+            <ng-container
+              *ngFor="
+                let item of listaInformeMensalPorTipo[0]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <th *ngIf="['noRubricaTipo', 'vrTotal'].indexOf(item.key) === -1">
+                {{ item.key.toUpperCase() }}
+              </th>
+            </ng-container>
+            <th>Total</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-informe let-rowIndex="rowIndex">
+          <tr class="p-selectable-row">
+            <td>
+              {{ informe.noRubricaTipo }}
+            </td>
+            <ng-container
+              *ngFor="
+                let r of listaInformeMensalPorTipo[rowIndex]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <td
+                class="width-170"
+                *ngIf="['noRubricaTipo', 'vrTotal'].indexOf(r.key) === -1"
+              >
+                <span *ngIf="r.value">{{
+                  r.value.replace(",", ".") | currency : "BRL"
+                }}</span>
+                <span *ngIf="!r.value">R$ -</span>
+              </td>
+            </ng-container>
+            <td class="width-170">
+              {{ informe.vrTotal | currency : "BRL" }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="p-selectable-row-footer">
+            <td>Total</td>
+            <ng-container
+              *ngFor="
+                let r of listaInformeMensalPorTipo[0]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <td *ngIf="['noRubricaTipo', 'vrTotal'].indexOf(r.key) === -1">
+                {{ valorTotal(listaInformeMensal, r.key) | currency : "BRL" }}
+              </td>
+            </ng-container>
+
+            <td>
+              {{ valorTotal(listaInformeMensal, "vrTotal") | currency : "BRL" }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8">No customers found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div
+      class="col-12 table-space"
+      *ngIf="listaInformeMensal && listaInformeMensal.length > 0"
+    >
+      <p-table
+        #dt
+        [value]="listaInformeMensal"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+        [filterDelay]="0"
+      >
+        <!-- <ng-template pTemplate="caption">
+                <div class="table-header">
+                    <div class="row">
+                        <div class="col-md-8 table-header-title">Relatório de Informe Mensal - Sintético</div>
+                        <div class="col-md-1  pl-1 pr-1 text-right">
+                            <button type="button" class="btn-sm btn-secondary" (click)="downloadInformeMensal()">
+                                <i class="tim-icons icon-cloud-download-93"></i>
+                            </button>
+                        </div>
+                         <div class="col-md-3 pl-1 pr-1">
+                            <select class="form-control" id="pAno" name="pAno" [(ngModel)]="selectedAno" (ngModelChange)="updateRelatorio($event)">
+                                <option value="null">Todos os Anos Orçamentários</option>
+                                <option *ngFor="let a of listaAnos;" [ngValue]="a">{{ a }}</option>
+                            </select>
+                            
+                        </div>
+                    </div>
+                </div>
+            </ng-template> -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th></th>
+            <th></th>
+            <ng-container
+              *ngFor="
+                let item of listaInformeMensal[0]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <th
+                *ngIf="
+                  ['coRubrica', 'deRubrica', 'vrTotal'].indexOf(item.key) === -1
+                "
+              >
+                {{ item.key }}
+              </th>
+            </ng-container>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th></th>
+            <th>Rubrica</th>
+            <ng-container
+              *ngFor="
+                let item of listaInformeMensal[0]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <th
+                class="width-170"
+                *ngIf="
+                  ['coRubrica', 'deRubrica', 'vrTotal'].indexOf(item.key) === -1
+                "
+              >
+                {{ item.key.toUpperCase() }}
+              </th>
+            </ng-container>
+            <th class="width-170">Total</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-informe let-rowIndex="rowIndex">
+          <tr class="p-selectable-row">
+            <td>
+              {{ informe.deRubrica }}
+            </td>
+            <td>
+              {{ informe.coRubrica }}
+            </td>
+            <ng-container
+              *ngFor="
+                let r of listaInformeMensal[rowIndex]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <td
+                class="p-d-flex p-jc-between p-ai-center"
+                *ngIf="
+                  ['coRubrica', 'deRubrica', 'vrTotal'].indexOf(r.key) === -1
+                "
+              >
+                <span *ngIf="r.value">{{
+                  r.value.replace(",", ".") | currency : "BRL"
+                }}</span>
+                <span *ngIf="!r.value">R$ -</span>
+              </td>
+            </ng-container>
+            <td>
+              {{ informe.vrTotal | currency : "BRL" }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="p-selectable-row-footer">
+            <td>Total</td>
+            <td></td>
+            <ng-container
+              *ngFor="
+                let r of listaInformeMensal[0]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <td
+                *ngIf="
+                  ['coRubrica', 'deRubrica', 'vrTotal'].indexOf(r.key) === -1
+                "
+              >
+                {{ valorTotal(listaInformeMensal, r.key) | currency : "BRL" }}
+              </td>
+            </ng-container>
+
+            <td>
+              {{ valorTotal(listaInformeMensal, "vrTotal") | currency : "BRL" }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8">No customers found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

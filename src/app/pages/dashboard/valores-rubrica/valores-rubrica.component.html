@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ title }}</b><br /><small>{{ subTitle }}</small>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Rubrica</th>
+        <th class="text-right">Valor Executado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of listaValoresRubrica" class="cursor-pointer"
+        (click)="openModalRubricaContrato(i.nU_RUBRICA, i.cO_RUBRICA)" matTooltip="Clique para gerar o PDF"
+        mat-raised-button>
+        <td>{{ i.cO_RUBRICA }}</td>
+        <td class="text-right">{{ i.vR_EXECUTADO | currency : "BRL" }}</td>
+      </tr>
+      <tr>
+        <td><b>TOTAL</b></td>
+        <td class="text-right">
+          <b>{{ totalRubrica | currency : "BRL" }}</b>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="obterValoresRubricaExcel()" mat-raised-button
+    [matTooltipPosition]="'before'" *ngIf="permissions?.Exportar ?? false" matTooltip="Exportar para o Excel">
+    Exportar
+  </button>
+</div>

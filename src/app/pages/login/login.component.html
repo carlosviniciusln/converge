@@ -1,0 +1,38 @@
+
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title"><b>LOGIN</b><br/></h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')" >
+    <span aria-hidden="true">×</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()"> 
+
+        <div class="row">
+            <div class="col-md-12">
+                <label for="matricula">Matricula:</label>
+                <input 
+                    formControlName="matricula"
+                    id="matricula" 
+                    type="text" 
+                    class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.matricula.invalid}"
+                    >
+            </div>
+            <div class="col-md-12">
+                <label for="NoEmpresa">Senha:</label>
+                <input 
+                    formControlName="senha"
+                    id="senha" 
+                    type="password" 
+                    class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.senha.invalid}">
+            </div>
+        </div>
+
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn-sm btn-default" type="submit" (click)="onSubmit()">Entrar</button>
+    <!-- <button type="button" class="btn btn-default" (click)="obterValoresRubricaExcel(2021,1,1)">Exportar</button> -->
+</div>
