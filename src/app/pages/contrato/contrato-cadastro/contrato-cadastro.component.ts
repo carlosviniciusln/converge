@@ -24,7 +24,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Rubrica } from 'src/app/models/rubrica';
 import { ServicoTipo } from 'src/app/models/servico-tipo';
 import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
-import { ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
+import { ContatoItem, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
 import { TipoAta } from 'src/app/models/tipo-ata';
 
 @Component({
@@ -55,6 +55,7 @@ export class ContratoCadastroComponent implements OnInit {
   public fiscalAdm: string;
   public fiscalTec: string;
   public subTitulo: string = 'Cadastro de contrato';
+  public subTituloContatos: string = 'Contatos e Representantes';
 
   public SUPRESSAO_VALUE = 40;
 
@@ -74,6 +75,9 @@ export class ContratoCadastroComponent implements OnInit {
   listaAtasResponse: ContratoItem[] = [];
   processoAta: string;
   ataVinculada: string;
+
+  selectedTab: 'tab1' | 'tab2' = 'tab1';
+  contatos: ContatoItem[];
 
   filtroRegistros: any = {
     pageNumber: 1,
@@ -809,5 +813,9 @@ export class ContratoCadastroComponent implements OnInit {
       }
     });
     return filtrosLimpos;
+  }
+
+  selectTab(tab: 'tab1' | 'tab2') {
+    this.selectedTab = tab;
   }
 }

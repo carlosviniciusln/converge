@@ -178,13 +178,15 @@ export class ConsumoComponent implements OnInit {
       case 4:
         this.filtroRegistros.Gestor = e.value;
         break;
+      case 5:
+        this.filtroRegistros.Status = e.value;
+        break;
     }
     await this.obterContratos();
     this.loading = false;
   }
 
   loadPage(event: LazyLoadEvent) {
-    console.log('event', event)
     const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
     const pageSize = event.rows || this.filtroRegistros.pageSize;
 
@@ -204,17 +206,18 @@ export class ConsumoComponent implements OnInit {
         "Nr. Contrato": item.coContrato,
         "Fornecedor": item.noEmpresa,
         "CNPJ": item.coCnpj,
-        "Tipo": item.no_Tipo_Arp,
+        "Tipo": item.noContratoTipo,
         "Objeto": item.noObjeto,
-        Gestor: item.sgFilial,
+        "Unidade Demandante": item.sgFilial,
+        "Status": item.icAtivo ? 'Ativo' : 'Encerrado',
         "Data de Início": new Date(item.dtInicioContrato).toLocaleDateString('pt-BR'),
         "Data de Término": new Date(item.dtTerminoContrato).toLocaleDateString('pt-BR'),
-        "Valor Global": item.vrGlobalFormatado,
-        "Valor Executado": item.vrExecutadoFormatado,
+        "Valor Global": item.vrGlobal,
+        "Valor Executado": item.vrExecutado,
         "% Dias Corridos": item.percDiasCorridos,
         "% Executado Vigência": item.percVrExecutado,
         "% Consumo": item.percConsumo,
-        "Saldo Disponível": item.saldoDisponivel,
+        "Saldo Disponível": item.saldoDisponivel
       }));
 
       import("xlsx").then(xlsx => {
