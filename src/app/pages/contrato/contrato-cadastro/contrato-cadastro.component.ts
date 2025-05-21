@@ -1,9 +1,12 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { ApiResponse } from 'src/app/models/api-response';
@@ -23,9 +26,10 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { Rubrica } from 'src/app/models/rubrica';
 import { ServicoTipo } from 'src/app/models/servico-tipo';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { ContatoItem, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
 import { TipoAta } from 'src/app/models/tipo-ata';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-contrato-cadastro',
@@ -38,7 +42,14 @@ export class ContratoCadastroComponent implements OnInit {
 
   permissions: ActionPolicies;
 
+  currentProfile: PerfisEnum;
+
   public form: FormGroup;
+  public contatoForm: FormGroup;
+  public listaContatosOriginal: ContatoItem[] = [];
+  public sequencial = 1
+  valid = false;
+  isPerfilPrivilegiado = false;
   public listaFiliais: Filial[] = [];
   public listaTipoVigencia: TipoVigencia[] = [];
   public listaRubrica: Rubrica[] = [];
@@ -77,7 +88,7 @@ export class ContratoCadastroComponent implements OnInit {
   ataVinculada: string;
 
   selectedTab: 'tab1' | 'tab2' = 'tab1';
-  contatos: ContatoItem[];
+ 
 
   filtroRegistros: any = {
     pageNumber: 1,
@@ -104,7 +115,25 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   obterPermissoes() {
+
+    this.currentProfile = this.token.getUserPerfil();
     this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
+
+    if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT'){
+      this.isPerfilPrivilegiado = true;
+    }
+  }
+
+  criarContato(contador: number): FormGroup{
+   return this.formBuilder.group({
+    nuPreposto:[0],
+    nuContrato:[0],
+    sequencial: [contador],
+    nome: ['', Validators.required],
+    email: [''],
+    telefone: [''],
+    cargo: [''],
+   }, {validators: [this.validador()]})
   }
 
   ngOnInit(): void {
@@ -116,6 +145,8 @@ export class ContratoCadastroComponent implements OnInit {
     this.obterServicos();
 
     this.formulario();
+    this.obterContatos();
+    this.contatosForm();
     this.adicionarVigencia(false);
 
     this.vigencias.at(0).get('nuVigenciaTipo').setValue(23);
@@ -131,6 +162,44 @@ export class ContratoCadastroComponent implements OnInit {
       this.obterDatasContrato();
       this.validarRotaAtas();
     }
+  }
+
+
+
+  validador() : ValidatorFn {
+    return (group: AbstractControl) : ValidationErrors | null => {
+
+      const emailCtrl = group.get('email');
+      const telefoneCtrl = group.get('telefone');
+
+      const email = emailCtrl?.value?.trim();
+      const telefone = telefoneCtrl?.value?.trim();
+
+      const valido = telefone || email;
+
+      if(!valido){
+        emailCtrl?.setErrors({required : true});
+        telefoneCtrl?.setErrors({required : true});
+        return {validador : true};
+      } else {
+        if(telefoneCtrl?.hasError('required')){
+              telefoneCtrl.setErrors(null);
+        }
+        if(emailCtrl?.hasError('required')){
+          emailCtrl.setErrors(null);
+         }
+      return null;
+    }
+    };
+  }
+
+
+  get emailCtrl(){
+    return this.contatoForm.get('email');
+  }
+
+  get telefoneCtrl(){
+    return this.contatoForm.get('telefone');
   }
 
   inicializarRubricas() {
@@ -199,6 +268,70 @@ export class ContratoCadastroComponent implements OnInit {
       console.error('Error fetching dates:', error);
       this.dtFimOptions = [];
     }
+  }
+
+
+  contatosForm(){
+    this.contatoForm = this.formBuilder.group({
+        contatos: this.formBuilder.array([])
+    });
+  }
+
+  get contatos(): FormArray {
+    return this.contatoForm.get('contatos') as FormArray;
+  }
+
+  async adicionarContato(){
+    if(this.contatos.length < 5){
+      this.contatos.push(this.criarContato(this.contatos.length + 1));
+    }else{
+            const alert = await Swal.fire({
+              title: '',
+              text:  `São permitidos no máximo 5 contatos por contrato.`,
+              icon: 'warning',
+              showCancelButton: false,
+              confirmButtonText: 'Ok!',
+            }).then((result) => {
+              console.log(result, "Result")
+            });
+          }
+  }
+
+   async removerContato(contato: any, index : number) {
+
+    if(contato.value?.nuPreposto != 0){
+      const alert = await Swal.fire({
+        title: '',
+        text: `Deseja realmente excluir contato ${contato.value.nome}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, deletar!',
+        cancelButtonText: 'Não, cancelar!',
+      }).then((result) => {
+        if (result.value) {
+          return true;
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          return false;
+        }
+      });
+  
+      if (alert) {
+          this.removeContato(contato.value?.nuPreposto)
+          this.contatos.removeAt(index);
+          this.contatos.controls.forEach((group, index) => {
+            group.get('sequencial')?.setValue(index + 1);
+          });
+      
+      }
+
+    }
+    else{
+        this.contatos.removeAt(index);
+        this.contatos.controls.forEach((group, index) => {
+          group.get('sequencial')?.setValue(index + 1);
+        });
+      }
+
   }
 
   formulario() {
@@ -469,6 +602,36 @@ export class ContratoCadastroComponent implements OnInit {
     }
   }
 
+  public async obterContatos(): Promise<void> {
+      try{
+
+        const response = await this.apiService.get<ApiResponse<ContatoItem[]>>(
+          `${Endpoints.URL_PREPOSTO}/obter-todos/` + this.nuContrato
+        );
+
+        this.listaContatosOriginal = JSON.parse(JSON.stringify(response.data));
+        this.contatos.clear();
+        this.sequencial = 1;
+        response.data.forEach(p => {
+          this.contatos.push(this.formBuilder.group({
+            sequencial: [this.sequencial],
+            nuPreposto:[p.nU_PREPOSTO],
+            nuContrato:[p.nU_CONTRATO],
+            nome:  [p.nO_PREPOSTO],
+            email:  [p.dE_EMAIL],
+            telefone:  [p.nU_TELEFONE],
+            cargo:  [p.dE_CARGO]
+          }))
+        
+          this.sequencial++;
+      })
+
+      }
+      catch (error){
+
+      }
+  }
+
   public async obterContratoV2(): Promise<void> {
     try {
       const response = await this.apiService.get<ApiResponse<ContratoResponseV2>>(
@@ -642,6 +805,53 @@ export class ContratoCadastroComponent implements OnInit {
     return dateString;
   }
 
+
+  public async registrarContratos(): Promise<void> {
+      this.valid = true;
+      this.contatoForm.markAllAsTouched();
+      this.contatoForm.updateValueAndValidity();
+      if(this.contatoForm.invalid){
+        return;
+      }
+
+      const contatosAtuais = this.contatoForm.get('contatos')?.value || [];
+
+      const novos = contatosAtuais.filter(c => !c.nuPreposto);
+
+      const alterados = contatosAtuais.filter(c => {
+        if(!c.nuPreposto) return false;
+        const original = this.listaContatosOriginal.find(o => o.nU_PREPOSTO === c.nuPreposto);
+        if(!original) return false;
+        return (
+          original.nO_PREPOSTO !== c.nome || original.nU_TELEFONE !== c.telefone || original.dE_EMAIL !== c.email || original.dE_CARGO !== c.cargo
+        ) 
+      })
+    
+      if(novos.length){
+        novos.forEach(cadastro => {
+          cadastro.nuContrato = this.nuContrato; 
+          this.cadastrarContato(cadastro);
+          this.atualizarPagina.emit(true);
+        })
+    
+      }
+
+      if(alterados.length){
+        alterados.forEach(alterados => {
+          this.alterarContato(alterados);
+          this.atualizarPagina.emit(true);
+        
+        })
+      }
+  
+      this.toastr.success('Contatos/Representantes Salvos com Sucesso.', 'Sucesso');
+  }
+
+ public objetosIguais(a: any, b: any) : boolean {
+    return JSON.stringify(a) === JSON.stringify(b);
+  }
+
+
   public async onSubmit(): Promise<void> {
     this.submitted = true;
 
@@ -713,6 +923,42 @@ export class ContratoCadastroComponent implements OnInit {
       this.activeModal.dismiss();
     } catch (error) {
     }
+  }
+
+
+  public async removeContato(contato: number){
+    try{
+      await this.apiService.delete<any>(`${Endpoints.URL_PREPOSTO}/`+ contato);
+
+      this.toastr.success('Contato/Representante Removido com Sucesso.', 'Sucesso');
+      this.atualizarPagina.emit(true);
+      // this.activeModal.dismiss();
+
+    }catch (error){
+      
+    }
+  }
+
+  public async cadastrarContato(contato: any){
+    try{
+
+      await this.apiService.post<any>(`${Endpoints.URL_PREPOSTO}/adicionar`, contato);
+      this.obterContatos();
+
+    }catch (error){
+      
+    }
+  }
+
+  public async alterarContato(contato: any){
+    try{
+      await this.apiService.put<any>(`${Endpoints.URL_PREPOSTO}/editar`, contato);
+      this.obterContatos();
+    }
+    catch (error){
+      
+    }
+ 
   }
 
   public async Alterar(formValue: any): Promise<void> {
