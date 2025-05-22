@@ -42,6 +42,7 @@ export interface ContratoItem {
     saldoDisponivel: string;
     no_Tipo_Arp:string;
     vrExecutadoFormatado:string;
+    status: string;
   }
 
 export interface ContratoApiResponse {
@@ -173,3 +174,18 @@ export interface ResumoPlanejamentoModel {
   perC_OPEX: string,
   tipo: string
 }
+
+export interface ContatoItem {
+    nU_PREPOSTO: number,
+    nU_CONTRATO: number,
+    cO_MATRICULA: string,
+    nO_PREPOSTO: string
+    dE_EMAIL: string,
+    nU_TELEFONE: string,
+    dE_CARGO: string
+    cO_MATRICULA_USUARIO_REGISTRO: string,
+    dT_REGISTRO: string,
+    iC_ATIVO: boolean
+    cO_MATRICULA_USUARIO_EXCLUSAO: string,
+    dT_EXCLUSAO: string
+  }

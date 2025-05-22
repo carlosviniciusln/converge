@@ -42,7 +42,13 @@
                                 <p-dropdown [options]="selectTiposGestor" [(ngModel)]="selectedTipoGestor"
                                     [filter]="true" optionLabel="label" optionValue="value"
                                     (onChange)="updateRelatorio($event, 4)" [showClear]="true"
-                                    placeholder="Gestor"></p-dropdown>
+                                    placeholder="Unidade Demandante"></p-dropdown>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <p-dropdown [options]="selectTiposStatus" [(ngModel)]="selectedTipoStatus"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 5)" [showClear]="true"
+                                    placeholder="Status"></p-dropdown>
                             </div>
                         </div>
                     </div>
@@ -62,25 +68,30 @@
                         </th>
                         <th>
                             <div class="p-d-flex p-jc-between p-ai-center">
-                               Gestor
+                               Unidade Demandante
                             </div>
                         </th>
                         <th>
                             <div class="p-d-flex p-jc-between p-ai-center">
+                               Status
+                            </div>
+                        </th>
+                        <th>
+                            <div class="p-d-flex p-jc-between p-ai-center white-space-break">
                                 Vigência Atual - Início
 
                             </div>
                         </th>
                         <th>
-                            <div class="p-d-flex p-jc-between p-ai-center">
+                            <div class="p-d-flex p-jc-between p-ai-center white-space-break">
                                 Vigência Atual - Fim
 
                             </div>
 
                         </th>
                         <th>
-                            <div class="p-d-flex p-jc-between p-ai-center">
-                              Valor Global Vigente
+                            <div class="p-d-flex p-jc-between p-ai-center white-space-break">
+                                Valor Global Vigente
 
                             </div>
 
@@ -124,6 +135,9 @@
                         </td>
                         <td>
                             {{contrato.sgFilial}}
+                        </td>
+                        <td>
+                            {{contrato.icAtivo ? 'Ativo' : 'Encerrado'}}
                         </td>
                         <td>
                             {{contrato.dtInicioContrato | date: 'dd/MM/yyyy'}}
