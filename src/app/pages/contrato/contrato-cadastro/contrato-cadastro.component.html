@@ -1,40 +1,22 @@
-<div class="modal-buttons">
+<div class="tab-wrapper modal-header">
   <button
-    [ngClass]="{
-      selected: selectedTab === 'tab1',
-      unselected: selectedTab !== 'tab1'
-    }"
-    (click)="selectTab('tab1')"
-  >
-    Edição
-  </button>
-  <button
-    *ngIf="isPerfilPrivilegiado"
-    [ngClass]="{
-      selected: selectedTab === 'tab2',
-      unselected: selectedTab !== 'tab2'
-    }"
-    (click)="selectTab('tab2')"
-  >
-    Contatos
+  type="button"
+  class="btn-fechar close"
+  aria-label="Close"
+  (click)="activeModal.dismiss('Cross click')"
+>
+  <i  (click)="activeModal.dismiss('Cross click')" aria-hidden="true">×</i>
+</button>
+</div>
+
+<div *ngIf="selectTab === 1" class="add-contato">
+  <button type="button" class="icon-contato btn-sm btn-secondary" (click)="adicionarContato()">
+    <i class="tim-icons icon-simple-add"></i>
   </button>
 </div>
 
-<div *ngIf="selectedTab === 'tab1'">
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">
-      <small>{{ subTitulo }}</small>
-    </h4>
-    <button
-      type="button"
-      class="close"
-      aria-label="Close"
-      (click)="activeModal.dismiss('Cross click')"
-    >
-      <span aria-hidden="true">×</span>
-    </button>
-  </div>
-  <div class="modal-body">
+  <mat-tab-group class="modal-body" (selectedTabChange)="onTabChange($event)">
+    <mat-tab label="Contrato">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-md-8">
@@ -516,43 +498,21 @@
         </div>
       </div>
     </form>
-  </div>
-  <div class="modal-footer">
-    <button
-      class="btn-sm btn-default"
-      type="submit"
-      (click)="onSubmit()"
-      *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false; false"
-    >
-      Salvar
-    </button>
-  </div>
-</div>
-<div *ngIf="selectedTab === 'tab2'">
-  <div class="modal-header" style="margin-bottom: 20px">
-    <h4 class="modal-title" id="modal-basic-title">
-      <small>{{ subTituloContatos }}</small>
-    </h4>
-    <button
-      type="button"
-      class="close"
-      aria-label="Close"
-      (click)="activeModal.dismiss('Cross click')"
-    >
-      <span aria-hidden="true">×</span>
-    </button>
-    <div class="col-md-6 text-right">
+
+    <div class="modal-footer">
       <button
-        (click)="adicionarContato()"
-        type="button"
-        class="btn-sm btn-secondary"
-        style="padding: 5px !important"
+        class="btn-sm btn-default"
+        type="submit"
+        (click)="onSubmit()"
+        *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false; false"
       >
-        <i class="tim-icons icon-simple-add"></i>
+        Salvar
       </button>
     </div>
-  </div>
-  <div class="modal-body">
+
+  </mat-tab>
+
+    <mat-tab label="Contatos">
     <form [formGroup]="contatoForm" (ngSubmit)="registrarContratos()">
       <div class="row">
         <div class="col-12">
@@ -572,16 +532,16 @@
                   <div class="p-d-flex p-jc-between p-ai-center">Nome*</div>
                 </th>
                 <th>
-                  <div class="p-d-flex p-jc-between p-ai-center">Email*</div>
+                  <div class="p-d-flex p-jc-between p-ai-center">Email</div>
                 </th>
                 <th>
                   <div class="p-d-flex p-jc-between p-ai-center">
-                    DDD Telefone*
+                    DDD Telefone
                   </div>
                 </th>
                 <th>
                   <div class="p-d-flex p-jc-between p-ai-center">
-                    Cargo/Função*
+                    Cargo/Função
                   </div>
                 </th>
                 <th></th>
@@ -596,9 +556,10 @@
                   <input
                     formControlName="nome"
                     type="text"
+                    class="form-control"
                     placeholder="Digite o nome"
                     [ngClass]="{
-                      'is-invalid': valid && contatos.get('nome').invalid
+                      'is-invalid': contatos.get('nome').invalid && contatos.get('nome').touched
                     }"
                   />
                 </td>
@@ -606,18 +567,20 @@
                   <input
                     formControlName="email"
                     type="text"
+                    class="form-control"
                     placeholder="Digite o email"
                     [ngClass]="{
                       'is-invalid':
-                        contatos.get('email')?.invalid &&
-                        contatos.get('email').touched
+                        (contatos.get('email')?.invalid &&
+                        contatos.get('email').touched) || contatos.get('email')?.errors?.email
                     }"
                   />
                 </td>
                 <td>
                   <input
                     formControlName="telefone"
-                    mask="99-999999999"
+                    mask="(00) 00000-0000"
+                    class="form-control"
                     placeholder="Digite o telefone"
                     type="text"
                     [ngClass]="{
@@ -626,11 +589,15 @@
                         contatos.get('email').touched
                     }"
                   />
+                  <div style="color: red;" *ngIf="contatos.get('email')?.errors?.email">
+
+                  </div>
                 </td>
                 <td>
                   <input
                     formControlName="cargo"
                     type="text"
+                    class="form-control"
                     placeholder="Digite o cargo"
                   />
                 </td>
@@ -655,5 +622,5 @@
         <button class="btn-sm btn-default" type="submit">Salvar</button>
       </div>
     </form>
-  </div>
-</div>
+  </mat-tab>
+  </mat-tab-group>
