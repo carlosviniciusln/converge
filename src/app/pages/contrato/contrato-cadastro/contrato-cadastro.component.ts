@@ -49,6 +49,7 @@ export class ContratoCadastroComponent implements OnInit {
   public listaContatosOriginal: ContatoItem[] = [];
   public sequencial = 1
   valid = false;
+  public selectTab: number = 0;
   isPerfilPrivilegiado = false;
   public listaFiliais: Filial[] = [];
   public listaTipoVigencia: TipoVigencia[] = [];
@@ -87,7 +88,7 @@ export class ContratoCadastroComponent implements OnInit {
   processoAta: string;
   ataVinculada: string;
 
-  selectedTab: 'tab1' | 'tab2' = 'tab1';
+  // selectedTab: 'tab1' | 'tab2' = 'tab1';
  
 
   filtroRegistros: any = {
@@ -130,7 +131,7 @@ export class ContratoCadastroComponent implements OnInit {
     nuContrato:[0],
     sequencial: [contador],
     nome: ['', Validators.required],
-    email: [''],
+    email: ['', Validators.email],
     telefone: [''],
     cargo: [''],
    }, {validators: [this.validador()]})
@@ -176,6 +177,7 @@ export class ContratoCadastroComponent implements OnInit {
       const telefone = telefoneCtrl?.value?.trim();
 
       const valido = telefone || email;
+
 
       if(!valido){
         emailCtrl?.setErrors({required : true});
@@ -617,11 +619,11 @@ export class ContratoCadastroComponent implements OnInit {
             sequencial: [this.sequencial],
             nuPreposto:[p.nU_PREPOSTO],
             nuContrato:[p.nU_CONTRATO],
-            nome:  [p.nO_PREPOSTO],
-            email:  [p.dE_EMAIL],
+            nome:  [p.nO_PREPOSTO || '', Validators.required],
+            email:  [p.dE_EMAIL, Validators.email],
             telefone:  [p.nU_TELEFONE],
             cargo:  [p.dE_CARGO]
-          }))
+          }, {validators: [this.validador()]}))
         
           this.sequencial++;
       })
@@ -766,6 +768,9 @@ export class ContratoCadastroComponent implements OnInit {
     }
   }
 
+  onTabChange(event) {
+    this.selectTab = event.index;
+  }
   // public async obterCaixas(): Promise<void> {
   //   try {
   //     const response = await this.apiService.get<ApiResponse<Usuario[]>>(
@@ -811,7 +816,27 @@ export class ContratoCadastroComponent implements OnInit {
       this.contatoForm.markAllAsTouched();
       this.contatoForm.updateValueAndValidity();
       if(this.contatoForm.invalid){
-        return;
+        console.log("chegou aqui", this.contatoForm.controls)
+          this.contatos.controls.forEach((grupo: AbstractControl) => {
+            const contatoGroup = grupo as FormGroup;
+            if(contatoGroup.errors?.validador){
+              this.toastr.error(`Preencha pelo menos o campo "E-mail" ou "Telefone"`, "Error");
+            }
+            Object.keys(contatoGroup.controls).forEach(campo => {
+              const control = contatoGroup.get(campo);
+  
+            if(control?.invalid){
+              if(control.errors?.required){
+                this.toastr.error(`O campo ${this.formatarNomes(campo)} é obrigatório`, "Error");
+              }
+
+              if(control.errors?.email){
+                this.toastr.error(`E-mail inválido`, "Error");
+              }
+            }
+          });
+        });
+        return 
       }
 
       const contatosAtuais = this.contatoForm.get('contatos')?.value || [];
@@ -826,31 +851,38 @@ export class ContratoCadastroComponent implements OnInit {
           original.nO_PREPOSTO !== c.nome || original.nU_TELEFONE !== c.telefone || original.dE_EMAIL !== c.email || original.dE_CARGO !== c.cargo
         ) 
       })
-    
+
+  
       if(novos.length){
         novos.forEach(cadastro => {
           cadastro.nuContrato = this.nuContrato; 
           this.cadastrarContato(cadastro);
           this.atualizarPagina.emit(true);
         })
-    
+        
+        this.toastr.success('Contato/Representante salvo com Sucesso.', 'Sucesso');
       }
 
       if(alterados.length){
-        alterados.forEach(alterados => {
+          alterados.forEach(alterados => {
           this.alterarContato(alterados);
           this.atualizarPagina.emit(true);
         
+          this.toastr.success('Contato/Representante alterado com Sucesso.', 'Sucesso');
         })
       }
-  
-      this.toastr.success('Contatos/Representantes Salvos com Sucesso.', 'Sucesso');
+
   }
 
- public objetosIguais(a: any, b: any) : boolean {
-    return JSON.stringify(a) === JSON.stringify(b);
-  }
+  formatarNomes(campo : string) : string {
+    const nomes: any = {
+      email: 'E-mail',
+      telefone: 'Telefone',
+      nome: 'Nome'
+    };
 
+    return nomes[campo] || campo;
+  }
 
   public async onSubmit(): Promise<void> {
     this.submitted = true;
@@ -1061,7 +1093,7 @@ export class ContratoCadastroComponent implements OnInit {
     return filtrosLimpos;
   }
 
-  selectTab(tab: 'tab1' | 'tab2') {
-    this.selectedTab = tab;
-  }
+  // selectTab(tab: 'tab1' | 'tab2') {
+  //   this.selectedTab = tab;
+  // }
 }
