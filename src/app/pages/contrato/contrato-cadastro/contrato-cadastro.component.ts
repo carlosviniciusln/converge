@@ -86,10 +86,7 @@ export class ContratoCadastroComponent implements OnInit {
   isRotaAtas: boolean = false;
   listaAtasResponse: ContratoItem[] = [];
   processoAta: string;
-  ataVinculada: string;
-
-  // selectedTab: 'tab1' | 'tab2' = 'tab1';
- 
+  ataVinculada: string; 
 
   filtroRegistros: any = {
     pageNumber: 1,
@@ -816,7 +813,6 @@ export class ContratoCadastroComponent implements OnInit {
       this.contatoForm.markAllAsTouched();
       this.contatoForm.updateValueAndValidity();
       if(this.contatoForm.invalid){
-        console.log("chegou aqui", this.contatoForm.controls)
           this.contatos.controls.forEach((grupo: AbstractControl) => {
             const contatoGroup = grupo as FormGroup;
             if(contatoGroup.errors?.validador){
@@ -1092,8 +1088,4 @@ export class ContratoCadastroComponent implements OnInit {
     });
     return filtrosLimpos;
   }
-
-  // selectTab(tab: 'tab1' | 'tab2') {
-  //   this.selectedTab = tab;
-  // }
 }
