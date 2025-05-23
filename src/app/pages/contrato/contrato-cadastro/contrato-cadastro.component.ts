@@ -127,10 +127,10 @@ export class ContratoCadastroComponent implements OnInit {
     nuPreposto:[0],
     nuContrato:[0],
     sequencial: [contador],
-    nome: ['', Validators.required],
-    email: ['', Validators.email],
-    telefone: [''],
-    cargo: [''],
+    nome: ['', Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)],
+    email: ['', Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)],
+    telefone: ['',Validators.pattern(/^\(\d{2}\)\s?\d{5}-\d{4}$/)],
+    cargo: ['',[Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
    }, {validators: [this.validador()]})
   }
 
@@ -301,7 +301,7 @@ export class ContratoCadastroComponent implements OnInit {
     if(contato.value?.nuPreposto != 0){
       const alert = await Swal.fire({
         title: '',
-        text: `Deseja realmente excluir contato ${contato.value.nome}?`,
+        text: `Deseja excluir contato ?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim, deletar!',
@@ -766,6 +766,7 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   onTabChange(event) {
+    console.log("EVENTO", event)
     this.selectTab = event.index;
   }
   // public async obterCaixas(): Promise<void> {
@@ -815,15 +816,19 @@ export class ContratoCadastroComponent implements OnInit {
       if(this.contatoForm.invalid){
           this.contatos.controls.forEach((grupo: AbstractControl) => {
             const contatoGroup = grupo as FormGroup;
-            if(contatoGroup.errors?.validador){
-              this.toastr.error(`Preencha pelo menos o campo "E-mail" ou "Telefone"`, "Error");
-            }
+            // if(contatoGroup.errors?.validador){
+            //   this.toastr.error(`Preencha pelo menos o campo "E-mail" ou "Telefone"`, "Error");
+            // }
             Object.keys(contatoGroup.controls).forEach(campo => {
               const control = contatoGroup.get(campo);
   
             if(control?.invalid){
               if(control.errors?.required){
                 this.toastr.error(`O campo ${this.formatarNomes(campo)} é obrigatório`, "Error");
+              }
+                    
+              if(control.errors?.pattern){
+                      this.toastr.error(`O campo ${this.formatarNomes(campo)} está fora do padrão`, "Error");
               }
 
               if(control.errors?.email){
@@ -855,19 +860,26 @@ export class ContratoCadastroComponent implements OnInit {
           this.cadastrarContato(cadastro);
           this.atualizarPagina.emit(true);
         })
-        
-        this.toastr.success('Contato/Representante salvo com Sucesso.', 'Sucesso');
+
       }
 
       if(alterados.length){
           alterados.forEach(alterados => {
           this.alterarContato(alterados);
           this.atualizarPagina.emit(true);
-        
-          this.toastr.success('Contato/Representante alterado com Sucesso.', 'Sucesso');
+      
         })
       }
-
+      this.toastr.success('Contatos/Representantes Salvos com Sucesso.', 'Sucesso');
+      const alert = await Swal.fire({
+        title: '',
+        text:  `Contatos/Representantes Salvos com Sucesso.`,
+        icon: 'success',
+        showCancelButton: false,
+        confirmButtonText: 'Ok!',
+      }).then((result) => {
+        console.log(result, "Result")
+      });
   }
 
   formatarNomes(campo : string) : string {
