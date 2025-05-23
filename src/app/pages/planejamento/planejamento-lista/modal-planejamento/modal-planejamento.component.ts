@@ -72,6 +72,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento?coExercicio='+this.anoSelecionado)
     result.then(response => {
       this.planejamentos = response.data;
+      console.log(this.planejamentos)
       this.montarPlanejamentosModal(this.planejamentos);
     });
   }
@@ -98,7 +99,7 @@ export class ModalPlanejamentoComponent implements OnInit {
   validarBotoes(ultimoValor: string, tipoProgramacao: string): void {
     this.limparPlanejamento();
 
-    console.log(tipoProgramacao, ultimoValor)
+    console.log('tipoProgramacao: ' + tipoProgramacao, 'ultimoValor: ' + ultimoValor)
 
     if (tipoProgramacao.includes("Ajuste") && ultimoValor == "Aberta") {
       this.ajustarValoresBotoes(false, false, true, true);
@@ -163,12 +164,13 @@ export class ModalPlanejamentoComponent implements OnInit {
   }
 
   onRowClick(rowId: number) {
-    alert('chegou aqui')
-    if (this.selectedRowId === rowId) {
-      this.selectedRowId = null;
-    } else {
-      this.selectedRowId = rowId;
-    }
+    console.log('---')
+    // if (this.selectedRowId === rowId) {
+    //   this.selectedRowId = null;
+    // } else {
+    //   this.selectedRowId = rowId;
+    // }
+    window.location.href = '/#/planejamento'
   }
 
   async mensagemBotaoClick(botaoClicado) {
