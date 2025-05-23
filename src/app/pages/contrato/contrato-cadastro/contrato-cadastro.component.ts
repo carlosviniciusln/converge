@@ -121,18 +121,17 @@ export class ContratoCadastroComponent implements OnInit {
       this.isPerfilPrivilegiado = true;
     }
   }
-
   criarContato(contador: number): FormGroup{
-   return this.formBuilder.group({
-    nuPreposto:[0],
-    nuContrato:[0],
-    sequencial: [contador],
-    nome: ['', Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)],
-    email: ['', Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)],
-    telefone: ['',Validators.pattern(/^\(\d{2}\)\s?\d{5}-\d{4}$/)],
-    cargo: ['',[Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
-   }, {validators: [this.validador()]})
-  }
+    return this.formBuilder.group({
+     nuPreposto:[0],
+     nuContrato:[0],
+     sequencial: [contador],
+     nome: ['', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+     email: ['', [Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)]],
+     telefone: ['', Validators.pattern(/^\(\d{2}\)\s?\d{5}-\d{4}$/)],
+     cargo: ['', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+    }, {validators: [this.validador()]})
+   }
 
   ngOnInit(): void {
     this.obterFiliais();
@@ -608,6 +607,7 @@ export class ContratoCadastroComponent implements OnInit {
           `${Endpoints.URL_PREPOSTO}/obter-todos/` + this.nuContrato
         );
 
+        console.log('response.data', response.data)
         this.listaContatosOriginal = JSON.parse(JSON.stringify(response.data));
         this.contatos.clear();
         this.sequencial = 1;
@@ -616,15 +616,14 @@ export class ContratoCadastroComponent implements OnInit {
             sequencial: [this.sequencial],
             nuPreposto:[p.nU_PREPOSTO],
             nuContrato:[p.nU_CONTRATO],
-            nome:  [p.nO_PREPOSTO || '', Validators.required],
-            email:  [p.dE_EMAIL, Validators.email],
-            telefone:  [p.nU_TELEFONE],
-            cargo:  [p.dE_CARGO]
+            nome:  [p.nO_PREPOSTO || '', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+            email:  [p.dE_EMAIL, [Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)]],
+            telefone:  [p.nU_TELEFONE || '',  [Validators.pattern(/^\(\d{2}\)\s?\d{5}-\d{4}$/)]],
+            cargo:  [p.dE_CARGO || '', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]]
           }, {validators: [this.validador()]}))
         
           this.sequencial++;
       })
-
       }
       catch (error){
 
