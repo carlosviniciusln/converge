@@ -24,10 +24,10 @@
                 <th class="text-centered">Fim</th>
                 <th class="text-centered">Planejado</th>
                 <th class="text-centered">Executado</th>
-                <th class="text-centered">%EP</th>
+                <th class="text-centered" pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
                 <th class="text-centered">Planejado</th>
                 <th class="text-centered">Executado</th>
-                <th class="text-centered">%EP</th>
+                <th class="text-centered" pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
@@ -68,7 +68,7 @@
     <div class="modal-footer">
         <div class="d-flex align-items-center">
           <!-- <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoAberto" -->
-            <button class="btn-sm btn-default padding-buttons"
+            <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoAjuste"
                 (click)="mensagemBotaoClick('nova')">
                 Nova Reprogramação
             </button>
@@ -80,7 +80,7 @@
                 (click)="mensagemBotaoClick('encerrar')">
                 Encerrar Programação
             </button>
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoCancelado"
+            <button class="btn-sm btn-danger padding-buttons" *ngIf="this.planejamentoCancelado"
                 (click)="mensagemBotaoClick('cancelar')">
                 Cancelar Programação
             </button>
