@@ -48,9 +48,8 @@ export class ContratoCadastroComponent implements OnInit {
   public contatoForm: FormGroup;
   public listaContatosOriginal: ContatoItem[] = [];
   public sequencial = 1
-  valid = false;
   public selectTab: number = 0;
-  isPerfilPrivilegiado = false;
+  public isPerfilPrivilegiado = false;
   public listaFiliais: Filial[] = [];
   public listaTipoVigencia: TipoVigencia[] = [];
   public listaRubrica: Rubrica[] = [];
@@ -128,7 +127,7 @@ export class ContratoCadastroComponent implements OnInit {
      sequencial: [contador],
      nome: ['', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
      email: ['', [Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)]],
-     telefone: ['', Validators.pattern(/^\(\d{2}\)\s?\d{5}-\d{4}$/)],
+     telefone: [''],
      cargo: ['', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
     }, {validators: [this.validador()]})
    }
@@ -606,8 +605,6 @@ export class ContratoCadastroComponent implements OnInit {
         const response = await this.apiService.get<ApiResponse<ContatoItem[]>>(
           `${Endpoints.URL_PREPOSTO}/obter-todos/` + this.nuContrato
         );
-
-        console.log('response.data', response.data)
         this.listaContatosOriginal = JSON.parse(JSON.stringify(response.data));
         this.contatos.clear();
         this.sequencial = 1;
@@ -618,9 +615,9 @@ export class ContratoCadastroComponent implements OnInit {
             nuContrato:[p.nU_CONTRATO],
             nome:  [p.nO_PREPOSTO || '', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
             email:  [p.dE_EMAIL, [Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)]],
-            telefone:  [p.nU_TELEFONE || '',  [Validators.pattern(/^\(\d{2}\)\s?\d{5}-\d{4}$/)]],
+            telefone:  [p.nU_TELEFONE || ''],
             cargo:  [p.dE_CARGO || '', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]]
-          }, {validators: [this.validador()]}))
+          },{validators: [this.validador()]}))
         
           this.sequencial++;
       })
@@ -765,7 +762,6 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   onTabChange(event) {
-    console.log("EVENTO", event)
     this.selectTab = event.index;
   }
   // public async obterCaixas(): Promise<void> {
@@ -809,7 +805,6 @@ export class ContratoCadastroComponent implements OnInit {
 
 
   public async registrarContratos(): Promise<void> {
-      this.valid = true;
       this.contatoForm.markAllAsTouched();
       this.contatoForm.updateValueAndValidity();
       if(this.contatoForm.invalid){
@@ -833,6 +828,9 @@ export class ContratoCadastroComponent implements OnInit {
               if(control.errors?.email){
                 this.toastr.error(`E-mail inválido`, "Error");
               }
+              if(control.errors?.mask){
+                this.toastr.error(`Telefone inválido`, "Error");
+              }        
             }
           });
         });

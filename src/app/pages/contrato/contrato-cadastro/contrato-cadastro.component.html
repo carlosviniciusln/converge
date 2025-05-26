@@ -372,6 +372,7 @@
                     <input
                       formControlName="telefone"
                       class="form-control"
+                      mask="(00) 00000-0000"
                       placeholder="(99) 99999-9999"
                       type="text"
                       [ngClass]="{
@@ -387,6 +388,11 @@
                       type="text"
                       class="form-control"
                       placeholder="Digite o cargo"
+                      [ngClass]="{
+                        'is-invalid':
+                          contatos.get('cargo')?.invalid &&
+                          contatos.get('cargo').touched
+                      }"
                     />
                   </td>
                   <td>
