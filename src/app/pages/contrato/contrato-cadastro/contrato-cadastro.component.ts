@@ -48,9 +48,8 @@ export class ContratoCadastroComponent implements OnInit {
   public contatoForm: FormGroup;
   public listaContatosOriginal: ContatoItem[] = [];
   public sequencial = 1
-  valid = false;
   public selectTab: number = 0;
-  isPerfilPrivilegiado = false;
+  public isPerfilPrivilegiado = false;
   public listaFiliais: Filial[] = [];
   public listaTipoVigencia: TipoVigencia[] = [];
   public listaRubrica: Rubrica[] = [];
@@ -121,18 +120,17 @@ export class ContratoCadastroComponent implements OnInit {
       this.isPerfilPrivilegiado = true;
     }
   }
-
   criarContato(contador: number): FormGroup{
-   return this.formBuilder.group({
-    nuPreposto:[0],
-    nuContrato:[0],
-    sequencial: [contador],
-    nome: ['', Validators.required],
-    email: ['', Validators.email],
-    telefone: [''],
-    cargo: [''],
-   }, {validators: [this.validador()]})
-  }
+    return this.formBuilder.group({
+     nuPreposto:[0],
+     nuContrato:[0],
+     sequencial: [contador],
+     nome: ['', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+     email: ['', [Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)]],
+     telefone: [''],
+     cargo: ['', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+    }, {validators: [this.validador()]})
+   }
 
   ngOnInit(): void {
     this.obterFiliais();
@@ -301,7 +299,7 @@ export class ContratoCadastroComponent implements OnInit {
     if(contato.value?.nuPreposto != 0){
       const alert = await Swal.fire({
         title: '',
-        text: `Deseja realmente excluir contato ${contato.value.nome}?`,
+        text: `Deseja excluir contato ?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim, deletar!',
@@ -607,7 +605,6 @@ export class ContratoCadastroComponent implements OnInit {
         const response = await this.apiService.get<ApiResponse<ContatoItem[]>>(
           `${Endpoints.URL_PREPOSTO}/obter-todos/` + this.nuContrato
         );
-
         this.listaContatosOriginal = JSON.parse(JSON.stringify(response.data));
         this.contatos.clear();
         this.sequencial = 1;
@@ -616,15 +613,14 @@ export class ContratoCadastroComponent implements OnInit {
             sequencial: [this.sequencial],
             nuPreposto:[p.nU_PREPOSTO],
             nuContrato:[p.nU_CONTRATO],
-            nome:  [p.nO_PREPOSTO || '', Validators.required],
-            email:  [p.dE_EMAIL, Validators.email],
-            telefone:  [p.nU_TELEFONE],
-            cargo:  [p.dE_CARGO]
-          }, {validators: [this.validador()]}))
+            nome:  [p.nO_PREPOSTO || '', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+            email:  [p.dE_EMAIL, [Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)]],
+            telefone:  [p.nU_TELEFONE || ''],
+            cargo:  [p.dE_CARGO || '', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]]
+          },{validators: [this.validador()]}))
         
           this.sequencial++;
       })
-
       }
       catch (error){
 
@@ -809,15 +805,14 @@ export class ContratoCadastroComponent implements OnInit {
 
 
   public async registrarContratos(): Promise<void> {
-      this.valid = true;
       this.contatoForm.markAllAsTouched();
       this.contatoForm.updateValueAndValidity();
       if(this.contatoForm.invalid){
           this.contatos.controls.forEach((grupo: AbstractControl) => {
             const contatoGroup = grupo as FormGroup;
-            if(contatoGroup.errors?.validador){
-              this.toastr.error(`Preencha pelo menos o campo "E-mail" ou "Telefone"`, "Error");
-            }
+            // if(contatoGroup.errors?.validador){
+            //   this.toastr.error(`Preencha pelo menos o campo "E-mail" ou "Telefone"`, "Error");
+            // }
             Object.keys(contatoGroup.controls).forEach(campo => {
               const control = contatoGroup.get(campo);
   
@@ -825,10 +820,17 @@ export class ContratoCadastroComponent implements OnInit {
               if(control.errors?.required){
                 this.toastr.error(`O campo ${this.formatarNomes(campo)} é obrigatório`, "Error");
               }
+                    
+              if(control.errors?.pattern){
+                      this.toastr.error(`O campo ${this.formatarNomes(campo)} está fora do padrão`, "Error");
+              }
 
               if(control.errors?.email){
                 this.toastr.error(`E-mail inválido`, "Error");
               }
+              if(control.errors?.mask){
+                this.toastr.error(`Telefone inválido`, "Error");
+              }        
             }
           });
         });
@@ -855,19 +857,26 @@ export class ContratoCadastroComponent implements OnInit {
           this.cadastrarContato(cadastro);
           this.atualizarPagina.emit(true);
         })
-        
-        this.toastr.success('Contato/Representante salvo com Sucesso.', 'Sucesso');
+
       }
 
       if(alterados.length){
           alterados.forEach(alterados => {
           this.alterarContato(alterados);
           this.atualizarPagina.emit(true);
-        
-          this.toastr.success('Contato/Representante alterado com Sucesso.', 'Sucesso');
+      
         })
       }
-
+      this.toastr.success('Contatos/Representantes Salvos com Sucesso.', 'Sucesso');
+      const alert = await Swal.fire({
+        title: '',
+        text:  `Contatos/Representantes Salvos com Sucesso.`,
+        icon: 'success',
+        showCancelButton: false,
+        confirmButtonText: 'Ok!',
+      }).then((result) => {
+        console.log(result, "Result")
+      });
   }
 
   formatarNomes(campo : string) : string {
