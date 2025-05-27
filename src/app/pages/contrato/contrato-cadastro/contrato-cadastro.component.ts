@@ -38,6 +38,7 @@ import Swal from 'sweetalert2';
 })
 export class ContratoCadastroComponent implements OnInit {
   @Input() public nuContrato;
+  @Input() public ativaPreposto;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
   permissions: ActionPolicies;
@@ -66,7 +67,7 @@ export class ContratoCadastroComponent implements OnInit {
   public fiscalAdm: string;
   public fiscalTec: string;
   public subTitulo: string = 'Cadastro de contrato';
-  public subTituloContatos: string = 'Contatos e Representantes';
+  public subTituloContatos: string = 'Prepostos e Contatos';
 
   public SUPRESSAO_VALUE = 40;
 
@@ -116,7 +117,7 @@ export class ContratoCadastroComponent implements OnInit {
     this.currentProfile = this.token.getUserPerfil();
     this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
 
-    if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT'){
+    if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT' || this.currentProfile === 'Pagadoria'){
       this.isPerfilPrivilegiado = true;
     }
   }
