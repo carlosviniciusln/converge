@@ -529,7 +529,7 @@ export class ContratoDetalheComponent implements OnInit {
   }
 
   setTipoUsuario() {
-    if (this.currentProfile === 'Pagadoria' || this.currentProfile === 'Administrador') {
+    if (this.currentProfile === 'Pagadoria' || this.currentProfile === 'Administrador' || this.currentProfile === PerfisEnum.TorresGEGAT) {
       this.permissaoEditar = true;
     }
   }
