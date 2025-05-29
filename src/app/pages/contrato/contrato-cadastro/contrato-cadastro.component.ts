@@ -285,7 +285,7 @@ export class ContratoCadastroComponent implements OnInit {
     }else{
             const alert = await Swal.fire({
               title: '',
-              text:  `São permitidos no máximo 5 contatos por contrato.`,
+              text:  `São permitidos no máximo 5 prepostos por contrato.`,
               icon: 'warning',
               showCancelButton: false,
               confirmButtonText: 'Ok!',
@@ -300,7 +300,7 @@ export class ContratoCadastroComponent implements OnInit {
     if(contato.value?.nuPreposto != 0){
       const alert = await Swal.fire({
         title: '',
-        text: `Deseja excluir contato ?`,
+        text: `Deseja excluir preposto ?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim, deletar!',
@@ -868,10 +868,10 @@ export class ContratoCadastroComponent implements OnInit {
       
         })
       }
-      this.toastr.success('Contatos/Representantes Salvos com Sucesso.', 'Sucesso');
+      this.toastr.success('Prepostos e Contatos Salvos com Sucesso.', 'Sucesso');
       const alert = await Swal.fire({
         title: '',
-        text:  `Contatos/Representantes Salvos com Sucesso.`,
+        text:  `Prepostos e Contatos Salvos com Sucesso.`,
         icon: 'success',
         showCancelButton: false,
         confirmButtonText: 'Ok!',
