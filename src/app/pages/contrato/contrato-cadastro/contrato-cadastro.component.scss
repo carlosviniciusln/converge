@@ -1,4 +1,8 @@
 
+:host .modal-footer{
+  padding: 0px 24px 16px 24px !important;
+}
+
 .menu-add{
     display: flex;
     justify-content: space-between;
@@ -14,7 +18,7 @@
 }
 
 :host ::ng-deep form#formContato{
-  padding: 0px 24px 0px 24px !important;
+  padding: 0px 24px 24px 24px !important;
 
   div > div {
 

@@ -38,6 +38,7 @@ import Swal from 'sweetalert2';
 })
 export class ContratoCadastroComponent implements OnInit {
   @Input() public nuContrato;
+  @Input() public ativaPreposto;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
   permissions: ActionPolicies;
