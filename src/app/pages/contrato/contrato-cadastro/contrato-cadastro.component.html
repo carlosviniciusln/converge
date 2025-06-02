@@ -274,7 +274,7 @@
                         (ngModelChange)="atualizarValor($event, i, r)" />
                     </div>
                     <div class="col-md-1">
-                      <button *ngIf="r > 0" type="button" class="btn-sm btn-secondary">
+                      <button *ngIf="r > 0" type="button" class="btn-sm btn-secondary" (click)="excluirRubrica(i, r)">
                         <i class="tim-icons icon-trash-simple"></i>
                       </button>
                     </div>
