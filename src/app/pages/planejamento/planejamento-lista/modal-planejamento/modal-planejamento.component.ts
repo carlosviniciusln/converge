@@ -72,14 +72,11 @@ export class ModalPlanejamentoComponent implements OnInit {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento?coExercicio='+this.anoSelecionado)
     result.then(response => {
       this.planejamentos = response.data;
-      console.log(this.planejamentos)
       this.montarPlanejamentosModal(this.planejamentos);
     });
   }
 
   montarPlanejamentosModal(any) {
-    // this.planejamentosModal[this.planejamentosModal.length - 1].statuS_PLANEJAMENTO = 'Encerrada';
-    // this.planejamentosModal[this.planejamentosModal.length - 1].tipo = '0 - Prog';
     this.planejamentosModal = any;
     if (this.planejamentosModal && this.planejamentosModal.length > 0) {
       let ultimoValor = this.planejamentosModal[this.planejamentosModal.length - 1].statuS_PLANEJAMENTO;
@@ -101,35 +98,43 @@ export class ModalPlanejamentoComponent implements OnInit {
 
     console.log('tipoProgramacao: ' + tipoProgramacao, 'ultimoValor: ' + ultimoValor)
 
-    if (tipoProgramacao.includes("Ajuste") && ultimoValor == "Aberta") {
-      this.ajustarValoresBotoes(false, false, true, true);
+    if (ultimoValor == "Encerrado") {
+      this.ajustarValoresBotoes(null, null, false, null);
+      return;
+    }else{
+      this.ajustarValoresBotoes(true, true, true, false);
       return;
     }
+///////////////////////////////////////////////////
+    // if (tipoProgramacao.includes("Ajuste") && ultimoValor == "Aberta") {
+    //   this.ajustarValoresBotoes(false, false, true, true);
+    //   return;
+    // }
 
-    if (tipoProgramacao.includes("Ajuste") && ultimoValor == "Encerrada") {
-      this.ajustarValoresBotoes(true, true, false, false);
-      return;
-    }
-    if (tipoProgramacao.includes("reprog") && ultimoValor == "Aberto") {
-      this.ajustarValoresBotoes(false, false, true, true);
-      return;
-    }
-    if (tipoProgramacao.includes("reprog") && ultimoValor == "Encerrada") {
-      this.ajustarValoresBotoes(true, false, false, false);
-      return;
-    }
-    if (tipoProgramacao.includes("Prog") && ultimoValor == "Aberta") {
-      this.ajustarValoresBotoes(false, false, true, true);
-      return;
-    }
+    // if (tipoProgramacao.includes("Ajuste") && ultimoValor == "Encerrado") {
+    //   this.ajustarValoresBotoes(true, true, false, false);
+    //   return;
+    // }
+    // if (tipoProgramacao.includes("reprog") && ultimoValor == "Aberto") {
+    //   this.ajustarValoresBotoes(false, false, true, true);
+    //   return;
+    // }
+    // if (tipoProgramacao.includes("reprog") && ultimoValor == "Encerrado") {
+    //   this.ajustarValoresBotoes(true, false, false, false);
+    //   return;
+    // }
+    // if (tipoProgramacao.includes("Prog") && ultimoValor == "Aberta") {
+    //   this.ajustarValoresBotoes(false, false, true, true);
+    //   return;
+    // }
 
-    if (tipoProgramacao.includes("Prog") && ultimoValor == "Encerrada") {
-      this.ajustarValoresBotoes(true, true, false, false);
-      return;
-    }
+    // if (tipoProgramacao.includes("Prog") && ultimoValor == "Encerrado") {
+    //   this.ajustarValoresBotoes(true, true, false, false);
+    //   return;
+    // }
   }
 
-  ajustarValoresBotoes(aberto, ajuste, encerrado, cancelado) {
+  ajustarValoresBotoes(aberto?, ajuste?, encerrado?, cancelado?) {
     this.planejamentoAberto = aberto;
     this.planejamentoAjuste = ajuste;
     this.planejamentoEncerrado = encerrado;
@@ -170,7 +175,8 @@ export class ModalPlanejamentoComponent implements OnInit {
     // } else {
     //   this.selectedRowId = rowId;
     // }
-    window.location.href = '/#/planejamento'
+    this.activeModal.close();
+    window.location.href = '/#/planejamento-orcamentario-detalhe'
   }
 
   async mensagemBotaoClick(botaoClicado) {

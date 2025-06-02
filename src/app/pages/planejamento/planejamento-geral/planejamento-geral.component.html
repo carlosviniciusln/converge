@@ -1,0 +1,200 @@
+<div class="content">
+  <div class="card">
+    <mat-tab-group (selectedIndexChange)="exibeDetalhes($event)">
+
+      <mat-tab *ngFor="let tab of tabs" label="{{ tab }}">
+        <p style="font-weight: bold;" *ngIf="tab == 'Contrato'">Planejamento Orçamentário - Exercício <b>2025</b> - 1 - Reprogramação - <span style="color: green;">Aberta</span></p>
+        <div *ngIf="tab == 'Contrato'" class="general-layout">
+
+          <table border="1" [width]="1665" style="text-align: center; border-color: rgb(231, 231, 231);">
+            <tr>
+              <th colspan="5">CAPEX</th>
+            </tr>
+            <tr style="background-color: rgb(245, 245, 245);">
+              <td style="font-weight: bold;">Solicitado <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
+              <td style="font-weight: bold;">Limite/Planejado <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
+              <td style="font-weight: bold;">Diferença <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
+              <td style="font-weight: bold;">Executado <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
+              <td style="font-weight: bold;">%EP <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
+            </tr>
+            <tr>
+              <th colspan="5">OPEX</th>
+              <tr style="background-color:rgb(245, 245, 245);">
+                <td style="font-weight: bold;">Solicitado <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
+                <td style="font-weight: bold;">Limite/Planejado <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
+                <td style="font-weight: bold;">Diferença <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
+                <td style="font-weight: bold;">Executado <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
+                <td style="font-weight: bold;">%EP <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
+              </tr>
+          </table>
+          <!-- ///////////////////////////////// -->
+          <div>
+            <div class="row">
+              <div class="col-12">
+                <p-table #dt [value]="planejamentos" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+                  [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0">
+                  <ng-template pTemplate="caption">
+                    <div class="table-header">
+                      <div class="row">
+                        <div class="pl-1 pr-1">
+                          <div class="col-md-1 pl-1 pr-1 text-right">
+                            <button type="button" class="btn-sm btn-add" (click)="openModalPlanejamento('adicionar', true)" style="width: 131px;">
+                              Novo Registro
+                            </button>
+                          </div>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 5)" [showClear]="true"
+                            placeholder="Planejamento" *ngIf="!loading"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown [options]="selectAnos" [(ngModel)]="selectedAno" [filter]="true" optionLabel="label"
+                            optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
+                            placeholder="Exercício"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown [options]="selectFiliais" [(ngModel)]="selectedFilial" [filter]="true" optionLabel="label"
+                            optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
+                            placeholder="UD"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown [options]="selectContratos" [(ngModel)]="selectedContrato" [filter]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 3)" [showClear]="true"
+                            placeholder="Contrato"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown [options]="selectTiposDemanda" [(ngModel)]="selectedTipoDemanda" [filter]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 6)" [showClear]="true"
+                            placeholder="Tipo"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)" [showClear]="true"
+                            placeholder="Digital"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
+                            [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 4)"
+                            [showClear]="true" placeholder="Status"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown class="objet-dropdown" [options]="selectObjeto" [(ngModel)]="selectedObjeto" [filter]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)" [showClear]="true"
+                            placeholder="Objeto"></p-dropdown>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">NUORC</div>
+                      </th>
+                      <!-- <th>
+                        <div class="p-d-flex p-jc-between text-center">Planejamento</div>
+                      </th>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">Exercício</div>
+                      </th> -->
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">GN</div>
+                      </th>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">Contrato</div>
+                      </th>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">Objeto</div>
+                      </th>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">Tipo</div>
+                      </th>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">Status</div>
+                      </th>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">Valor</div>
+                      </th>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">Diferença</div>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-planejamento>
+                    <tr class="p-selectable-row"(click)="
+                    openModalPlanejamento(
+                      'consultar',
+                      false,
+                      planejamento.nuPlanejamentoOrcamentario
+                    )
+                  ">
+                      <td style="text-align: center">
+                        <span class="p-column-title">Código</span>
+                        {{ planejamento.coPlanejamentoOrcamentario }}
+                      </td>
+                      <!-- <td style="text-align: center">
+                        <span class="p-column-title">Planejamento</span>
+                        {{ planejamento.gcptb019PlanejamentoTipo.dePlanejamentoTipo }}
+                      </td>
+                      <td style="text-align: center">
+                        <span class="p-column-title">Exercício</span>
+                        {{ planejamento.gcptb010Orcamento.nuAnoOrcamento }}
+                      </td> -->
+                      <td style="text-align: center">
+                        <span class="p-column-title">UD</span>
+                        {{ planejamento.gcptb005Filial.sgFilial }}
+                      </td>
+                      <td style="text-align: center">
+                        <span class="p-column-title">Contrato</span>
+                        {{ planejamento.gcptb001Contrato?.coContrato }}
+                      </td>
+                      <td style="width: 40%">
+                        <span class="p-column-title">Objeto</span>
+                        {{ planejamento.deObjeto }}
+                      </td>
+                      <td>
+                        <span class="p-column-title">Tipo</span>
+                        {{ planejamento.gcptb023DemandaTipo.deDemanda }}
+                      </td>
+                      <td style="text-align: center">
+                        <span class="p-column-title">Status</span>
+                        {{ planejamento.gcptb025PlanejamentoStatus.noPlanejamentoStatus }}
+                      </td>
+                      <td style="text-align: right">
+                        <span class="p-column-title">Valor</span>
+                        {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
+                      </td>
+                      <td style="text-align: right">
+                        <span class="p-column-title">Valor</span>
+                        {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
+                      </td>
+
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="emptymessage">
+                    <tr>
+                      <td colspan="12">Nenhum planejamento cadastrado.</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+                <div class="paginator-content" *ngIf="quantidadeTotal > 0">
+                  <span class="pagination-text">
+                    <p>{{ quantidadeTotal }} registro(s) encontrado(s)</p>
+                  </span>
+
+                  <ngb-pagination *ngIf="quantidadeTotal > planejamentos.length" [collectionSize]="quantidadeTotal"
+                    [pageSize]="filtroRegistros.pageSize" [(page)]="filtroRegistros.pageNumber" (pageChange)="loadPage($event)"
+                    [maxSize]="4" [boundaryLinks]="true">
+                  </ngb-pagination>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="tab == 'Rubrica'" class="general-layout">
+          <app-planejamento-aba-rubrica style="width: 99%;"></app-planejamento-aba-rubrica>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
