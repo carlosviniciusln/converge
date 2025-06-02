@@ -1,6 +1,7 @@
 <div class="content" *ngIf="this.Contrato">
-  <div class="row">
-    <div class="col-md-7 text-left pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
+  <div class="row" style="justify-content: space-between;">
+    <div>
+    <div style="padding-left: 15px" class="text-left pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
       <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print"
         routerLink="/contrato/evolucao-financeira/{{nuContrato}}" mat-raised-button> Evolução Financeira
       </button>
@@ -14,9 +15,14 @@
       <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print"
         (click)="openModalSimulacao(this.Contrato.nuContrato)" mat-raised-button> Simular Revisão
       </button>
+      <button type="button" class="btn-sm btn-secondary no-print" (click)="openModalPreposto(this.Contrato.nuContrato)"
+      mat-raised-button>
+      Prepostos
+    </button>
+  </div>
       <label class="title-ata" *ngIf="isRotaAtas">Este instrumento é uma Ata de Registro de Preços (ARP).</label>
     </div>
-    <div class="col-md-5 text-right pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
+    <div class="edit-contrato text-right pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
       <button type="button" class="btn-sm btn-secondary" (click)="openModalContrato(this.Contrato.nuContrato)"
         *ngIf="((this.currentUser | keyvalue)?.length) && this.permissaoEditar">
         <i class="tim-icons icon-simple-add"></i> Editar contrato

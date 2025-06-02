@@ -1,12 +1,12 @@
 
   <div class="modal-header">
-    <button type="button" style="z-index: 10;" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <button type="button" style="z-index: 10;" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')" (click)="ativaPreposto = false">
       <span aria-hidden="true">×</span>
     </button>
   </div>
 
   <mat-tab-group (selectedTabChange)="onTabChange($event)">
-    <mat-tab  label="Edição" >
+    <mat-tab *ngIf="!ativaPreposto"  label="Edição" >
       <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">
           <small>{{ subTitulo }}</small>
@@ -292,14 +292,14 @@
         </button>
       </div>
     </mat-tab>
-    <mat-tab *ngIf="isPerfilPrivilegiado" label="Prepostos">
+    <mat-tab label="Prepostos">
       <div class="menu-add">
          <div class="modal-header" id="contatosRepresentates">
           <h4 class="modal-title" id="modal-basic-title">
             <small>{{ subTituloContatos }}</small>
           </h4>
         </div>
-        <div class="col-md-5 text-right pb-1" >
+        <div *ngIf="isPerfilPrivilegiado" class="col-md-5 text-right pb-1" >
           <button type="button" class="btn-sm btn-secondary"  (click)="adicionarContato()" >
             <i class="tim-icons icon-simple-add"></i>
           </button>
@@ -346,6 +346,7 @@
                   </td>
                   <td>
                     <input
+                      [readonly]="!isPerfilPrivilegiado"
                       formControlName="nome"
                       type="text"
                       class="form-control"
@@ -357,6 +358,7 @@
                   </td>
                   <td>
                     <input
+                    [readonly]="!isPerfilPrivilegiado"
                       formControlName="email"
                       type="text"
                       class="form-control"
@@ -370,6 +372,7 @@
                   </td>
                   <td>
                     <input
+                    [readonly]="!isPerfilPrivilegiado"
                       formControlName="telefone"
                       class="form-control"
                       mask="(00) 00000-0000"
@@ -384,6 +387,7 @@
                   </td>
                   <td>
                     <input
+                      [readonly]="!isPerfilPrivilegiado"
                       formControlName="cargo"
                       type="text"
                       class="form-control"
@@ -395,7 +399,7 @@
                       }"
                     />
                   </td>
-                  <td>
+                  <td *ngIf="isPerfilPrivilegiado">
                     <i
                       (click)="removerContato(contatos, i)"
                       style="padding-left: 30px; cursor: pointer"
@@ -413,7 +417,7 @@
           </div>
         </div>
       </form>
-      <div class="modal-footer">
+      <div *ngIf="isPerfilPrivilegiado" class="modal-footer">
         <button class="btn-sm btn-default" type="submit" (click)="registrarContratos()">Salvar</button>
       </div>
     </mat-tab>
