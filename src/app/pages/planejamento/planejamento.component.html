@@ -37,7 +37,7 @@
               <div class="pl-1 pr-1">
                 <p-dropdown [options]="selectFiliais" [(ngModel)]="selectedFilial" [filter]="true" optionLabel="label"
                   optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
-                  placeholder="GN"></p-dropdown>
+                  placeholder="UD"></p-dropdown>
               </div>
               <div class="pl-1 pr-1">
                 <p-dropdown [options]="selectContratos" [(ngModel)]="selectedContrato" [filter]="true"
@@ -79,7 +79,7 @@
               <div class="p-d-flex p-jc-between text-center">Exercício</div>
             </th>
             <th>
-              <div class="p-d-flex p-jc-between text-center">GN</div>
+              <div class="p-d-flex p-jc-between text-center">UD</div>
             </th>
             <th>
               <div class="p-d-flex p-jc-between text-center">Contrato</div>
@@ -122,7 +122,7 @@
               {{ planejamento.gcptb010Orcamento.nuAnoOrcamento }}
             </td>
             <td style="text-align: center">
-              <span class="p-column-title">GN</span>
+              <span class="p-column-title">UD</span>
               {{ planejamento.gcptb005Filial.sgFilial }}
             </td>
             <td style="text-align: center">

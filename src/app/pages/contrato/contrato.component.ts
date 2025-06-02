@@ -228,7 +228,7 @@ export class ContratoComponent implements OnInit {
           "Número do Contrato": item.coContrato,
           Empresa: item.noEmpresa,
           "Tipo de Contrato": item.noContratoTipo,
-          Gestor: item.sgFilial,
+          "Unidade Demandante": item.sgFilial,
           Status: item.icAtivo ? 'Ativo' : 'Encerrado',
           "Data de Início": new Date(item.dtInicioContrato).toLocaleDateString('pt-BR'),
           "Data de Término": new Date(item.dtTerminoContrato).toLocaleDateString('pt-BR'),

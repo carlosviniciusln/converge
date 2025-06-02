@@ -1,626 +1,424 @@
-<div class="tab-wrapper modal-header">
-  <button
-  type="button"
-  class="btn-fechar close"
-  aria-label="Close"
-  (click)="activeModal.dismiss('Cross click')"
->
-  <i  (click)="activeModal.dismiss('Cross click')" aria-hidden="true">×</i>
-</button>
-</div>
 
-<div *ngIf="selectTab === 1" class="add-contato">
-  <button type="button" class="icon-contato btn-sm btn-secondary" (click)="adicionarContato()">
-    <i class="tim-icons icon-simple-add"></i>
-  </button>
-</div>
+  <div class="modal-header">
+    <button type="button" style="z-index: 10;" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')" (click)="ativaPreposto = false">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
 
-  <mat-tab-group class="modal-body" (selectedTabChange)="onTabChange($event)">
-    <mat-tab label="Contrato">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="row">
-        <div class="col-md-8">
+  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+    <mat-tab *ngIf="!ativaPreposto"  label="Edição" >
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+          <small>{{ subTitulo }}</small>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="row">
-            <div class="col-md-6 pr-0">
-              <label for="coContrato">Contrato:</label>
-              <input
-                readonly
-                formControlName="coContrato"
-                id="coContrato"
-                type="text"
-                class="form-control"
-                [ngClass]="{ 'is-invalid': submitted && f.coContrato.invalid }"
-                mask="0000/0000||00000/0000"
-                placeholder="Ex. 99999/9999"
-                [dropSpecialCharacters]="false"
-              />
-            </div>
-            <div class="col-md-6 pr-0">
-              <label for="noEmpresa">Fornecedor:</label>
-              <input
-                readonly
-                formControlName="noEmpresa"
-                id="noEmpresa"
-                placeholder="Digite o Fornecedor"
-                type="text"
-                class="form-control"
-                [ngClass]="{ 'is-invalid': submitted && f.noEmpresa.invalid }"
-              />
-            </div>
-
-            <div class="col-md-6 pr-0">
-              <label for="nuFilial">Gerência:</label>
-              <input
-                type="text"
-                class="form-control"
-                [value]="contratoV2?.filial + ' - ' + contratoV2?.sG_FILIAL"
-                readonly
-                [ngClass]="{ 'is-invalid': submitted && f.nuFilial.invalid }"
-              />
-            </div>
-            <div class="col-md-6 pr-0">
-              <label for="nuContratoTipo">Contrato Tipo:</label>
-              <select
-                class="form-control"
-                id="nuContratoTipo"
-                formControlName="nuContratoTipo"
-                [ngClass]="{
-                  'is-invalid': submitted && f.nuContratoTipo.invalid
-                }"
-              >
-                <option value="" disabled selected>
-                  Selecione o tipo do Contrato
-                </option>
-                <option
-                  *ngFor="let a of listaTipoContrato"
-                  [ngValue]="a.nuContratoTipo"
-                >
-                  {{ a.noContratoTipo }}
-                </option>
-              </select>
-            </div>
-            <div class="col-md-6 pr-0">
-              <label for="nuAnalistaCaixa">Fiscal Administrativo:</label>
-              <select
-                class="form-control"
-                id="nuAnalistaCaixa"
-                formControlName="nuAnalistaCaixa"
-                [ngClass]="{
-                  'is-invalid': submitted && f.nuAnalistaCaixa.invalid
-                }"
-              >
-                <option value="" disabled selected>Selecione o Analista</option>
-                <option
-                  *ngFor="let a of listaCaixasAdministrativo"
-                  [ngValue]="a.nuUsuario"
-                >
-                  {{ a.coMatricula }} - {{ a.noUsuario }}
-                </option>
-              </select>
-            </div>
-            <div class="col-md-6 pr-0">
-              <label for="nuFiscalAdm">Fiscal Técnico:</label>
-              <select
-                class="form-control"
-                id="nuFiscalAdm"
-                formControlName="nuFiscalAdm"
-                [ngClass]="{ 'is-invalid': submitted && f.nuFiscalAdm.invalid }"
-              >
-                <option value="" disabled selected>Selecione o Analista</option>
-                <option *ngFor="let a of listaGestores" [ngValue]="a.nuUsuario">
-                  {{ a.coMatricula }} - {{ a.noUsuario }}
-                </option>
-              </select>
-            </div>
-            <div class="col-md-12 pr-0">
-              <label for="noObjeto">Objeto:</label>
-              <textarea
-                style="
-                  border: 1px solid rgba(29, 37, 59, 0.3);
-                  border-radius: 0.4285rem;
-                "
-                readonly
-                formControlName="noObjeto"
-                placeholder="Digite o objeto do contrato"
-                id="noObjeto"
-                type="text"
-                class="form-control"
-                rows="6"
-                [ngClass]="{ 'is-invalid': submitted && f.noObjeto.invalid }"
-              ></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="row">
-            <div class="col-md-12 min-height-59">
-              <label for="coContrato">Artigo 81</label>
+            <div class="col-md-8">
               <div class="row">
-                <div class="col-md-10 pr-1">
-                  <b>Contrato paga/pagou em Art.81</b>
+                <div class="col-md-6 pr-0">
+                  <label for="coContrato">Contrato:</label>
+                  <input readonly formControlName="coContrato" id="coContrato" type="text" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.coContrato.invalid }" mask="0000/0000||00000/0000"
+                    placeholder="Ex. 99999/9999" [dropSpecialCharacters]="false" />
                 </div>
-                <div class="col-md-2 pl-1 pr-1">
-                  <mat-slide-toggle
-                    formControlName="icArtigo81"
-                    id="icArtigo81"
-                  ></mat-slide-toggle>
+                <div class="col-md-6 pr-0">
+                  <label for="noEmpresa">Fornecedor:</label>
+                  <input readonly formControlName="noEmpresa" id="noEmpresa" placeholder="Digite o Fornecedor" type="text"
+                    class="form-control" [ngClass]="{ 'is-invalid': submitted && f.noEmpresa.invalid }" />
                 </div>
-              </div>
-            </div>
-            <div class="col-md-12 min-height-59">
-              <label for="coContrato">Fechamento da Fatura</label>
-              <div class="row">
-                <div class="col-md-2 pr-1"><b>Dia:</b></div>
-                <div class="col-md-4 pl-1">
-                  <input
-                    readonly
-                    formControlName="nuDiaFechamentoFatura"
-                    id="nuDiaFechamentoFatura"
-                    placeholder="Dia"
-                    type="number"
-                    min="1"
-                    max="31"
-                    class="form-control"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.nuDiaFechamentoFatura.invalid
-                    }"
-                  />
+    
+                <div class="col-md-6 pr-0">
+                  <label for="nuFilial">Gerência:</label>
+                  <input type="text" class="form-control" [value]="contratoV2?.filial + ' - ' + contratoV2?.sG_FILIAL"
+                    readonly [ngClass]="{ 'is-invalid': submitted && f.nuFilial.invalid }" />
                 </div>
-                <div class="col-md-4 pl-1 pr-1"><b>Dia útil?</b></div>
-                <div class="col-md-2 pl-1 pr-1">
-                  <mat-slide-toggle
-                    formControlName="icDiaUtilFechamentoFatura"
-                    id="icDiaUtilFechamentoFatura"
-                  ></mat-slide-toggle>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 min-height-59">
-              <label for="coContrato">Pagamento da Fatura</label>
-              <div class="row">
-                <div class="col-md-2 pr-1"><b>Dia:</b></div>
-                <div class="col-md-4 pl-1">
-                  <input
-                    formControlName="nuDiaPagamentoFatura"
-                    id="nuDiaPagamentoFatura"
-                    type="number"
-                    min="1"
-                    max="31"
-                    class="form-control"
-                    placeholder="Dia"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.nuDiaPagamentoFatura.invalid
-                    }"
-                  />
-                </div>
-                <div class="col-md-4 pl-1 pr-1"><b>Dia útil?</b></div>
-                <div class="col-md-2 pl-1 pr-1">
-                  <mat-slide-toggle
-                    formControlName="icDiaUtilPagamentoFatura"
-                    id="icDiaUtilPagamentoFatura"
-                  ></mat-slide-toggle>
-                </div>
-              </div>
-            </div>
-
-            <div
-              *ngIf="isDerivadoAta"
-              class="col-md-12 min-height-59"
-              style="margin-top: 20px"
-            >
-              <label for="nuProcesso">Vinculação ARP</label>
-              <div class="row">
-                <div class="col-md-6 pr-1"><b>Processo:</b></div>
-                <div class="col-md-6 pl-1">
-                  <span>{{ processoAta }}</span>
-                </div>
-                <div class="col-md-6 pr-1"><b>Ata Vinculada:</b></div>
-                <div class="col-md-6 pl-1">
-                  <span>{{ ataVinculada }}</span>
-                </div>
-                <div class="col-md-10 pr-0">
-                  <label for="nuContratoTipo">Atas Vinculadas:</label>
-                  <select
-                    class="form-control"
-                    id="nuAta"
-                    formControlName="nuAta"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.nuContratoTipo.invalid
-                    }"
-                  >
-                    <option value="" disabled selected>Selecione a Ata</option>
-                    <option
-                      *ngFor="let a of listaTipoAtas"
-                      [ngValue]="a.nuContrato"
-                    >
-                      {{ a.noEmpresa }}
+                <div class="col-md-6 pr-0">
+                  <label for="nuContratoTipo">Contrato Tipo:</label>
+                  <select class="form-control" id="nuContratoTipo" formControlName="nuContratoTipo"
+                    [ngClass]="{'is-invalid': submitted && f.nuContratoTipo.invalid}">
+                    <option value="" disabled selected>Selecione o tipo do Contrato</option>
+                    <option *ngFor="let a of listaTipoContrato" [ngValue]="a.nuContratoTipo">
+                      {{ a.noContratoTipo }}
                     </option>
                   </select>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <br />
-      <div class="row">
-        <div class="col-md-6">
-          <h4 class="modal-title" id="modal-basic-title">
-            <b>Aditivos e Vigências</b><br /><small
-              >cadastro de aditivos e vigências do contrato</small
-            >
-          </h4>
-        </div>
-        <div class="col-md-6 text-right">
-          <button
-            type="button"
-            class="btn-sm btn-secondary"
-            (click)="adicionarVigencia(false)"
-          >
-            <i class="tim-icons icon-simple-add"></i>
-          </button>
-        </div>
-      </div>
-      <br />
-      <div
-        formArrayName="vigencias"
-        *ngFor="let vigencia of vigencias.controls; let i = index"
-      >
-        <div class="row" [formGroupName]="i">
-          <div class="col-md-3 pr-0">
-            <label for="coContrato">Tipo</label>
-            <select
-              class="form-control"
-              id="nuVigenciaTipo"
-              formControlName="nuVigenciaTipo"
-              [ngClass]="{
-                'is-invalid':
-                  submitted && vigencia.get('nuVigenciaTipo').invalid
-              }"
-            >
-              <option value="" disabled selected>
-                Selecione o tipo da vigência
-              </option>
-              <option
-                *ngFor="let a of listaTipoVigencia"
-                [ngValue]="a.nuVigenciaTipo"
-              >
-                {{ a.noVigenciaTipo }}
-              </option>
-            </select>
-          </div>
-          <div class="col-md-2 pr-0">
-            <label for="dtInicio">Data início</label>
-            <input
-              formControlName="dtInicio"
-              id="dtInicio"
-              type="date"
-              class="form-control"
-              [ngClass]="{
-                'is-invalid': submitted && vigencia.get('dtInicio').invalid
-              }"
-            />
-            <div
-              *ngIf="
-                vigencia.get('dtInicio').errors?.datasInvalidas && submitted
-              "
-              class="invalid-feedback"
-            >
-              Data de início não pode ser maior que data de fim.
-            </div>
-            <div
-              *ngIf="
-                vigencia.get('dtInicio').errors?.dataInvalidaProrrogacao &&
-                submitted
-              "
-              class="invalid-feedback"
-            >
-              Data de início deve ser maior que a data de fim da vigência
-              anterior.
-            </div>
-          </div>
-
-          <div class="col-md-2 pr-0">
-            <label for="dtTermino">Data Fim</label>
-            <div *ngIf="!useDtFimOptions[i]; else selectDtTermino">
-              <input
-                formControlName="dtTermino"
-                id="dtTermino"
-                type="date"
-                class="form-control"
-                [ngClass]="{
-                  'is-invalid': submitted && vigencia.get('dtTermino').invalid
-                }"
-              />
-            </div>
-            <ng-template #selectDtTermino>
-              <select
-                formControlName="dtTermino"
-                id="dtTermino"
-                class="form-control"
-                [ngClass]="{
-                  'is-invalid': submitted && vigencia.get('dtTermino').invalid
-                }"
-              >
-                <option value="" disabled selected>Selecione a data fim</option>
-                <option *ngFor="let date of dtFimOptions" [ngValue]="date">
-                  {{ date | date : "dd/MM/yyyy" }}
-                </option>
-              </select>
-            </ng-template>
-            <div
-              *ngIf="
-                vigencia.get('dtTermino').errors?.datasInvalidas && submitted
-              "
-              class="invalid-feedback"
-            >
-              Data de fim não pode ser menor que data de início.
-            </div>
-          </div>
-          <div class="col-md-1 pr-0">
-            <label for="nuDiaInicio">Início</label>
-            <input
-              formControlName="nuDiaInicio"
-              id="nuDiaInicio"
-              type="number"
-              min="1"
-              max="31"
-              class="form-control"
-              placeholder="Dia"
-              [ngClass]="{
-                'is-invalid': submitted && vigencia.get('nuDiaInicio').invalid
-              }"
-            />
-          </div>
-          <div class="col-md-1 pr-0">
-            <label for="nuDiaTermino">Fim</label>
-            <input
-              formControlName="nuDiaTermino"
-              id="nuDiaTermino"
-              type="number"
-              min="1"
-              max="31"
-              class="form-control"
-              placeholder="Dia"
-              [ngClass]="{
-                'is-invalid': submitted && vigencia.get('nuDiaTermino').invalid
-              }"
-            />
-            <p class="small-text">ciclo mensal</p>
-          </div>
-          <div class="col-md-1 pr-0">
-            <label
-              for="dtInicioCompetencia"
-              style="min-inline-size: max-content"
-              >Primeira Competência</label
-            >
-            <input
-              formControlName="dtInicioCompetencia"
-              id="dtInicioCompetencia"
-              type="text"
-              class="form-control"
-              [ngClass]="{
-                'is-invalid':
-                  submitted && vigencia.get('dtInicioCompetencia').invalid
-              }"
-              style="width: 80px"
-              mask="00/0000"
-              placeholder="MM/YYYY"
-            />
-          </div>
-          <div class="col-md-2" style="padding-left: 25px">
-            <br />
-            <button
-              *ngIf="i > 0"
-              type="button"
-              class="btn-sm btn-secondary"
-              (click)="excluirVigencia(i)"
-            >
-              <i class="tim-icons icon-trash-simple"></i>
-            </button>
-            <button
-              type="button"
-              class="btn-sm btn-secondary"
-              (click)="adicionarRubrica(i)"
-            >
-              <i class="tim-icons icon-simple-add"></i>
-            </button>
-          </div>
-
-          <div class="col-md-12">
-            <h5 class="modal-title" id="modal-basic-title">
-              <b>Rubricas e Valor Global</b>
-            </h5>
-            <div
-              class="div-rubricas"
-              formArrayName="rubricas"
-              *ngFor="
-                let rubrica of vigencia.get('rubricas')['controls'];
-                let r = index
-              "
-            >
-              <div class="row" [formGroupName]="r">
-                <div class="col-md-1 pr-0 text-right">
-                  <i class="fas fa-level-up fa-rotate-90 fa-xl"></i>
+                <div class="col-md-6 pr-0">
+                  <label for="nuAnalistaCaixa">Fiscal Administrativo:</label>
+                  <select class="form-control" id="nuAnalistaCaixa" formControlName="nuAnalistaCaixa"
+                    [ngClass]="{'is-invalid': submitted && f.nuAnalistaCaixa.invalid}">
+                    <option value="" disabled selected>Selecione o Analista</option>
+                    <option *ngFor="let a of listaCaixasAdministrativo" [ngValue]="a.nuUsuario">
+                      {{ a.coMatricula }} - {{ a.noUsuario }}
+                    </option>
+                  </select>
                 </div>
-                <div class="col-md-3 pr-0">
-                  <select
-                    class="form-control"
-                    id="nuRubrica"
-                    formControlName="nuRubrica"
-                    [ngClass]="{
-                      'is-invalid':
-                        submitted && rubrica.get('nuRubrica').invalid
-                    }"
-                  >
+                <div class="col-md-6 pr-0">
+                  <label for="nuFiscalAdm">Fiscal Técnico:</label>
+                  <select class="form-control" id="nuFiscalAdm" formControlName="nuFiscalAdm"
+                    [ngClass]="{ 'is-invalid': submitted && f.nuFiscalAdm.invalid }">
                     <option value="" disabled selected>
-                      Selecione a rubrica
+                      Selecione o Analista
                     </option>
-                    <option
-                      *ngFor="let a of listaRubrica"
-                      [ngValue]="a.nuRubrica"
-                    >
-                      {{ a.coRubrica }} - {{ a.deRubrica }}
+                    <option *ngFor="let a of listaGestores" [ngValue]="a.nuUsuario">
+                      {{ a.coMatricula }} - {{ a.noUsuario }}
                     </option>
                   </select>
                 </div>
-                <div class="col-md-2 pr-0">
-                  <input
-                    formControlName="vrTotal"
-                    [ngClass]="{
-                      'is-invalid': submitted && rubrica.get('vrTotal').invalid
-                    }"
-                    id="vrTotal"
-                    type="text"
-                    class="form-control"
-                    mask="separator.2"
-                    [allowNegativeNumbers]="true"
-                    [thousandSeparator]="'.'"
-                    [decimalMarker]="','"
-                    prefix="R$ "
-                    [dropSpecialCharacters]="true"
-                    (ngModelChange)="atualizarValor($event, i, r)"
-                  />
+                <div class="col-md-12 pr-0">
+                  <label for="noObjeto">Objeto:</label>
+                  <textarea style="border: 1px solid rgba(29, 37, 59, 0.3);border-radius: 0.4285rem;" readonly
+                    formControlName="noObjeto" placeholder="Digite o objeto do contrato" id="noObjeto" type="text"
+                    class="form-control" rows="6" [ngClass]="{ 'is-invalid': submitted && f.noObjeto.invalid }"></textarea>
                 </div>
-                <div class="col-md-1">
-                  <button
-                    *ngIf="r > 0"
-                    type="button"
-                    class="btn-sm btn-secondary"
-                  >
-                    <i class="tim-icons icon-trash-simple"></i>
-                  </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-12 min-height-59">
+                  <label for="coContrato">Artigo 81</label>
+                  <div class="row">
+                    <div class="col-md-10 pr-1"><b>Contrato paga/pagou em Art.81</b></div>
+                    <div class="col-md-2 pl-1 pr-1">
+                      <mat-slide-toggle formControlName="icArtigo81" id="icArtigo81"></mat-slide-toggle>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 min-height-59">
+                  <label for="coContrato">Fechamento da Fatura</label>
+                  <div class="row">
+                    <div class="col-md-2 pr-1"><b>Dia:</b></div>
+                    <div class="col-md-4 pl-1">
+                      <input readonly formControlName="nuDiaFechamentoFatura" id="nuDiaFechamentoFatura" placeholder="Dia"
+                        type="number" min="1" max="31" class="form-control" [ngClass]="{
+                        'is-invalid': submitted && f.nuDiaFechamentoFatura.invalid
+                      }" />
+                    </div>
+                    <div class="col-md-4 pl-1 pr-1"><b>Dia útil?</b></div>
+                    <div class="col-md-2 pl-1 pr-1">
+                      <mat-slide-toggle formControlName="icDiaUtilFechamentoFatura"
+                        id="icDiaUtilFechamentoFatura"></mat-slide-toggle>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 min-height-59">
+                  <label for="coContrato">Pagamento da Fatura</label>
+                  <div class="row">
+                    <div class="col-md-2 pr-1"><b>Dia:</b></div>
+                    <div class="col-md-4 pl-1">
+                      <input formControlName="nuDiaPagamentoFatura" id="nuDiaPagamentoFatura" type="number" min="1" max="31"
+                        class="form-control" placeholder="Dia" [ngClass]="{
+                        'is-invalid': submitted && f.nuDiaPagamentoFatura.invalid
+                      }" />
+                    </div>
+                    <div class="col-md-4 pl-1 pr-1"><b>Dia útil?</b></div>
+                    <div class="col-md-2 pl-1 pr-1">
+                      <mat-slide-toggle formControlName="icDiaUtilPagamentoFatura"
+                        id="icDiaUtilPagamentoFatura"></mat-slide-toggle>
+                    </div>
+                  </div>
+                </div>
+    
+                <div *ngIf="isDerivadoAta" class="col-md-12 min-height-59" style="margin-top: 20px;">
+                  <label for="nuProcesso">Vinculação ARP</label>
+                  <div class="row">
+                    <div class="col-md-6 pr-1"><b>Processo:</b></div>
+                    <div class="col-md-6 pl-1">
+                      <span>{{processoAta}}</span>
+                    </div>
+                    <div class="col-md-6 pr-1"><b>Ata Vinculada:</b></div>
+                    <div class="col-md-6 pl-1">
+                      <span>{{ataVinculada}}</span>
+                    </div>
+                    <div class="col-md-10 pr-0">
+                      <label for="nuContratoTipo">Atas Vinculadas:</label>
+                      <select class="form-control" id="nuAta" formControlName="nuAta"
+                        [ngClass]="{'is-invalid': submitted && f.nuContratoTipo.invalid}">
+                        <option value="" disabled selected>Selecione a Ata</option>
+                        <option *ngFor="let a of listaTipoAtas" [ngValue]="a.nuContrato">
+                          {{ a.noEmpresa }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </form>
-
-    <div class="modal-footer">
-      <button
-        class="btn-sm btn-default"
-        type="submit"
-        (click)="onSubmit()"
-        *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false; false"
-      >
-        Salvar
-      </button>
-    </div>
-
-  </mat-tab>
-
-    <mat-tab label="Contatos">
-    <form [formGroup]="contatoForm" (ngSubmit)="registrarContratos()">
-      <div class="row">
-        <div class="col-12">
-          <p-table
-            #dt
-            [value]="contatos.controls"
-            dataKey="id"
-            [showCurrentPageReport]="true"
-            [rowHover]="true"
-          >
-            <ng-template pTemplate="header">
-              <tr>
-                <th>
-                  <div class="p-d-flex p-jc-between p-ai-center">Seq</div>
-                </th>
-                <th>
-                  <div class="p-d-flex p-jc-between p-ai-center">Nome*</div>
-                </th>
-                <th>
-                  <div class="p-d-flex p-jc-between p-ai-center">Email</div>
-                </th>
-                <th>
-                  <div class="p-d-flex p-jc-between p-ai-center">
-                    DDD Telefone
+    
+          <br />
+          <div class="row">
+            <div class="col-md-6">
+              <h4 class="modal-title" id="modal-basic-title">
+                <b>Aditivos e Vigências</b><br /><small>cadastro de aditivos e vigências do contrato</small>
+              </h4>
+            </div>
+            <div class="col-md-6 text-right">
+              <button type="button" class="btn-sm btn-secondary" (click)="adicionarVigencia(false)">
+                <i class="tim-icons icon-simple-add"></i>
+              </button>
+            </div>
+          </div>
+          <br />
+          <div formArrayName="vigencias" *ngFor="let vigencia of vigencias.controls; let i = index">
+            <div class="row" [formGroupName]="i">
+              <div class="col-md-3 pr-0">
+                <label for="coContrato">Tipo</label>
+                <select class="form-control" id="nuVigenciaTipo" formControlName="nuVigenciaTipo" [ngClass]="{
+                  'is-invalid': submitted && vigencia.get('nuVigenciaTipo').invalid
+                }">
+                  <option value="" disabled selected>
+                    Selecione o tipo da vigência
+                  </option>
+                  <option *ngFor="let a of listaTipoVigencia" [ngValue]="a.nuVigenciaTipo">
+                    {{ a.noVigenciaTipo }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-2 pr-0">
+                <label for="dtInicio">Data início</label>
+                <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" [ngClass]="{
+                    'is-invalid': (submitted && vigencia.get('dtInicio').invalid)
+                  }" />
+                <div *ngIf="vigencia.get('dtInicio').errors?.datasInvalidas && submitted" class="invalid-feedback">
+                  Data de início não pode ser maior que data de fim.
+                </div>
+                <div *ngIf="vigencia.get('dtInicio').errors?.dataInvalidaProrrogacao && submitted" class="invalid-feedback">
+                  Data de início deve ser maior que a data de fim da vigência anterior.
+                </div>
+              </div>
+    
+              <div class="col-md-2 pr-0">
+                <label for="dtTermino">Data Fim</label>
+                <div *ngIf="!useDtFimOptions[i]; else selectDtTermino">
+                  <input formControlName="dtTermino" id="dtTermino" type="date" class="form-control" [ngClass]="{
+                    'is-invalid': (submitted && vigencia.get('dtTermino').invalid)
+                  }" />
+                </div>
+                <ng-template #selectDtTermino>
+                  <select formControlName="dtTermino" id="dtTermino" class="form-control" [ngClass]="{
+                    'is-invalid': (submitted && vigencia.get('dtTermino').invalid)
+                  }">
+                    <option value="" disabled selected>
+                      Selecione a data fim
+                    </option>
+                    <option *ngFor="let date of dtFimOptions" [ngValue]="date">{{ date | date: 'dd/MM/yyyy' }}</option>
+                  </select>
+                </ng-template>
+                <div *ngIf="vigencia.get('dtTermino').errors?.datasInvalidas && submitted" class="invalid-feedback">
+                  Data de fim não pode ser menor que data de início.
+                </div>
+              </div>
+              <div class="col-md-1 pr-0">
+                <label for="nuDiaInicio">Início</label>
+                <input formControlName="nuDiaInicio" id="nuDiaInicio" type="number" min="1" max="31" class="form-control"
+                  placeholder="Dia" [ngClass]="{
+                  'is-invalid': submitted && vigencia.get('nuDiaInicio').invalid
+                }" />
+              </div>
+              <div class="col-md-1 pr-0">
+                <label for="nuDiaTermino">Fim</label>
+                <input formControlName="nuDiaTermino" id="nuDiaTermino" type="number" min="1" max="31" class="form-control"
+                  placeholder="Dia" [ngClass]="{
+                  'is-invalid': submitted && vigencia.get('nuDiaTermino').invalid
+                }" />
+                <p class="small-text">ciclo mensal</p>
+              </div>
+              <div class="col-md-1 pr-0">
+                <label for="dtInicioCompetencia" style="min-inline-size: max-content;">Primeira Competência</label>
+                <input formControlName="dtInicioCompetencia" id="dtInicioCompetencia" type="text" class="form-control"
+                  [ngClass]="{
+                    'is-invalid': (submitted && vigencia.get('dtInicioCompetencia').invalid)
+                  }" style="width: 80px;" mask="00/0000" placeholder="MM/YYYY" />
+              </div>
+              <div class="col-md-2" style="padding-left: 25px;">
+                <br />
+                <button *ngIf="i > 0" type="button" class="btn-sm btn-secondary" (click)="excluirVigencia(i)">
+                  <i class="tim-icons icon-trash-simple"></i>
+                </button>
+                <button type="button" class="btn-sm btn-secondary" (click)="adicionarRubrica(i)">
+                  <i class="tim-icons icon-simple-add"></i>
+                </button>
+              </div>
+    
+              <div class="col-md-12">
+                <h5 class="modal-title" id="modal-basic-title">
+                  <b>Rubricas e Valor Global</b>
+                </h5>
+                <div class="div-rubricas" formArrayName="rubricas" *ngFor="
+                  let rubrica of vigencia.get('rubricas')['controls'];
+                  let r = index
+                ">
+                  <div class="row" [formGroupName]="r">
+                    <div class="col-md-1 pr-0 text-right">
+                      <i class="fas fa-level-up fa-rotate-90 fa-xl"></i>
+                    </div>
+                    <div class="col-md-3 pr-0">
+                      <select class="form-control" id="nuRubrica" formControlName="nuRubrica" [ngClass]="{
+                        'is-invalid': submitted && rubrica.get('nuRubrica').invalid
+                      }">
+                        <option value="" disabled selected>
+                          Selecione a rubrica
+                        </option>
+                        <option *ngFor="let a of listaRubrica" [ngValue]="a.nuRubrica">
+                          {{ a.coRubrica }} - {{ a.deRubrica }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-2 pr-0">
+                      <input formControlName="vrTotal" [ngClass]="{
+                        'is-invalid': submitted && rubrica.get('vrTotal').invalid
+                      }" id="vrTotal" type="text" class="form-control" mask="separator.2" [allowNegativeNumbers]="true"
+                        [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true"
+                        (ngModelChange)="atualizarValor($event, i, r)" />
+                    </div>
+                    <div class="col-md-1">
+                      <button *ngIf="r > 0" type="button" class="btn-sm btn-secondary" (click)="excluirRubrica(i, r)">
+                        <i class="tim-icons icon-trash-simple"></i>
+                      </button>
+                    </div>
                   </div>
-                </th>
-                <th>
-                  <div class="p-d-flex p-jc-between p-ai-center">
-                    Cargo/Função
-                  </div>
-                </th>
-                <th></th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-contatos let-i="rowIndex">
-              <tr [formGroup]="contatos">
-                <td>
-                  {{ contatos.value.sequencial }}
-                </td>
-                <td>
-                  <input
-                    formControlName="nome"
-                    type="text"
-                    class="form-control"
-                    placeholder="Digite o nome"
-                    [ngClass]="{
-                      'is-invalid': contatos.get('nome').invalid && contatos.get('nome').touched
-                    }"
-                  />
-                </td>
-                <td>
-                  <input
-                    formControlName="email"
-                    type="text"
-                    class="form-control"
-                    placeholder="Digite o email"
-                    [ngClass]="{
-                      'is-invalid':
-                        (contatos.get('email')?.invalid &&
-                        contatos.get('email').touched) || contatos.get('email')?.errors?.email
-                    }"
-                  />
-                </td>
-                <td>
-                  <input
-                    formControlName="telefone"
-                    mask="(00) 00000-0000"
-                    class="form-control"
-                    placeholder="Digite o telefone"
-                    type="text"
-                    [ngClass]="{
-                      'is-invalid':
-                        contatos.get('email')?.invalid &&
-                        contatos.get('email').touched
-                    }"
-                  />
-                  <div style="color: red;" *ngIf="contatos.get('email')?.errors?.email">
-
-                  </div>
-                </td>
-                <td>
-                  <input
-                    formControlName="cargo"
-                    type="text"
-                    class="form-control"
-                    placeholder="Digite o cargo"
-                  />
-                </td>
-                <td>
-                  <i
-                    (click)="removerContato(contatos, i)"
-                    style="padding-left: 30px; cursor: pointer"
-                    class="pi pi-trash"
-                  ></i>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="10">Nenhum contato cadastrado.</td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
-        <button class="btn-sm btn-default" type="submit">Salvar</button>
+        <button class="btn-sm btn-default" type="submit" (click)="onSubmit()"
+          *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false; false">
+          Salvar
+        </button>
       </div>
-    </form>
-  </mat-tab>
+    </mat-tab>
+    <mat-tab label="Prepostos">
+      <div class="menu-add">
+         <div class="modal-header" id="contatosRepresentates">
+          <h4 class="modal-title" id="modal-basic-title">
+            <small>{{ subTituloContatos }}</small>
+          </h4>
+        </div>
+        <div *ngIf="isPerfilPrivilegiado" class="col-md-5 text-right pb-1" >
+          <button type="button" class="btn-sm btn-secondary"  (click)="adicionarContato()" >
+            <i class="tim-icons icon-simple-add"></i>
+          </button>
+         </div>
+      </div>
+      <form id="formContato" [formGroup]="contatoForm" (ngSubmit)="registrarContratos()">
+        <div class="row">
+          <div class="col-12">
+            <p-table
+              #dt
+              [value]="contatos.controls"
+              dataKey="id"
+              [showCurrentPageReport]="true"
+              [rowHover]="true"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">Seq</div>
+                  </th>
+                  <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">Nome*</div>
+                  </th>
+                  <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">E-mail</div>
+                  </th>
+                  <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      DDD Telefone
+                    </div>
+                  </th>
+                  <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                      Cargo/Função
+                    </div>
+                  </th>
+                  <th></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-contatos let-i="rowIndex">
+                <tr [formGroup]="contatos">
+                  <td>
+                    {{ contatos.value.sequencial }}
+                  </td>
+                  <td>
+                    <input
+                      [readonly]="!isPerfilPrivilegiado"
+                      formControlName="nome"
+                      type="text"
+                      class="form-control"
+                      placeholder="Digite o nome"
+                      [ngClass]="{
+                        'is-invalid': contatos.get('nome').invalid && contatos.get('nome').touched
+                      }"
+                    />
+                  </td>
+                  <td>
+                    <input
+                    [readonly]="!isPerfilPrivilegiado"
+                      formControlName="email"
+                      type="text"
+                      class="form-control"
+                      placeholder="Digite o email"
+                      [ngClass]="{
+                        'is-invalid':
+                          (contatos.get('email')?.invalid &&
+                          contatos.get('email').touched) || contatos.get('email')?.errors?.email
+                      }"
+                    />
+                  </td>
+                  <td>
+                    <input
+                    [readonly]="!isPerfilPrivilegiado"
+                      formControlName="telefone"
+                      class="form-control"
+                      mask="(00) 00000-0000"
+                      placeholder="(99) 99999-9999"
+                      type="text"
+                      [ngClass]="{
+                        'is-invalid':
+                          contatos.get('telefone')?.invalid &&
+                          contatos.get('telefone').touched
+                      }"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      [readonly]="!isPerfilPrivilegiado"
+                      formControlName="cargo"
+                      type="text"
+                      class="form-control"
+                      placeholder="Digite o cargo"
+                      [ngClass]="{
+                        'is-invalid':
+                          contatos.get('cargo')?.invalid &&
+                          contatos.get('cargo').touched
+                      }"
+                    />
+                  </td>
+                  <td *ngIf="isPerfilPrivilegiado">
+                    <i
+                      (click)="removerContato(contatos, i)"
+                      style="padding-left: 30px; cursor: pointer"
+                      class="pi pi-trash"
+                    ></i>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="10">Nenhum contato cadastrado.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </form>
+      <div *ngIf="isPerfilPrivilegiado" class="modal-footer">
+        <button class="btn-sm btn-default" type="submit" (click)="registrarContratos()">Salvar</button>
+      </div>
+    </mat-tab>
   </mat-tab-group>

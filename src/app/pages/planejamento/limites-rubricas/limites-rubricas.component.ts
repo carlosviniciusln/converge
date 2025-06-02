@@ -356,7 +356,7 @@ export class LimitesRubricasComponent implements OnInit {
       html: `Deseja realmente excluir limite rubrica?
         <br>Exercício: ${limiteRubrica.gcptb010Orcamento.nuAnoOrcamento}
         <br>Rubrica: ${limiteRubrica.gcptb003Rubrica.coRubrica}
-        <br>GN: ${limiteRubrica.gcptb005Filial.sgFilial}`,
+        <br>UD: ${limiteRubrica.gcptb005Filial.sgFilial}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim, deletar!',

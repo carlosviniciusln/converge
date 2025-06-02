@@ -298,6 +298,19 @@ export class ContratoDetalheComponent implements OnInit {
     });
   }
 
+  openModalPreposto(nuContrato: number){
+    const modalRef = this.modalService.open(ContratoCadastroComponent, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg',
+      windowClass: 'custom-class',
+      backdrop: 'static',
+      keyboard: false,
+    });
+
+    modalRef.componentInstance.ativaPreposto = true;
+    modalRef.componentInstance.nuContrato = nuContrato;
+  }
+
   openModalSimulacao(nuContrato: number) {
     const modalRef = this.modalService.open(ModalSimulacaoComponent, {
       ariaLabelledBy: 'modal-basic-title',
@@ -529,7 +542,7 @@ export class ContratoDetalheComponent implements OnInit {
   }
 
   setTipoUsuario() {
-    if (this.currentProfile === 'Pagadoria' || this.currentProfile === 'Administrador') {
+    if (this.currentProfile === 'Pagadoria' || this.currentProfile === 'Administrador' || this.currentProfile === PerfisEnum.TorresGEGAT) {
       this.permissaoEditar = true;
     }
   }

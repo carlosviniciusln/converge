@@ -42,7 +42,7 @@
                                 <p-dropdown [options]="selectTiposGestor" [(ngModel)]="selectedTipoGestor"
                                     [filter]="true" optionLabel="label" optionValue="value"
                                     (onChange)="updateRelatorio($event, 4)" [showClear]="true"
-                                    placeholder="Gestor"></p-dropdown>
+                                    placeholder="Unidade Demandante"></p-dropdown>
                             </div>
                             <div class="pl-1 pr-1">
                                 <p-dropdown [options]="selectTiposStatus" [(ngModel)]="selectedTipoStatus"
@@ -79,7 +79,7 @@
                         </th>
                         <th>
                             <div class="p-d-flex p-jc-between p-ai-center">
-                                Gestor
+                                Unidade Demandante
 
                             </div>
                         </th>
@@ -133,7 +133,7 @@
                             {{contrato.noContratoTipo}}
                         </td>
                         <td>
-                            <span class="p-column-title">Gestor</span>
+                            <span class="p-column-title">Unidade Demandante</span>
                             {{contrato.sgFilial}}
                         </td>
                         <td>
