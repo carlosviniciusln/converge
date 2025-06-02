@@ -66,7 +66,7 @@ export class ValoresExecutadosComponent implements OnInit {
             return {
                 Ano: item.ano,
                 Contrato: item.contrato,
-                GN: item.gn,
+                UD: item.gn,
                 Objeto: item.objeto,
                 "Total Executado": item.vrTotalExecutado,
                 "Total Previsto": item.vrTotalPrevisto
