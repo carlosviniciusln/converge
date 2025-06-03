@@ -1,3 +1,29 @@
+// :host ::ng-deep mat-tab-group > div > mat-tab-body {
+//   margin-left: 18px;
+// }
+:host ::ng-deep .col-2 {
+  flex: 0 0 16.6666666667%;
+  max-width: 15%;
+}
+
+:host ::ng-deep p-dropdown > div {
+  width: 150px;
+  .p-dropdown-trigger {
+    .p-dropdown-trigger-icon{
+      font-size: 11px;
+      color: black;
+      font-weight: 700;
+    }
+
+  }
+
+  .p-dropdown-panel {
+    .p-dropdown-items-wrapper > .p-dropdown-items .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover{
+      color: white;
+      background: #1279df;
+    }
+}
+}
 
 :host .modal-footer{
   padding: 0px 24px 16px 24px !important;

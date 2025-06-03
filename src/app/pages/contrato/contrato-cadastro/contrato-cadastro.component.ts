@@ -30,6 +30,7 @@ import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src
 import { ContatoItem, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
 import { TipoAta } from 'src/app/models/tipo-ata';
 import Swal from 'sweetalert2';
+import { ProtocoloSICLG } from 'src/app/models/protocolo-siclg';
 
 @Component({
   selector: 'app-contrato-cadastro',
@@ -51,6 +52,7 @@ export class ContratoCadastroComponent implements OnInit {
   public sequencial = 1
   public selectTab: number = 0;
   public isPerfilPrivilegiado = false;
+  public listaDeProtocolosSiclg: ProtocoloSICLG[] = [];
   public listaFiliais: Filial[] = [];
   public listaTipoVigencia: TipoVigencia[] = [];
   public listaRubrica: Rubrica[] = [];
@@ -143,6 +145,7 @@ export class ContratoCadastroComponent implements OnInit {
 
     this.formulario();
     this.obterContatos();
+    this.obterProtocoloSiclg();
     this.contatosForm();
     this.adicionarVigencia(false);
 
@@ -159,6 +162,7 @@ export class ContratoCadastroComponent implements OnInit {
       this.obterDatasContrato();
       this.validarRotaAtas();
     }
+
   }
 
 
@@ -448,6 +452,7 @@ export class ContratoCadastroComponent implements OnInit {
         nuDiaInicio: new FormControl(null, [Validators.required]),
         nuDiaTermino: new FormControl(null, [Validators.required]),
         dtInicioCompetencia: new FormControl(null, [Validators.required]),
+        protocoloSiclg: new FormControl(null, [Validators.required]),
         rubricas: new FormArray([]),
       },
       { validators: [this.validarDatas, this.validarVigencia(index)] }
@@ -558,6 +563,9 @@ export class ContratoCadastroComponent implements OnInit {
             nuVigenciaTipo: new FormControl(x.nuVigenciaTipo, [
               Validators.required,
             ]),
+            protocoloSiclg: new FormControl(x.protocoloSiclg, [
+              Validators.required,
+            ]),
             dtInicio: new FormControl(x.dtInicio.toString().substring(0, 10), [
               Validators.required,
             ]),
@@ -575,6 +583,8 @@ export class ContratoCadastroComponent implements OnInit {
         if (x.nuVigenciaTipo === 23) {
           vigencia.get('nuVigenciaTipo').disable();
         }
+
+        if(x.nuVigenciaTipo)
 
         x.gcptb017VigenciaRubricas.map((m) => {
           (vigencia.get('rubricas') as FormArray).push(this.novaRubrica(m));
@@ -720,6 +730,45 @@ export class ContratoCadastroComponent implements OnInit {
       //this.loading = false;
     } catch (error) {
       //this.loading = true;
+    }
+  }
+
+  public async obterProtocoloSiclg(): Promise<void> {
+    try{
+
+      this.listaDeProtocolosSiclg = [
+        {
+      
+        protocolo: "00001",
+        tipo: "REVISÃO DE PREÇOS",
+        situacao: "CONCLUIDA",
+        data: "21/01/2025 11:01:00"
+        },
+        {
+          protocolo: "00002",
+          tipo: "PRORROGAÇÃO DE VIGÊNCIA",
+          situacao: "CONCLUIDA",
+          data: "22/01/2025 11:01:00"
+          },
+          {
+            protocolo: "00003",
+            tipo: "ADITAMENTO CONTRATUAL",
+            situacao: "CONCLUIDA",
+            data: "23/01/2025 11:01:00"
+          }
+    ]
+
+    console.log("Protocolos", this.listaDeProtocolosSiclg)
+
+      // const response = await this.apiService.get<ApiResponse<any[]>>(
+      //   `${Endpoints.URL_CONTRATOS}/`
+      // );
+
+      // console.log(response.data, "Dados backend Protocolo SICLG");
+      // this.listaDeProtocolosSiclg = response.data;
+
+    }catch (erro) {
+        console.log(erro, "Erro em obter protocolo SICLG");
     }
   }
 
