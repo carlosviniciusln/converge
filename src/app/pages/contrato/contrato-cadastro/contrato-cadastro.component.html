@@ -31,8 +31,20 @@
     
                 <div class="col-md-6 pr-0">
                   <label for="nuFilial">Gerência:</label>
-                  <input type="text" class="form-control" [value]="contratoV2?.filial + ' - ' + contratoV2?.sG_FILIAL"
-                    readonly [ngClass]="{ 'is-invalid': submitted && f.nuFilial.invalid }" />
+                  <select 
+                  id="nuFilial"
+                  class="form-control"
+                  formControlName="nuFilial"
+                  [ngClass]="{ 'is-invalid': submitted && f.nuFilial.invalid }"
+                  (change)="obterGestoresChange($event)"
+                  >
+                    <option value="">
+                      Selecione Gerência Nacional
+                    </option>
+                    <option *ngFor="let a of listaFiliais" [value]="a.nuFilial">
+                      {{ a.coFilial }} - {{ a.sgFilial }}
+                    </option>
+                  </select>
                 </div>
                 <div class="col-md-6 pr-0">
                   <label for="nuContratoTipo">Contrato Tipo:</label>
@@ -49,7 +61,7 @@
                   <select class="form-control" id="nuAnalistaCaixa" formControlName="nuAnalistaCaixa"
                     [ngClass]="{'is-invalid': submitted && f.nuAnalistaCaixa.invalid}">
                     <option value="" disabled selected>Selecione o Analista</option>
-                    <option *ngFor="let a of listaCaixasAdministrativo" [ngValue]="a.nuUsuario">
+                    <option *ngFor="let a of listaCaixasAdministrativo" [value]="a.nuUsuario">
                       {{ a.coMatricula }} - {{ a.noUsuario }}
                     </option>
                   </select>
@@ -61,7 +73,7 @@
                     <option value="" disabled selected>
                       Selecione o Analista
                     </option>
-                    <option *ngFor="let a of listaGestores" [ngValue]="a.nuUsuario">
+                    <option *ngFor="let a of listaGestores" [value]="a.nuUsuario">
                       {{ a.coMatricula }} - {{ a.noUsuario }}
                     </option>
                   </select>
