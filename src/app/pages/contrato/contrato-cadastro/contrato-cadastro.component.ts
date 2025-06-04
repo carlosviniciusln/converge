@@ -791,6 +791,33 @@ export class ContratoCadastroComponent implements OnInit {
     }
   }
 
+  public async obterGestoresChange(event: any): Promise<void> {
+
+    if (event.target.value) {
+      let valorSelecionado;
+
+      this.listaFiliais.forEach(item => {
+        if(item.nuFilial.toString() == event.target.value.toString()){
+          valorSelecionado = item.coFilial;
+        }
+      });
+
+      if (!valorSelecionado) {
+        return;
+      }
+
+      try {
+        const response = await this.apiService.get<ApiResponse<Usuario[]>>(
+          `${Endpoints.URL_USUARIO}/caixas-gestor?cgcUnidade=` + valorSelecionado
+        );
+
+        this.listaGestores = response.data;
+        this.form.controls['nuFiscalAdm'].setValue('');
+      } catch (error) {
+      }
+    }
+  }
+
   private formatDate(dateString: string): string {
     if (dateString) {
       if (dateString.includes('T')) {
