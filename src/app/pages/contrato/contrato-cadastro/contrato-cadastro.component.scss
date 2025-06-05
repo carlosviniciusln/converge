@@ -2,17 +2,18 @@
 //   margin-left: 18px;
 // }
 :host ::ng-deep .col-2 {
-  flex: 0 0 16.6666666667%;
+  flex: 0 0 15%;
   max-width: 15%;
 }
 
 :host ::ng-deep p-dropdown > div {
   width: 150px;
   .p-dropdown-trigger {
+    justify-content: flex-end;
     .p-dropdown-trigger-icon{
-      font-size: 11px;
+      font-size: 10px;
       color: black;
-      font-weight: 700;
+      font-weight: 800;
     }
 
   }

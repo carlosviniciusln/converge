@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -30,14 +30,14 @@ import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src
 import { ContatoItem, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
 import { TipoAta } from 'src/app/models/tipo-ata';
 import Swal from 'sweetalert2';
-import { ProtocoloSICLG } from 'src/app/models/protocolo-siclg';
+import { ProtocoloVigencia } from 'src/app/models/protocolo-vigencia';
 
 @Component({
   selector: 'app-contrato-cadastro',
   templateUrl: './contrato-cadastro.component.html',
   styleUrls: ['./contrato-cadastro.component.scss'],
 })
-export class ContratoCadastroComponent implements OnInit {
+export class ContratoCadastroComponent implements OnInit, OnChanges {
   @Input() public nuContrato;
   @Input() public ativaPreposto;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
@@ -52,7 +52,7 @@ export class ContratoCadastroComponent implements OnInit {
   public sequencial = 1
   public selectTab: number = 0;
   public isPerfilPrivilegiado = false;
-  public listaDeProtocolosSiclg: ProtocoloSICLG[] = [];
+  public listaProtocoloVigencia: ProtocoloVigencia[] = [];
   public listaFiliais: Filial[] = [];
   public listaTipoVigencia: TipoVigencia[] = [];
   public listaRubrica: Rubrica[] = [];
@@ -114,6 +114,68 @@ export class ContratoCadastroComponent implements OnInit {
     this.currentUser = this.token.getUser();
   }
 
+  /* MÉTODOS HERDADOS */
+
+  ngOnInit(): void {
+    this.obterFiliais();
+    this.obterTiposContrato();
+    this.obterTiposVigencia();
+    this.obterRubricas();
+    this.obterSistemas();
+    this.obterServicos();
+
+    this.formulario();
+    this.obterContatos();
+    this.obterProtocoloVigencia();
+    this.contatosForm();
+    this.adicionarVigencia(false);
+
+    this.vigencias.at(0).get('nuVigenciaTipo').setValue(23);
+
+    this.useDtFimOptions[0] = false;
+
+    this.subscribeToNuVigenciaTipoChanges(0);
+    this.subscribeToDtInicioChanges(0);
+
+    if (this.nuContrato) {
+      this.obterProtocoloVigencia();
+      this.obterVigencias();
+      this.obterContratoV2();
+      this.obterDatasContrato();
+      this.validarRotaAtas();
+    }
+
+  }
+
+
+  ngOnChanges(changes: SimpleChanges): void {
+   console.log(changes, "Changes")
+  }
+
+  public async validarProtocolo(event : any): Promise<void>{
+    console.log(event, "evento")
+    console.log(this.contrato, "log")
+    let coProtocoloVigencia = event.value;
+    try{
+
+      const response = await this.apiService.get<ApiResponse<ProtocoloVigencia[]>>(
+        `${Endpoints.URL_CONTRATOS}/protocolo-vigencia/${this.nuContrato}/${coProtocoloVigencia}`
+      );
+      
+     let valid = response.data;
+
+      if(valid){
+          console.log("Já utilizado");
+      }else{
+        console.log("não utilizado");
+      }
+
+
+    }catch (erro) {
+        console.log(erro, "Erro em obter protocolo SICLG");
+    }
+  }
+
   obterPermissoes() {
 
     this.currentProfile = this.token.getUserPerfil();
@@ -134,37 +196,6 @@ export class ContratoCadastroComponent implements OnInit {
      cargo: ['', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
     }, {validators: [this.validador()]})
    }
-
-  ngOnInit(): void {
-    this.obterFiliais();
-    this.obterTiposContrato();
-    this.obterTiposVigencia();
-    this.obterRubricas();
-    this.obterSistemas();
-    this.obterServicos();
-
-    this.formulario();
-    this.obterContatos();
-    this.obterProtocoloSiclg();
-    this.contatosForm();
-    this.adicionarVigencia(false);
-
-    this.vigencias.at(0).get('nuVigenciaTipo').setValue(23);
-
-    this.useDtFimOptions[0] = false;
-
-    this.subscribeToNuVigenciaTipoChanges(0);
-    this.subscribeToDtInicioChanges(0);
-
-    if (this.nuContrato) {
-      this.obterVigencias();
-      this.obterContratoV2();
-      this.obterDatasContrato();
-      this.validarRotaAtas();
-    }
-
-  }
-
 
 
   validador() : ValidatorFn {
@@ -452,7 +483,7 @@ export class ContratoCadastroComponent implements OnInit {
         nuDiaInicio: new FormControl(null, [Validators.required]),
         nuDiaTermino: new FormControl(null, [Validators.required]),
         dtInicioCompetencia: new FormControl(null, [Validators.required]),
-        protocoloSiclg: new FormControl(null, [Validators.required]),
+        coProtocoloVigencia: new FormControl(null, [Validators.required]),
         rubricas: new FormArray([]),
       },
       { validators: [this.validarDatas, this.validarVigencia(index)] }
@@ -563,9 +594,6 @@ export class ContratoCadastroComponent implements OnInit {
             nuVigenciaTipo: new FormControl(x.nuVigenciaTipo, [
               Validators.required,
             ]),
-            protocoloSiclg: new FormControl(x.protocoloSiclg, [
-              Validators.required,
-            ]),
             dtInicio: new FormControl(x.dtInicio.toString().substring(0, 10), [
               Validators.required,
             ]),
@@ -575,6 +603,7 @@ export class ContratoCadastroComponent implements OnInit {
             nuDiaInicio: new FormControl(x.nuDiaInicio, [Validators.required]),
             nuDiaTermino: new FormControl(x.nuDiaTermino, [Validators.required]),
             dtInicioCompetencia: new FormControl(x.dtInicioCompetencia, [Validators.required]),
+            coProtocoloVigencia: new FormControl(x.coProtocoloVigencia, [Validators.required]),
             rubricas: new FormArray([]),
           },
           { validators: [this.validarDatas, this.validarVigencia(index)] }
@@ -733,40 +762,14 @@ export class ContratoCadastroComponent implements OnInit {
     }
   }
 
-  public async obterProtocoloSiclg(): Promise<void> {
+  public async obterProtocoloVigencia(): Promise<void> {
     try{
 
-      this.listaDeProtocolosSiclg = [
-        {
+      const response = await this.apiService.get<ApiResponse<ProtocoloVigencia[]>>(
+        `${Endpoints.URL_CONTRATOS}/protocolo-vigencia/` + this.nuContrato
+      );
       
-        protocolo: "00001",
-        tipo: "REVISÃO DE PREÇOS",
-        situacao: "CONCLUIDA",
-        data: "21/01/2025 11:01:00"
-        },
-        {
-          protocolo: "00002",
-          tipo: "PRORROGAÇÃO DE VIGÊNCIA",
-          situacao: "CONCLUIDA",
-          data: "22/01/2025 11:01:00"
-          },
-          {
-            protocolo: "00003",
-            tipo: "ADITAMENTO CONTRATUAL",
-            situacao: "CONCLUIDA",
-            data: "23/01/2025 11:01:00"
-          }
-    ]
-
-    console.log("Protocolos", this.listaDeProtocolosSiclg)
-
-      // const response = await this.apiService.get<ApiResponse<any[]>>(
-      //   `${Endpoints.URL_CONTRATOS}/`
-      // );
-
-      // console.log(response.data, "Dados backend Protocolo SICLG");
-      // this.listaDeProtocolosSiclg = response.data;
-
+      this.listaProtocoloVigencia = response.data;
     }catch (erro) {
         console.log(erro, "Erro em obter protocolo SICLG");
     }
@@ -992,9 +995,11 @@ export class ContratoCadastroComponent implements OnInit {
     }
 
     if (this.nuContrato) {
-      await this.Alterar(formValue);
+      // await this.Alterar(formValue);
+      console.log(formValue);
     } else {
-      await this.Cadastrar(formValue);
+      console.log(formValue);
+      // await this.Cadastrar(formValue);
     }
   }
 
