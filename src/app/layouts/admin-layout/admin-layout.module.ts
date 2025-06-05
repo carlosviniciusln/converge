@@ -87,6 +87,7 @@ import { ConsumoComponent } from 'src/app/pages/relatorio/consumo/consumo.compon
 import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-pagamento.component';
 import { GraficoArtigoComponent } from 'src/app/pages/contrato/artigo/grafico-artigo/grafico-artigo.component';
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
+import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'right',
@@ -171,7 +172,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ConsumoComponent,
     PlanejamentoOrcamentarioComponent,
     ArtigoPagamentoComponent,
-    GraficoArtigoComponent
+    GraficoArtigoComponent,
+    ConsumoArpComponent
     // UserComponent,
     // TablesComponent,
     // IconsComponent,

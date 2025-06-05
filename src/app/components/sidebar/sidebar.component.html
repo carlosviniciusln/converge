@@ -125,6 +125,11 @@
               <p>Relatório de Consumo</p>
             </a>
           </li>
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/consumo-arp">
+              <p>Relatório de Consumo ARP</p>
+            </a>
+          </li>
           <!-- <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/empenho">
               <p>Relatório Valor Empenhado</p>

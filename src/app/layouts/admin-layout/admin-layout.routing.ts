@@ -24,6 +24,7 @@ import { ConsumoComponent } from 'src/app/pages/relatorio/consumo/consumo.compon
 import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-pagamento.component';
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
 import { PlanejamentoGeralComponent } from 'src/app/pages/planejamento/planejamento-geral/planejamento-geral.component';
+import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -51,6 +52,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'planejamento-orcamentario', component: PlanejamentoOrcamentarioComponent },
   { path: 'pagamento', component: PagamentoComponent },
   { path: 'consumo', component: ConsumoComponent },
+  { path: 'consumo-arp', component: ConsumoArpComponent },
   { path: 'export-data-pagamento', component: ExportPagamentoComponent },
   { path: 'informe/analitico', component: AnaliticoComponent },
   { path: 'informe/sintetico', component: SinteticoComponent },

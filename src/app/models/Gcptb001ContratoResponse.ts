@@ -43,6 +43,7 @@ export interface ContratoItem {
     no_Tipo_Arp:string;
     vrExecutadoFormatado:string;
     status: string;
+    co_Processo: string;
   }
 
 export interface ContratoApiResponse {
