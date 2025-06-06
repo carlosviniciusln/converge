@@ -6,7 +6,7 @@
   </div>
 
   <mat-tab-group (selectedTabChange)="onTabChange($event)">
-    <mat-tab *ngIf="!ativaPreposto"  label="Edição" >
+    <mat-tab *ngIf="!ativaPreposto"  label="Edição" style="margin-left: 19px;">
       <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">
           <small>{{ subTitulo }}</small>
@@ -175,7 +175,8 @@
           <br />
           <div formArrayName="vigencias" *ngFor="let vigencia of vigencias.controls; let i = index">
             <div class="row" [formGroupName]="i">
-              <div class="col-md-3 pr-0">
+              <div style="display: flex;">
+              <div class="col-2 pr-0 ">
                 <label for="coContrato">Tipo</label>
                 <select class="form-control" id="nuVigenciaTipo" formControlName="nuVigenciaTipo" [ngClass]="{
                   'is-invalid': submitted && vigencia.get('nuVigenciaTipo').invalid
@@ -188,7 +189,7 @@
                   </option>
                 </select>
               </div>
-              <div class="col-md-2 pr-0">
+              <div class="col-2 pr-0 ">
                 <label for="dtInicio">Data início</label>
                 <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" [ngClass]="{
                     'is-invalid': (submitted && vigencia.get('dtInicio').invalid)
@@ -201,7 +202,7 @@
                 </div>
               </div>
     
-              <div class="col-md-2 pr-0">
+              <div class="col-2 pr-0 ">
                 <label for="dtTermino">Data Fim</label>
                 <div *ngIf="!useDtFimOptions[i]; else selectDtTermino">
                   <input formControlName="dtTermino" id="dtTermino" type="date" class="form-control" [ngClass]="{
@@ -222,14 +223,14 @@
                   Data de fim não pode ser menor que data de início.
                 </div>
               </div>
-              <div class="col-md-1 pr-0">
+              <div class="col-1 pr-0 ">
                 <label for="nuDiaInicio">Início</label>
                 <input formControlName="nuDiaInicio" id="nuDiaInicio" type="number" min="1" max="31" class="form-control"
                   placeholder="Dia" [ngClass]="{
                   'is-invalid': submitted && vigencia.get('nuDiaInicio').invalid
                 }" />
               </div>
-              <div class="col-md-1 pr-0">
+              <div class="col-1 pr-0">
                 <label for="nuDiaTermino">Fim</label>
                 <input formControlName="nuDiaTermino" id="nuDiaTermino" type="number" min="1" max="31" class="form-control"
                   placeholder="Dia" [ngClass]="{
@@ -237,14 +238,34 @@
                 }" />
                 <p class="small-text">ciclo mensal</p>
               </div>
-              <div class="col-md-1 pr-0">
-                <label for="dtInicioCompetencia" style="min-inline-size: max-content;">Primeira Competência</label>
+    
+              <div class="col-1 pr-0" style="position: relative; bottom: 25px;">
+                <div>
+                  <label for="dtInicioCompetencia" style="min-inline-size: max-content;">
+                  Primeira <br> Competência
+                  </label>
+                </div>
                 <input formControlName="dtInicioCompetencia" id="dtInicioCompetencia" type="text" class="form-control"
                   [ngClass]="{
                     'is-invalid': (submitted && vigencia.get('dtInicioCompetencia').invalid)
                   }" style="width: 80px;" mask="00/0000" placeholder="MM/YYYY" />
               </div>
-              <div class="col-md-2" style="padding-left: 25px;">
+
+              <div *ngIf="i > 0" class="col-2 pr-0" style="    margin-top: 2px;margin-left: 12px;">
+                <label for="coProtocoloVigencia">Protocolo SICLG</label>
+                <p-dropdown
+                  [options]="listaProtocoloVigencia"
+                  optionLabel="cO_PROTOCOLO_VIGENCIA"
+                  optionValue="cO_PROTOCOLO_VIGENCIA"
+                  formControlName="coProtocoloVigencia"
+                  placeholder="Selecione o Protocolo SICLG"
+                  [filter]="true"
+                  [showClear]="true"
+                >
+                </p-dropdown>
+              </div>
+              
+              <div style="margin-left: 24px;">
                 <br />
                 <button *ngIf="i > 0" type="button" class="btn-sm btn-secondary" (click)="excluirVigencia(i)">
                   <i class="tim-icons icon-trash-simple"></i>
@@ -253,6 +274,9 @@
                   <i class="tim-icons icon-simple-add"></i>
                 </button>
               </div>
+
+              </div>
+
     
               <div class="col-md-12">
                 <h5 class="modal-title" id="modal-basic-title">
@@ -266,7 +290,7 @@
                     <div class="col-md-1 pr-0 text-right">
                       <i class="fas fa-level-up fa-rotate-90 fa-xl"></i>
                     </div>
-                    <div class="col-md-3 pr-0">
+                    <div class="col-md-2 pr-0">
                       <select class="form-control" id="nuRubrica" formControlName="nuRubrica" [ngClass]="{
                         'is-invalid': submitted && rubrica.get('nuRubrica').invalid
                       }">

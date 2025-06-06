@@ -126,6 +126,7 @@ export interface Gcptb006Vigencia {
     nuDiaInicio: number;
     nuDiaTermino: number;
     dtInicioCompetencia: string;
+    coProtocoloVigencia: number;
     dhCadastro: Date;
     dhExclusao: Date;
     vrGlobal: number;
