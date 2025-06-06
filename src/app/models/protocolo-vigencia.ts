@@ -1,5 +1,5 @@
 export interface ProtocoloVigencia {
-    NU_PROTOCOLO_VIGENCIA: number;
-    NU_CONTRATO: number;
-    CO_PROTOCOLO_VIGENCIA: number;
+    nU_PROTOCOLO_VIGENCIA: number;
+    nU_CONTRATO: number;
+    cO_PROTOCOLO_VIGENCIA: number;
 }
