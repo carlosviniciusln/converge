@@ -65,6 +65,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   quantidadeTotal: number = 0;
   loading: boolean = true;
   previousPage: any;
+  ultimaAtualizacaoOrcamento : string = '09/06/2025 18:29';
 
   permissions: ActionPolicies;
 
@@ -416,19 +417,6 @@ export class PlanejamentoGeralComponent implements OnInit {
       `${Endpoints.URL_ORCAMENTO}/excel`,
       this.filtroRegistros
     );
-  }
-  exibeDetalhes(aba: number) {
-
-    // if (aba == 1) {
-    //   if (this.orcamentos.length === 0) {
-    //     this.getOrcamento();
-    //   }
-
-    // } else {
-    //   if (this.execucao.length === 0) {
-    //     this.getExecucao();
-    //   }
-    // }
   }
 
 }
