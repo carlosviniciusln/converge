@@ -59,6 +59,7 @@ export interface ContratoApiResponse {
     listaGestor: string[];
     listaStatus: string[];
     totalRecords: number;
+    listaInstrumentos: string[];
 }
 
 export interface PlanejamentoItem {

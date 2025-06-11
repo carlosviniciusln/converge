@@ -15,7 +15,7 @@
       <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print"
         (click)="openModalSimulacao(this.Contrato.nuContrato)" mat-raised-button> Simular Revisão
       </button>
-      <button type="button" class="btn-sm btn-secondary no-print" (click)="openModalPreposto(this.Contrato.nuContrato)"
+      <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print" (click)="openModalPreposto(this.Contrato.nuContrato)"
       mat-raised-button>
       Prepostos
     </button>

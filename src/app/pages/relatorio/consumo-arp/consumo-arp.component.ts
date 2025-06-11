@@ -38,12 +38,14 @@ export class ConsumoArpComponent implements OnInit {
   currentUser: any;
 
   selectTiposContrato: Select2Data;
+  selectTiposInstrumentos: Select2Data;
   selectTiposFornecedor: Select2Data;
   selectTiposTpContrato: Select2Data;
   selectTiposGestor: Select2Data;
   selectTiposStatus: Select2Data;
 
   selectedTipoContrato: string = null;
+  selectedTipoInstrumento: string = null;
   selectedTipoFornecedor: string = null;
   selectedTipoTpContrato: string = null;
   selectedTipoGestor: string = null;
@@ -139,6 +141,7 @@ export class ConsumoArpComponent implements OnInit {
         (`${Endpoints.URL_CONTRATOS}/relatorio-consumo`, filtrosLimpos);
       this.contratosOrigem = response?.data?.contratos;
       this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
+      //this.selectTiposInstrumentos = response?.data?.listaInstrumentos.map(c => ({ label: c, value: c }));
       this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
       this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
       this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
@@ -213,9 +216,9 @@ export class ConsumoArpComponent implements OnInit {
         "Status": item.icAtivo ? 'Ativo' : 'Encerrado',
         "Vigência Atual - Início": new Date(item.dtInicioContrato).toLocaleDateString('pt-BR'),
         "Vigência Atual - Fim": new Date(item.dtTerminoContrato).toLocaleDateString('pt-BR'),
+        "% Dias Corridos": item.percDiasCorridos,
         "Valor Global Vigente": item.vrGlobal,
         "Pagamentos": item.vrExecutado,
-        "% Dias Corridos": item.percDiasCorridos,
         "% Executado Vigência": item.percVrExecutado,
         "% Consumo": item.percConsumo,
         "Saldo Disponível": item.saldoDisponivel
@@ -225,7 +228,7 @@ export class ConsumoArpComponent implements OnInit {
         const worksheet = xlsx.utils.json_to_sheet(dadosFiltrados);
         const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
         const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-        this.saveAsExcelFile(excelBuffer, "Arp_");
+        this.saveAsExcelFile(excelBuffer, "Consumo Arp_");
       });
     } else {
       console.error('Erro ao exportar dados, tente novamente mais tarde ');
@@ -241,7 +244,7 @@ export class ConsumoArpComponent implements OnInit {
     const minutos = String(agora.getMinutes()).padStart(2, '0');
     const segundos = String(agora.getSeconds()).padStart(2, '0');
 
-    const nomeArquivo = `Arp_${ano}${mes}${dia}${horas}${minutos}${segundos}.xls`;
+    const nomeArquivo = `Consumo Arp_${ano}${mes}${dia}${horas}${minutos}${segundos}`;
     return nomeArquivo;
   }
 
