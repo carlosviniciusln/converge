@@ -1,6 +1,10 @@
-// :host ::ng-deep mat-tab-group > div > mat-tab-body {
-//   margin-left: 18px;
-// }
+:host ::ng-deep .c-button-add{
+  display: flex;
+  flex: 1;
+  margin-right: 69px;
+  justify-content: flex-end;
+}
+
 :host ::ng-deep .col-2 {
   flex: 0 0 15%;
   max-width: 15%;
