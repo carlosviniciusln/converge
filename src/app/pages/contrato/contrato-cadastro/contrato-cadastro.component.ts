@@ -21,6 +21,7 @@ import { Usuario } from 'src/app/models/usuario';
 import {
   ContratoResponse,
   ContratoResponseV2,
+  Gcptb006Vigencia,
   Gcptb017VigenciaRubrica,
 } from 'src/app/models/contrato-response';
 import { ToastrService } from 'ngx-toastr';
@@ -37,7 +38,7 @@ import { ProtocoloVigencia } from 'src/app/models/protocolo-vigencia';
   templateUrl: './contrato-cadastro.component.html',
   styleUrls: ['./contrato-cadastro.component.scss'],
 })
-export class ContratoCadastroComponent implements OnInit, OnChanges {
+export class ContratoCadastroComponent implements OnInit {
   @Input() public nuContrato;
   @Input() public ativaPreposto;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
@@ -144,11 +145,6 @@ export class ContratoCadastroComponent implements OnInit, OnChanges {
       this.validarRotaAtas();
     }
 
-  }
-
-
-  ngOnChanges(changes: SimpleChanges): void {
-   console.log(changes, "Changes")
   }
 
   obterPermissoes() {
@@ -559,9 +555,6 @@ export class ContratoCadastroComponent implements OnInit, OnChanges {
         `${Endpoints.URL_CONTRATOS}/` + this.nuContrato
       );
       this.contrato = response.data;
-
-      const primeiroProtocolo = response.data.gcptb006Vigencias[0].coProtocoloVigencia;
-      this.listaProtocoloVigencia = [...this.listaProtocoloVigencia.filter(p => !(p.cO_PROTOCOLO_VIGENCIA === primeiroProtocolo))]
       this.vigencias.clear();
 
       response.data.gcptb006Vigencias.map((x, index) => {
@@ -585,6 +578,11 @@ export class ContratoCadastroComponent implements OnInit, OnChanges {
           },
           { validators: [this.validarDatas, this.validarVigencia(index)] }
         );
+        
+        if(index === 0){
+          vigencia.get('coProtocoloVigencia').disable();
+          this.listaProtocoloVigencia = [...this.listaProtocoloVigencia.filter(p => p.cO_PROTOCOLO_VIGENCIA !=  vigencia.get('coProtocoloVigencia').value)]
+        }
 
         if (x.nuVigenciaTipo === 23) {
           vigencia.get('nuVigenciaTipo').disable();
@@ -748,7 +746,7 @@ export class ContratoCadastroComponent implements OnInit, OnChanges {
       
       this.listaProtocoloVigencia = response.data;
     }catch (erro) {
-        console.log(erro, "Erro em obter protocolo SICLG");
+        console.error(erro, "Erro em obter protocolo SICLG");
     }
   }
 
@@ -1166,5 +1164,19 @@ export class ContratoCadastroComponent implements OnInit, OnChanges {
       }
     });
     return filtrosLimpos;
+  }
+
+  getListaProtocolos(index : number){
+  
+    if(index === 0){
+          const primeiroProtocolo = [{
+            nU_PROTOCOLO_VIGENCIA: 0,
+            nU_CONTRATO: 0,
+            cO_PROTOCOLO_VIGENCIA: this.contrato?.gcptb006Vigencias[0].coProtocoloVigencia
+          }];
+
+        return primeiroProtocolo;
+    }
+    return this.listaProtocoloVigencia;
   }
 }
