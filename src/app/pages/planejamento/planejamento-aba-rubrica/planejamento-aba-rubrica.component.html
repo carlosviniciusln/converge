@@ -1,7 +1,6 @@
-<div>
-    <div class="row">
+ <div class="row">
         <div class="col-12">
-            <p-table #dt [value]="listaValoresExecutados" dataKey="id" [rows]="10" [paginator]="true" [globalFilterFields]="['ano', 'contrato', 'gn', 'objeto', 'vrTotalPrevisto', 'vrTotalExecutado']" currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+            <p-table #dt [autoLayout]="true" [value]="listaValoresExecutados" dataKey="id" [rows]="10" [paginator]="true" [globalFilterFields]="['ano', 'contrato', 'gn', 'objeto', 'vrTotalPrevisto', 'vrTotalExecutado']" currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
                 [showCurrentPageReport]="true">
                 <ng-template pTemplate="caption">
                     <div class="table-header">
@@ -110,4 +109,3 @@
             </p-table>
         </div>
     </div>
-</div>

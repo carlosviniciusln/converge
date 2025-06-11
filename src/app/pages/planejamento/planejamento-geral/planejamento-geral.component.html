@@ -1,12 +1,19 @@
 <div class="content">
+    <div >
+      <p class="card-title date-info">
+        <b>Atualizado em:  {{ultimaAtualizacaoOrcamento}}</b>
+      </p>
+    </div>
+
   <div class="card">
-    <mat-tab-group (selectedIndexChange)="exibeDetalhes($event)">
 
-      <mat-tab *ngFor="let tab of tabs" label="{{ tab }}">
-        <p style="font-weight: bold;" *ngIf="tab == 'Contrato'">Planejamento Orçamentário - Exercício <b>2025</b> - 1 - Reprogramação - <span style="color: green;">Aberta</span></p>
-        <div *ngIf="tab == 'Contrato'" class="general-layout">
+    <mat-tab-group>
 
-          <table border="1" [width]="1665" style="text-align: center; border-color: rgb(231, 231, 231);">
+      <mat-tab label="Contrato">
+        <p class="c-p">Planejamento Orçamentário - Exercício <span style="color: black; font-weight: 700;">2025</span> - 1 - Reprogramação - <span style="color: green;">Aberta</span></p>
+        
+        <div  class="" style="margin: 14px">
+          <table border="1" width="100%" style="text-align: center; border-color: rgb(231, 231, 231);">
             <tr>
               <th colspan="5">CAPEX</th>
             </tr>
@@ -27,54 +34,55 @@
                 <td style="font-weight: bold;">%EP <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
               </tr>
           </table>
-          <!-- ///////////////////////////////// -->
-          <div>
+        </div>
+
+          <!--  TABELA 2 REGISTROS -->
+
             <div class="row">
               <div class="col-12">
-                <p-table #dt [value]="planejamentos" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+                <p-table id="table-contrato" #dt [value]="planejamentos" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
                   [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0">
                   <ng-template pTemplate="caption">
-                    <div class="table-header">
-                      <div class="row">
+                      <div class="c-menu">
                         <div class="pl-1 pr-1">
-                          <div class="col-md-1 pl-1 pr-1 text-right">
+                          <div class="text-right">
                             <button type="button" class="btn-sm btn-add" (click)="openModalPlanejamento('adicionar', true)" style="width: 131px;">
                               Novo Registro
                             </button>
                           </div>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
+                          <p-dropdown  [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 5)" [showClear]="true"
                             placeholder="Planejamento" *ngIf="!loading"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown [options]="selectAnos" [(ngModel)]="selectedAno" [filter]="true" optionLabel="label"
+                          <p-dropdown  [options]="selectAnos" [(ngModel)]="selectedAno" [filter]="true" optionLabel="label"
                             optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
                             placeholder="Exercício"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown [options]="selectFiliais" [(ngModel)]="selectedFilial" [filter]="true" optionLabel="label"
+                          <p-dropdown  [options]="selectFiliais" [(ngModel)]="selectedFilial" [filter]="true" optionLabel="label"
                             optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
                             placeholder="UD"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown [options]="selectContratos" [(ngModel)]="selectedContrato" [filter]="true"
+                          <p-dropdown  [options]="selectContratos" [(ngModel)]="selectedContrato" [filter]="true"
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 3)" [showClear]="true"
                             placeholder="Contrato"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown [options]="selectTiposDemanda" [(ngModel)]="selectedTipoDemanda" [filter]="true"
+                          <p-dropdown  [options]="selectTiposDemanda" [(ngModel)]="selectedTipoDemanda" [filter]="true"
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 6)" [showClear]="true"
                             placeholder="Tipo"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
+                          <p-dropdown  [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)" [showClear]="true"
                             placeholder="Digital"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
+                          <p-dropdown  [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
                             [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 4)"
                             [showClear]="true" placeholder="Status"></p-dropdown>
                         </div>
@@ -83,7 +91,6 @@
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)" [showClear]="true"
                             placeholder="Objeto"></p-dropdown>
                         </div>
-                      </div>
                     </div>
                   </ng-template>
                   <ng-template pTemplate="header">
@@ -115,9 +122,9 @@
                       <th>
                         <div class="p-d-flex p-jc-between text-center">Valor</div>
                       </th>
-                      <th>
+                      <!-- <th>
                         <div class="p-d-flex p-jc-between text-center">Diferença</div>
-                      </th>
+                      </th> -->
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="body" let-planejamento>
@@ -164,10 +171,10 @@
                         <span class="p-column-title">Valor</span>
                         {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
                       </td>
-                      <td style="text-align: right">
+                      <!-- <td style="text-align: right">
                         <span class="p-column-title">Valor</span>
                         {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
-                      </td>
+                      </td> -->
 
                     </tr>
                   </ng-template>
@@ -189,12 +196,12 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div *ngIf="tab == 'Rubrica'" class="general-layout">
-          <app-planejamento-aba-rubrica style="width: 99%;"></app-planejamento-aba-rubrica>
-        </div>
       </mat-tab>
+
+    <mat-tab label="Rubrica">
+            <app-planejamento-aba-rubrica></app-planejamento-aba-rubrica>
+      </mat-tab>
+     
     </mat-tab-group>
   </div>
 </div>

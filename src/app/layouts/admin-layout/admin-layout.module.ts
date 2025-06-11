@@ -88,6 +88,7 @@ import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-p
 import { GraficoArtigoComponent } from 'src/app/pages/contrato/artigo/grafico-artigo/grafico-artigo.component';
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
+import { SharedLibraryModule } from 'src/app/shared/shared-library/shared-library.module';
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'right',
@@ -116,7 +117,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DialogModule,
     MultiSelectModule,
     ContextMenuModule,
-    DropdownModule,
     ButtonModule,
     ToastModule,
     InputTextModule,
@@ -130,6 +130,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     NgxMaskModule.forRoot(),
     MatTabsModule,
     CurrencyMaskModule,
+    SharedLibraryModule
   ],
   declarations: [
     DashboardComponent,

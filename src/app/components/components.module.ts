@@ -13,8 +13,9 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     CommonModule, 
     RouterModule, 
     NgbModule,
-    ReactiveFormsModule],
-  declarations: [FooterComponent, NavbarComponent, SidebarComponent, ],
+    ReactiveFormsModule
+  ],
+  declarations: [FooterComponent, NavbarComponent, SidebarComponent],
   exports: [FooterComponent, NavbarComponent, SidebarComponent]
 })
 export class ComponentsModule {}

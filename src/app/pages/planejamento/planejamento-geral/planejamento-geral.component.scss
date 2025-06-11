@@ -1,3 +1,31 @@
+:host ::ng-deep .c-p{
+  font-size: 16px;
+  font-weight: 500;
+  padding: 14px 14px 0px;
+}
+:host ::ng-deep .c-menu{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+:host ::ng-deep mat-tab-group > div {
+  mat-tab-body{
+    color: black;
+    font-size: 18px;
+    .mat-tab-body-content{
+      overflow: hidden !important;
+    }
+  }
+}
+
+:host ::ng-deep p-table#table-contrato > div {
+  .p-datatable-header{
+    color: blue;
+    padding: 7px !important;
+  }
+}
+
 .content {
   margin: 20px;
 }

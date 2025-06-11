@@ -46,6 +46,7 @@ import { ModalPlanejamentoComponent } from "./pages/planejamento/planejamento-li
 import { PlanejamentoGeralComponent } from './pages/planejamento/planejamento-geral/planejamento-geral.component';
 import { PlanejamentoAbaRubricaComponent } from "./pages/planejamento/planejamento-aba-rubrica/planejamento-aba-rubrica.component";
 import {MatTableModule} from '@angular/material/table';
+import { SharedLibraryModule } from "./shared/shared-library/shared-library.module";
 
 registerLocaleData(ptBr);
 
@@ -74,6 +75,7 @@ const maskConfig: Partial<IConfig> = {
     ToastrModule.forRoot(),
     HighchartsChartModule,
     MatIconModule,
+    SharedLibraryModule,
     MatToolbarModule,MatTableModule,
     NgxMaskModule.forRoot(maskConfig)
   ],
