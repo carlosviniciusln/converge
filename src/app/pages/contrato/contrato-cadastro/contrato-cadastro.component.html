@@ -166,11 +166,6 @@
                 <b>Aditivos e Vigências</b><br /><small>cadastro de aditivos e vigências do contrato</small>
               </h4>
             </div>
-            <div class="col-md-6 text-right">
-              <button type="button" class="btn-sm btn-secondary" (click)="adicionarVigencia(false)">
-                <i class="tim-icons icon-simple-add"></i>
-              </button>
-            </div>
           </div>
           <br />
           <div formArrayName="vigencias" *ngFor="let vigencia of vigencias.controls; let i = index">
@@ -271,7 +266,7 @@
                 <button *ngIf="i > 0" type="button" class="btn-sm btn-secondary" (click)="excluirVigencia(i)">
                   <i class="tim-icons icon-trash-simple"></i>
                 </button>
-                <button type="button" class="btn-sm btn-secondary" (click)="adicionarRubrica(i)">
+                <button type="button" class="btn-sm btn-secondary"  (click)="adicionarVigencia(false)">
                   <i class="tim-icons icon-simple-add"></i>
                 </button>
               </div>
@@ -280,9 +275,9 @@
 
     
               <div class="col-md-12">
-                <h5 class="modal-title" id="modal-basic-title">
-                  <b>Rubricas e Valor Global</b>
-                </h5>
+                <div class="modal-title" id="modal-basic-title" style="display: flex; align-items: center; padding: 10px;">
+                  <h5><b>Rubricas e Valor Global</b></h5>
+                </div>
                 <div class="div-rubricas" formArrayName="rubricas" *ngFor="
                   let rubrica of vigencia.get('rubricas')['controls'];
                   let r = index
@@ -315,6 +310,13 @@
                         <i class="tim-icons icon-trash-simple"></i>
                       </button>
                     </div>
+                    
+                    <div class="c-button-add">
+                      <button *ngIf="!(r > 0)" type="button" class="btn-sm btn-secondary" (click)="adicionarRubrica(i)">
+                        <i class="tim-icons icon-simple-add"></i>
+                      </button>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -336,7 +338,7 @@
             <small>{{ subTituloContatos }}</small>
           </h4>
         </div>
-        <div *ngIf="isPerfilPrivilegiado" class="col-md-5 text-right pb-1" >
+        <div *ngIf="!ativaPreposto" class="col-md-5 text-right pb-1" >
           <button type="button" class="btn-sm btn-secondary"  (click)="adicionarContato()" >
             <i class="tim-icons icon-simple-add"></i>
           </button>
@@ -383,7 +385,7 @@
                   </td>
                   <td>
                     <input
-                      [readonly]="!isPerfilPrivilegiado"
+                      [readonly]="ativaPreposto"
                       formControlName="nome"
                       type="text"
                       class="form-control"
@@ -395,7 +397,7 @@
                   </td>
                   <td>
                     <input
-                    [readonly]="!isPerfilPrivilegiado"
+                    [readonly]="ativaPreposto"
                       formControlName="email"
                       type="text"
                       class="form-control"
@@ -409,7 +411,7 @@
                   </td>
                   <td>
                     <input
-                    [readonly]="!isPerfilPrivilegiado"
+                    [readonly]="ativaPreposto"
                       formControlName="telefone"
                       class="form-control"
                       mask="(00) 00000-0000"
@@ -424,7 +426,7 @@
                   </td>
                   <td>
                     <input
-                      [readonly]="!isPerfilPrivilegiado"
+                    [readonly]="ativaPreposto"
                       formControlName="cargo"
                       type="text"
                       class="form-control"
@@ -436,7 +438,7 @@
                       }"
                     />
                   </td>
-                  <td *ngIf="isPerfilPrivilegiado">
+                  <td *ngIf="!ativaPreposto">
                     <i
                       (click)="removerContato(contatos, i)"
                       style="padding-left: 30px; cursor: pointer"
@@ -454,7 +456,7 @@
           </div>
         </div>
       </form>
-      <div *ngIf="isPerfilPrivilegiado" class="modal-footer">
+      <div *ngIf="!ativaPreposto" class="modal-footer">
         <button class="btn-sm btn-default" type="submit" (click)="registrarContratos()">Salvar</button>
       </div>
     </mat-tab>

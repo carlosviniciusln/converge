@@ -151,7 +151,7 @@ export class ContratoCadastroComponent implements OnInit {
 
     this.currentProfile = this.token.getUserPerfil();
     this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
-
+    
     if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT' || this.currentProfile === PerfisEnum.Pagadoria){
       this.isPerfilPrivilegiado = true;
     }
@@ -1167,12 +1167,12 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   getListaProtocolos(index : number){
-  
-    if(index === 0){
+    const protocolo = this.contrato?.gcptb006Vigencias[0].coProtocoloVigencia;
+    if(index === 0 && protocolo != undefined && protocolo != 0){
           const primeiroProtocolo = [{
             nU_PROTOCOLO_VIGENCIA: 0,
             nU_CONTRATO: 0,
-            cO_PROTOCOLO_VIGENCIA: this.contrato?.gcptb006Vigencias[0].coProtocoloVigencia
+            cO_PROTOCOLO_VIGENCIA: protocolo
           }];
 
         return primeiroProtocolo;
