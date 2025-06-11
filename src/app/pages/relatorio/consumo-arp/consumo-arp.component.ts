@@ -62,6 +62,7 @@ export class ConsumoArpComponent implements OnInit {
     Tipo: null,
     Gestor: null,
     Status: null,
+    TipoInstrumentos: null,
     NoTipoArp: null
   };
 
@@ -141,7 +142,7 @@ export class ConsumoArpComponent implements OnInit {
         (`${Endpoints.URL_CONTRATOS}/relatorio-consumo`, filtrosLimpos);
       this.contratosOrigem = response?.data?.contratos;
       this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
-      //this.selectTiposInstrumentos = response?.data?.listaInstrumentos.map(c => ({ label: c, value: c }));
+      this.selectTiposInstrumentos = response?.data?.listaInstrumentos.map(c => ({ label: c, value: c }));
       this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
       this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
       this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
@@ -149,6 +150,7 @@ export class ConsumoArpComponent implements OnInit {
       this.quantidadeTotal = response.data.totalRecords;
       this.assignCopy();
       this.loading = false;
+
     } catch (error) {
       this.loading = false;
       console.error('Erro ao obter contratos', error);
@@ -176,7 +178,7 @@ export class ConsumoArpComponent implements OnInit {
         this.filtroRegistros.Fornecedor = e.value;
         break;
       case 3:
-        this.filtroRegistros.Tipo = e.value;
+        this.filtroRegistros.TipoInstrumentos = e.value;
         break;
       case 4:
         this.filtroRegistros.Gestor = e.value;
