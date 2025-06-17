@@ -47,6 +47,8 @@ import { PlanejamentoGeralComponent } from './pages/planejamento/planejamento-ge
 import { PlanejamentoAbaRubricaComponent } from "./pages/planejamento/planejamento-aba-rubrica/planejamento-aba-rubrica.component";
 import {MatTableModule} from '@angular/material/table';
 import { SharedLibraryModule } from "./shared/shared-library/shared-library.module";
+import { DetalheFinanceiroComponent } from './pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
+import { GraficoGeralPDFComponent } from './pages/contrato/evolucao-financeira/detalhe-financeiro/grafico-geral/grafico-geral.component';
 
 registerLocaleData(ptBr);
 
