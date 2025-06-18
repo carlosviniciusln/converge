@@ -1,10 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import html2canvas from 'html2canvas';
-import * as Highcharts from 'highcharts';
 import jsPDF from 'jspdf';
 import { ContratoResponse, ContratoResponseV2 } from 'src/app/models/contrato-response';
 import { ApiService } from 'src/app/services/api.service';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
 import { ApiResponse } from 'src/app/models/api-response';
 import { EvolucaoFinanceira } from 'src/app/models/evolucao-financeira';
@@ -24,7 +22,7 @@ export class DetalheFinanceiroComponent implements OnInit {
 public Contrato : ContratoResponse;
 public ContratoV2 : ContratoResponseV2;
 
-visivel = false;
+visivel = true;
 isRotaAtas: boolean = false;
 dadosVigenciaAtual: any;
 totalCurrentVigencia: number = 0;
@@ -118,17 +116,13 @@ listaResumoPagamentos: any[] = [];
     }
 
   gerarRelatorioCompleto(){
-    this.visivel = false
-
+    this.visivel = true;
     setTimeout(() => {
       const element = this.conteudo.nativeElement;
-      console.log(element)
 
       if (!element) {
         return;
       }
-
-
       html2canvas(element, {scale: 2}).then(canvas => {
         
       const imgData = canvas.toDataURL('image/png');
@@ -159,10 +153,10 @@ listaResumoPagamentos: any[] = [];
 
   
       }).finally(() => {
-        this.visivel = true;
+        this.visivel = false;
       });
 
-    }, 100);
+    });
 
    
     
@@ -291,7 +285,6 @@ listaResumoPagamentos: any[] = [];
   public async obterResumoPagamentos(nuContrato: string, nuVigencia: string, coRubricaSelecionada: string): Promise<any> {
 
     try {
-      console.log("Entrada", nuContrato, nuVigencia , coRubricaSelecionada )
       const response = await this.apiService.get<ApiResponse<EvolucaoFinanceira[]>>(
         `${Endpoints.URL_CONTRATOS}/detalhe-resumo-pagamento-evolucao-financeira?nuContrato=${nuContrato}&nuVigencia=${nuVigencia}&coRubrica=${coRubricaSelecionada}`
       );

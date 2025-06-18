@@ -82,6 +82,7 @@
             </div>
           </div>
         </div>
+
         <div class="card" *ngIf="!validaContratoArtigo81(ContratoV2?.cO_CONTRATO)">
           <div class="card-header">
             <h3 class="card-title text-left">{{this.isRotaAtas ? 'ARP' : 'CONTRATO'}} {{ this.ContratoV2?.cO_CONTRATO }} -
@@ -210,9 +211,6 @@
             <b>{{
                 vigenciaRubrica.vigencia?.vR_EXECUTADO | currency:
                 "BRL" }}</b>
-            <!-- <b>{{
-                vigenciaAnterior?.vR_EXECUTADO ?? vigenciaAtual.vR_EXECUTADO| currency:
-                "BRL" }}</b> -->
         </div>
         <div class="col-md-2 text-right">Prazo Remanescente:</div>
         <div class="col-md-3 text-left">
@@ -290,7 +288,7 @@
   <div class="card-body">
 
   <div class="row" >
-      <div class="col-md-12">
+      <div class="col-md-5">
           <app-grafico id="divGrafico_{{ vigenciaRubrica.rubrica.cO_RUBRICA }}" class="divGrafico"
               [titulo]="vigenciaRubrica.rubrica?.labeL_VIGENCIA ? vigenciaRubrica.rubrica?.labeL_VIGENCIA : vigenciaRubrica.rubrica?.labeL_VIGENCIA"
               [categorias]="vigenciaRubrica.rubrica.periodos" [series]="vigenciaRubrica.rubrica.series">

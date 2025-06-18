@@ -461,6 +461,7 @@ export class DemaisTiposComponent implements OnInit, OnChanges, AfterViewInit {
 
     });
   }else{
+
     this.relatorioCompletoPdf.gerarRelatorioCompleto();
   }
 

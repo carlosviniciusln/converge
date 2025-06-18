@@ -90,8 +90,7 @@ import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/pl
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
 import { SharedLibraryModule } from 'src/app/shared/shared-library/shared-library.module';
 import { DetalheFinanceiroComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
-import { ChartModule } from 'primeng/chart';
-import { GraficoGeralPDFComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/grafico-geral/grafico-geral.component';
+
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'right',
@@ -123,7 +122,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ButtonModule,
     ToastModule,
     InputTextModule,
-    ChartModule,
     ProgressBarModule,
     HighchartsChartModule,
     MatMenuModule,
@@ -181,7 +179,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     GraficoArtigoComponent,
     ConsumoArpComponent,
     DetalheFinanceiroComponent,
-    GraficoGeralPDFComponent
     // UserComponent,
     // TablesComponent,
     // IconsComponent,
