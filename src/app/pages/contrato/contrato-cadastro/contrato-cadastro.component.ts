@@ -578,11 +578,6 @@ export class ContratoCadastroComponent implements OnInit {
           },
           { validators: [this.validarDatas, this.validarVigencia(index)] }
         );
-        
-        if(index === 0){
-          vigencia.get('coProtocoloVigencia').disable();
-          this.listaProtocoloVigencia = [...this.listaProtocoloVigencia.filter(p => p.cO_PROTOCOLO_VIGENCIA !=  vigencia.get('coProtocoloVigencia').value)]
-        }
 
         if (x.nuVigenciaTipo === 23) {
           vigencia.get('nuVigenciaTipo').disable();
@@ -594,6 +589,14 @@ export class ContratoCadastroComponent implements OnInit {
           (vigencia.get('rubricas') as FormArray).push(this.novaRubrica(m));
         });
 
+        if(index === 0){
+          if(x.gcptb017VigenciaRubricas.length == 0){
+            (vigencia.get('rubricas') as FormArray).push(this.novaRubrica(null));
+          }
+          vigencia.get('coProtocoloVigencia').disable();
+          this.listaProtocoloVigencia = [...this.listaProtocoloVigencia.filter(p => p.cO_PROTOCOLO_VIGENCIA !=  vigencia.get('coProtocoloVigencia').value)]
+        }
+        
         this.vigencias.push(vigencia);
 
         vigencia.updateValueAndValidity({ onlySelf: false, emitEvent: true });
