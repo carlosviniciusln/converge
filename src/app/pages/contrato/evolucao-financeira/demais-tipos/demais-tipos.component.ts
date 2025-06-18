@@ -23,7 +23,7 @@ import { DetalheFinanceiroComponent } from '../detalhe-financeiro/detalhe-financ
   styleUrls: ['./demais-tipos.component.scss'],
 
 })
-export class DemaisTiposComponent implements OnInit, OnChanges, AfterViewInit {
+export class DemaisTiposComponent implements OnInit, OnChanges {
   @ViewChild('chart', { static: true }) chartElement: ElementRef;
   @ViewChild(DetalheFinanceiroComponent) relatorioCompletoPdf!: DetalheFinanceiroComponent;
   chart: Highcharts.Chart;
@@ -433,13 +433,9 @@ export class DemaisTiposComponent implements OnInit, OnChanges, AfterViewInit {
     //this.obterDadosGraficosVigencias(this.vigenciaUsuarioSelecionada);
   }
 
-  ngAfterViewInit(): void {
- 
-  }
   gerarPDF() {
     if(this.coRubricaSelecionada !== 'TOTAL'){
     const element = document.getElementById('area-pdf');
-    console.log(element)
     if (!element) {
       return;
     }

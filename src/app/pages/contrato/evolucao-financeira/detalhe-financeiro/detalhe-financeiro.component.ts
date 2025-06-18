@@ -67,12 +67,6 @@ listaResumoPagamentos: any[] = [];
         this.obterDadosVigenciaAtual();
         this.listaNova = this.todasVigencias.filter( f => f.nU_VIGENCIA === vigenciaAtual.nU_VIGENCIA);
         
-      // this.listaNova.forEach(element => {
-      //   console.log(element, "valendo")
-      //   this.obterResumoPagamentos(element?.nU_CONTRATO, element?.nU_VIGENCIA, element?.cO_RUBRICA);
-      //   this.listaResumoPagamentos.push()
-      // });
-
         this.listaNova.forEach(element => {
           this.obterDadosGraficosVigencias(element).then(valor => {
             const teste = {
@@ -84,9 +78,8 @@ listaResumoPagamentos: any[] = [];
             this.ListaVigenciasRubricas.push(teste)
         })
        
+        
       });
-
-      console.log(this.ListaVigenciasRubricas)
       } catch (error) {
         console.error(error);
       
