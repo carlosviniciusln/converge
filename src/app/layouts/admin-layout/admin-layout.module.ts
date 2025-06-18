@@ -89,6 +89,8 @@ import { GraficoArtigoComponent } from 'src/app/pages/contrato/artigo/grafico-ar
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
 import { SharedLibraryModule } from 'src/app/shared/shared-library/shared-library.module';
+import { DetalheFinanceiroComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
+
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'right',
@@ -124,6 +126,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     HighchartsChartModule,
     MatMenuModule,
     MatSlideToggleModule,
+    
     PickListModule,
     MatTooltipModule,
     Select2Module,
@@ -174,7 +177,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     PlanejamentoOrcamentarioComponent,
     ArtigoPagamentoComponent,
     GraficoArtigoComponent,
-    ConsumoArpComponent
+    ConsumoArpComponent,
+    DetalheFinanceiroComponent,
     // UserComponent,
     // TablesComponent,
     // IconsComponent,

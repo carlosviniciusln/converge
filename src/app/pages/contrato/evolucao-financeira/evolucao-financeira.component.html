@@ -28,7 +28,7 @@
     <mat-tab-group mat-align-tabs="left" (selectedTabChange)="onTabChange($event)">
       <mat-tab label="{{montaTituloVigenciaAtual()}}" *ngIf="!loading && vigenciaAtual">
         <app-demais-tipos [vigenciaAtual]="vigenciaAtual"
-          (abaSelecionada)="receberAbaAtivaVigenciaAtual($event)"></app-demais-tipos>
+          (abaSelecionada)="receberAbaAtivaVigenciaAtual($event)" [contrato]="this.contrato"></app-demais-tipos>
       </mat-tab>
 
       <mat-tab label="OUTRAS VIGÊNCIAS" *ngIf="!loading && vigenciaAnterior">
