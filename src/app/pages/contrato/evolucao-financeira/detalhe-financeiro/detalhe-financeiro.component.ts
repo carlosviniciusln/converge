@@ -142,7 +142,7 @@ listaResumoPagamentos: any[] = [];
           alturaRestante -= pdfHeigth - margin * 2;
         }
         
-        pdf.save('teste.pdf');
+        pdf.save('Evolução Financeira Geral.pdf');
 
   
       }).finally(() => {
@@ -221,11 +221,6 @@ listaResumoPagamentos: any[] = [];
         ApiResponse<EvolucaoFinanceira[]>
       >(`${Endpoints.URL_CONTRATOS}/grafico-vigencias-contrato?nuContrato=${params.nU_CONTRATO}&nuVigencia=${params.nU_VIGENCIA}`);
       const resp: any = response.data
-
-      // this.listaEvolucaoFinanceira = [this.vigenciaAtual];
-      // if (this.vigenciaAnterior) {
-      //   this.listaEvolucaoFinanceira = [this.vigenciaAnterior]
-      // }
       
       this.rubricas = this.agruparDadosPorRubrica(resp);
 
@@ -281,9 +276,6 @@ listaResumoPagamentos: any[] = [];
       const response = await this.apiService.get<ApiResponse<EvolucaoFinanceira[]>>(
         `${Endpoints.URL_CONTRATOS}/detalhe-resumo-pagamento-evolucao-financeira?nuContrato=${nuContrato}&nuVigencia=${nuVigencia}&coRubrica=${coRubricaSelecionada}`
       );
-
-      // this.listaResumoPagamentos = response.data;
-
       const listaResumo = response.data
 
       return listaResumo;
