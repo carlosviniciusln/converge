@@ -30,11 +30,13 @@ export class PagamentoComponent implements OnInit {
   selectAnos: Select2Data;
   selectRubricas: Select2Data;
   selectContratos: Select2Data;
+  selectVigente: Select2Data;
   selectFiliais: Select2Data;
 
   selectedAno: string = null;
   selectedRubrica: string = null;
   selectedContrato: string = null;
+  selectedVigente: boolean = null;
   selectedFilial: string = null;
 
   quantidadeTotal: number = 0;
@@ -48,6 +50,7 @@ export class PagamentoComponent implements OnInit {
     nuRubrica: null,
     nuFilial: null,
     nuContrato: null,
+    icAtivo: null,
   };
 
   constructor(
@@ -68,6 +71,8 @@ export class PagamentoComponent implements OnInit {
     this.obterRubricas();
     this.obterAnosOrcamentarios();
     this.obterContratos();
+
+    this.selectVigente = [{value: true, label: 'Sim'}, {value: false, label: 'Não'}]
   }
 
   public async obterAnosOrcamentarios(): Promise<void> {
@@ -174,6 +179,10 @@ export class PagamentoComponent implements OnInit {
       }
       case 4: {
         this.filtroRegistros.nuContrato = e.value;
+        break;
+      }
+      case 5: {
+        this.filtroRegistros.icAtivo = e.value;
         break;
       }
       default: {
