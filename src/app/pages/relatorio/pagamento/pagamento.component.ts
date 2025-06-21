@@ -131,6 +131,7 @@ export class PagamentoComponent implements OnInit {
       //this.loading = true;
     }
   }
+
   public async obterContratos(): Promise<void> {
     try {
       const response = await this.apiService.get<
@@ -207,6 +208,8 @@ export class PagamentoComponent implements OnInit {
       const response = await this.apiService.get<
         ApiResponsePaginado<RelatorioPagamento>
       >(`${Endpoints.URL_PAGAMENTO_PAGINADO}`, this.filtroRegistros);
+
+      console.log(response, "Pagamentos")
 
       this.listaPagamento = response.data.results;
       this.quantidadeTotal = response.data.totalRecords;
