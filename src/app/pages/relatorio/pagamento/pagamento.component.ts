@@ -12,6 +12,7 @@ import {
   ModuleEnum,
   TokenStorageService,
 } from 'src/app/services/token-storage.service';
+import { RelatorioPagamentoResponse } from 'src/app/models/relatorio-pagamento-response';
 
 @Component({
   selector: 'app-pagamento',
@@ -30,11 +31,13 @@ export class PagamentoComponent implements OnInit {
   selectAnos: Select2Data;
   selectRubricas: Select2Data;
   selectContratos: Select2Data;
+  selectVigente: Select2Data;
   selectFiliais: Select2Data;
 
   selectedAno: string = null;
   selectedRubrica: string = null;
   selectedContrato: string = null;
+  selectedVigente: boolean = null;
   selectedFilial: string = null;
 
   quantidadeTotal: number = 0;
@@ -48,6 +51,7 @@ export class PagamentoComponent implements OnInit {
     nuRubrica: null,
     nuFilial: null,
     nuContrato: null,
+    icAtivo: null,
   };
 
   constructor(
@@ -63,69 +67,12 @@ export class PagamentoComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.obterPagamentos();
-
-    this.obterFiliais();
-    this.obterRubricas();
-    this.obterAnosOrcamentarios();
     this.obterContratos();
+
+    this.selectVigente = [{value: true, label: 'Sim'}, {value: false, label: 'Não'}]
   }
 
-  public async obterAnosOrcamentarios(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<string[]>>(
-        `${Endpoints.URL_PAGAMENTO}/anos-orcamentarios`
-      );
 
-      this.listaAnos = response.data;
-      this.selectAnos = this.listaAnos.map(
-        (m) => ({ value: m, label: m } as Select2Option)
-      );
-
-      this.loading = false;
-    } catch (error) {
-      //this.loading = true;
-    }
-  }
-  public async obterFiliais(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<Filial[]>>(
-        `${Endpoints.URL_FILIAL}/ativos`
-      );
-
-      this.listaFiliais = response.data;
-
-      this.selectFiliais = this.listaFiliais
-        .filter((f) => f.nuFilialPai != null)
-        .map(
-          (m) => ({ value: m.nuFilial, label: m.sgFilial } as Select2Option)
-        );
-
-      this.loading = false;
-    } catch (error) {
-      //this.loading = true;
-    }
-  }
-  public async obterRubricas(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<Rubrica[]>>(
-        `${Endpoints.URL_RUBRICA}/ativas`
-      );
-
-      this.listaRubricas = response.data;
-
-      this.selectRubricas = this.listaRubricas.map(
-        (m) =>
-          ({
-            value: m.nuRubrica,
-            label: m.coRubrica + ' - ' + m.deRubrica,
-          } as Select2Option)
-      );
-
-      this.loading = false;
-    } catch (error) {
-      //this.loading = true;
-    }
-  }
   public async obterContratos(): Promise<void> {
     try {
       const response = await this.apiService.get<
@@ -176,6 +123,10 @@ export class PagamentoComponent implements OnInit {
         this.filtroRegistros.nuContrato = e.value;
         break;
       }
+      case 5: {
+        this.filtroRegistros.icAtivo = e.value;
+        break;
+      }
       default: {
         this.filtroRegistros.nuAno = e.value;
         break;
@@ -196,11 +147,32 @@ export class PagamentoComponent implements OnInit {
   public async obterPagamentos(): Promise<void> {
     try {
       const response = await this.apiService.get<
-        ApiResponsePaginado<RelatorioPagamento>
+      ApiResponse<RelatorioPagamentoResponse>
       >(`${Endpoints.URL_PAGAMENTO_PAGINADO}`, this.filtroRegistros);
 
-      this.listaPagamento = response.data.results;
-      this.quantidadeTotal = response.data.totalRecords;
+      console.log(response, "Pagamentos")
+
+      this.listaPagamento = response.data.pagamentosPaginado.results;
+      this.quantidadeTotal = response.data.pagamentosPaginado.totalRecords;
+
+      
+      this.selectFiliais = response.data.listaFiliaisAtivas .filter((f) => f.nuFilialPai != null)
+      .map(
+        (m) => ({ value: m.nuFilial, label: m.sgFilial } as Select2Option)
+      );
+
+      this.selectRubricas = response.data.listaRubricasAtivas.map(
+        (m) =>
+          ({
+            value: m.nuRubrica,
+            label: m.coRubrica + ' - ' + m.deRubrica,
+          } as Select2Option)
+      );
+
+      this.selectAnos =  response.data.listaTodosOsAnos.map(
+        (m) => ({ value: m, label: m } as Select2Option)
+      );
+
 
       this.loading = false;
       //this.assignCopy();

@@ -1,6 +1,6 @@
 <div class="content">
   <div class="row">
-    <div class="col-12">
+    <div style="flex:1;">
       <p-table
         #dt
         [value]="listaPagamento"
@@ -14,10 +14,10 @@
         <ng-template pTemplate="caption">
           <div class="table-header">
             <div class="row">
-              <div class="col-md-3 table-header-title">
+              <div class="pl-3 pr-3 table-header-title">
                 Relatório de Pagamentos
               </div>
-              <div class="col-md-1 pl-1 pr-1 text-right">
+              <div class="pl-1 pr-1 text-right">
                 <button
                   type="button"
                   class="btn-sm btn-secondary"
@@ -27,7 +27,7 @@
                   <i class="tim-icons icon-cloud-download-93"></i>
                 </button>
               </div>
-              <div class="col-md-2 pl-1 pr-1">
+              <div class="c-dropdown pl-1 pr-1">
                 <p-dropdown
                   [options]="selectAnos"
                   [(ngModel)]="selectedAno"
@@ -44,7 +44,7 @@
                                  <option *ngFor="let a of listaAnos;" [ngValue]="a">{{ a }}</option> 
                             </select> -->
               </div>
-              <div class="col-md-2 pl-1 pr-1">
+              <div class="c-dropdown pl-1 pr-1">
                 <p-dropdown
                   [options]="selectFiliais"
                   [(ngModel)]="selectedFilial"
@@ -61,7 +61,7 @@
                                  <option *ngFor="let a of listaFiliais;" [ngValue]="a.nuFilial">{{ a.sgFilial }}</option> 
                             </select> -->
               </div>
-              <div class="col-md-2 pl-1 pr-1">
+              <div class="c-dropdown pl-1 pr-1">
                 <p-dropdown
                   [options]="selectRubricas"
                   [(ngModel)]="selectedRubrica"
@@ -78,7 +78,7 @@
                                  <option *ngFor="let a of listaRubricas;" [ngValue]="a.nuRubrica">{{ a.coRubrica }}</option> 
                             </select> -->
               </div>
-              <div class="col-md-2 pl-1 pr-1">
+              <div class="c-dropdown pl-1 pr-1">
                 <p-dropdown
                   [options]="selectContratos"
                   [(ngModel)]="selectedContrato"
@@ -94,6 +94,19 @@
                                 <option value="null">Todos os Contratos</option>
                                  <option *ngFor="let a of listaContratos;" [ngValue]="a.nuContrato">{{ a.coContrato }} - {{ a.noEmpresa }}</option> 
                             </select> -->
+              </div>
+
+              <div class="c-dropdown pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectVigente"
+                  [(ngModel)]="selectedVigente"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 5)"
+                  [showClear]="true"
+                  placeholder="Vigente"
+                ></p-dropdown>
               </div>
             </div>
           </div>
