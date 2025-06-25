@@ -67,32 +67,7 @@ export class PagamentoComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.obterPagamentos();
-    this.obterContratos();
-
     this.selectVigente = [{value: true, label: 'Sim'}, {value: false, label: 'Não'}]
-  }
-
-
-  public async obterContratos(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<Gcptb001ContratoResponse[]>
-      >(`${Endpoints.URL_CONTRATOS}`);
-
-      this.listaContratos = response.data;
-
-      this.selectContratos = this.listaContratos.map(
-        (m) =>
-          ({
-            value: m.nuContrato,
-            label: m.coContrato + ' - ' + m.noEmpresa,
-          } as Select2Option)
-      );
-
-      this.loading = false;
-    } catch (error) {
-      //this.loading = true;
-    }
   }
 
   public downloadPagamento() {
@@ -150,12 +125,17 @@ export class PagamentoComponent implements OnInit {
       ApiResponse<RelatorioPagamentoResponse>
       >(`${Endpoints.URL_PAGAMENTO_PAGINADO}`, this.filtroRegistros);
 
-      console.log(response, "Pagamentos")
-
       this.listaPagamento = response.data.pagamentosPaginado.results;
       this.quantidadeTotal = response.data.pagamentosPaginado.totalRecords;
 
-      
+      this.selectContratos = response.data.listaContrato.map(
+        (m) =>
+          ({
+            value: m.nuContrato,
+            label: m.coContrato + ' - ' + m.noEmpresa,
+          } as Select2Option)
+      );
+
       this.selectFiliais = response.data.listaFiliaisAtivas .filter((f) => f.nuFilialPai != null)
       .map(
         (m) => ({ value: m.nuFilial, label: m.sgFilial } as Select2Option)

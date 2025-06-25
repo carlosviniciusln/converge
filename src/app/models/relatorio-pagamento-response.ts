@@ -8,6 +8,7 @@ export interface RelatorioPagamentoResponse {
  pagamentosPaginado: Data<RelatorioPagamento>,
  listaRubricasAtivas: any[],
  listaFiliaisAtivas: any[],
- listaTodosOsAnos: any[]
+ listaTodosOsAnos: any[],
+ listaContrato: any[]
 
 }
