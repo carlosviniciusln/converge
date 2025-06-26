@@ -48,11 +48,11 @@
                                     placeholder="Status"></p-dropdown>
                             </div>
 
-                            <div class="pl-1 pr-1">
+                            <div style="justify-items: center;" class="pl-1 pr-1">
                                 <p-dropdown [options]="selectTiposAcuracia" [(ngModel)]="selectedTipoAcuracia"
                                     [filter]="true" optionLabel="label" optionValue="value"
                                     (onChange)="updateRelatorio($event, 6)" [showClear]="true"
-                                    placeholder="Acuracia">
+                                    placeholder="Acurácia">
                                 
                                  <ng-template let-option pTemplate="item">
                                    <div [ngStyle]="{'background-color': getColor(option.value), 'color': 'black'}">
