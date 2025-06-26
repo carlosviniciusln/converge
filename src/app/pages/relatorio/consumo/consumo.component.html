@@ -3,7 +3,6 @@
         <div style="flex:1">
             <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
                 styleClass="p-datatable-customers" 
-                [loading]="loading" 
                 [globalFilterFields]="['coContrato','noEmpresa','dhCadastro']" [rowHover]="true">
                 <ng-template pTemplate="caption">
                     <div class="table-header">

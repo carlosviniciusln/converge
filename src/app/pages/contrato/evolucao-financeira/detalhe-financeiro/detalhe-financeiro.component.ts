@@ -22,7 +22,6 @@ export class DetalheFinanceiroComponent implements OnInit {
 public Contrato : ContratoResponse;
 public ContratoV2 : ContratoResponseV2;
 
-visivel = true;
 isRotaAtas: boolean = false;
 dadosVigenciaAtual: any;
 totalCurrentVigencia: number = 0;
@@ -108,52 +107,55 @@ listaResumoPagamentos: any[] = [];
       }
     }
 
-  gerarRelatorioCompleto(){
-    this.visivel = true;
-    setTimeout(() => {
+    async gerarRelatorioCompleto(): Promise<boolean> {
       const element = this.conteudo.nativeElement;
-
-      if (!element) {
-        return;
-      }
-      html2canvas(element, {scale: 2}).then(canvas => {
-        
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfwidth = pdf.internal.pageSize.getWidth();
-      const pdfHeigth = pdf.internal.pageSize.getHeight();
-      const margin = 20;
-      const usableWidth = pdfwidth - margin * 2;
-      const imgProps = pdf.getImageProperties(imgData);
-      const imgWidth = pdfwidth;
-      const imgHeigth = (imgProps.height * usableWidth) / imgProps.width;
-
-      let alturaRestante = imgHeigth;
-      let posicao = 0;
-
-
-        pdf.addImage(imgData, 'PNG', 0, posicao, imgWidth, imgHeigth);
-        alturaRestante -= pdfHeigth - margin * 2;
-
-        while (alturaRestante > 0){
-          posicao = alturaRestante - imgHeigth + margin;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', margin, posicao, usableWidth, imgHeigth);
-          alturaRestante -= pdfHeigth - margin * 2;
-        }
-        
-        pdf.save('Evolução Financeira Geral.pdf');
-
-  
-      }).finally(() => {
-        this.visivel = false;
-      });
-
-    });
-
-   
     
-  }
+      if (!element) {
+        return false;
+      }
+
+      let pdf = new jsPDF('p', 'mm', 'a4');
+
+      pdf.html(element, {
+        callback: (pdf) => {
+          pdf.save("TESTE.pdf")
+        }
+      })
+    
+      // try {
+      //   const canvas = await html2canvas(element, { scale: 2 });
+      //   const imgData = canvas.toDataURL('image/png');
+     
+      //   const pdfWidth = pdf.internal.pageSize.getWidth();
+      //   const pdfHeight = pdf.internal.pageSize.getHeight();
+      //   const margin = 20;
+      //   const usableWidth = pdfWidth - margin * 2;
+      //   const imgProps = pdf.getImageProperties(imgData);
+      //   const imgWidth = pdfWidth;
+      //   const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
+    
+      //   let alturaRestante = imgHeight;
+      //   let posicao = 0;
+    
+      //   pdf.addImage(imgData, 'PNG', 0, posicao, imgWidth, imgHeight);
+      //   alturaRestante -= pdfHeight - margin * 2;
+    
+      //   while (alturaRestante > 0) {
+      //     posicao = alturaRestante - imgHeight + margin;
+      //     pdf.addPage();
+      //     pdf.addImage(imgData, 'PNG', margin, posicao, usableWidth, imgHeight);
+      //     alturaRestante -= pdfHeight - margin * 2;
+      //   }
+    
+        // pdf.save('Evolução Financeira Geral.pdf');
+        // return true;
+    
+      // } catch (error) {
+      //   console.error('Erro ao gerar PDF:', error);
+      //   return false;
+      // }
+    }
+    
 
   somaVigencias(vigencias: any[]): number{
     let vrGlobalTotal = 0;
