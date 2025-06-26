@@ -48,7 +48,7 @@
                                     placeholder="Status"></p-dropdown>
                             </div>
 
-                            <div style="padding-left: 65px;" class="pl-1 pr-1">
+                            <div class="pl-1 pr-1">
                                 <p-dropdown [options]="selectTiposAcuracia" [(ngModel)]="selectedTipoAcuracia"
                                     [filter]="true" optionLabel="label" optionValue="value"
                                     (onChange)="updateRelatorio($event, 6)" [showClear]="true"
@@ -164,7 +164,7 @@
                             <p-sortIcon field="saldoDisponivel">
                             </p-sortIcon>
                         </th>
-                        <th pSortableColumn="pC_ACURACIA">
+                        <th style="padding-left: 65px;" pSortableColumn="pC_ACURACIA">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 Acurácia
                             </div>
