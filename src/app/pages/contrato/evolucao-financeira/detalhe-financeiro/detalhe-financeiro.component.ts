@@ -108,53 +108,94 @@ listaResumoPagamentos: any[] = [];
     }
 
     async gerarRelatorioCompleto(): Promise<boolean> {
-      const element = this.conteudo.nativeElement;
+      try {
+        const element: HTMLElement = this.conteudo.nativeElement;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const options = {
+          scale: 2,
+          useCORS: true
+        };
     
-      if (!element) {
+        const canvas = await html2canvas(element, options);
+        const imgData = canvas.toDataURL('image/png');
+    
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    
+        let heightLeft = pdfHeight;
+        let position = 0;
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 10;
+    
+        pdf.addImage(imgData, 'PNG', 0, position + margin, pdfWidth, pdfHeight);
+        heightLeft -= pageHeight;
+    
+        while (heightLeft > -pageHeight) {
+          position = position - pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position + margin, pdfWidth, pdfHeight);
+          heightLeft -= pageHeight;
+        }
+    
+        pdf.save('Evolucao_Financeira_Geral.pdf');
+        return true;
+    
+      } catch (error) {
+        console.error('Erro ao gerar PDF:', error);
         return false;
       }
-
-      let pdf = new jsPDF('p', 'mm', 'a4');
-
-      pdf.html(element, {
-        callback: (pdf) => {
-          pdf.save("TESTE.pdf")
-        }
-      })
+    }
     
-      // try {
+    
+          // try {
       //   const canvas = await html2canvas(element, { scale: 2 });
-      //   const imgData = canvas.toDataURL('image/png');
-     
+      
+    
       //   const pdfWidth = pdf.internal.pageSize.getWidth();
       //   const pdfHeight = pdf.internal.pageSize.getHeight();
-      //   const margin = 20;
+      //   const margin = 10;
       //   const usableWidth = pdfWidth - margin * 2;
-      //   const imgProps = pdf.getImageProperties(imgData);
-      //   const imgWidth = pdfWidth;
-      //   const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
+      //   const usableHeight = pdfHeight - margin * 2;
     
-      //   let alturaRestante = imgHeight;
-      //   let posicao = 0;
+      //   const imgWidth = canvas.width;
+      //   const imgHeight = canvas.height;
     
-      //   pdf.addImage(imgData, 'PNG', 0, posicao, imgWidth, imgHeight);
-      //   alturaRestante -= pdfHeight - margin * 2;
+      //   const pageHeightPx = (usableHeight * canvas.width) / usableWidth;
+      //   const totalPages = Math.ceil(imgHeight / pageHeightPx);
     
-      //   while (alturaRestante > 0) {
-      //     posicao = alturaRestante - imgHeight + margin;
-      //     pdf.addPage();
-      //     pdf.addImage(imgData, 'PNG', margin, posicao, usableWidth, imgHeight);
-      //     alturaRestante -= pdfHeight - margin * 2;
+      //   for (let i = 0; i < totalPages; i++) {
+      //     const pageCanvas = document.createElement('canvas');
+      //     pageCanvas.width = imgWidth;
+      //     pageCanvas.height = Math.min(pageHeightPx, imgHeight - i * pageHeightPx);
+    
+      //     const ctx = pageCanvas.getContext('2d');
+      //     if (ctx) {
+      //       ctx.drawImage(
+      //         canvas,
+      //         0,
+      //         i * pageHeightPx,
+      //         imgWidth,
+      //         pageCanvas.height,
+      //         0,
+      //         0,
+      //         imgWidth,
+      //         pageCanvas.height
+      //       );
+      //     }
+    
+      //     const imgData = pageCanvas.toDataURL('image/png');
+      //     if (i > 0) pdf.addPage();
+      //     pdf.addImage(imgData, 'PNG', margin, margin, usableWidth, usableHeight);
       //   }
     
-        // pdf.save('Evolução Financeira Geral.pdf');
-        // return true;
+      //   pdf.save('Evolucao_Financeira_Geral.pdf');
+      //   return true;
     
       // } catch (error) {
       //   console.error('Erro ao gerar PDF:', error);
       //   return false;
       // }
-    }
     
 
   somaVigencias(vigencias: any[]): number{

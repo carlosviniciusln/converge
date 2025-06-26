@@ -7,7 +7,7 @@
             </h3>
               <h3>INFORMAÇÕES GERAIS</h3>
           </div>
-          <div class="card-body">
+          <div style="margin-right: 150px;" class="card-body" >
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
               <div class="col-md-9 col-sm-6"><b>{{ ContratoV2?.nO_FORNECEDOR }}</b></div>
@@ -78,7 +78,7 @@
             <br />
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Objeto do Contrato:</div>
-              <div class="col-md-9 col-sm-6"><b>{{ ContratoV2?.nO_OBJETO }}</b></div>
+              <div style="text-align: justify;" class="col-md-9 col-sm-6"><b>{{ ContratoV2?.nO_OBJETO }}</b></div>
             </div>
           </div>
         </div>
@@ -168,8 +168,8 @@
         </div>
 
         
-<div *ngFor="let vigenciaRubrica of ListaVigenciasRubricas let i = index">
-  <div class="card">
+    <div *ngFor="let vigenciaRubrica of ListaVigenciasRubricas let i = index">
+      <div class="card">
 
   <div class="card-header">
   <h3 class="card-title text-left table-header-title">
