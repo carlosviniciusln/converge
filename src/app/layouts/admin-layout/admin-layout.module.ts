@@ -126,7 +126,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     HighchartsChartModule,
     MatMenuModule,
     MatSlideToggleModule,
-    
     PickListModule,
     MatTooltipModule,
     Select2Module,

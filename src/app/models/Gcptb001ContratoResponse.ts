@@ -44,6 +44,8 @@ export interface ContratoItem {
     vrExecutadoFormatado:string;
     status: string;
     co_Processo: string;
+    pC_ACURACIA: string;
+    dE_COR: string;
   }
 
 export interface ContratoApiResponse {

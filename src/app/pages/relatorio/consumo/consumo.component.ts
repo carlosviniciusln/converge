@@ -11,9 +11,7 @@ import {
   TokenStorageService,
 } from 'src/app/services/token-storage.service';
 import * as fileSaver from 'file-saver';
-import { LazyLoadEvent } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContratoCadastroComponent } from '../../contrato/contrato-cadastro/contrato-cadastro.component';
 
 @Component({
   selector: 'app-consumo',
@@ -30,7 +28,7 @@ export class ConsumoComponent implements OnInit {
   selectedContratos: Gcptb001ContratoResponse[];
 
   statuses: any[];
-
+  
   loading: boolean = true;
 
   activityValues: number[] = [0, 100];
@@ -42,12 +40,14 @@ export class ConsumoComponent implements OnInit {
   selectTiposTpContrato: Select2Data;
   selectTiposGestor: Select2Data;
   selectTiposStatus: Select2Data;
+  selectTiposAcuracia: Select2Data;
 
   selectedTipoContrato: string = null;
   selectedTipoFornecedor: string = null;
   selectedTipoTpContrato: string = null;
   selectedTipoGestor: string = null;
   selectedTipoStatus: string = null;
+  selectedTipoAcuracia: string = null;
 
   isRotaAtas: boolean = false;
   tituloPage: string = 'Lista de Contratos';
@@ -60,6 +60,7 @@ export class ConsumoComponent implements OnInit {
     Tipo: null,
     Gestor: null,
     Status: null,
+    TipoAcuracia: null,
     NoTipoArp: null
   };
 
@@ -83,6 +84,7 @@ export class ConsumoComponent implements OnInit {
   ngOnInit() {
     this.validarRotaAtas();
     this.obterContratos();
+    this.selectTiposAcuracia = [{value: '1', label: 'Menor 98%'}, {value: '2', label: 'Entre 98% e 101%'}, {value: '3', label: 'Entre 102% e 104%'},{value: '4', label: 'Acima 105%'}]
   }
 
   assignCopy() {
@@ -181,12 +183,15 @@ export class ConsumoComponent implements OnInit {
       case 5:
         this.filtroRegistros.Status = e.value;
         break;
+      case 6:
+        this.filtroRegistros.TipoAcuracia = e.value;
+        break;
     }
     await this.obterContratos();
     this.loading = false;
   }
 
-  loadPage(event: LazyLoadEvent) {
+  loadPage(event: any) {
     const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
     const pageSize = event.rows || this.filtroRegistros.pageSize;
 
@@ -217,7 +222,8 @@ export class ConsumoComponent implements OnInit {
         "% Dias Corridos": item.percDiasCorridos,
         "% Executado Vigência": item.percVrExecutado,
         "% Consumo": item.percConsumo,
-        "Saldo Disponível": item.saldoDisponivel
+        "Saldo Disponível": item.saldoDisponivel,
+        "Acurácia": item.pC_ACURACIA
       }));
 
       import("xlsx").then(xlsx => {
@@ -286,5 +292,18 @@ export class ConsumoComponent implements OnInit {
       return valorPercent.toString();
     else
       return valorPercent.toFixed(2);
+  }
+
+  getColor(value: string){
+    switch(value){
+      case '1':
+        break;
+      case '2':
+        return '#00ff62';
+      case '3':
+        return '#FFF000';
+      case '4':
+        return '#FF0800';
+    }
   }
 }
