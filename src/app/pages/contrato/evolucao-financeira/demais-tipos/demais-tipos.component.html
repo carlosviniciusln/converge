@@ -12,9 +12,11 @@
                                     <h3 class="card-title text-left table-header-title">EVOLUÇÃO E PAGAMENTOS -
                                         <span>{{titulo()}}</span></h3>
                                 </div>
-                                <button type="button" class="btn-sm btn-secondary no-print" (click)="gerarPDF()"
-                                    aria-label="Download PDF"> <i class="fas fa-download"></i>
+                                <button *ngIf="!loadingPDF" type="button" class="btn-sm btn-secondary no-print" (click)="gerarPDF()"
+                                    aria-label="Download PDF">
+                                     <i class="fas fa-download"></i>
                                 </button>
+                                <div *ngIf="loadingPDF" class="spinner-button"></div> 
                             </div>
                             <div class="card-body">
                                 <div class="row">

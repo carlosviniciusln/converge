@@ -38,6 +38,7 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
   series: any[] = []
   periodos: any;
   loading: boolean = true;
+  loadingPDF: boolean = false;
   rubricas = [];
   listaEvolucaoFinanceira: EvolucaoFinanceira[];
   listaResumoPagamentos: any[] = [];
@@ -434,6 +435,8 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
   }
 
   gerarPDF() {
+    this.loadingPDF = true;
+    setTimeout(() => {
     if(this.coRubricaSelecionada !== 'TOTAL'){
     const element = document.getElementById('area-pdf');
     if (!element) {
@@ -455,13 +458,27 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeigth);
       pdf.save('Evolução Financeira.pdf');
 
+    }).finally(()=>{
+      this.loadingPDF = false;
     });
-  }else{
 
-    this.relatorioCompletoPdf.gerarRelatorioCompleto();
+  }
+  else{
+   this.relatorioCompletoPdf.gerarRelatorioCompleto().then(resposta => {
+      if (resposta) {
+        console.log('PDF gerado com sucesso!');
+        this.loadingPDF = false;
+       
+        } 
+      else {
+         console.warn('Falha ao gerar o PDF.');
+         this.loadingPDF = true;
+         }
+    });
   }
 
- 
+  });
+  
 }
 
 }

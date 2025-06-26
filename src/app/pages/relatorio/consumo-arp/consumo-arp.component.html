@@ -3,7 +3,7 @@
         <div class=" col-12" style="flex: 0 0 140% !important; max-width: 140% !important;">
             <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
                 styleClass="p-datatable-customers" [rows]="filtroRegistros.pageSize" [paginator]="true"
-                [loading]="loading" [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50]" [lazy]="true"
+                [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50]" [lazy]="true"
                 (onLazyLoad)="loadPage($event)" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"
                 [globalFilterFields]="['coContrato','noEmpresa','dhCadastro']" [rowHover]="true"

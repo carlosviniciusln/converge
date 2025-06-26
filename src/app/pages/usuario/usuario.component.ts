@@ -10,7 +10,6 @@ import {
   TokenStorageService,
 } from 'src/app/services/token-storage.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { UsuarioCadastroComponent } from './usuario-cadastro/usuario-cadastro.component';
 import { PrimeNGConfig } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 import { NavigationService } from 'src/app/services/navigation-service';
@@ -217,11 +216,11 @@ export class UsuarioComponent implements OnInit {
     }
   }
 
-  openModalUsuario() {
-    const modalRef = this.modalService.open(UsuarioCadastroComponent, {
-      ariaLabelledBy: 'modal-basic-title',
-      size: 'lg',
-      windowClass: 'custom-class',
-    });
-  }
+  // openModalUsuario() {
+  //   const modalRef = this.modalService.open(, {
+  //     ariaLabelledBy: 'modal-basic-title',
+  //     size: 'lg',
+  //     windowClass: 'custom-class',
+  //   });
+  // }
 }
