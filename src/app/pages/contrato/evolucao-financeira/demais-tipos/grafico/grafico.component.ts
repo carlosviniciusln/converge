@@ -18,7 +18,6 @@ export class GraficoComponent implements OnInit {
   @Input()
   series: any[] = [];
 
-
   highcharts = Highcharts;
   chart: Highcharts.Chart | null;
 
