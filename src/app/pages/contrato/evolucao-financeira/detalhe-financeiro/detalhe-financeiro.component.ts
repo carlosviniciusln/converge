@@ -147,56 +147,6 @@ listaResumoPagamentos: any[] = [];
       }
     }
     
-    
-          // try {
-      //   const canvas = await html2canvas(element, { scale: 2 });
-      
-    
-      //   const pdfWidth = pdf.internal.pageSize.getWidth();
-      //   const pdfHeight = pdf.internal.pageSize.getHeight();
-      //   const margin = 10;
-      //   const usableWidth = pdfWidth - margin * 2;
-      //   const usableHeight = pdfHeight - margin * 2;
-    
-      //   const imgWidth = canvas.width;
-      //   const imgHeight = canvas.height;
-    
-      //   const pageHeightPx = (usableHeight * canvas.width) / usableWidth;
-      //   const totalPages = Math.ceil(imgHeight / pageHeightPx);
-    
-      //   for (let i = 0; i < totalPages; i++) {
-      //     const pageCanvas = document.createElement('canvas');
-      //     pageCanvas.width = imgWidth;
-      //     pageCanvas.height = Math.min(pageHeightPx, imgHeight - i * pageHeightPx);
-    
-      //     const ctx = pageCanvas.getContext('2d');
-      //     if (ctx) {
-      //       ctx.drawImage(
-      //         canvas,
-      //         0,
-      //         i * pageHeightPx,
-      //         imgWidth,
-      //         pageCanvas.height,
-      //         0,
-      //         0,
-      //         imgWidth,
-      //         pageCanvas.height
-      //       );
-      //     }
-    
-      //     const imgData = pageCanvas.toDataURL('image/png');
-      //     if (i > 0) pdf.addPage();
-      //     pdf.addImage(imgData, 'PNG', margin, margin, usableWidth, usableHeight);
-      //   }
-    
-      //   pdf.save('Evolucao_Financeira_Geral.pdf');
-      //   return true;
-    
-      // } catch (error) {
-      //   console.error('Erro ao gerar PDF:', error);
-      //   return false;
-      // }
-    
 
   somaVigencias(vigencias: any[]): number{
     let vrGlobalTotal = 0;

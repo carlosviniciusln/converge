@@ -461,7 +461,8 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
 
     }).finally(()=>{
       this.loadingPDF = false;
-    });
+  });
+
 
   }
   else{
@@ -477,7 +478,7 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
     });
   }
 
-  });
+  },100);
   
 }
 
