@@ -434,10 +434,9 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
     //this.obterDadosGraficosVigencias(this.vigenciaUsuarioSelecionada);
   }
 
-  gerarPDF() {
+  async gerarPDF() {
     this.loadingPDF = true;
 
-    setTimeout(() => {
     if(this.coRubricaSelecionada !== 'TOTAL'){
     const element = document.getElementById('area-pdf');
     if (!element) {
@@ -466,19 +465,30 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
 
   }
   else{
-   this.relatorioCompletoPdf.gerarRelatorioCompleto().then(resposta => {
-    this.loadingPDF = false;
-      if (resposta) {
-        console.log('PDF gerado com sucesso!');
-        } 
-      else {
-         console.warn('Falha ao gerar o PDF.');
-        
-         }
-    });
-  }
+    const aguardarDados = async (): Promise<boolean> => {
+      return new Promise(resolse => {
+        const intervalo = setInterval(() => {
+            if(this.relatorioCompletoPdf?.Contrato !== undefined){
+              clearInterval(intervalo);
+              resolse(true);
+            }
+        }, 100);
+      })
+    }
 
-  },100);
+    const dadosProntos = await aguardarDados();
+
+    if(dadosProntos){
+      const sucesso = await this.relatorioCompletoPdf.gerarRelatorioCompleto();
+      this.loadingPDF = false;
+      if(sucesso){
+        console.log("PDF gerado com sucesso!")
+      }
+      else{
+        console.log("Falha ao gerar o PDF!")
+      }
+    }
+  }
   
 }
 
