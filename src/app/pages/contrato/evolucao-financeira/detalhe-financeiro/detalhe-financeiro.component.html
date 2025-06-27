@@ -286,15 +286,10 @@
   </div>
   </div>
   <div class="card-body">
-
-  <div style="display: flex; justify-content: center; width: 90%;">
-      <div class="col-md-5">
-          <app-grafico style="width: 90%;" id="divGrafico_{{ vigenciaRubrica.rubrica.cO_RUBRICA }}"
+          <app-grafico   id="divGrafico_{{ vigenciaRubrica.rubrica.cO_RUBRICA }}"
               [titulo]="vigenciaRubrica.rubrica?.labeL_VIGENCIA ? vigenciaRubrica.rubrica?.labeL_VIGENCIA : vigenciaRubrica.rubrica?.labeL_VIGENCIA"
               [categorias]="vigenciaRubrica.rubrica.periodos" [series]="vigenciaRubrica.rubrica.series">
           </app-grafico>
-      </div>
-  </div>
   </div>
 
   <div class="row cl-header" *ngIf="vigenciaRubrica.lista.length !== 0; else elsePagamentoBlock">
