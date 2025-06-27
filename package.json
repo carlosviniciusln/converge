@@ -31,7 +31,6 @@
     "highcharts": "^9.3.3",
     "highcharts-angular": "^3.0.0",
     "html-to-pdfmake": "^2.4.8",
-    "html2pdf.js": "^0.10.1",
     "jquery": "^3.6.0",
     "jspdf": "^2.5.1",
     "ng-select2": "^1.4.1",
