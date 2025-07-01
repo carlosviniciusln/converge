@@ -224,20 +224,9 @@
         </ng-template>
       </p-table>
       <div class="paginator-content" *ngIf="quantidadeTotal > 0">
-        <span class="pagination-text">
-          <p>{{ quantidadeTotal }} registro(s) encontrado(s)</p>
-        </span>
-
-        <ngb-pagination
-          *ngIf="quantidadeTotal > listaPagamento.length"
-          [collectionSize]="quantidadeTotal"
-          [pageSize]="filtroRegistros.pageSize"
-          [(page)]="filtroRegistros.pageNumber"
-          (pageChange)="loadPage($event)"
-          [maxSize]="4"
-          [boundaryLinks]="true"
-        >
-        </ngb-pagination>
+        <div class="card flex justify-center">
+          <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos" (onPageChange)="loadPage($event)" [first]="0"  [rows]="filtroRegistros.pageSize" [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50]" ></p-paginator>
+      </div>
       </div>
     </div>
   </div>

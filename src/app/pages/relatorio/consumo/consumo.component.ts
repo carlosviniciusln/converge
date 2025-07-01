@@ -299,11 +299,11 @@ export class ConsumoComponent implements OnInit {
       case '1':
         break;
       case '2':
-        return '#00ff62';
+        return '	#DCFFD5';
       case '3':
-        return '#FFF000';
+        return ' #FFFBBB';
       case '4':
-        return '#FF0800';
+        return ' #FFA6A3';
     }
   }
 }
