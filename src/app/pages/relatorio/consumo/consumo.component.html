@@ -195,25 +195,25 @@
                             {{contrato.dtTerminoContrato | date: 'dd/MM/yyyy'}}
                         </td>
                         <td>
-                          R$ {{contrato.vrGlobalFormatado}}
+                          R$ {{contrato.vrGlobalFormatado | number:'1.2-2':'pt-BR'}}
                         </td>
                         <td>
-                          R$ {{contrato.vrExecutadoFormatado}}
+                          R$ {{contrato.vrExecutadoFormatado | number:'1.2-2':'pt-BR'}}
                         </td>
                         <td>
-                            {{contrato.percDiasCorridos}}
+                            {{contrato.percDiasCorridos | number:'1.2-2':'pt-BR'}}%
                         </td>
                         <td>
-                            {{contrato.percVrExecutado}}
+                            {{contrato.percVrExecutado | number:'1.2-2':'pt-BR'}}%
                         </td>
                         <td>
-                            {{contrato.percConsumo}}
+                            {{contrato.percConsumo | number:'1.2-2':'pt-BR' }}%
                         </td>
                         <td>
-                            R$ {{contrato.saldoDisponivel}}
+                            R$ {{contrato.saldoDisponivel | number:'1.2-2':'pt-BR'}}
                         </td>
                         <td >
-                           <span class="c-acuracia" [ngStyle]="{'background-color' : contrato.dE_COR}">{{contrato.pC_ACURACIA ? contrato.pC_ACURACIA : '0.00'}}%</span>
+                           <span class="c-acuracia" [ngStyle]="{'background-color' : contrato.dE_COR}">{{contrato.pC_ACURACIA ? contrato.pC_ACURACIA : "0.00" | number:'1.2-2':'pt-BR'}}%</span>
                         </td>
                     </tr>
                 </ng-template>

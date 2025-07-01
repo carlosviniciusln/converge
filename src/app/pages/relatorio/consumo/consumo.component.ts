@@ -139,7 +139,7 @@ export class ConsumoComponent implements OnInit {
 
       const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
         (`${Endpoints.URL_CONTRATOS}/relatorio-consumo`, filtrosLimpos);
-      this.contratosOrigem = response?.data?.contratos;
+      this.contratosOrigem = this.mapObject(response?.data?.contratos);
       this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
       this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
       this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
@@ -162,6 +162,56 @@ export class ConsumoComponent implements OnInit {
       }
     });
     return filtrosLimpos;
+  }
+
+
+  mapObject(contrato : ContratoItem[]){
+    return contrato.map(c => ({
+      ...c,
+      percConsumo: typeof c.percConsumo === 'string' ? parseFloat(
+        c.percConsumo
+          .replace(/\./g, '')
+          .replace(',', '.')
+
+      ) : c.percConsumo,
+      saldoDisponivel: typeof c.saldoDisponivel === 'string' ? parseFloat(
+      c.saldoDisponivel
+       .replace(/\./g, '')
+       .replace(',', '.')
+       )
+       : c.saldoDisponivel,
+       pC_ACURACIA: typeof c.pC_ACURACIA === 'string' 
+       ? parseFloat(c.pC_ACURACIA) 
+        : c.pC_ACURACIA,
+        percVrExecutado: typeof c.percVrExecutado === 'string' ? 
+         parseFloat(
+          c.percVrExecutado
+            .replace(/\./g, '')
+            .replace(',', '.')
+        ):
+        c.percVrExecutado,
+        percDiasCorridos : typeof c.percDiasCorridos === 'string' ? 
+        parseFloat(
+         c.percDiasCorridos
+           .replace(/\./g, '')
+           .replace(',', '.')
+       ):
+       c.percDiasCorridos,
+       vrExecutadoFormatado: typeof c.vrExecutadoFormatado === 'string' ? 
+       parseFloat(
+        c.vrExecutadoFormatado
+          .replace(/\./g, '')
+          .replace(',', '.')
+      ):
+      c.vrExecutadoFormatado,
+      vrGlobalFormatado: typeof c.vrGlobalFormatado === 'string' ? 
+      parseFloat(
+       c.vrGlobalFormatado
+         .replace(/\./g, '')
+         .replace(',', '.')
+     ):
+     c.vrGlobalFormatado,
+    }))
   }
 
   async updateRelatorio(e, op: number): Promise<void> {
