@@ -111,10 +111,14 @@ export class PagamentoComponent implements OnInit {
     await this.obterPagamentos();
   }
 
-  loadPage(page: number) {
-    if (page !== this.previousPage) {
-      this.previousPage = page;
+  loadPage(event: any) {
+
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
+
+    if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;
+      this.filtroRegistros.pageSize = pageSize;
       this.obterPagamentos();
     }
   }
