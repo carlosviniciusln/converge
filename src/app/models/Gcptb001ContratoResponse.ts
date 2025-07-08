@@ -58,6 +58,7 @@ export interface ContratoApiResponse {
     listaContrato: string[];
     listaFornecedor: string[];
     listaTipo: string[];
+    ListaInstrumentos: string[];
     listaGestor: string[];
     listaStatus: string[];
     totalRecords: number;

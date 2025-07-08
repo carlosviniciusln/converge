@@ -57,7 +57,7 @@ export class ConsumoComponent implements OnInit {
     pageSize: 10,
     Contrato: null,
     Fornecedor: null,
-    Tipo: null,
+    TipoInstrumentos: null,
     Gestor: null,
     Status: null,
     TipoAcuracia: null,
@@ -142,7 +142,7 @@ export class ConsumoComponent implements OnInit {
       this.contratosOrigem = this.mapObject(response?.data?.contratos);
       this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
       this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
-      this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
+      this.selectTiposTpContrato = response?.data?.listaInstrumentos.map(t => ({ label: t, value: t }));
       this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
       this.selectTiposStatus = response?.data?.listaStatus.map(s => ({ label: s, value: s }));
       this.quantidadeTotal = response.data.totalRecords;
@@ -225,7 +225,7 @@ export class ConsumoComponent implements OnInit {
         this.filtroRegistros.Fornecedor = e.value;
         break;
       case 3:
-        this.filtroRegistros.Tipo = e.value;
+        this.filtroRegistros.TipoInstrumentos = e.value;
         break;
       case 4:
         this.filtroRegistros.Gestor = e.value;
