@@ -50,6 +50,7 @@ import { SharedLibraryModule } from "./shared/shared-library/shared-library.modu
 import { AtesteComponent } from './pages/ateste/ateste.component';
 import { NavbarAtesteComponent } from './pages/ateste/navbar-ateste/navbar-ateste.component';
 import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar-ateste.component';
+import { RegistrarAtesteComponent } from './pages/ateste/registrar-ateste/registrar-ateste.component';
 
 registerLocaleData(ptBr);
 
@@ -105,7 +106,8 @@ const maskConfig: Partial<IConfig> = {
     PlanejamentoAbaRubricaComponent,
     AtesteComponent,
     NavbarAtesteComponent,
-    DetalharAtesteComponent
+    DetalharAtesteComponent,
+    RegistrarAtesteComponent
     //AuthLayoutComponent
   ],
   providers: [

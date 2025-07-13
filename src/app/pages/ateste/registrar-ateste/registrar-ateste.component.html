@@ -1,0 +1,87 @@
+
+<div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+          <span aria-hidden="true">×</span>
+        </button>
+</div>
+
+<div class="conteudo" style="padding: 24px 10px 0px 10px;" >
+    <app-navbar-ateste></app-navbar-ateste>
+
+    <div class="header-ateste" style=" text-align: justify;">
+        <h4>
+            Atestamos a execução dos bens/serviços recebidos para o contrato e competência abaixo citados, conforme
+            disposto no MN TE236, itens 3.2.3.1 e 4.3.16, considerando atendidas as condições e obrigações contratuais,
+            estando esta unidade de pleno acordo com a quitação dos serviços para o periodo descrito e, portando, solicitamos que
+            os trâmites de pagamento sejam providenciados conforme informações abaixo.
+        
+        </h4>
+    </div>
+
+    <div class="">
+        <form [formGroup]="form">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                    <div class="col-md-3 pr-0">
+                      <label for="noCriador">Criado por:</label>
+                      <input formControlName="noCriador" id="noCriador" type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-3 pr-0">
+                      <label for="dhCadastro">Data de cria&ccedil;&atilde;o:</label>
+                      <input formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+        <div class="footer-ateste" style="    display: flex
+        ;
+            padding-bottom: 24px;">
+
+            <div style="width: 60%;">
+                <h4 class="modal-title" id="modal-basic-title" for="deObservacao" style="margin-bottom: 8px;">
+                  <b>Observa&ccedil;&otilde;es</b>
+                </h4>
+                <textarea formControlName="deObservacao" id="deObservacao"
+                placeholder="Digite..."
+                  class="form-control border border-light rounded" rows="4"></textarea>
+            </div>
+
+            <div style="display: flex
+            ;
+                gap: 10px;
+                flex: 1;
+                height: 100px;
+                flex-direction: column;
+                padding-left: 15px;
+                justify-content: flex-end;
+                align-items: flex-end;">
+               <div style="    display: flex
+               ;
+                   gap: 15px;">
+                <button class="btn-sm btn-default" type="submit">Salvar Ateste</button>
+                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+               </div> 
+
+               <div style="    display: flex
+               ;
+                   gap: 15px;">
+                <button class="btn-sm btn-default" type="submit">Salvar Ateste</button>
+                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+               </div>
+            </div>
+         </div>
+
+        </form>
+    </div>
+
+
+</div>
+
+
+
+
+
+

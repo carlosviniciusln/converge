@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiResponse } from 'src/app/models/api-response';
 import { ContratoResponse, ContratoResponseV2 } from 'src/app/models/contrato-response';
 import { ApiService } from 'src/app/services/api.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { RegistrarAtesteComponent } from '../registrar-ateste/registrar-ateste.component';
 
 @Component({
   selector: 'app-detalhar-ateste',
@@ -15,7 +17,7 @@ export class DetalharAtesteComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
      private apiService: ApiService,
-
+     private modalService: NgbModal,
   ) { }
 
   public nuContrato : string;
@@ -70,4 +72,21 @@ export class DetalharAtesteComponent implements OnInit {
       return vrGlobalTotal
     }
 
+    openModalRegistrarAteste() {
+        const modalRef = this.modalService.open(RegistrarAtesteComponent, {
+          ariaLabelledBy: 'modal-basic-title',
+          size: 'lg',
+          windowClass: 'modal-xl',
+          backdrop: 'static',
+          keyboard: false,
+        });
+        // modalRef.componentInstance.nuContrato = nuContrato;
+    
+        // modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
+        //   if (data) {
+        //     this.obterContrato();
+        //   }
+        // });
+      }
+    
 }
