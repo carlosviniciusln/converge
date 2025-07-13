@@ -47,6 +47,9 @@ import { PlanejamentoGeralComponent } from './pages/planejamento/planejamento-ge
 import { PlanejamentoAbaRubricaComponent } from "./pages/planejamento/planejamento-aba-rubrica/planejamento-aba-rubrica.component";
 import {MatTableModule} from '@angular/material/table';
 import { SharedLibraryModule } from "./shared/shared-library/shared-library.module";
+import { AtesteComponent } from './pages/ateste/ateste.component';
+import { NavbarAtesteComponent } from './pages/ateste/navbar-ateste/navbar-ateste.component';
+import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar-ateste.component';
 
 registerLocaleData(ptBr);
 
@@ -99,7 +102,10 @@ const maskConfig: Partial<IConfig> = {
     NovosContratosComponent,
     ModalPlanejamentoComponent,
     PlanejamentoGeralComponent,
-    PlanejamentoAbaRubricaComponent
+    PlanejamentoAbaRubricaComponent,
+    AtesteComponent,
+    NavbarAtesteComponent,
+    DetalharAtesteComponent
     //AuthLayoutComponent
   ],
   providers: [

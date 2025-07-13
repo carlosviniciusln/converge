@@ -25,6 +25,9 @@ import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-p
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
 import { PlanejamentoGeralComponent } from 'src/app/pages/planejamento/planejamento-geral/planejamento-geral.component';
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
+import { AtesteComponent } from 'src/app/pages/ateste/ateste.component';
+import { AuthGuard } from 'src/app/shared/interceptors/auth.guard';
+import { DetalharAtesteComponent } from 'src/app/pages/ateste/detalhar-ateste/detalhar-ateste.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -66,5 +69,9 @@ export const AdminLayoutRoutes: Routes = [
   //   { path: "user", component: UserComponent },
   //   { path: "tables", component: TablesComponent },
   //   { path: "typography", component: TypographyComponent },
-  //   { path: "rtl", component: RtlComponent }
+  //   { path: "rtl", component: RtlComponent },
+
+  { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
+  { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
+
 ];

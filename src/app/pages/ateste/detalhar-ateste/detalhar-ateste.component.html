@@ -1,0 +1,176 @@
+<div class="content">
+    <div style="background-color: #f4f4f4; padding: 24px 24px 0px 24px;">
+        <app-navbar-ateste></app-navbar-ateste>
+
+        <div class="header-ateste" style=" text-align: justify;">
+            <h4>
+                Confira atentamente as informações do contrato, fornecedor e competência de pagamento antes de salvar o ateste.
+                Uma vez cadastrado o ateste, somente a CEGTI tem acesso para exluir-lo.
+            </h4>
+        </div>
+
+        <div class="detalhe-ateste">
+            <!-- <div class="col-md-3 col-sm-6 text-right">Contrato:</div>
+            <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.nO_FORNECEDOR }}</b></div> -->
+
+            <div class="card-body">
+                <!-- <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
+                  <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.nO_FORNECEDOR }}</b></div>
+      
+                  <div class="col-md-3 col-sm-6 text-right">CNPJ:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.cO_CNPJ }}</b></div>
+      
+                  <div class="col-md-3 col-sm-6 text-right">Pagamento Artigo 81?</div>
+                  <div class="col-md-3 col-sm-6">
+                    <b>
+                      {{ this.ContratoV2.iC_ARTIGO_81 === true ? "Sim"
+                      : this.ContratoV2.iC_ARTIGO_81 === false ? "Não"
+                      : "Não informado" }}
+                    </b>
+                  </div>
+                </div>
+      
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Status:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.iC_ATIVO ? "Ativo" : "Encerrado" }}</b></div>
+      
+                  <div class="col-md-3 col-sm-6 text-right">Unidade Demandante:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.filial }} - {{ this.ContratoV2.sG_FILIAL }}</b></div>
+                </div>
+      
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Data Início (1° vigência):</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.dT_INICIO | date : "dd/MM/yyyy" }}</b></div>
+      
+                  <div class="col-md-3 col-sm-6 text-right">Data Fim (Vigência Atual):</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.dT_TERMINO | date : "dd/MM/yyyy" }}</b></div>
+                </div>
+      
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Valor Global Total:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ somaVigencias(this.Contrato.gcptb006Vigencias) | currency : "BRL"
+                      }}</b></div>
+      
+                  <div class="col-md-3 col-sm-6 text-right">Valor Global Vigente:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ ContratoV2.vR_GLOBAL_VIGENTE | currency : "BRL" }}</b></div>
+                </div>
+      
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Dia Pagamento Fatura:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ ContratoV2.diA_PAGAMENTO_FATURA }}</b></div>
+      
+                  <div class="col-md-3 col-sm-6 text-right">Dia Fechamento Fatura:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.diA_FECHAMENTO_FATURA }}</b></div>
+                </div>
+      
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Fiscal Técnico (Demandante):</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.nO_FISCAL_TEC ?? 'Não Informado' }}</b></div>
+      
+                  <div class="col-md-3 col-sm-6 text-right">Fiscal Administrativo (CEGTI):</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.nO_FISCAL_ADM ?? 'Não Informado' }}</b></div>
+      
+                </div>
+      
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Cadastrado/Alterado por:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.cO_MATRICULA_CADASTRO }} - {{
+                      this.ContratoV2.nO_USUARIO_CADASTRO }}</b></div>
+      
+                  <div class="col-md-3 col-sm-6 text-right">Tipo de Contrato:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.contratO_TIPO }}</b></div>
+                </div>
+              </div> -->
+        </div>
+        <div class="p-resumo-ateste" style="display: flex;
+            width: 100%;">
+            <div style="width: 80%;">
+                <table style="width: 100%;">
+                    <tr style="color: black; font-weight: 600;">
+                        <th>RESUMO DE EXECUÇÃO CONTRATUAL</th>
+                        <th>Valor Global</th>
+                        <th>Valor Já Consumido</th>
+                        <th>Saldo Disponível</th>
+                    </tr>
+                    <tr class="p-td" style="background-color: #6a9fff;color: black; font-weight: 500;">
+                        <td>VISÃO GERAL DO CONTRATO</td>
+                        <td>R$ 45.282.181,18 </td>
+                        <td>R$ 13.200.260,05</td>
+                        <td>R$ 32.081.921,13</td>
+                    </tr>
+                </table>
+    
+                <table style="width:100%;">
+                    <tr>
+                        <td colspan="5" class="p-td" style="background-color: #d3d7df;color: black; font-weight: 300;"><strong>VISÃO POR RUBRICA</strong></td>
+                      </tr>
+                      <tr style="background-color: #b6cfff;color: black; font-weight: 300;">
+                        <td class="p-td">3103-02</td>
+                        <td class="p-td" style="width: 250px;">Aquisição de Software</td>
+                        <td class="p-td" style="width: 150px;">R$ 45.282.181,18 </td>
+                        <td class="p-td">R$ 13.200.260,05</td>
+                        <td class="p-td">R$ 32.081.921,13</td>
+                      </tr>
+                      <tr style="background-color: #b6cfff;color: black; font-weight: 300;">
+                        <td class="p-td">3103-04</td>
+                        <td class="p-td">Aquisição Direitos de Uso de Software</td>
+                        <td class="p-td">R$ 45.282.181,18 </td>
+                        <td class="p-td">R$ 13.200.260,05</td>
+                        <td class="p-td">R$ 32.081.921,13</td>
+                      </tr>
+                </table>
+            </div>
+
+            
+            <div style="display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding-left: 30px;
+                flex: 1;">
+                <button style="margin-bottom: 10px;"><span>Registrar Novo Ateste</span></button>
+                <span style="text-align: justify; color:red;">ATENÇÃO USUARIO! Caso um ateste seja registrado com erro, a CEGTI deve ser imediatamente acionada para sua exclusão.
+                    Somente atestes ainda não pagos poderão ser excluídos.
+                </span>
+            </div>
+
+        </div>
+
+        <div class="conteudo-ateste">
+            <h5><strong>ULTIMOS ATESTES REGISTRADOS</strong></h5> <!-- DADOS E CONTRATO DO USUÁRIO LOGADO -->
+            <div class="table-ateste">
+                <p-table [value]="contratos" [tableStyle]="{ 'width': '100%'}" >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="p-th">ATESTE</th>
+                            <th class="p-th">COMPETENCIA</th>
+                            <th class="p-th">RESPONSÁVEL</th>
+                            <th class="p-th">RETENÇÃO</th>
+                            <th class="p-th">MULTA</th>
+                            <th class="p-th">VALOR PAGAMENTO</th>
+                            <th class="p-th">STATUS</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product>
+                        <tr style="color: black; font-weight: 300;">
+                            <td>{{ product.code }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.category }}</td>
+                            <td>{{ product.quantity }}</td>
+                            <td>{{ product.quantity }}</td>
+                            <td>{{ product.quantity }}</td>
+                            <td style="background-color: #b6cfff;">{{ product.quantity }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7">Nenhum contrato cadastrado.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div class="card flex justify-center">
+                    <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"  [first]="0"  [rows]="1" [totalRecords]="1" [rowsPerPageOptions]="[10, 20, 50]" ></p-paginator>
+                </div>
+            </div>
+    </div>
+</div>  
