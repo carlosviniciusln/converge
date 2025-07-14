@@ -40,6 +40,7 @@ export class DetalharAtesteComponent implements OnInit {
 
     this.nuContrato = this.route.snapshot.paramMap.get('id');
     console.log(this.nuContrato, "nuContrato")
+    this.obterContrato();
 
     // criar endpoint para carregar dados do contrato
   }

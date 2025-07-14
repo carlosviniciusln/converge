@@ -10,11 +10,11 @@
         </div>
 
         <div class="detalhe-ateste">
-            <!-- <div class="col-md-3 col-sm-6 text-right">Contrato:</div>
-            <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.nO_FORNECEDOR }}</b></div> -->
-
             <div class="card-body">
-                <!-- <div class="row">
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Contrato:</div>
+                  <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.cO_CONTRATO }}</b></div>
+      
                   <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
                   <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.nO_FORNECEDOR }}</b></div>
       
@@ -81,7 +81,7 @@
                   <div class="col-md-3 col-sm-6 text-right">Tipo de Contrato:</div>
                   <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.contratO_TIPO }}</b></div>
                 </div>
-              </div> -->
+              </div>
         </div>
         <div class="p-resumo-ateste" style="display: flex;
             width: 100%;">
@@ -137,8 +137,9 @@
         </div>
 
         <div class="conteudo-ateste">
-            <h5><strong>ULTIMOS ATESTES REGISTRADOS</strong></h5> <!-- DADOS E CONTRATO DO USUÁRIO LOGADO -->
-            <div class="table-ateste">
+          
+            <div class="table-ateste" style="padding-top: 15px;">
+              <h5><strong>ULTIMOS ATESTES REGISTRADOS</strong></h5> <!-- DADOS E CONTRATO DO USUÁRIO LOGADO -->
                 <p-table [value]="contratos" [tableStyle]="{ 'width': '100%'}" >
                     <ng-template pTemplate="header">
                         <tr>

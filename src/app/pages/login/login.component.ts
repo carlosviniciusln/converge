@@ -51,13 +51,10 @@ export class LoginComponent implements OnInit {
   public async onSubmit() :  Promise<void>{
     try{
       this.submitted = true;
-      //console.log(this.form);
       if (this.form.invalid) {
         return;
       }
       const response = await this.apiService.post<ApiResponse<Login>>(`${Endpoints.URL_LOGIN}`,this.form.value);
-      //console.log(response);
-
       this.tokenStorage.saveToken(response.data.accessToken);
       this.tokenStorage.saveUser(response.data);
       this.isLoginFailed = false;
