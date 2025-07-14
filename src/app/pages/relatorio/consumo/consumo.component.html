@@ -4,6 +4,7 @@
             <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
                 styleClass="p-datatable-customers" 
                 sortMode="single"
+                (onSort)="aoOrdenar($event)"
                 [globalFilterFields]="['coContrato','noEmpresa','dhCadastro']" [rowHover]="true">
                 <ng-template pTemplate="caption">
                     <div class="table-header">
@@ -97,9 +98,9 @@
                             <div class="p-d-flex p-jc-between p-ai-center">
                                Status
                             </div>
-                            <p-sortIcon field="status">
+                            <!-- <p-sortIcon field="status">
 
-                            </p-sortIcon>
+                            </p-sortIcon> -->
                         </th>
                         <th pSortableColumn="dtInicioContrato">
                             <div class="p-d-flex p-jc-between p-ai-center white-space-break">
@@ -141,29 +142,29 @@
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 % Dias Corridos
                             </div>
-                            <p-sortIcon field="percDiasCorridos">
-                            </p-sortIcon>
+                            <!-- <p-sortIcon field="percDiasCorridos">
+                            </p-sortIcon> -->
                         </th>
                         <th pSortableColumn="percVrExecutado">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 % Executado Vigência
                             </div>
-                            <p-sortIcon field="percVrExecutado">
-                            </p-sortIcon>
+                            <!-- <p-sortIcon field="percVrExecutado">
+                            </p-sortIcon> -->
                         </th>
                         <th pSortableColumn="percConsumo">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 % Consumo
                             </div>
-                            <p-sortIcon field="percConsumo">
-                            </p-sortIcon>
+                            <!-- <p-sortIcon field="percConsumo">
+                            </p-sortIcon> -->
                         </th>
                         <th pSortableColumn="saldoDisponivel">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 Saldo Disponível
                             </div>
-                            <p-sortIcon field="saldoDisponivel">
-                            </p-sortIcon>
+                            <!-- <p-sortIcon field="saldoDisponivel">
+                            </p-sortIcon> -->
                         </th>
                         <th style="padding-left: 65px;" pSortableColumn="pC_ACURACIA">
                             <div class="p-d-flex p-jc-between p-ai-center">
@@ -224,7 +225,7 @@
                 </ng-template>
             </p-table>
             <div class="card flex justify-center">
-                <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos" (onPageChange)="loadPage($event)" [first]="0"  [rows]="filtroRegistros.pageSize" [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50]" ></p-paginator>
+                <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos" (onPageChange)="loadPage($event)" [first]="0"  [rows]="filtroRegistros.pageSize" [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50, this.quantidadeTotal]" ></p-paginator>
             </div>
         </div>
     </div>

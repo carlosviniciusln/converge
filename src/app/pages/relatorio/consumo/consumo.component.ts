@@ -61,8 +61,20 @@ export class ConsumoComponent implements OnInit {
     Gestor: null,
     Status: null,
     TipoAcuracia: null,
-    NoTipoArp: null
+    NoTipoArp: null,
+    Field: null,
+    Order: null
   };
+
+  
+rowsOptions = [
+    10,
+    20, 
+    50,
+    { label: 'Todos', value: 0 }
+  ];
+  
+
 
   quantidadeTotal: number = 0;
 
@@ -77,16 +89,21 @@ export class ConsumoComponent implements OnInit {
     this.currentUser = this.token.getUser();
   }
 
-  obterPermissoes() {
-    this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
-  }
-
   ngOnInit() {
     this.validarRotaAtas();
     this.obterContratos();
     this.selectTiposAcuracia = [{value: '1', label: 'Menor 98%'}, {value: '2', label: 'Entre 98% e 101%'}, {value: '3', label: 'Entre 102% e 104%'},{value: '4', label: 'Acima 105%'}]
   }
 
+  obterPermissoes() {
+    this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
+  }
+
+  aoOrdenar(event : any){
+    this.filtroRegistros.Field = event.field
+    this.filtroRegistros.Order = event.order
+    // this.obterContratos();
+  }
   assignCopy() {
     this.contratos = Object.assign([], this.contratosOrigem);
   }
@@ -323,6 +340,8 @@ export class ConsumoComponent implements OnInit {
     this.loading = true;
     try {
       const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
+
+      console.log(filtrosLimpos, "Filtros")
 
       const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
         (`${Endpoints.URL_CONTRATOS}/relatorio-consumo-excel`, filtrosLimpos);
