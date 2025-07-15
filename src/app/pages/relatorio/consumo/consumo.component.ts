@@ -3,7 +3,6 @@ import { ApiResponse } from 'src/app/models/api-response';
 import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
 import { ApiService } from 'src/app/services/api.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Select2Data } from 'ng-select2-component';
 import {
   ActionPolicies,
@@ -12,6 +11,7 @@ import {
 } from 'src/app/services/token-storage.service';
 import * as fileSaver from 'file-saver';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-consumo',
@@ -22,7 +22,6 @@ export class ConsumoComponent implements OnInit {
   permissions: ActionPolicies;
 
   contratosOrigem: ContratoItem[];
-  contratosOrigemExcel: ContratoItem[];
   contratos: ContratoItem[];
 
   selectedContratos: Gcptb001ContratoResponse[];
@@ -57,7 +56,7 @@ export class ConsumoComponent implements OnInit {
     pageSize: 10,
     Contrato: null,
     Fornecedor: null,
-    TipoInstrumentos: null,
+    Tipo: null,
     Gestor: null,
     Status: null,
     TipoAcuracia: null,
@@ -80,9 +79,7 @@ rowsOptions = [
 
   constructor(
     private apiService: ApiService,
-    private modalService: NgbModal,
     private token: TokenStorageService,
-    private router: Router,
     private route: ActivatedRoute
   ) {
     this.obterPermissoes();
@@ -99,10 +96,27 @@ rowsOptions = [
     this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
   }
 
-  aoOrdenar(event : any){
-    this.filtroRegistros.Field = event.field
-    this.filtroRegistros.Order = event.order
-    // this.obterContratos();
+  aoOrdenar(event : SortEvent){
+
+    const field = event.field; 
+    const order = event.order; 
+  
+    console.log(this.contratos)
+    this.contratos.sort((a, b) => {
+      let valorA = a[field];
+      let valorB = b[field];
+ 
+      if (valorA instanceof Date === false && field.includes('Data')) {
+        valorA = new Date(valorA);
+        valorB = new Date(valorB);
+      }
+   
+      if (typeof valorA === 'string') {
+        return valorA.localeCompare(valorB) * order;
+      }
+  
+      return (valorA < valorB ? -1 : valorA > valorB ? 1 : 0) * order;
+    });
   }
   assignCopy() {
     this.contratos = Object.assign([], this.contratosOrigem);
@@ -125,41 +139,19 @@ rowsOptions = [
     window.open(url, '_blank');
   }
 
-  filterItem(value) {
-    if (!value) {
-      this.assignCopy();
-    }
-
-    if (value == 'ativo') {
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) => item.icAtivo == true)
-    } else if (value == 'encerrado') {
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) => item.icAtivo == false)
-    } else {
-
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) =>
-          item.coContrato.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
-          item.noEmpresa.toLowerCase().includes(value) ||
-          item.noContratoTipo.toLowerCase().includes(value) ||
-          item.sgFilial.toLowerCase().includes(value)
-      );
-    }
-  }
 
   public async obterContratos(): Promise<void> {
 
     this.loading = true;
     try {
-      const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
 
+      const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
       const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
         (`${Endpoints.URL_CONTRATOS}/relatorio-consumo`, filtrosLimpos);
       this.contratosOrigem = this.mapObject(response?.data?.contratos);
       this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
       this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
-      this.selectTiposTpContrato = response?.data?.listaInstrumentos.map(t => ({ label: t, value: t }));
+      this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
       this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
       this.selectTiposStatus = response?.data?.listaStatus.map(s => ({ label: s, value: s }));
       this.quantidadeTotal = response.data.totalRecords;
@@ -242,7 +234,7 @@ rowsOptions = [
         this.filtroRegistros.Fornecedor = e.value;
         break;
       case 3:
-        this.filtroRegistros.TipoInstrumentos = e.value;
+        this.filtroRegistros.Tipo = e.value;
         break;
       case 4:
         this.filtroRegistros.Gestor = e.value;
@@ -271,14 +263,12 @@ rowsOptions = [
 
   async exportExcel() {
 
-    await this.obterContratosExcel();
-
-    if (this.contratosOrigemExcel.length > 0) {
-      const dadosFiltrados = this.contratosOrigemExcel.map(item => ({
+    if (this.contratos.length > 0) {
+      const dadosFiltrados = this.contratos.map(item => ({
         "Nr. Contrato": item.coContrato,
         "Fornecedor": item.noEmpresa,
         "CNPJ": item.coCnpj,
-        "Tipo": item.noContratoTipo,
+        "Tipo": item.no_Tipo_Arp,
         "Objeto": item.noObjeto,
         "Unidade Demandante": item.sgFilial,
         "Status": item.icAtivo ? 'Ativo' : 'Encerrado',
@@ -290,7 +280,7 @@ rowsOptions = [
         "% Executado Vigência": item.percVrExecutado,
         "% Consumo": item.percConsumo,
         "Saldo Disponível": item.saldoDisponivel,
-        "Acurácia": item.pC_ACURACIA
+        "Acurácia": item.pC_ACURACIA ? item.pC_ACURACIA : 0 
       }));
 
       import("xlsx").then(xlsx => {
@@ -335,26 +325,6 @@ rowsOptions = [
     }
   }
 
-  public async obterContratosExcel(): Promise<void> {
-
-    this.loading = true;
-    try {
-      const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
-
-      console.log(filtrosLimpos, "Filtros")
-
-      const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
-        (`${Endpoints.URL_CONTRATOS}/relatorio-consumo-excel`, filtrosLimpos);
-
-      this.contratosOrigemExcel = response?.data?.contratos;
-
-      this.loading = false;
-
-    } catch (error) {
-      this.loading = false;
-      console.error('Erro ao obter contratos', error);
-    }
-  }
 
   formataCasaDecimal(valorPercent: number): string{
     if(valorPercent == 100)
