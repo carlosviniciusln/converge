@@ -8,7 +8,7 @@
 </div>
 
 <div class="modal-body">
-    <p-table #dt [value]="planejamentos" tyleClass="p-datatable-customers" [rowHover]="true" sortMode="single">
+    <p-table #dt [value]="listaPlanejamentos" tyleClass="p-datatable-customers" [rowHover]="true" sortMode="single">
         <ng-template pTemplate="header">
             <tr class="bordered-orange">
                 <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Tipo
@@ -67,22 +67,13 @@
     </p-table>
     <div class="modal-footer">
         <div class="d-flex align-items-center">
-          <!-- <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoAberto" -->
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoAjuste"
-                (click)="mensagemBotaoClick('nova')">
-                Nova Reprogramação
+            <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsLeft"
+                (click)="mensagemBotaoClick(labelButtonsLeft.value)">
+               {{labelButtonsLeft.label}}
             </button>
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoAjuste"
-                (click)="mensagemBotaoClick('ajuste')">
-                Ajuste Programação
-            </button>
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoEncerrado"
-                (click)="mensagemBotaoClick('encerrar')">
-                Encerrar Programação
-            </button>
-            <button class="btn-sm btn-danger padding-buttons" *ngIf="this.planejamentoCancelado"
-                (click)="mensagemBotaoClick('cancelar')">
-                Cancelar Programação
+            <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsRight"
+                (click)="mensagemBotaoClick(labelButtonsRight.value)">
+             {{labelButtonsRight.label}}
             </button>
         </div>
     </div>
