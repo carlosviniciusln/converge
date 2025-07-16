@@ -134,6 +134,9 @@ export class ContratoVigenciaComponent implements OnInit {
       return row.dT_TERMINO_PRORROGACAO
     } else 
     {
+      if(row.dT_TERMINO_PRORROGACAO){
+        return row.dT_TERMINO_PRORROGACAO
+      }
       return row.dT_TERMINO
     }
   }
