@@ -9,3 +9,8 @@
     // justify-content: flex-end;
     // padding: 0px 10px 24px 0px;
 }  
+
+
+::ng-deep  .modal-lg {
+  max-width: 60% !important;
+}

@@ -5,7 +5,7 @@
         </button>
 </div>
 
-<div class="conteudo" style="padding: 24px 10px 0px 10px;" >
+<div class="conteudo" style="padding: 24px 24px 24px 24px;" >
     <app-navbar-ateste></app-navbar-ateste>
 
     <div class="header-ateste" style=" text-align: justify;">
@@ -18,39 +18,106 @@
         </h4>
     </div>
 
-    <div class="">
-        <form [formGroup]="form">
+    <div class="" style="border: 1px solid black;">
+        <form [formGroup]="form" style="padding: 10px;">
           <div class="row">
-            <div class="col-md-12">
-              <div class="row">
-                    <div class="col-md-3 pr-0">
-                      <label for="noCriador">Criado por:</label>
-                      <input formControlName="noCriador" id="noCriador" type="text" class="form-control" />
-                    </div>
-                    <div class="col-md-3 pr-0">
-                      <label for="dhCadastro">Data de cria&ccedil;&atilde;o:</label>
-                      <input formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
-                    </div>
+                <div class="col-md-6">
+                  <label for="noCriador">Contrato</label>
+                  <input formControlName="noCriador" id="noCriador" type="text" class="form-control" />
                 </div>
-            </div>
-            </div>
+                <div class="col-md-6">
+                  <label for="dhCadastro">Fornecedor</label>
+                  <input formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
+                </div>
 
+                <div class="col-md-12" style="padding-top: 10px;">
+                  <label for="noCriador">Objeto</label>
+                  <textarea formControlName="deObservacao" id="deObservacao"
+                    placeholder="Digite..."
+                    class="form-control border border-light rounded" rows="2"></textarea>
+                </div>
+   
+              </div>  
 
-        <div class="footer-ateste" style="    display: flex
-        ;
-            padding-bottom: 24px;">
+              <div class="" >
+                  <div style="display: flex; padding-top: 20px;
+    padding-bottom: 20px;">
 
-            <div style="width: 60%;">
-                <h4 class="modal-title" id="modal-basic-title" for="deObservacao" style="margin-bottom: 8px;">
-                  <b>Observa&ccedil;&otilde;es</b>
-                </h4>
-                <textarea formControlName="deObservacao" id="deObservacao"
-                placeholder="Digite..."
-                  class="form-control border border-light rounded" rows="4"></textarea>
-            </div>
+        <div></div>
+                    <div class="col-md-2 pl-0" style="display: flex;
+                        align-items: flex-start;
+                        padding-right: 24px;">
+                      <label for="dtInicio">Vigencia Atual:</label>
+                    </div>
+                    <div class="col-md-2 pl-0">
+                      <label for="dtInicio">Início</label>
+                      <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-2 pl-0">
+                      <label for="dtfim">Fim</label>
+                      <input formControlName="dtfim" id="dtfim" type="date" class="form-control"/>
+                    </div>
+                  <!-- ACRESCENTAR UMA DIV SEPARADORA -->
+                    <div class="col-md-2 pl-0">
+                      <label for="noCriador">Competência</label>
+                      <input formControlName="noCriador" id="noCriador" type="text" class="form-control"
+                      [ngClass]="{
+                        'is-invalid': false
+                      }" mask="00/0000" placeholder="MM/YYYY" />
+                    
+                    </div>
+                    <div class="col-md-2 pl-0">
+                      <label for="dtInicio">Início</label>
+                      <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-2 pl-0">
+                      <label for="dtfim">Fim</label>
+                      <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
+                    </div>
+                  </div>
+              </div>
+            <!-- <div class="" >
+              <label for="dtInicio">Vigencia Atual</label>
+                <div style="display: flex;">
+                  <div class="col-md-6 pl-0">
+                    <label for="dtInicio">Início</label>
+                    <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <label for="dtfim">Fim</label>
+                    <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
+                  </div>
+                </div>
+            </div> -->
 
-            <div style="display: flex
-            ;
+        
+            <div class="">
+              <div style="display: flex;">
+            
+              </div>
+          </div>
+
+                
+                <!-- <div class="col-2 pr-0 ">
+                  <label for="dtfim">Competencia</label>
+                  <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
+                </div> -->
+                
+              
+
+                <!-- <div style="padding-top: 20px;">
+                  <h4 class="modal-title" id="modal-basic-title" for="deObservacao">
+                    <b>Observa&ccedil;&otilde;es</b>
+                  </h4>
+                  <textarea formControlName="deObservacao" id="deObservacao"
+                  placeholder="Digite..."
+                    class="form-control border border-light rounded" rows="4"></textarea>
+                </div> -->
+            <!-- </div>   -->
+<!--       
+          <div class="footer-ateste" style="display: flex; padding-bottom: 24px;">
+    
+            <div style="display: flex;
                 gap: 10px;
                 flex: 1;
                 height: 100px;
@@ -72,8 +139,7 @@
                 <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
                </div>
             </div>
-         </div>
-
+         </div> -->
         </form>
     </div>
 
