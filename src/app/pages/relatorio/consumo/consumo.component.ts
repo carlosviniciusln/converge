@@ -100,8 +100,7 @@ rowsOptions = [
 
     const field = event.field; 
     const order = event.order; 
-  
-    console.log(this.contratos)
+    
     this.contratos.sort((a, b) => {
       let valorA = a[field];
       let valorB = b[field];
