@@ -1,0 +1,153 @@
+
+<div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+          <span aria-hidden="true">×</span>
+        </button>
+</div>
+
+<div class="conteudo" style="padding: 24px 24px 24px 24px;" >
+    <app-navbar-ateste></app-navbar-ateste>
+
+    <div class="header-ateste" style=" text-align: justify;">
+        <h4>
+            Atestamos a execução dos bens/serviços recebidos para o contrato e competência abaixo citados, conforme
+            disposto no MN TE236, itens 3.2.3.1 e 4.3.16, considerando atendidas as condições e obrigações contratuais,
+            estando esta unidade de pleno acordo com a quitação dos serviços para o periodo descrito e, portando, solicitamos que
+            os trâmites de pagamento sejam providenciados conforme informações abaixo.
+        
+        </h4>
+    </div>
+
+    <div class="" style="border: 1px solid black;">
+        <form [formGroup]="form" style="padding: 10px;">
+          <div class="row">
+                <div class="col-md-6">
+                  <label for="noCriador">Contrato</label>
+                  <input formControlName="noCriador" id="noCriador" type="text" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                  <label for="dhCadastro">Fornecedor</label>
+                  <input formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
+                </div>
+
+                <div class="col-md-12" style="padding-top: 10px;">
+                  <label for="noCriador">Objeto</label>
+                  <textarea formControlName="deObservacao" id="deObservacao"
+                    placeholder="Digite..."
+                    class="form-control border border-light rounded" rows="2"></textarea>
+                </div>
+   
+              </div>  
+
+              <div class="" >
+                  <div style="display: flex; padding-top: 20px;
+    padding-bottom: 20px;">
+
+        <div></div>
+                    <div class="col-md-2 pl-0" style="display: flex;
+                        align-items: flex-start;
+                        padding-right: 24px;">
+                      <label for="dtInicio">Vigencia Atual:</label>
+                    </div>
+                    <div class="col-md-2 pl-0">
+                      <label for="dtInicio">Início</label>
+                      <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-2 pl-0">
+                      <label for="dtfim">Fim</label>
+                      <input formControlName="dtfim" id="dtfim" type="date" class="form-control"/>
+                    </div>
+                  <!-- ACRESCENTAR UMA DIV SEPARADORA -->
+                    <div class="col-md-2 pl-0">
+                      <label for="noCriador">Competência</label>
+                      <input formControlName="noCriador" id="noCriador" type="text" class="form-control"
+                      [ngClass]="{
+                        'is-invalid': false
+                      }" mask="00/0000" placeholder="MM/YYYY" />
+                    
+                    </div>
+                    <div class="col-md-2 pl-0">
+                      <label for="dtInicio">Início</label>
+                      <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-2 pl-0">
+                      <label for="dtfim">Fim</label>
+                      <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
+                    </div>
+                  </div>
+              </div>
+            <!-- <div class="" >
+              <label for="dtInicio">Vigencia Atual</label>
+                <div style="display: flex;">
+                  <div class="col-md-6 pl-0">
+                    <label for="dtInicio">Início</label>
+                    <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <label for="dtfim">Fim</label>
+                    <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
+                  </div>
+                </div>
+            </div> -->
+
+        
+            <div class="">
+              <div style="display: flex;">
+            
+              </div>
+          </div>
+
+                
+                <!-- <div class="col-2 pr-0 ">
+                  <label for="dtfim">Competencia</label>
+                  <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
+                </div> -->
+                
+              
+
+                <!-- <div style="padding-top: 20px;">
+                  <h4 class="modal-title" id="modal-basic-title" for="deObservacao">
+                    <b>Observa&ccedil;&otilde;es</b>
+                  </h4>
+                  <textarea formControlName="deObservacao" id="deObservacao"
+                  placeholder="Digite..."
+                    class="form-control border border-light rounded" rows="4"></textarea>
+                </div> -->
+            <!-- </div>   -->
+<!--       
+          <div class="footer-ateste" style="display: flex; padding-bottom: 24px;">
+    
+            <div style="display: flex;
+                gap: 10px;
+                flex: 1;
+                height: 100px;
+                flex-direction: column;
+                padding-left: 15px;
+                justify-content: flex-end;
+                align-items: flex-end;">
+               <div style="    display: flex
+               ;
+                   gap: 15px;">
+                <button class="btn-sm btn-default" type="submit">Salvar Ateste</button>
+                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+               </div> 
+
+               <div style="    display: flex
+               ;
+                   gap: 15px;">
+                <button class="btn-sm btn-default" type="submit">Salvar Ateste</button>
+                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+               </div>
+            </div>
+         </div> -->
+        </form>
+    </div>
+
+
+</div>
+
+
+
+
+
+

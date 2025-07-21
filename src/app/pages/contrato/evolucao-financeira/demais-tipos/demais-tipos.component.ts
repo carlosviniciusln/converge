@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ApiResponse } from 'src/app/models/api-response';
 import { EvolucaoFinanceira } from 'src/app/models/evolucao-financeira';
 import { ApiService } from 'src/app/services/api.service';
@@ -10,31 +10,35 @@ import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/service
 import * as Highcharts from 'highcharts';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DetalheEvolucaoComponent } from './detalhe-evolucao/detalhe-evolucao.component';
-import { ContratoResponse } from 'src/app/models/contrato-response';
+import { ContratoResponse, ContratoResponseV2 } from 'src/app/models/contrato-response';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { DetalheFinanceiroComponent } from '../detalhe-financeiro/detalhe-financeiro.component';
 
 
 @Component({
   selector: 'app-demais-tipos',
   templateUrl: './demais-tipos.component.html',
   styleUrls: ['./demais-tipos.component.scss'],
+
 })
 export class DemaisTiposComponent implements OnInit, OnChanges {
   @ViewChild('chart', { static: true }) chartElement: ElementRef;
+  @ViewChild(DetalheFinanceiroComponent) relatorioCompletoPdf!: DetalheFinanceiroComponent;
   chart: Highcharts.Chart;
   @Input() permissions: ActionPolicies;
   @Input() vigenciaAnterior: any;
   @Input() vigenciaAtual: any;
   @Input() vigenciaAnteriorSelect: any
+  @Input() contrato : ContratoResponse;
   @Output() abaSelecionada = new EventEmitter<string>();
 
   nuContrato!: string;
-  contrato: ContratoResponse;
   series: any[] = []
   periodos: any;
   loading: boolean = true;
+  loadingPDF: boolean = false;
   rubricas = [];
   listaEvolucaoFinanceira: EvolucaoFinanceira[];
   listaResumoPagamentos: any[] = [];
@@ -219,9 +223,10 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
           ]
         }
       })
+
       this.loading = false;
     } catch (error) {
-      console.error(error, 'aquirsd');
+      console.error(error, 'error');
 
     }
   }
@@ -428,7 +433,11 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
     this.abaSelecionada.emit(this.coRubricaSelecionada + ',' + this.vigenciaUsuarioSelecionada.nU_VIGENCIA + ',' + this.vigenciaUsuarioSelecionada.iC_VIGENCIA_ATUAL);
     //this.obterDadosGraficosVigencias(this.vigenciaUsuarioSelecionada);
   }
-  gerarPDF() {
+
+  async gerarPDF() {
+    this.loadingPDF = true;
+
+    if(this.coRubricaSelecionada !== 'TOTAL'){
     const element = document.getElementById('area-pdf');
     if (!element) {
       return;
@@ -449,7 +458,38 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeigth);
       pdf.save('Evolução Financeira.pdf');
 
-    })
+    }).finally(()=>{
+      this.loadingPDF = false;
+  });
+
+
   }
+  else{
+    const aguardarDados = async (): Promise<boolean> => {
+      return new Promise(resolse => {
+        const intervalo = setInterval(() => {
+            if(this.relatorioCompletoPdf?.Contrato !== undefined){
+              clearInterval(intervalo);
+              resolse(true);
+            }
+        }, 100);
+      })
+    }
+
+    const dadosProntos = await aguardarDados();
+
+    if(dadosProntos){
+      const sucesso = await this.relatorioCompletoPdf.gerarRelatorioCompleto();
+      this.loadingPDF = false;
+      if(sucesso){
+        console.log("PDF gerado com sucesso!")
+      }
+      else{
+        console.log("Falha ao gerar o PDF!")
+      }
+    }
+  }
+  
+}
 
 }

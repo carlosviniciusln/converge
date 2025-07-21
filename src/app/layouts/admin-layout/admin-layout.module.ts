@@ -59,7 +59,6 @@ import { PagamentoCadastroComponent } from 'src/app/pages/contrato/pagamento-cad
 import { EditarPagamentoComponent } from 'src/app/pages/contrato/contrato-pendente/editar-pagamento/editar-pagamento.component';
 import { ValoresRubricaComponent } from 'src/app/pages/dashboard/valores-rubrica/valores-rubrica.component';
 import { DetalheEvolucaoComponent } from 'src/app/pages/contrato/evolucao-financeira/demais-tipos/detalhe-evolucao/detalhe-evolucao.component';
-import { UsuarioCadastroComponent } from 'src/app/pages/usuario/usuario-cadastro/usuario-cadastro.component';
 import { PickListModule } from 'primeng/picklist';
 import { ValoresRubricaDetalhadoComponent } from 'src/app/pages/dashboard/valores-rubrica-detalhado/valores-rubrica-detalhado.component';
 import { ValoresRubricaDetalhadoContratoComponent } from 'src/app/pages/dashboard/valores-rubrica-detalhado-contrato/valores-rubrica-detalhado-contrato.component';
@@ -87,6 +86,10 @@ import { ConsumoComponent } from 'src/app/pages/relatorio/consumo/consumo.compon
 import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-pagamento.component';
 import { GraficoArtigoComponent } from 'src/app/pages/contrato/artigo/grafico-artigo/grafico-artigo.component';
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
+import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
+import { SharedLibraryModule } from 'src/app/shared/shared-library/shared-library.module';
+import { DetalheFinanceiroComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
+
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'right',
@@ -115,7 +118,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DialogModule,
     MultiSelectModule,
     ContextMenuModule,
-    DropdownModule,
     ButtonModule,
     ToastModule,
     InputTextModule,
@@ -129,6 +131,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     NgxMaskModule.forRoot(),
     MatTabsModule,
     CurrencyMaskModule,
+    SharedLibraryModule
   ],
   declarations: [
     DashboardComponent,
@@ -157,7 +160,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ValoresRubricaComponent,
     ValoresRubricaDetalhadoComponent,
     ValoresRubricaDetalhadoContratoComponent,
-    UsuarioCadastroComponent,
     EmpenhoCadastroComponent,
     AquisicaoComponent,
     GraficoAquisComponent,
@@ -171,7 +173,9 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ConsumoComponent,
     PlanejamentoOrcamentarioComponent,
     ArtigoPagamentoComponent,
-    GraficoArtigoComponent
+    GraficoArtigoComponent,
+    ConsumoArpComponent,
+    DetalheFinanceiroComponent,
     // UserComponent,
     // TablesComponent,
     // IconsComponent,

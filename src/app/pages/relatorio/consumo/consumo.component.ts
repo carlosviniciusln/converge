@@ -3,7 +3,6 @@ import { ApiResponse } from 'src/app/models/api-response';
 import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
 import { ApiService } from 'src/app/services/api.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Select2Data } from 'ng-select2-component';
 import {
   ActionPolicies,
@@ -11,9 +10,8 @@ import {
   TokenStorageService,
 } from 'src/app/services/token-storage.service';
 import * as fileSaver from 'file-saver';
-import { LazyLoadEvent } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContratoCadastroComponent } from '../../contrato/contrato-cadastro/contrato-cadastro.component';
+import { SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-consumo',
@@ -24,13 +22,12 @@ export class ConsumoComponent implements OnInit {
   permissions: ActionPolicies;
 
   contratosOrigem: ContratoItem[];
-  contratosOrigemExcel: ContratoItem[];
   contratos: ContratoItem[];
 
   selectedContratos: Gcptb001ContratoResponse[];
 
   statuses: any[];
-
+  
   loading: boolean = true;
 
   activityValues: number[] = [0, 100];
@@ -42,12 +39,14 @@ export class ConsumoComponent implements OnInit {
   selectTiposTpContrato: Select2Data;
   selectTiposGestor: Select2Data;
   selectTiposStatus: Select2Data;
+  selectTiposAcuracia: Select2Data;
 
   selectedTipoContrato: string = null;
   selectedTipoFornecedor: string = null;
   selectedTipoTpContrato: string = null;
   selectedTipoGestor: string = null;
   selectedTipoStatus: string = null;
+  selectedTipoAcuracia: string = null;
 
   isRotaAtas: boolean = false;
   tituloPage: string = 'Lista de Contratos';
@@ -60,31 +59,64 @@ export class ConsumoComponent implements OnInit {
     Tipo: null,
     Gestor: null,
     Status: null,
-    NoTipoArp: null
+    TipoAcuracia: null,
+    NoTipoArp: null,
+    Field: null,
+    Order: null
   };
+
+  
+rowsOptions = [
+    10,
+    20, 
+    50,
+    { label: 'Todos', value: 0 }
+  ];
+  
+
 
   quantidadeTotal: number = 0;
 
   constructor(
     private apiService: ApiService,
-    private modalService: NgbModal,
     private token: TokenStorageService,
-    private router: Router,
     private route: ActivatedRoute
   ) {
     this.obterPermissoes();
     this.currentUser = this.token.getUser();
   }
 
+  ngOnInit() {
+    this.validarRotaAtas();
+    this.obterContratos();
+    this.selectTiposAcuracia = [{value: '1', label: 'Menor 98%'}, {value: '2', label: 'Entre 98% e 101%'}, {value: '3', label: 'Entre 102% e 104%'},{value: '4', label: 'Acima 105%'}]
+  }
+
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
   }
 
-  ngOnInit() {
-    this.validarRotaAtas();
-    this.obterContratos();
-  }
+  aoOrdenar(event : SortEvent){
 
+    const field = event.field; 
+    const order = event.order; 
+    
+    this.contratos.sort((a, b) => {
+      let valorA = a[field];
+      let valorB = b[field];
+ 
+      if (valorA instanceof Date === false && field.includes('Data')) {
+        valorA = new Date(valorA);
+        valorB = new Date(valorB);
+      }
+   
+      if (typeof valorA === 'string') {
+        return valorA.localeCompare(valorB) * order;
+      }
+  
+      return (valorA < valorB ? -1 : valorA > valorB ? 1 : 0) * order;
+    });
+  }
   assignCopy() {
     this.contratos = Object.assign([], this.contratosOrigem);
   }
@@ -106,38 +138,16 @@ export class ConsumoComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  filterItem(value) {
-    if (!value) {
-      this.assignCopy();
-    }
-
-    if (value == 'ativo') {
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) => item.icAtivo == true)
-    } else if (value == 'encerrado') {
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) => item.icAtivo == false)
-    } else {
-
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) =>
-          item.coContrato.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
-          item.noEmpresa.toLowerCase().includes(value) ||
-          item.noContratoTipo.toLowerCase().includes(value) ||
-          item.sgFilial.toLowerCase().includes(value)
-      );
-    }
-  }
 
   public async obterContratos(): Promise<void> {
 
     this.loading = true;
     try {
-      const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
 
+      const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
       const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
         (`${Endpoints.URL_CONTRATOS}/relatorio-consumo`, filtrosLimpos);
-      this.contratosOrigem = response?.data?.contratos;
+      this.contratosOrigem = this.mapObject(response?.data?.contratos);
       this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
       this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
       this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
@@ -162,6 +172,56 @@ export class ConsumoComponent implements OnInit {
     return filtrosLimpos;
   }
 
+
+  mapObject(contrato : ContratoItem[]){
+    return contrato.map(c => ({
+      ...c,
+      percConsumo: typeof c.percConsumo === 'string' ? parseFloat(
+        c.percConsumo
+          .replace(/\./g, '')
+          .replace(',', '.')
+
+      ) : c.percConsumo,
+      saldoDisponivel: typeof c.saldoDisponivel === 'string' ? parseFloat(
+      c.saldoDisponivel
+       .replace(/\./g, '')
+       .replace(',', '.')
+       )
+       : c.saldoDisponivel,
+       pC_ACURACIA: typeof c.pC_ACURACIA === 'string' 
+       ? parseFloat(c.pC_ACURACIA) 
+        : c.pC_ACURACIA,
+        percVrExecutado: typeof c.percVrExecutado === 'string' ? 
+         parseFloat(
+          c.percVrExecutado
+            .replace(/\./g, '')
+            .replace(',', '.')
+        ):
+        c.percVrExecutado,
+        percDiasCorridos : typeof c.percDiasCorridos === 'string' ? 
+        parseFloat(
+         c.percDiasCorridos
+           .replace(/\./g, '')
+           .replace(',', '.')
+       ):
+       c.percDiasCorridos,
+       vrExecutadoFormatado: typeof c.vrExecutadoFormatado === 'string' ? 
+       parseFloat(
+        c.vrExecutadoFormatado
+          .replace(/\./g, '')
+          .replace(',', '.')
+      ):
+      c.vrExecutadoFormatado,
+      vrGlobalFormatado: typeof c.vrGlobalFormatado === 'string' ? 
+      parseFloat(
+       c.vrGlobalFormatado
+         .replace(/\./g, '')
+         .replace(',', '.')
+     ):
+     c.vrGlobalFormatado,
+    }))
+  }
+
   async updateRelatorio(e, op: number): Promise<void> {
     this.loading = true;
     this.filtroRegistros.pageNumber = 1;
@@ -181,12 +241,15 @@ export class ConsumoComponent implements OnInit {
       case 5:
         this.filtroRegistros.Status = e.value;
         break;
+      case 6:
+        this.filtroRegistros.TipoAcuracia = e.value;
+        break;
     }
     await this.obterContratos();
     this.loading = false;
   }
 
-  loadPage(event: LazyLoadEvent) {
+  loadPage(event: any) {
     const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
     const pageSize = event.rows || this.filtroRegistros.pageSize;
 
@@ -199,14 +262,12 @@ export class ConsumoComponent implements OnInit {
 
   async exportExcel() {
 
-    await this.obterContratosExcel();
-
-    if (this.contratosOrigemExcel.length > 0) {
-      const dadosFiltrados = this.contratosOrigemExcel.map(item => ({
+    if (this.contratos.length > 0) {
+      const dadosFiltrados = this.contratos.map(item => ({
         "Nr. Contrato": item.coContrato,
         "Fornecedor": item.noEmpresa,
         "CNPJ": item.coCnpj,
-        "Tipo": item.noContratoTipo,
+        "Tipo": item.no_Tipo_Arp,
         "Objeto": item.noObjeto,
         "Unidade Demandante": item.sgFilial,
         "Status": item.icAtivo ? 'Ativo' : 'Encerrado',
@@ -217,7 +278,8 @@ export class ConsumoComponent implements OnInit {
         "% Dias Corridos": item.percDiasCorridos,
         "% Executado Vigência": item.percVrExecutado,
         "% Consumo": item.percConsumo,
-        "Saldo Disponível": item.saldoDisponivel
+        "Saldo Disponível": item.saldoDisponivel,
+        "Acurácia": item.pC_ACURACIA ? item.pC_ACURACIA : 0 
       }));
 
       import("xlsx").then(xlsx => {
@@ -262,29 +324,24 @@ export class ConsumoComponent implements OnInit {
     }
   }
 
-  public async obterContratosExcel(): Promise<void> {
-
-    this.loading = true;
-    try {
-      const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
-
-      const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
-        (`${Endpoints.URL_CONTRATOS}/relatorio-consumo-excel`, filtrosLimpos);
-
-      this.contratosOrigemExcel = response?.data?.contratos;
-
-      this.loading = false;
-
-    } catch (error) {
-      this.loading = false;
-      console.error('Erro ao obter contratos', error);
-    }
-  }
 
   formataCasaDecimal(valorPercent: number): string{
     if(valorPercent == 100)
       return valorPercent.toString();
     else
       return valorPercent.toFixed(2);
+  }
+
+  getColor(value: string){
+    switch(value){
+      case '1':
+        break;
+      case '2':
+        return '	#DCFFD5';
+      case '3':
+        return ' #FFFBBB';
+      case '4':
+        return ' #FFA6A3';
+    }
   }
 }

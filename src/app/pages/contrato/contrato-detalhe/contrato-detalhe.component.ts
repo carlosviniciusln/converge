@@ -298,6 +298,19 @@ export class ContratoDetalheComponent implements OnInit {
     });
   }
 
+  openModalPreposto(nuContrato: number){
+    const modalRef = this.modalService.open(ContratoCadastroComponent, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg',
+      windowClass: 'custom-class',
+      backdrop: 'static',
+      keyboard: false,
+    });
+
+    modalRef.componentInstance.ativaPreposto = true;
+    modalRef.componentInstance.nuContrato = nuContrato;
+  }
+
   openModalSimulacao(nuContrato: number) {
     const modalRef = this.modalService.open(ModalSimulacaoComponent, {
       ariaLabelledBy: 'modal-basic-title',
@@ -310,7 +323,7 @@ export class ContratoDetalheComponent implements OnInit {
     modalRef.componentInstance.coContrato = this.Contrato.coContrato;
   }
 
-  openModalPagamento(nuContrato: number, nuPagamento?: number, periodo?: string, ateste?: string) {
+  openModalPagamento(nuContrato: number, nuPagamento?: number, icConciliacao?: boolean) {
     const modalRef = this.modalService.open(PagamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -320,12 +333,8 @@ export class ContratoDetalheComponent implements OnInit {
     });
     modalRef.componentInstance.nuContrato = nuContrato;
     modalRef.componentInstance.nuPagamento = nuPagamento;
-
-    if (this.validaPeriodoAteste(periodo, ateste)) {
-      modalRef.componentInstance.isConciliacao = true;
-    } else {
-      modalRef.componentInstance.isConciliacao = false;
-    }
+    modalRef.componentInstance.isConciliacao = icConciliacao;
+    
 
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
@@ -394,12 +403,6 @@ export class ContratoDetalheComponent implements OnInit {
     return total;
   }
 
-  validaPeriodoAteste(periodo: string, ateste: string): boolean {
-    if (periodo == '99/9999' || (ateste == '9999999999999' || ateste === ''))
-      return true
-    else
-      return false
-  }
 
   ordenarContratos() {
     const contratos: any = this.Contrato.gcptb006Vigencias;
@@ -529,7 +532,7 @@ export class ContratoDetalheComponent implements OnInit {
   }
 
   setTipoUsuario() {
-    if (this.currentProfile === 'Pagadoria' || this.currentProfile === 'Administrador') {
+    if (this.currentProfile === 'Pagadoria' || this.currentProfile === 'Administrador' || this.currentProfile === PerfisEnum.TorresGEGAT) {
       this.permissaoEditar = true;
     }
   }

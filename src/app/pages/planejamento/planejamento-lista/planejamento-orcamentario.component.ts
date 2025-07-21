@@ -38,6 +38,7 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
   numerosRapidosExecContratual: NumerosRapidosExecContratual;
   contratosOrigem: ContratoItem[];
   contratos: ContratoItem[];
+  anoAtual: number = 0;
   filtroRegistros: any = {
     pageNumber: 1,
     pageSize: 4,
@@ -55,6 +56,7 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
 
   closeResult: string = '';
   exibeResultado = false;
+  perfil: string = '';
   constructor(
     private apiService: ApiService,
     private modalService: NgbModal,
@@ -66,6 +68,7 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
 
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Dashboard);
+    this.perfil = this.token.getUserPerfil();
   }
 
   ngOnInit() {
@@ -80,10 +83,12 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
   }
 
   async novoExercicio(){
+const ultimoItem: ResumoPlanejamentoModel = this.planejamentos[this.planejamentos.length - 1];
+this.anoAtual = ultimoItem.cO_EXERCICIO;
 
     const alert = await Swal.fire({
       title: '',
-      text: 'Deseja criar um novo exercício?',
+      text: 'Tem Certeza de que deseja gerar o Planejamento Orçamentário do exercício ' + (this.anoAtual + 1) + '?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim!',
@@ -99,10 +104,12 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
     if(!alert){
       return;
     }
+    this.toastr.warning('Aguarde, gerando o exercício ' + (this.anoAtual + 1) + ', isso pode levar alguns minutos...');
     const result = this.apiService.post<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/novo-exercicio','')
     result.then(response => {
       this.planejamentos = response.data;
-      this.toastr.success('Exercício ' + this.planejamentos[this.planejamentos. length - 1].cO_EXERCICIO + ' adicionado com sucesso!')
+      this.toastr.clear();
+      this.toastr.success('Exercício ' + this.planejamentos[this.planejamentos. length - 1].cO_EXERCICIO + ' gerado com sucesso.')
     });
   }
 

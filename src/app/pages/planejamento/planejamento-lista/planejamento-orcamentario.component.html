@@ -15,10 +15,10 @@
             <tr class="bordered-orange">
               <th>Planejado</th>
               <th>Execução</th>
-              <th>%EP</th>
+              <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
               <th>Planejado</th>
               <th>Execução</th>
-              <th>%EP</th>
+              <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
@@ -27,7 +27,7 @@
                 {{item.cO_EXERCICIO}}</a>
               </td>
               <td class="text-centered">
-                {{item.statuS_PLANEJAMENTO == 'Encerrada' ? item.statuS_PLANEJAMENTO : item.tipo}}
+                {{item.statuS_PLANEJAMENTO == 'Encerrado' ? item.statuS_PLANEJAMENTO : item.tipo}}
               </td>
               <td  class="text-centered">
                 {{item.capeX_PLANEJADO | currency : 'BRL'}}
@@ -54,7 +54,7 @@
     </mat-tab-group>
     <div class="row">
       <div class="col-2" style="margin-top: 30px; align-items: center;">
-        <button class="btn-sm btn-default" (click)="novoExercicio()">
+        <button class="btn-sm btn-default" style="margin-left: 20px; margin-bottom: 20px;" (click)="novoExercicio()" *ngIf="perfil == 'Administrador'">
           Novo Exercício
         </button>
       </div>

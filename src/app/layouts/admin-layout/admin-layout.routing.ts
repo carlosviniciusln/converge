@@ -23,6 +23,11 @@ import { ExportPagamentoComponent } from 'src/app/pages/relatorio/export-pagamen
 import { ConsumoComponent } from 'src/app/pages/relatorio/consumo/consumo.component';
 import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-pagamento.component';
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
+import { PlanejamentoGeralComponent } from 'src/app/pages/planejamento/planejamento-geral/planejamento-geral.component';
+import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
+import { AtesteComponent } from 'src/app/pages/ateste/ateste.component';
+import { AuthGuard } from 'src/app/shared/interceptors/auth.guard';
+import { DetalharAtesteComponent } from 'src/app/pages/ateste/detalhar-ateste/detalhar-ateste.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -50,9 +55,11 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'planejamento-orcamentario', component: PlanejamentoOrcamentarioComponent },
   { path: 'pagamento', component: PagamentoComponent },
   { path: 'consumo', component: ConsumoComponent },
+  { path: 'consumo-arp', component: ConsumoArpComponent },
   { path: 'export-data-pagamento', component: ExportPagamentoComponent },
   { path: 'informe/analitico', component: AnaliticoComponent },
   { path: 'informe/sintetico', component: SinteticoComponent },
+  { path: 'planejamento-orcamentario-detalhe', component: PlanejamentoGeralComponent },
   //{ path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'empenho', component: EmpenhoComponent },
@@ -62,5 +69,9 @@ export const AdminLayoutRoutes: Routes = [
   //   { path: "user", component: UserComponent },
   //   { path: "tables", component: TablesComponent },
   //   { path: "typography", component: TypographyComponent },
-  //   { path: "rtl", component: RtlComponent }
+  //   { path: "rtl", component: RtlComponent },
+
+  { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
+  { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
+
 ];

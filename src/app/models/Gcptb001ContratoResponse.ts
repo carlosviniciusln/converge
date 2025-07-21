@@ -28,7 +28,7 @@ export interface ContratoItem {
     noContratoTipo: string;
     sgFilial: string;
     vrGlobal: number;
-    vrGlobalFormatado: string;
+    vrGlobalFormatado: string | number;
     dtInicioContrato: string;
     dtTerminoContrato: string;
     vrExecutado: string;
@@ -36,13 +36,16 @@ export interface ContratoItem {
     expanded: boolean;
     coCnpj: string;
     noObjeto: string;
-    percDiasCorridos: string;
-    percVrExecutado: string;
-    percConsumo: string;
-    saldoDisponivel: string;
+    percDiasCorridos: string | number;
+    percVrExecutado: string | number;
+    percConsumo: number | string;
+    saldoDisponivel: number | string;
     no_Tipo_Arp:string;
-    vrExecutadoFormatado:string;
+    vrExecutadoFormatado:string | number;
     status: string;
+    co_Processo: string;
+    pC_ACURACIA: number;
+    dE_COR: string;
   }
 
 export interface ContratoApiResponse {
@@ -55,9 +58,11 @@ export interface ContratoApiResponse {
     listaContrato: string[];
     listaFornecedor: string[];
     listaTipo: string[];
+    ListaInstrumentos: string[];
     listaGestor: string[];
     listaStatus: string[];
     totalRecords: number;
+    listaInstrumentos: string[];
 }
 
 export interface PlanejamentoItem {

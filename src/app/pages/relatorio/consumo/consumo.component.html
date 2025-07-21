@@ -1,11 +1,10 @@
 <div class="content">
     <div class="row">
-        <div class=" col-12">
+        <div style="flex:1">
             <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
-                styleClass="p-datatable-customers" [rows]="filtroRegistros.pageSize" [paginator]="true"
-                [loading]="loading" [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50]" [lazy]="true"
-                (onLazyLoad)="loadPage($event)" [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"
+                styleClass="p-datatable-customers" 
+                sortMode="single"
+                (onSort)="aoOrdenar($event)"
                 [globalFilterFields]="['coContrato','noEmpresa','dhCadastro']" [rowHover]="true">
                 <ng-template pTemplate="caption">
                     <div class="table-header">
@@ -50,78 +49,129 @@
                                     (onChange)="updateRelatorio($event, 5)" [showClear]="true"
                                     placeholder="Status"></p-dropdown>
                             </div>
+
+                            <div class="pl-1 pr-1">
+                                <p-dropdown [options]="selectTiposAcuracia" [(ngModel)]="selectedTipoAcuracia"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 6)" [showClear]="true"
+                                    placeholder="Acurácia">
+                                
+                                 <ng-template let-option pTemplate="item">
+                                   <div [ngStyle]="{'background-color': getColor(option.value), 'color': 'black'}">
+                                   <span> {{ option.label }}</span>
+                                    </div>
+                                </ng-template>
+                                   
+                                </p-dropdown>
+                            </div>
                         </div>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
 
-                        <th>
+                        <th pSortableColumn="coContrato">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 Nr. Contrato
                             </div>
+                            <p-sortIcon field="coContrato">
+
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="noEmpresa">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 Fornecedor
                             </div>
+                            <p-sortIcon field="noEmpresa">
+
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="sgFilial">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                Unidade Demandante
                             </div>
+                            <p-sortIcon field="sgFilial">
+
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="icAtivo">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                Status
                             </div>
+                            <p-sortIcon field="icAtivo">
+
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="dtInicioContrato">
                             <div class="p-d-flex p-jc-between p-ai-center white-space-break">
-                                Vigência Atual - Início
+                                Vigência - Início
 
                             </div>
+                           <p-sortIcon field="dtInicioContrato">
+
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="dtTerminoContrato">
                             <div class="p-d-flex p-jc-between p-ai-center white-space-break">
                                 Vigência Atual - Fim
 
                             </div>
+                            <p-sortIcon field="dtTerminoContrato">
+
+                            </p-sortIcon>
 
                         </th>
-                        <th>
+                        <th pSortableColumn="vrGlobal">
                             <div class="p-d-flex p-jc-between p-ai-center white-space-break">
                                 Valor Global Vigente
 
                             </div>
+                            <p-sortIcon field="vrGlobal">
+
+                            </p-sortIcon>
 
                         </th>
-                        <th>
+                        <th pSortableColumn="vrExecutado">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                Valor Executado
-
                             </div>
-
+                            <p-sortIcon field="vrExecutado">
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="percDiasCorridos">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 % Dias Corridos
                             </div>
+                            <p-sortIcon field="percDiasCorridos">
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="percVrExecutado">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 % Executado Vigência
                             </div>
+                            <p-sortIcon field="percVrExecutado">
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="percConsumo">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 % Consumo
                             </div>
+                            <p-sortIcon field="percConsumo">
+                            </p-sortIcon>
                         </th>
-                        <th>
+                        <th pSortableColumn="saldoDisponivel">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 Saldo Disponível
                             </div>
+                            <p-sortIcon field="saldoDisponivel">
+                            </p-sortIcon>
+                        </th>
+                        <th style="padding-left: 65px;" pSortableColumn="pC_ACURACIA">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Acurácia
+                            </div>
+                            <p-sortIcon field="pC_ACURACIA">
+                            </p-sortIcon>
                         </th>
                     </tr>
                 </ng-template>
@@ -146,31 +196,37 @@
                             {{contrato.dtTerminoContrato | date: 'dd/MM/yyyy'}}
                         </td>
                         <td>
-                          R$ {{contrato.vrGlobalFormatado}}
+                          R$ {{contrato.vrGlobalFormatado | number:'1.2-2':'pt-BR'}}
                         </td>
                         <td>
-                          R$ {{contrato.vrExecutadoFormatado}}
+                          R$ {{contrato.vrExecutadoFormatado | number:'1.2-2':'pt-BR'}}
                         </td>
                         <td>
-                            {{contrato.percDiasCorridos}}
+                            {{contrato.percDiasCorridos | number:'1.2-2':'pt-BR'}}%
                         </td>
                         <td>
-                            {{contrato.percVrExecutado}}
+                            {{contrato.percVrExecutado | number:'1.2-2':'pt-BR'}}%
                         </td>
                         <td>
-                            {{contrato.percConsumo}}
+                            {{contrato.percConsumo | number:'1.2-2':'pt-BR' }}%
                         </td>
                         <td>
-                            R$ {{contrato.saldoDisponivel}}
+                            R$ {{contrato.saldoDisponivel | number:'1.2-2':'pt-BR'}}
+                        </td>
+                        <td >
+                           <span class="c-acuracia" [ngStyle]="{'background-color' : contrato.dE_COR}">{{contrato.pC_ACURACIA ? contrato.pC_ACURACIA : "0.00" | number:'1.2-2':'pt-BR'}}%</span>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="10">Nenhum contrato cadastrado.</td>
+                        <td colspan="13">Nenhum contrato cadastrado.</td>
                     </tr>
                 </ng-template>
             </p-table>
+            <div class="card flex justify-center">
+                <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos" (onPageChange)="loadPage($event)" [first]="0"  [rows]="filtroRegistros.pageSize" [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50, this.quantidadeTotal]" ></p-paginator>
+            </div>
         </div>
     </div>
 </div>

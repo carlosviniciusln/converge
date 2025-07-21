@@ -117,24 +117,11 @@ export class ContratoVigenciaComponent implements OnInit {
     );
   }
 
-  defineInitDate(row: any): string {
-    console.log(row)
-    if(row.dT_INICIO == '0001-01-01T00:00:00' )
-    {
-      return row.dT_INICIO_PRORROGACAO
-    } else 
-    {
-      return row.dT_INICIO
-    }
-  }
 
   defineEndDate(row: any): string {
-    if(row.dT_TERMINO == '0001-01-01T00:00:00' )
-    {
-      return row.dT_TERMINO_PRORROGACAO
-    } else 
-    {
+    if(row.dT_TERMINO_PRORROGACAO && row.dT_TERMINO_PRORROGACAO != "0001-01-01T00:00:00"){
+        return row.dT_TERMINO_PRORROGACAO
+      }
       return row.dT_TERMINO
     }
-  }
 }

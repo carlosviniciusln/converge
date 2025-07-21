@@ -1,6 +1,7 @@
 <div class="content" *ngIf="this.Contrato">
-  <div class="row">
-    <div class="col-md-7 text-left pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
+  <div class="row" style="justify-content: space-between;">
+    <div>
+    <div style="padding-left: 15px" class="text-left pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
       <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print"
         routerLink="/contrato/evolucao-financeira/{{nuContrato}}" mat-raised-button> Evolução Financeira
       </button>
@@ -14,9 +15,14 @@
       <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print"
         (click)="openModalSimulacao(this.Contrato.nuContrato)" mat-raised-button> Simular Revisão
       </button>
+      <button type="button" class="btn-sm btn-secondary no-print" (click)="openModalPreposto(this.Contrato.nuContrato)"
+      mat-raised-button>
+      Prepostos
+    </button>
+  </div>
       <label class="title-ata" *ngIf="isRotaAtas">Este instrumento é uma Ata de Registro de Preços (ARP).</label>
     </div>
-    <div class="col-md-5 text-right pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
+    <div class="edit-contrato text-right pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
       <button type="button" class="btn-sm btn-secondary" (click)="openModalContrato(this.Contrato.nuContrato)"
         *ngIf="((this.currentUser | keyvalue)?.length) && this.permissaoEditar">
         <i class="tim-icons icon-simple-add"></i> Editar contrato
@@ -54,7 +60,7 @@
             <div class="col-md-3 col-sm-6 text-right">Status:</div>
             <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.iC_ATIVO ? "Ativo" : "Encerrado" }}</b></div>
 
-            <div class="col-md-3 col-sm-6 text-right">Gestor Demandante:</div>
+            <div class="col-md-3 col-sm-6 text-right">Unidade Demandante:</div>
             <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.filial }} - {{ this.ContratoV2.sG_FILIAL }}</b></div>
           </div>
 
@@ -147,8 +153,14 @@
               let i = index
             ">
             <!-- <div class="col-md-2 text-right">Vigência:</div> -->
-            <div class="col-md-4">
+            <div class="col-md-2">
               <b>{{ vigencia.gcptb007VigenciaTipo.noVigenciaTipo }}</b>
+            </div>
+            <div *ngIf="i == 0" class="col-md-2 text-right">Protocolo: &nbsp;
+              <b>{{ vigencia.coProtocoloVigencia }}</b>
+            </div>
+            <div *ngIf="i > 0" class="col-md-2 text-right">Protocolo SICLG:
+              <b>{{ vigencia.coProtocoloVigencia }}</b>
             </div>
             <div class="col-md-2 text-right">Data Início/Término:</div>
             <div class="col-md-3">
@@ -287,8 +299,7 @@
             openModalPagamento(
               pagamento.nuContrato,
               pagamento.nuPagamento,
-              pagamento.dePeriodo,
-              pagamento.coNumeroAteste
+              pagamento.icConciliacao
             )" title="Clique para editar este pagamento">
                 <td class="col-pagamentos">{{ pagamento.dePeriodo }}</td>
                 <td class="col-pagamentos">{{ pagamento.coNumeroAteste }}</td>
@@ -384,7 +395,7 @@
                     <th style="width: 3rem;"></th>
                     <th pSortableColumn="ano">Processo</th>
                     <th pSortableColumn="contrato">Contrato</th>
-                    <th pSortableColumn="gn">GN</th>
+                    <th pSortableColumn="gn">UD</th>
                     <th pSortableColumn="objeto">Objeto</th>
                     <th pSortableColumn="inicioContrato">Início Contrato</th>
                     <th pSortableColumn="fimContrato">Fim Contrato</th>

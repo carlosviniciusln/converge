@@ -43,6 +43,14 @@ import { ExportPagamentoComponent } from './pages/relatorio/export-pagamento/exp
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NovosContratosComponent } from "./pages/dashboard/novos-contratos/novos-contratos.component";
 import { ModalPlanejamentoComponent } from "./pages/planejamento/planejamento-lista/modal-planejamento/modal-planejamento.component";
+import { PlanejamentoGeralComponent } from './pages/planejamento/planejamento-geral/planejamento-geral.component';
+import { PlanejamentoAbaRubricaComponent } from "./pages/planejamento/planejamento-aba-rubrica/planejamento-aba-rubrica.component";
+import {MatTableModule} from '@angular/material/table';
+import { SharedLibraryModule } from "./shared/shared-library/shared-library.module";
+import { AtesteComponent } from './pages/ateste/ateste.component';
+import { NavbarAtesteComponent } from './pages/ateste/navbar-ateste/navbar-ateste.component';
+import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar-ateste.component';
+import { RegistrarAtesteComponent } from './pages/ateste/registrar-ateste/registrar-ateste.component';
 
 registerLocaleData(ptBr);
 
@@ -71,7 +79,8 @@ const maskConfig: Partial<IConfig> = {
     ToastrModule.forRoot(),
     HighchartsChartModule,
     MatIconModule,
-    MatToolbarModule,
+    SharedLibraryModule,
+    MatToolbarModule,MatTableModule,
     NgxMaskModule.forRoot(maskConfig)
   ],
   exports: [
@@ -92,8 +101,13 @@ const maskConfig: Partial<IConfig> = {
     ModalSimulacaoComponent,
     ExportPagamentoComponent,
     NovosContratosComponent,
-    ModalPlanejamentoComponent
-
+    ModalPlanejamentoComponent,
+    PlanejamentoGeralComponent,
+    PlanejamentoAbaRubricaComponent,
+    AtesteComponent,
+    NavbarAtesteComponent,
+    DetalharAtesteComponent,
+    RegistrarAtesteComponent
     //AuthLayoutComponent
   ],
   providers: [

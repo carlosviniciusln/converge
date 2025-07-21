@@ -8,7 +8,6 @@
         styleClass="p-datatable-customers"
         [rowHover]="true"
         [showCurrentPageReport]="true"
-        [loading]="loading"
         [filterDelay]="0"
       >
         <ng-template pTemplate="caption">
@@ -52,7 +51,7 @@
                   optionValue="value"
                   (onChange)="updateRelatorio($event, 2)"
                   [showClear]="true"
-                  placeholder="Todas as Gerências"
+                  placeholder="Todas as Unidades Demandantes"
                 ></p-dropdown>
                 <!-- <select class="form-control" id="pFilial" name="pFilial" [(ngModel)]="selectedFilial" (ngModelChange)="updateRelatorio($event, 2)">
                                 <option value="null">Todas as Gerências</option>
@@ -80,7 +79,7 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th>GN</th>
+            <th>UD</th>
             <th>Contrato</th>
             <th>Fornecedor</th>
             <th>JAN</th>
@@ -103,7 +102,7 @@
         <ng-template pTemplate="body" let-empenho>
           <tr class="p-selectable-row">
             <td>
-              <span class="p-column-title">GN</span>
+              <span class="p-column-title">UD</span>
               {{ empenho.sgFilial }}
             </td>
             <td>

@@ -247,6 +247,7 @@ export class TokenStorageService {
   public isAuthenticated(): boolean {
     const token = this.getToken();
     if (token !== null) {
+     //verificar se o perfil solicitado é o perfil solicado pelo ateste, caso contratio bloqueia ou libera acesso, duvida: apenas perfil FISCAL TÉCNICO pode acessar..
       return !this.jwtHelper.isTokenExpired(token);
     }
     return false;

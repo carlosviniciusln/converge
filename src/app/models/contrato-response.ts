@@ -126,6 +126,7 @@ export interface Gcptb006Vigencia {
     nuDiaInicio: number;
     nuDiaTermino: number;
     dtInicioCompetencia: string;
+    coProtocoloVigencia: number;
     dhCadastro: Date;
     dhExclusao: Date;
     vrGlobal: number;
@@ -177,6 +178,7 @@ export interface Gcptb011Pagamento {
     dtPagamentoEfetivo: Date;
     dhCadastro: Date;
     dhExclusao?: any;
+    icConciliacao?: boolean;
     gcptb012PagamentoTipo: Gcptb012PagamentoTipo;
     gcptb017VigenciaRubrica: Gcptb017VigenciaRubrica;
 

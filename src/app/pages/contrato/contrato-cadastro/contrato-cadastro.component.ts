@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -21,6 +21,7 @@ import { Usuario } from 'src/app/models/usuario';
 import {
   ContratoResponse,
   ContratoResponseV2,
+  Gcptb006Vigencia,
   Gcptb017VigenciaRubrica,
 } from 'src/app/models/contrato-response';
 import { ToastrService } from 'ngx-toastr';
@@ -30,6 +31,7 @@ import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src
 import { ContatoItem, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
 import { TipoAta } from 'src/app/models/tipo-ata';
 import Swal from 'sweetalert2';
+import { ProtocoloVigencia } from 'src/app/models/protocolo-vigencia';
 
 @Component({
   selector: 'app-contrato-cadastro',
@@ -38,6 +40,7 @@ import Swal from 'sweetalert2';
 })
 export class ContratoCadastroComponent implements OnInit {
   @Input() public nuContrato;
+  @Input() public ativaPreposto;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
   permissions: ActionPolicies;
@@ -48,8 +51,9 @@ export class ContratoCadastroComponent implements OnInit {
   public contatoForm: FormGroup;
   public listaContatosOriginal: ContatoItem[] = [];
   public sequencial = 1
-  valid = false;
-  isPerfilPrivilegiado = false;
+  public selectTab: number = 0;
+  public isPerfilPrivilegiado = false;
+  public listaProtocoloVigencia: ProtocoloVigencia[] = [];
   public listaFiliais: Filial[] = [];
   public listaTipoVigencia: TipoVigencia[] = [];
   public listaRubrica: Rubrica[] = [];
@@ -66,7 +70,7 @@ export class ContratoCadastroComponent implements OnInit {
   public fiscalAdm: string;
   public fiscalTec: string;
   public subTitulo: string = 'Cadastro de contrato';
-  public subTituloContatos: string = 'Contatos e Representantes';
+  public subTituloContatos: string = 'Prepostos e Contatos';
 
   public SUPRESSAO_VALUE = 40;
 
@@ -85,10 +89,7 @@ export class ContratoCadastroComponent implements OnInit {
   isRotaAtas: boolean = false;
   listaAtasResponse: ContratoItem[] = [];
   processoAta: string;
-  ataVinculada: string;
-
-  selectedTab: 'tab1' | 'tab2' = 'tab1';
- 
+  ataVinculada: string; 
 
   filtroRegistros: any = {
     pageNumber: 1,
@@ -114,27 +115,7 @@ export class ContratoCadastroComponent implements OnInit {
     this.currentUser = this.token.getUser();
   }
 
-  obterPermissoes() {
-
-    this.currentProfile = this.token.getUserPerfil();
-    this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
-
-    if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT'){
-      this.isPerfilPrivilegiado = true;
-    }
-  }
-
-  criarContato(contador: number): FormGroup{
-   return this.formBuilder.group({
-    nuPreposto:[0],
-    nuContrato:[0],
-    sequencial: [contador],
-    nome: ['', Validators.required],
-    email: [''],
-    telefone: [''],
-    cargo: [''],
-   }, {validators: [this.validador()]})
-  }
+  /* MÉTODOS HERDADOS */
 
   ngOnInit(): void {
     this.obterFiliais();
@@ -146,6 +127,7 @@ export class ContratoCadastroComponent implements OnInit {
 
     this.formulario();
     this.obterContatos();
+    this.obterProtocoloVigencia();
     this.contatosForm();
     this.adicionarVigencia(false);
 
@@ -162,8 +144,29 @@ export class ContratoCadastroComponent implements OnInit {
       this.obterDatasContrato();
       this.validarRotaAtas();
     }
+
   }
 
+  obterPermissoes() {
+
+    this.currentProfile = this.token.getUserPerfil();
+    this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
+    
+    if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT' || this.currentProfile === PerfisEnum.Pagadoria){
+      this.isPerfilPrivilegiado = true;
+    }
+  }
+  criarContato(contador: number): FormGroup{
+    return this.formBuilder.group({
+     nuPreposto:[0],
+     nuContrato:[0],
+     sequencial: [contador],
+     nome: ['', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+     email: ['', [Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)]],
+     telefone: [''],
+     cargo: ['', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+    }, {validators: [this.validador()]})
+   }
 
 
   validador() : ValidatorFn {
@@ -176,6 +179,7 @@ export class ContratoCadastroComponent implements OnInit {
       const telefone = telefoneCtrl?.value?.trim();
 
       const valido = telefone || email;
+
 
       if(!valido){
         emailCtrl?.setErrors({required : true});
@@ -287,7 +291,7 @@ export class ContratoCadastroComponent implements OnInit {
     }else{
             const alert = await Swal.fire({
               title: '',
-              text:  `São permitidos no máximo 5 contatos por contrato.`,
+              text:  `São permitidos no máximo 5 prepostos por contrato.`,
               icon: 'warning',
               showCancelButton: false,
               confirmButtonText: 'Ok!',
@@ -302,7 +306,7 @@ export class ContratoCadastroComponent implements OnInit {
     if(contato.value?.nuPreposto != 0){
       const alert = await Swal.fire({
         title: '',
-        text: `Deseja realmente excluir contato ${contato.value.nome}?`,
+        text: `Deseja excluir preposto ?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim, deletar!',
@@ -450,6 +454,7 @@ export class ContratoCadastroComponent implements OnInit {
         nuDiaInicio: new FormControl(null, [Validators.required]),
         nuDiaTermino: new FormControl(null, [Validators.required]),
         dtInicioCompetencia: new FormControl(null, [Validators.required]),
+        coProtocoloVigencia: new FormControl(null),
         rubricas: new FormArray([]),
       },
       { validators: [this.validarDatas, this.validarVigencia(index)] }
@@ -550,7 +555,6 @@ export class ContratoCadastroComponent implements OnInit {
         `${Endpoints.URL_CONTRATOS}/` + this.nuContrato
       );
       this.contrato = response.data;
-
       this.vigencias.clear();
 
       response.data.gcptb006Vigencias.map((x, index) => {
@@ -569,6 +573,7 @@ export class ContratoCadastroComponent implements OnInit {
             nuDiaInicio: new FormControl(x.nuDiaInicio, [Validators.required]),
             nuDiaTermino: new FormControl(x.nuDiaTermino, [Validators.required]),
             dtInicioCompetencia: new FormControl(x.dtInicioCompetencia, [Validators.required]),
+            coProtocoloVigencia: new FormControl(x.coProtocoloVigencia),
             rubricas: new FormArray([]),
           },
           { validators: [this.validarDatas, this.validarVigencia(index)] }
@@ -578,10 +583,20 @@ export class ContratoCadastroComponent implements OnInit {
           vigencia.get('nuVigenciaTipo').disable();
         }
 
+        if(x.nuVigenciaTipo)
+
         x.gcptb017VigenciaRubricas.map((m) => {
           (vigencia.get('rubricas') as FormArray).push(this.novaRubrica(m));
         });
 
+        if(index === 0){
+          if(x.gcptb017VigenciaRubricas.length == 0){
+            (vigencia.get('rubricas') as FormArray).push(this.novaRubrica(null));
+          }
+          vigencia.get('coProtocoloVigencia').disable();
+          this.listaProtocoloVigencia = [...this.listaProtocoloVigencia.filter(p => p.cO_PROTOCOLO_VIGENCIA !=  vigencia.get('coProtocoloVigencia').value)]
+        }
+        
         this.vigencias.push(vigencia);
 
         vigencia.updateValueAndValidity({ onlySelf: false, emitEvent: true });
@@ -608,7 +623,6 @@ export class ContratoCadastroComponent implements OnInit {
         const response = await this.apiService.get<ApiResponse<ContatoItem[]>>(
           `${Endpoints.URL_PREPOSTO}/obter-todos/` + this.nuContrato
         );
-
         this.listaContatosOriginal = JSON.parse(JSON.stringify(response.data));
         this.contatos.clear();
         this.sequencial = 1;
@@ -617,15 +631,14 @@ export class ContratoCadastroComponent implements OnInit {
             sequencial: [this.sequencial],
             nuPreposto:[p.nU_PREPOSTO],
             nuContrato:[p.nU_CONTRATO],
-            nome:  [p.nO_PREPOSTO],
-            email:  [p.dE_EMAIL],
-            telefone:  [p.nU_TELEFONE],
-            cargo:  [p.dE_CARGO]
-          }))
+            nome:  [p.nO_PREPOSTO || '', [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]],
+            email:  [p.dE_EMAIL, [Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/)]],
+            telefone:  [p.nU_TELEFONE || ''],
+            cargo:  [p.dE_CARGO || '', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]]
+          },{validators: [this.validador()]}))
         
           this.sequencial++;
       })
-
       }
       catch (error){
 
@@ -727,6 +740,19 @@ export class ContratoCadastroComponent implements OnInit {
     }
   }
 
+  public async obterProtocoloVigencia(): Promise<void> {
+    try{
+
+      const response = await this.apiService.get<ApiResponse<ProtocoloVigencia[]>>(
+        `${Endpoints.URL_CONTRATOS}/protocolo-vigencia/` + this.nuContrato
+      );
+      
+      this.listaProtocoloVigencia = response.data;
+    }catch (erro) {
+        console.error(erro, "Erro em obter protocolo SICLG");
+    }
+  }
+
   public async obterServicos(): Promise<void> {
     try {
       const response = await this.apiService.get<ApiResponse<ServicoTipo[]>>(
@@ -766,6 +792,9 @@ export class ContratoCadastroComponent implements OnInit {
     }
   }
 
+  onTabChange(event) {
+    this.selectTab = event.index;
+  }
   // public async obterCaixas(): Promise<void> {
   //   try {
   //     const response = await this.apiService.get<ApiResponse<Usuario[]>>(
@@ -792,6 +821,33 @@ export class ContratoCadastroComponent implements OnInit {
     }
   }
 
+  public async obterGestoresChange(event: any): Promise<void> {
+
+    if (event.target.value) {
+      let valorSelecionado;
+
+      this.listaFiliais.forEach(item => {
+        if(item.nuFilial.toString() == event.target.value.toString()){
+          valorSelecionado = item.coFilial;
+        }
+      });
+
+      if (!valorSelecionado) {
+        return;
+      }
+
+      try {
+        const response = await this.apiService.get<ApiResponse<Usuario[]>>(
+          `${Endpoints.URL_USUARIO}/caixas-gestor?cgcUnidade=` + valorSelecionado
+        );
+
+        this.listaGestores = response.data;
+        this.form.controls['nuFiscalAdm'].setValue('');
+      } catch (error) {
+      }
+    }
+  }
+
   private formatDate(dateString: string): string {
     if (dateString) {
       if (dateString.includes('T')) {
@@ -807,11 +863,36 @@ export class ContratoCadastroComponent implements OnInit {
 
 
   public async registrarContratos(): Promise<void> {
-      this.valid = true;
       this.contatoForm.markAllAsTouched();
       this.contatoForm.updateValueAndValidity();
       if(this.contatoForm.invalid){
-        return;
+          this.contatos.controls.forEach((grupo: AbstractControl) => {
+            const contatoGroup = grupo as FormGroup;
+            // if(contatoGroup.errors?.validador){
+            //   this.toastr.error(`Preencha pelo menos o campo "E-mail" ou "Telefone"`, "Error");
+            // }
+            Object.keys(contatoGroup.controls).forEach(campo => {
+              const control = contatoGroup.get(campo);
+  
+            if(control?.invalid){
+              if(control.errors?.required){
+                this.toastr.error(`O campo ${this.formatarNomes(campo)} é obrigatório`, "Error");
+              }
+                    
+              if(control.errors?.pattern){
+                      this.toastr.error(`O campo ${this.formatarNomes(campo)} está fora do padrão`, "Error");
+              }
+
+              if(control.errors?.email){
+                this.toastr.error(`E-mail inválido`, "Error");
+              }
+              if(control.errors?.mask){
+                this.toastr.error(`Telefone inválido`, "Error");
+              }        
+            }
+          });
+        });
+        return 
       }
 
       const contatosAtuais = this.contatoForm.get('contatos')?.value || [];
@@ -826,31 +907,45 @@ export class ContratoCadastroComponent implements OnInit {
           original.nO_PREPOSTO !== c.nome || original.nU_TELEFONE !== c.telefone || original.dE_EMAIL !== c.email || original.dE_CARGO !== c.cargo
         ) 
       })
-    
+
+  
       if(novos.length){
         novos.forEach(cadastro => {
           cadastro.nuContrato = this.nuContrato; 
           this.cadastrarContato(cadastro);
           this.atualizarPagina.emit(true);
         })
-    
+
       }
 
       if(alterados.length){
-        alterados.forEach(alterados => {
+          alterados.forEach(alterados => {
           this.alterarContato(alterados);
           this.atualizarPagina.emit(true);
-        
+      
         })
       }
-  
-      this.toastr.success('Contatos/Representantes Salvos com Sucesso.', 'Sucesso');
+      this.toastr.success('Prepostos e Contatos Salvos com Sucesso.', 'Sucesso');
+      const alert = await Swal.fire({
+        title: '',
+        text:  `Prepostos e Contatos Salvos com Sucesso.`,
+        icon: 'success',
+        showCancelButton: false,
+        confirmButtonText: 'Ok!',
+      }).then((result) => {
+        console.log(result, "Result")
+      });
   }
 
- public objetosIguais(a: any, b: any) : boolean {
-    return JSON.stringify(a) === JSON.stringify(b);
-  }
+  formatarNomes(campo : string) : string {
+    const nomes: any = {
+      email: 'E-mail',
+      telefone: 'Telefone',
+      nome: 'Nome'
+    };
 
+    return nomes[campo] || campo;
+  }
 
   public async onSubmit(): Promise<void> {
     this.submitted = true;
@@ -904,12 +999,25 @@ export class ContratoCadastroComponent implements OnInit {
       formValue.nuDiaFechamentoFatura = targetVigencia.nuDiaTermino;
     }
 
+    for (let i = 0; i < formValue.vigencias.length; i++){
+        for(let j = i + 1; j < formValue.vigencias.length; j++){
+          if(formValue.vigencias[i].coProtocoloVigencia === formValue.vigencias[j].coProtocoloVigencia){
+            if(formValue.vigencias[i].coProtocoloVigencia != 0 && formValue.vigencias[j].coProtocoloVigencia !=0 && formValue.vigencias[i].coProtocoloVigencia != null && formValue.vigencias[j].coProtocoloVigencia != null){
+              this.toastr.warning(`Protocolo SICLG já foi utilizado, favor informar outro protocolo.`);
+              return;
+            }
+        }
+    }
+  }
+
     if (this.nuContrato) {
       await this.Alterar(formValue);
     } else {
       await this.Cadastrar(formValue);
     }
   }
+
+
 
   public async Cadastrar(formValue: any): Promise<void> {
     try {
@@ -1061,7 +1169,17 @@ export class ContratoCadastroComponent implements OnInit {
     return filtrosLimpos;
   }
 
-  selectTab(tab: 'tab1' | 'tab2') {
-    this.selectedTab = tab;
+  getListaProtocolos(index : number){
+    const protocolo = this.contrato?.gcptb006Vigencias[0].coProtocoloVigencia;
+    if(index === 0 && protocolo != undefined && protocolo != 0){
+          const primeiroProtocolo = [{
+            nU_PROTOCOLO_VIGENCIA: 0,
+            nU_CONTRATO: 0,
+            cO_PROTOCOLO_VIGENCIA: protocolo
+          }];
+
+        return primeiroProtocolo;
+    }
+    return this.listaProtocoloVigencia;
   }
 }

@@ -9,7 +9,6 @@
         [rowHover]="true"
         [rows]="12"
         [showCurrentPageReport]="true"
-        [loading]="loading"
         [paginator]="true"
         currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
         [filterDelay]="0"
@@ -55,7 +54,7 @@
                   optionValue="value"
                   (onChange)="updateRelatorio($event, 2)"
                   [showClear]="true"
-                  placeholder="Todas as Gerências"
+                  placeholder="Todas as Unidades Demandantes"
                 ></p-dropdown>
                 <!-- <select class="form-control" id="pFilial" name="pFilial" [(ngModel)]="selectedFilial" (ngModelChange)="updateRelatorio($event, 2)">
                                 <option value="null">Todas as Gerências</option>
@@ -100,7 +99,7 @@
         <ng-template pTemplate="header">
           <tr>
             <th class="p-d-flex p-jc-between p-ai-center size12">Contrato</th>
-            <th class="p-d-flex p-jc-between p-ai-center">GN</th>
+            <th class="p-d-flex p-jc-between p-ai-center">UD</th>
             <ng-container
               *ngFor="
                 let item of listaInformeMensal[0]

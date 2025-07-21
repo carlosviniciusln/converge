@@ -69,3 +69,19 @@ export interface ValoresRubricaDetalheContrato {
   dtPagamentoEfetivo: Date;
   vrExecutado: number;
 }
+
+export interface VigenciaRubrica {
+  vigencia: any,
+  rubrica: Rubrica
+}
+
+
+export interface Rubrica {
+  cO_RUBRICA: string,
+  valoresExecutados: any[],
+  valoresMensais: any[],
+  periodos: any[],
+  series: any[],
+}
+
+
