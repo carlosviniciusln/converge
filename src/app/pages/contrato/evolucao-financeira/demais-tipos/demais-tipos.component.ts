@@ -163,7 +163,7 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
 
   public async obterResumoPagamentos(nuContrato: string, nuVigencia: any, coRubricaSelecionada: string): Promise<void> {
     // this.nuContrato = nuContrato;
-    // this.vigenciaUsuarioSelecionada = nuVigencia;
+     this.vigenciaUsuarioSelecionada = nuVigencia;
     try {
       const response = await this.apiService.get<ApiResponse<EvolucaoFinanceira[]>>(
         `${Endpoints.URL_CONTRATOS}/detalhe-resumo-pagamento-evolucao-financeira?nuContrato=${nuContrato}&nuVigencia=${nuVigencia?.nU_VIGENCIA}&coRubrica=${coRubricaSelecionada}`
@@ -489,7 +489,7 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
       }
     }
   }
-  
+
 }
 
 }
