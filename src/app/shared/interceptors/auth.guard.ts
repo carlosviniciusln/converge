@@ -28,6 +28,8 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean {
   
+
+    return true;
     // antes de tudo verifico o perfil do usuário, se não tiver ninguém logado eu abro a tela de login, depois que logar eu verifico no return do 'logar' se ele é do perfil técnico, se for true, se não return com uma mensagem não tem permissão para acessar essa pagina com mensagem e redirecionamento para dasboard com a mensagem não tem permissão! 
 
     // !

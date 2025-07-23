@@ -88,10 +88,10 @@
             <div style="width: 80%;">
                 <table style="width: 100%;">
                     <tr style="color: black; font-weight: 600;">
-                        <th>RESUMO DE EXECUÇÃO CONTRATUAL</th>
-                        <th>Valor Global</th>
-                        <th>Valor Já Consumido</th>
-                        <th>Saldo Disponível</th>
+                        <th class="col-4 px-0">RESUMO DE EXECUÇÃO CONTRATUAL</th>
+                        <th class="col-2 px-0">Valor Global</th>
+                        <th class="col-3 px-0">Valor Já Consumido</th>
+                        <th class="col-3 px-0">Saldo Disponível</th>
                     </tr>
                     <tr class="p-td" style="background-color: #6a9fff;color: black; font-weight: 500;">
                         <td>VISÃO GERAL DO CONTRATO</td>
@@ -106,18 +106,18 @@
                         <td colspan="5" class="p-td" style="background-color: #d3d7df;color: black; font-weight: 300;"><strong>VISÃO POR RUBRICA</strong></td>
                       </tr>
                       <tr style="background-color: #b6cfff;color: black; font-weight: 300;">
-                        <td class="p-td">3103-02</td>
-                        <td class="p-td" style="width: 250px;">Aquisição de Software</td>
-                        <td class="p-td" style="width: 150px;">R$ 45.282.181,18 </td>
-                        <td class="p-td">R$ 13.200.260,05</td>
-                        <td class="p-td">R$ 32.081.921,13</td>
+                        <td class="col-1 px-0 p-td">3103-02</td>
+                        <td class="col-3 px-0 p-td" style="width: 250px;">Aquisição de Software</td>
+                        <td class="col-2 px-0 p-td" style="width: 150px;">R$ 45.282.181,18 </td>
+                        <td class="col-3 px-0 p-td">R$ 13.200.260,05</td>
+                        <td class="col-3 px-0 p-td">R$ 32.081.921,13</td>
                       </tr>
                       <tr style="background-color: #b6cfff;color: black; font-weight: 300;">
-                        <td class="p-td">3103-04</td>
-                        <td class="p-td">Aquisição Direitos de Uso de Software</td>
-                        <td class="p-td">R$ 45.282.181,18 </td>
-                        <td class="p-td">R$ 13.200.260,05</td>
-                        <td class="p-td">R$ 32.081.921,13</td>
+                        <td class="col-1 px-0 p-td">3103-02</td>
+                        <td class="col-3 px-0 p-td" style="width: 250px;">Aquisição de Software</td>
+                        <td class="col-2 px-0 p-td" style="width: 150px;">R$ 45.282.181,18 </td>
+                        <td class="col-3 px-0 p-td">R$ 13.200.260,05</td>
+                        <td class="col-3 px-0 p-td">R$ 32.081.921,13</td>
                       </tr>
                 </table>
             </div>
@@ -138,7 +138,7 @@
 
         <div class="conteudo-ateste">
           
-            <div class="table-ateste" style="padding-top: 15px;">
+            <div class="table-ateste" style="padding-top: 15px; padding-bottom: 15px;">
               <h5><strong>ULTIMOS ATESTES REGISTRADOS</strong></h5> <!-- DADOS E CONTRATO DO USUÁRIO LOGADO -->
                 <p-table [value]="contratos" [tableStyle]="{ 'width': '100%'}" >
                     <ng-template pTemplate="header">
