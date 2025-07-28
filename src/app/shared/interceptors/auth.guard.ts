@@ -7,7 +7,7 @@ import {
 } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { LoginComponent } from 'src/app/pages/login/login.component';
 
 @Injectable({ providedIn: 'root' })
@@ -28,8 +28,6 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean {
   
-
-    return true;
     // antes de tudo verifico o perfil do usuário, se não tiver ninguém logado eu abro a tela de login, depois que logar eu verifico no return do 'logar' se ele é do perfil técnico, se for true, se não return com uma mensagem não tem permissão para acessar essa pagina com mensagem e redirecionamento para dasboard com a mensagem não tem permissão! 
 
     // !
@@ -40,10 +38,7 @@ export class AuthGuard implements CanActivate {
     // pegar o perfil e verificar se ele tem o perfil técnico, se tiver liberar, se não bloqueia, manda mensagem e redireciona para o dashbord
     const perfil = this.auth.getUserProfile();
 
-    
-    console.log(perfil, "PEfil")
-
-    if(perfil === 'Perfil Técnico'){
+    if(perfil === PerfisEnum.FiscalTecnico){
       return true;
     }
   

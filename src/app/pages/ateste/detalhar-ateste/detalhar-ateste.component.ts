@@ -21,6 +21,32 @@ export class DetalharAtesteComponent implements OnInit {
   ) { }
 
   public nuContrato : string;
+  public rubricas  = [
+    {
+      codigo: '3103-02',
+      descricao: 'Aquisição de Software',
+      valorGlobal: 'R$ 45.282.181,18',
+      valorConsumido: 'R$ 13.200.260,05',
+      saldoDisponivel: 'R$ 32.081.921,13'
+    },
+    {
+      codigo: '3103-02',
+      descricao: 'Aquisição de Software',
+      valorGlobal: 'R$ 45.282.181,18',
+      valorConsumido: 'R$ 13.200.260,05',
+      saldoDisponivel: 'R$ 32.081.921,13'
+    }
+  ];
+  
+  public resumoExecucao = [
+    {
+      descricao: 'VISÃO GERAL DO CONTRATO',
+      valorGlobal: 'R$ 45.282.181,18',
+      valorConsumido: 'R$ 13.200.260,05',
+      saldoDisponivel: 'R$ 32.081.921,13'
+    }
+  ];
+  
   public contratos : any[] = [{
     id: '1000',
     code: 'f230fh0g3',

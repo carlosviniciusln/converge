@@ -28,6 +28,7 @@ import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo
 import { AtesteComponent } from 'src/app/pages/ateste/ateste.component';
 import { AuthGuard } from 'src/app/shared/interceptors/auth.guard';
 import { DetalharAtesteComponent } from 'src/app/pages/ateste/detalhar-ateste/detalhar-ateste.component';
+import { DevelopComponent } from 'src/app/components/develop/develop.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -63,6 +64,7 @@ export const AdminLayoutRoutes: Routes = [
   //{ path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'empenho', component: EmpenhoComponent },
+  { path: 'mod-develop', component: DevelopComponent },
   //   { path: "icons", component: IconsComponent },
   //   { path: "maps", component: MapComponent },
   //   { path: "notifications", component: NotificationsComponent },

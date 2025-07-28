@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ApiResponse } from 'src/app/models/api-response';
+import { Gcpvw030DetahamentoDeContratosResponse } from 'src/app/models/Gcpvw030AtesteResponse';
+import { ApiService } from 'src/app/services/api.service';
+import { Endpoints } from 'src/app/shared/enums/endpoints';
 
 
 
@@ -11,96 +14,26 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class AtesteComponent implements OnInit {
 
   constructor(
-
+       private apiService: ApiService,
   ) { }
 
 
     /* VARIAVEIS E PROPRIEDADES  */
 
    
+    loading: boolean = true;
+
+
+    public listaGcpvw030Ateste : Gcpvw030DetahamentoDeContratosResponse[];
 
     filtroRegistros: any = {
       pageNumber: 1,
       pageSize: 10,
     };
 
-
-  contratos : any[] = [{
-    id: '1000',
-    code: 'f230fh0g3',
-    name: 'Bamboo Watch',
-    description: 'Product Description',
-    image: 'bamboo-watch.jpg',
-    price: 65,
-    category: 'Accessories',
-    quantity: 24,
-    inventoryStatus: 'INSTOCK',
-    rating: 5
-},
-{
-  id: '1000',
-  code: 'f230fh0g3',
-  name: 'Bamboo Watch',
-  description: 'Product Description',
-  image: 'bamboo-watch.jpg',
-  price: 65,
-  category: 'Accessories',
-  quantity: 24,
-  inventoryStatus: 'INSTOCK',
-  rating: 5
-},
-{
-  id: '1000',
-  code: 'f230fh0g3',
-  name: 'Bamboo Watch',
-  description: 'Product Description',
-  image: 'bamboo-watch.jpg',
-  price: 65,
-  category: 'Accessories',
-  quantity: 24,
-  inventoryStatus: 'INSTOCK',
-  rating: 5
-},
-{
-  id: '1000',
-  code: 'f230fh0g3',
-  name: 'Bamboo Watch',
-  description: 'Product Description',
-  image: 'bamboo-watch.jpg',
-  price: 65,
-  category: 'Accessories',
-  quantity: 24,
-  inventoryStatus: 'INSTOCK',
-  rating: 5
-},
-{
-  id: '1000',
-  code: 'f230fh0g3',
-  name: 'Bamboo Watch',
-  description: 'Product Description',
-  image: 'bamboo-watch.jpg',
-  price: 65,
-  category: 'Accessories',
-  quantity: 24,
-  inventoryStatus: 'INSTOCK',
-  rating: 5
-},
-{
-  id: '1000',
-  code: 'f230fh0g3',
-  name: 'Bamboo Watch',
-  description: 'Product Description',
-  image: 'bamboo-watch.jpg',
-  price: 65,
-  category: 'Accessories',
-  quantity: 24,
-  inventoryStatus: 'INSTOCK',
-  rating: 5
-},];
-
   /* MÉTODOS HERDADOS  */
   ngOnInit(): void {
-
+    this.obterContratosPorFilial();
   }
 
 
@@ -121,5 +54,22 @@ export class AtesteComponent implements OnInit {
     const url = `/#/ateste/contrato/${nuContrato}`
     window.open(url, '_blank');
   }
+
+  
+    public async obterContratosPorFilial(): Promise<void> {
+      try {
+        const response = await this.apiService.get<ApiResponse<Gcpvw030DetahamentoDeContratosResponse[]>>(
+          `${Endpoints.URL_ATESTE}/contratos-filiais`
+        );
+
+        console.log("lista backend", response)
+
+        this.listaGcpvw030Ateste = response.data || [];
+        this.loading = false;
+      } catch (error) {
+        console.error(error, 'obter GCPVW0030');
+
+      }
+    }
 
 }

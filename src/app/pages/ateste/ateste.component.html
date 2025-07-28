@@ -10,9 +10,10 @@
         </div>
 
         <div class="conteudo-ateste">
+            <!-- ACRESCENTAR GN NA VIEW -->
             <h5><span>Gestor Demandante: </span><strong>GETEL - GN Telecomunicações</strong></h5> <!-- DADOS E CONTRATO DO USUÁRIO LOGADO -->
             <div class="table-ateste">
-                <p-table [value]="contratos" [tableStyle]="{ 'width': '100%'}" >
+                <p-table [value]="listaGcpvw030Ateste" [tableStyle]="{ 'width': '100%'}" >
                     <ng-template pTemplate="header">
                         <tr>
                             <th>Nr. Contrato</th>
@@ -25,16 +26,16 @@
                             <th>Ultima Competência Paga</th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-product>
+                    <ng-template pTemplate="body" let-contrato>
                         <tr>
-                            <td (click)="navegarParaDetalhes(product.code)"> {{ product.code }}</td>
-                            <td>{{ product.name }}</td>
-                            <td>{{ product.category }}</td>
-                            <td>{{ product.quantity }}</td>
-                            <td>{{ product.quantity }}</td>
-                            <td>{{ product.quantity }}</td>
-                            <td>{{ product.quantity }}</td>
-                            <td>{{ product.quantity }}</td>
+                            <td (click)="navegarParaDetalhes(contrato.nuContrato)"> {{ contrato.coContrato }}</td>
+                            <td>{{ contrato.noEmpresa }}</td>
+                            <td>{{ contrato.inicioVigencia | date : "dd/MM/yyyy" }}</td>
+                            <td>{{ contrato.fimVigencia | date : "dd/MM/yyyy" }}</td>
+                            <td>{{ contrato.totalContrato }}</td>
+                            <td>{{ contrato.vrExecutado }}</td>
+                            <td>{{ contrato.vrSaldo }}</td>
+                            <td>{{ contrato.deUltimoPagamento }}</td>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
