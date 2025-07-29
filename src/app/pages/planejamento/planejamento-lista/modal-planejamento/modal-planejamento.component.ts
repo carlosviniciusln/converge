@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
 
  interface DomainDTO {
   value: string,
-  label: string
+  label: string,
+  message: string
 }
 @Component({
   selector: 'app-modal-planejamento',
@@ -25,8 +26,8 @@ export class ModalPlanejamentoComponent implements OnInit {
   public form: FormGroup;
   
   permissions: ActionPolicies;
-  labelButtonsLeft : DomainDTO = {label: null, value: null};
-  labelButtonsRight : DomainDTO = {label: null, value: null};
+  labelButtonsLeft : DomainDTO = {label: null, value: null, message: null};
+  labelButtonsRight : DomainDTO = {label: null, value: null, message: null};
   listaPlanejamentos: ResumoPlanejamentoModel[] = [];
   ultimoPlanejamento: ResumoPlanejamentoModel;
   retornoAno: boolean = false;
@@ -79,6 +80,8 @@ export class ModalPlanejamentoComponent implements OnInit {
       this.validarBotoes(this.listaPlanejamentos[0]);
     }
   }
+
+  //TODO: MELHORIA: REFATOR EM JSON OU CRIAR METODOS PARA CADA CENARIO 
 
   validarBotoes(ultimoPlanejamento : ResumoPlanejamentoModel): void {
     const tipo = ultimoPlanejamento?.tipo.replace(/^\d+\s*-\s*/, "");
@@ -164,24 +167,35 @@ export class ModalPlanejamentoComponent implements OnInit {
     window.location.href = '/#/planejamento-orcamentario-detalhe'
   }
 
-  async mensagemBotaoClick(acao) {
+  async mensagemBotaoClick(cenario: any) {
 
-    this.validarAno();
-    if(this.retornoAno){
-      return;
-    }
 
-    let mensagem = '';
-    let retorno = '';
+    /*
+     Regra de negócio: Botão Ajuste Programação ao ser acionado deverá gerar o próximo Tipo para o respectivo ano/exercício.
+
+     RN 40:Ao clicar no botão Ajuste Programação, a partir do último Tipo/Status que deverá ser igual a Programação ou igual a Ajuste Programação e 
+     deverá gerar a próxima programação de Ajuste Programação do planejamento do respectivo ano/exercício.
+     RN41: Emitir mensagem através de pop-up para confirmação da execução “Tem certeza de que deseja gerar a Programação do Planejamento do Exercício 9999 – 99 – XXXXXXXXXXXX?” Sim ou Não.
+           Onde: 9999 é o ano do exercício. 99 – é o número do Tipo sequencial.XXXXXXXXXXXX – é o nome/descrição do Tipo que neste caso será sempre Ajuste Programação.
+           Exemplo: “Tem certeza de que deseja gerar a Programação do Planejamento do Exercício 2026 – 01 – Ajuste Programação?” Sim/Não
+           Quando = Não, apenas apagar o pop-up.
+           Quando = Sim, seguir o processo.
+
+
     
+    */
 
-    if (acao == "ajuste") {
-      mensagem = `Tem certeza de que deseja gerar a Programação do Planejamento do ${this.anoSelecionado} - ${this.ultimoPlanejamento.tipo}?`
-    }
+
+    // this.validarAno();
+    // if(this.retornoAno){
+    //   return;
+    // }
+
+
 
     const alert = await Swal.fire({
-      title: '',
-      text: mensagem,
+      title: `Exercício ${this.anoSelecionado}`,
+      text: `Tem certeza de que deseja cancelar o Planejamento ${this.ultimoPlanejamento.tipo}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim!',
@@ -197,7 +211,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     if (!alert) {
       return;
     }
-    this.atualizarPlanejamento(acao);
+    this.atualizarPlanejamento(cenario.value);
   }
 
   async validarAno() {
