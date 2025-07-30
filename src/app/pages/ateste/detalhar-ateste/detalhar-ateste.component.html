@@ -1,5 +1,5 @@
 <div class="content">
-    <div style="background-color: #f4f4f4; padding: 24px 24px 0px 24px;">
+    <div style="background-color: #f4f4f4; padding: 24px 24px 24px 24px;">
         <app-navbar-ateste></app-navbar-ateste>
 
         <div class="header-ateste" style=" text-align: justify;">
@@ -86,40 +86,52 @@
         <div class="p-resumo-ateste" style="display: flex;
             width: 100%;">
             <div style="width: 80%;">
-                <table style="width: 100%;">
-                    <tr style="color: black; font-weight: 600;">
-                        <th>RESUMO DE EXECUÇÃO CONTRATUAL</th>
-                        <th>Valor Global</th>
-                        <th>Valor Já Consumido</th>
-                        <th>Saldo Disponível</th>
-                    </tr>
-                    <tr class="p-td" style="background-color: #6a9fff;color: black; font-weight: 500;">
-                        <td>VISÃO GERAL DO CONTRATO</td>
-                        <td>R$ 45.282.181,18 </td>
-                        <td>R$ 13.200.260,05</td>
-                        <td>R$ 32.081.921,13</td>
-                    </tr>
-                </table>
+              <p-table [value]="resumoExecucao" styleClass="p-datatable-gridlines">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="col-5">RESUMO DE EXECUÇÃO CONTRATUAL</th>
+                    <th>Valor Global</th>
+                    <th>Valor Já Consumido</th>
+                    <th>Saldo Disponível</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td>{{ row.descricao }}</td>
+                    <td>{{ row.valorGlobal }}</td>
+                    <td>{{ row.valorConsumido }}</td>
+                    <td>{{ row.saldoDisponivel }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              
     
-                <table style="width:100%;">
-                    <tr>
-                        <td colspan="5" class="p-td" style="background-color: #d3d7df;color: black; font-weight: 300;"><strong>VISÃO POR RUBRICA</strong></td>
-                      </tr>
-                      <tr style="background-color: #b6cfff;color: black; font-weight: 300;">
-                        <td class="p-td">3103-02</td>
-                        <td class="p-td" style="width: 250px;">Aquisição de Software</td>
-                        <td class="p-td" style="width: 150px;">R$ 45.282.181,18 </td>
-                        <td class="p-td">R$ 13.200.260,05</td>
-                        <td class="p-td">R$ 32.081.921,13</td>
-                      </tr>
-                      <tr style="background-color: #b6cfff;color: black; font-weight: 300;">
-                        <td class="p-td">3103-04</td>
-                        <td class="p-td">Aquisição Direitos de Uso de Software</td>
-                        <td class="p-td">R$ 45.282.181,18 </td>
-                        <td class="p-td">R$ 13.200.260,05</td>
-                        <td class="p-td">R$ 32.081.921,13</td>
-                      </tr>
-                </table>
+              <p-table [value]="rubricas" styleClass="p-datatable-gridlines">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th colspan="5" style="color: black; font-weight: 300;">
+                      <strong>VISÃO POR RUBRICA</strong>
+                    </th>
+                  </tr>
+                  <tr style="background-color: #b6cfff; color: black; font-weight: 300;">
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Valor Global</th>
+                    <th>Valor Já Consumido</th>
+                    <th>Saldo Disponível</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rubrica>
+                  <tr>
+                    <td class="col-1">{{ rubrica.codigo }}</td>
+                    <td class="col-4">{{ rubrica.descricao }}</td>
+                    <td>{{ rubrica.valorGlobal }}</td>
+                    <td>{{ rubrica.valorConsumido }}</td>
+                    <td>{{ rubrica.saldoDisponivel }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              
             </div>
 
             
@@ -138,8 +150,8 @@
 
         <div class="conteudo-ateste">
           
-            <div class="table-ateste" style="padding-top: 15px;">
-              <h5><strong>ULTIMOS ATESTES REGISTRADOS</strong></h5> <!-- DADOS E CONTRATO DO USUÁRIO LOGADO -->
+            <!-- <div class="table-ateste" style="padding-top: 15px; padding-bottom: 15px;">
+              <h5><strong>ULTIMOS ATESTES REGISTRADOS</strong></h5>  DADOS E CONTRATO DO USUÁRIO LOGADO
                 <p-table [value]="contratos" [tableStyle]="{ 'width': '100%'}" >
                     <ng-template pTemplate="header">
                         <tr>
@@ -172,6 +184,6 @@
                 <div class="card flex justify-center">
                     <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"  [first]="0"  [rows]="1" [totalRecords]="1" [rowsPerPageOptions]="[10, 20, 50]" ></p-paginator>
                 </div>
-            </div>
+            </div> -->
     </div>
 </div>  

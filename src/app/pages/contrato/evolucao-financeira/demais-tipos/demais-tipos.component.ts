@@ -169,6 +169,8 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
         `${Endpoints.URL_CONTRATOS}/detalhe-resumo-pagamento-evolucao-financeira?nuContrato=${nuContrato}&nuVigencia=${nuVigencia?.nU_VIGENCIA}&coRubrica=${coRubricaSelecionada}`
       );
       this.listaResumoPagamentos = response.data;
+
+      console.log(this.listaResumoPagamentos, "TEST 1")
       this.loading = false;
     } catch (error) {
       console.error('Error fetching data', error);

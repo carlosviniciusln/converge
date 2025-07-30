@@ -1,153 +1,319 @@
-
 <div class="modal-header">
-        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-          <span aria-hidden="true">×</span>
-        </button>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
 </div>
 
-<div class="conteudo" style="padding: 24px 24px 24px 24px;" >
-    <app-navbar-ateste></app-navbar-ateste>
+<div class="conteudo" style="padding: 24px 24px 24px 24px">
+  <app-navbar-ateste></app-navbar-ateste>
 
-    <div class="header-ateste" style=" text-align: justify;">
-        <h4>
-            Atestamos a execução dos bens/serviços recebidos para o contrato e competência abaixo citados, conforme
-            disposto no MN TE236, itens 3.2.3.1 e 4.3.16, considerando atendidas as condições e obrigações contratuais,
-            estando esta unidade de pleno acordo com a quitação dos serviços para o periodo descrito e, portando, solicitamos que
-            os trâmites de pagamento sejam providenciados conforme informações abaixo.
-        
-        </h4>
-    </div>
+  <div class="header-ateste" style="text-align: justify">
+    <h4>
+      Atestamos a execução dos bens/serviços recebidos para o contrato e
+      competência abaixo citados, conforme disposto no MN TE236, itens 3.2.3.1 e
+      4.3.16, considerando atendidas as condições e obrigações contratuais,
+      estando esta unidade de pleno acordo com a quitação dos serviços para o
+      periodo descrito e, portando, solicitamos que os trâmites de pagamento
+      sejam providenciados conforme informações abaixo.
+    </h4>
+  </div>
 
-    <div class="" style="border: 1px solid black;">
-        <form [formGroup]="form" style="padding: 10px;">
-          <div class="row">
-                <div class="col-md-6">
-                  <label for="noCriador">Contrato</label>
-                  <input formControlName="noCriador" id="noCriador" type="text" class="form-control" />
-                </div>
-                <div class="col-md-6">
-                  <label for="dhCadastro">Fornecedor</label>
-                  <input formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
-                </div>
+  <div class="">
+    <form [formGroup]="form" style="padding: 10px">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="noContrato">Contrato</label>
+          <input
+            pInputText 
+            formControlName="noContrato"
+            id="noContrato"
+            type="text"
+            class="form-control"
+          />
+        </div>
+        <div class="col-md-10">
+          <label for="noFornecedor">Fornecedor</label>
+          <input
+            formControlName="noFornecedor"
+            id="noFornecedor"
+            type="text"
+            class="form-control"
+          />
+        </div>
 
-                <div class="col-md-12" style="padding-top: 10px;">
-                  <label for="noCriador">Objeto</label>
-                  <textarea formControlName="deObservacao" id="deObservacao"
-                    placeholder="Digite..."
-                    class="form-control border border-light rounded" rows="2"></textarea>
-                </div>
-   
-              </div>  
+         <div class="col-md-12" style="padding-top: 10px">
+          <label for="noObjeto">Objeto</label>
+          <textarea
+            formControlName="noObjeto"
+            id="noObjeto"
+            placeholder="Digite..."
+            class="form-control border border-light rounded"
+            rows="2"
+          ></textarea>
+        </div>
+      </div>
 
-              <div class="" >
-                  <div style="display: flex; padding-top: 20px;
-    padding-bottom: 20px;">
+      <div
+        style="
+          display: flex;
+          padding-top: 20px;
+          justify-content: space-around;
+          align-items: center;
+        "
+      >
+        <div class="col-md-2 pl-0" style="align-self: flex-end;">
+          <label for="noVigencia">Vigência Atual</label>
+        </div>
 
-        <div></div>
-                    <div class="col-md-2 pl-0" style="display: flex;
-                        align-items: flex-start;
-                        padding-right: 24px;">
-                      <label for="dtInicio">Vigencia Atual:</label>
-                    </div>
-                    <div class="col-md-2 pl-0">
-                      <label for="dtInicio">Início</label>
-                      <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
-                    </div>
-                    <div class="col-md-2 pl-0">
-                      <label for="dtfim">Fim</label>
-                      <input formControlName="dtfim" id="dtfim" type="date" class="form-control"/>
-                    </div>
-                  <!-- ACRESCENTAR UMA DIV SEPARADORA -->
-                    <div class="col-md-2 pl-0">
-                      <label for="noCriador">Competência</label>
-                      <input formControlName="noCriador" id="noCriador" type="text" class="form-control"
-                      [ngClass]="{
-                        'is-invalid': false
-                      }" mask="00/0000" placeholder="MM/YYYY" />
-                    
-                    </div>
-                    <div class="col-md-2 pl-0">
-                      <label for="dtInicio">Início</label>
-                      <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
-                    </div>
-                    <div class="col-md-2 pl-0">
-                      <label for="dtfim">Fim</label>
-                      <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
-                    </div>
-                  </div>
-              </div>
-            <!-- <div class="" >
-              <label for="dtInicio">Vigencia Atual</label>
-                <div style="display: flex;">
-                  <div class="col-md-6 pl-0">
-                    <label for="dtInicio">Início</label>
-                    <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" />
-                  </div>
-                  <div class="col-md-6 pl-0">
-                    <label for="dtfim">Fim</label>
-                    <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
-                  </div>
-                </div>
-            </div> -->
-
-        
-            <div class="">
-              <div style="display: flex;">
-            
-              </div>
+        <div style="display: flex" class="col-10">
+          <div class="col-md-4 pl-0" style="    padding-right: 16px;
+          display: flex
+      ;
+          width: 200px;
+          align-items: flex-end;
+          justify-content: flex-end;">
+            <label for="noPeriodoVigencia">Periodo vigência:</label>
           </div>
 
-                
-                <!-- <div class="col-2 pr-0 ">
-                  <label for="dtfim">Competencia</label>
-                  <input formControlName="dtfim" id="dtfim" type="date" class="form-control" />
-                </div> -->
-                
-              
+          <div class="col-md-4 pl-0">
+            <label for="dtInicioVigencia">Início</label>
+            <input
+              formControlName="dtInicioVigencia"
+              style="text-align: center"
+              type="date"
+              class="form-control"
+            />
+          </div>
+          <div class="col-md-4 pl-0">
+            <label for="dtFimVigencia">Fim</label>
+            <input
+              formControlName="dtFimVigencia"
+              style="text-align: center"
+              type="date"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
 
-                <!-- <div style="padding-top: 20px;">
-                  <h4 class="modal-title" id="modal-basic-title" for="deObservacao">
-                    <b>Observa&ccedil;&otilde;es</b>
-                  </h4>
-                  <textarea formControlName="deObservacao" id="deObservacao"
-                  placeholder="Digite..."
-                    class="form-control border border-light rounded" rows="4"></textarea>
-                </div> -->
-            <!-- </div>   -->
-<!--       
-          <div class="footer-ateste" style="display: flex; padding-bottom: 24px;">
-    
-            <div style="display: flex;
-                gap: 10px;
-                flex: 1;
-                height: 100px;
-                flex-direction: column;
-                padding-left: 15px;
-                justify-content: flex-end;
-                align-items: flex-end;">
-               <div style="    display: flex
-               ;
-                   gap: 15px;">
-                <button class="btn-sm btn-default" type="submit">Salvar Ateste</button>
-                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
-               </div> 
+      <div
+        style="display: flex; padding-top: 20px; justify-content: space-around"
+      >
+        <div class="col-md-2 pl-0">
+          <label for="noCompetencia">Competência</label>
+          <input
+            style="text-align: center"
+            type="text"
+            formControlName="noCompetencia"
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': false
+            }"
+            mask="00/0000"
+            placeholder="MM/YYYY"
+          />
+        </div>
 
-               <div style="    display: flex
-               ;
-                   gap: 15px;">
-                <button class="btn-sm btn-default" type="submit">Salvar Ateste</button>
-                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
-               </div>
+        <div style="display: flex" class="col-10">
+          <div class="col-md-4 pl-0" style="
+          display: flex
+      ;
+          width: 200px;
+          align-items: flex-end;
+          justify-content: flex-end;">
+            <label for="dtInicio">Periodo competência:</label>
+          </div>
+
+          <div class="col-md-4 pl-0">
+            <label for="dtInicioCompetencia">Início</label>
+            <input
+              formControlName="dtInicioCompetencia"
+              style="text-align: center"
+              type="date"
+              class="form-control"
+            />
+          </div>
+          <div class="col-md-4 pl-0">
+            <label for="dtFimCompetencia">Fim</label>
+            <input
+              formControlName="dtFimCompetencia"
+              style="text-align: center"
+              type="date"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div style="padding-top: 20px">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>
+              <b>DETALHAMENTO DOS VALORES A PAGAR</b>
+            </h5>
+          </div>
+        </div>
+
+        <p-table
+          #dt
+          [value]="faturamentos.controls"
+          dataKey="id"
+          [showCurrentPageReport]="true"
+          [rowHover]="true"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="col-7">Item(s) de Faturamento</th>
+              <th class="col-3">Valor apurado</th>
+              <th class="col-2">
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary"
+                  (click)="adicionarFaturamento()"
+                >
+                  <i class="tim-icons icon-simple-add"></i>
+                </button>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-faturamento let-i="rowIndex">
+            <tr [formGroup]="faturamento">
+              <td>
+
+                <!--- 
+                    ALTERAR PARA DROPDOWN PARTIR DE UMA LISTA EM BANCO SERVIÇO TIPO / DEVE PODE SER UMA LISTA 
+                -->
+                <div class="c-dropdown">
+                <p-dropdown [options]="listaGcptb018TipoServico"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event)"
+                                    formControlName="itens"
+                                    placeholder="Bens/Serviços"></p-dropdown>
+                </div>
+              <td>
+                <input
+                  formControlName="valor"
+                  class="form-control"
+                  placeholder="Valor apurado"
+                />
+              </td>
+              <td>
+                <button type="button" class="btn-sm btn-secondary" (click)="removerFaturamento(i)">
+                  <i class="tim-icons icon-trash-simple"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td class="text-end fw-bold">VALOR TOTAL PARA PAGAMENTO</td>
+              <td class="fw-bold" style="text-align: end">
+                {{ 0 | currency : "BRL" : "symbol" : "1.2-2" }}
+              </td>
+              <td></td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="3">Nenhum contato cadastrado.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div>
+          <div style="padding: 20px 0px 10px 0px;">
+            <h5>Valor de RETENÇÃO</h5>
+            <div style="display: flex; gap:15px">
+                <input
+                  formControlName="noCriador"
+                  id="noCriador"
+                  type="text"
+                  class="form-control col-9"
+                />
+
+                <input
+                  formControlName="vrRetencao"
+                  id="vrRetencao"
+                  type="text"
+                  value="R$"
+                  class="form-control col-2"
+                />
             </div>
-         </div> -->
-        </form>
-    </div>
+          </div>
+
+          <div>
+
+            <h5>Valor de PENALIDADES</h5>
+            <div style="display: flex; gap:15px">
+                <input
+                  formControlName="noPenalidades"
+                  id="noPenalidades"
+                  type="text"
+                  class="form-control col-9"
+                />
+
+                <input
+                  formControlName="vrPenalidades"
+                  id="vrPenalidades"
+                  value="R$"
+                  type="text"
+                  class="form-control col-2"
+                />
+            </div>
+          </div>
+
+        </div>
 
 
+        <div style="display: flex;">
+
+          <div class="col-md-8" style="padding: 24px 0px 24px 0px;">
+            <h4 class="modal-title" id="modal-basic-title" for="deObservacao">
+              <b>Observa&ccedil;&otilde;es</b>
+            </h4>
+            <textarea formControlName="deObservacao" id="deObservacao"
+            placeholder="Digite..."
+              class="form-control border border-light rounded" rows="4">
+            </textarea>
+  
+          </div>
+
+          
+        <div class="col-4" style="display: flex;
+            align-content: flex-end;
+            justify-content: space-around;
+            align-items: center;">
+          <p-toast></p-toast>
+          <p-fileUpload 
+              mode="basic" 
+              chooseLabel="Anexar arquivo" 
+              chooseIcon="pi pi-upload"
+              name="demo[]" 
+              url="teste" 
+              accept="image/*"  
+              (onUpload)="onUpload($event)"
+             >
+            </p-fileUpload>
+      </div>
+
+        </div>
+
+
+      </div>
+    </form>
+
+          <div class="footer-ateste" style="display: flex;
+              gap: 15px;
+              padding: 0px 24px 0px 0px;
+              justify-content: flex-end;">
+                <button style="background-color: #005ca9;" class="btn-sm btn-default" type="submit">Salvar Ateste</button>
+                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+         </div>
+         
+  </div>
 </div>
-
-
-
-
-
-

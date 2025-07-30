@@ -7,7 +7,7 @@ import {
 } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { LoginComponent } from 'src/app/pages/login/login.component';
 
 @Injectable({ providedIn: 'root' })
@@ -38,10 +38,7 @@ export class AuthGuard implements CanActivate {
     // pegar o perfil e verificar se ele tem o perfil técnico, se tiver liberar, se não bloqueia, manda mensagem e redireciona para o dashbord
     const perfil = this.auth.getUserProfile();
 
-    
-    console.log(perfil, "PEfil")
-
-    if(perfil === 'Perfil Técnico'){
+    if(perfil === PerfisEnum.FiscalTecnico){
       return true;
     }
   
