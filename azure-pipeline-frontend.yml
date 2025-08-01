@@ -37,6 +37,14 @@ steps:
     node -v
     npm -v
   displayName: 'Configurar Node.js no PATH'
+
+- script: |
+    echo "Configurando binario.caixa..."
+    npm config set proxy http://binario.caixa:8081/repository/npm-all/
+    npm config set https_proxy http://binario.caixa:8081/repository/npm-all/
+    npm config set registry http://binario.caixa:8081/repository/npm-all/
+  displayName: 'Parando instância do IIS'
+
 - script: |
     echo "Instalando dependências do projeto..."
     set PATH=C:\Program Files\nodejs;%PATH%
