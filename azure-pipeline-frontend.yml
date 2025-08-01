@@ -9,21 +9,21 @@ pool:
 
 variables:
   environment: 'development'
-  siteName: '1014-rh.cegti.des.caixa'
-  websitePath: 'E:\Websites\1014rh.cegti.des.caixa'
-  distFrontend: 'dist/portal-rh-frontend'
+  siteName: '1002sigvc.des.caixa'
+  websitePath: 'E:\Websites\1002sigvc.des.caixa'
+  distFrontend: 'dist/front-gc-painel-gerencial'
 
 steps:
 - script: |
     echo "Definindo variáveis de ambiente..."
     if "%Build_SourceBranchName%"=="master" (
         echo ##vso[task.setvariable variable=environment]production
-        echo ##vso[task.setvariable variable=siteName]1023rh.cegti.df.caixa
-        echo ##vso[task.setvariable variable=websitePath]E:\Websites\1023rh.cegti.df.caixa
+        echo ##vso[task.setvariable variable=siteName]1002sigvc.des.caixa
+        echo ##vso[task.setvariable variable=websitePath]E:\Websites\1002sigvc.des.caixa
     ) else (
         echo ##vso[task.setvariable variable=environment]development
-        echo ##vso[task.setvariable variable=siteName]1014-rh.cegti.des.caixa
-        echo ##vso[task.setvariable variable=websitePath]E:\Websites\1014rh.cegti.des.caixa
+        echo ##vso[task.setvariable variable=siteName]1002sigvc.des.caixa
+        echo ##vso[task.setvariable variable=websitePath]E:\Websites\1002sigvc.des.caixa
     )
   displayName: 'Definir Variáveis de Ambiente'
 
