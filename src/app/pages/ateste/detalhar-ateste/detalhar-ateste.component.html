@@ -9,11 +9,11 @@
             </h4>
         </div>
 
-        <div class="detalhe-ateste">
+         <div class="detalhe-ateste">
             <div class="card-body">
                 <div class="row">
                   <div class="col-md-3 col-sm-6 text-right">Contrato:</div>
-                  <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.cO_CONTRATO }}</b></div>
+                  <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2?.cO_CONTRATO }}</b></div>
       
                   <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
                   <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.nO_FORNECEDOR }}</b></div>
@@ -49,7 +49,7 @@
       
                 <div class="row">
                   <div class="col-md-3 col-sm-6 text-right">Valor Global Total:</div>
-                  <div class="col-md-3 col-sm-6"><b>{{ somaVigencias(this.Contrato.gcptb006Vigencias) | currency : "BRL"
+                  <div class="col-md-3 col-sm-6"><b>{{ DetalheContrato[0].totalContrato | currency : "BRL"
                       }}</b></div>
       
                   <div class="col-md-3 col-sm-6 text-right">Valor Global Vigente:</div>
@@ -82,11 +82,12 @@
                   <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.contratO_TIPO }}</b></div>
                 </div>
               </div>
-        </div>
+        </div> 
+        
         <div class="p-resumo-ateste" style="display: flex;
             width: 100%;">
             <div style="width: 80%;">
-              <p-table [value]="resumoExecucao" styleClass="p-datatable-gridlines">
+              <p-table [value]="DetalheContrato" styleClass="p-datatable-gridlines">
                 <ng-template pTemplate="header">
                   <tr>
                     <th class="col-5">RESUMO DE EXECUÇÃO CONTRATUAL</th>
@@ -97,16 +98,16 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-row>
                   <tr>
-                    <td>{{ row.descricao }}</td>
-                    <td>{{ row.valorGlobal }}</td>
-                    <td>{{ row.valorConsumido }}</td>
-                    <td>{{ row.saldoDisponivel }}</td>
+                    <td> VISÃO GERAL DO CONTRATO</td>
+                    <td> R$ {{ row.totalContrato | number:'1.2-2':'pt-BR' }}</td>
+                    <td> R$ {{ row.vrExecutado | number:'1.2-2':'pt-BR' }}</td>
+                    <td> R$ {{ row.vrSaldo | number:'1.2-2':'pt-BR'}}</td>
                   </tr>
                 </ng-template>
               </p-table>
               
     
-              <p-table [value]="rubricas" styleClass="p-datatable-gridlines">
+              <p-table [value]="DetalheExecutadoContrato?.rubrica" styleClass="p-datatable-gridlines">
                 <ng-template pTemplate="header">
                   <tr>
                     <th colspan="5" style="color: black; font-weight: 300;">
@@ -123,11 +124,11 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rubrica>
                   <tr>
-                    <td class="col-1">{{ rubrica.codigo }}</td>
-                    <td class="col-4">{{ rubrica.descricao }}</td>
-                    <td>{{ rubrica.valorGlobal }}</td>
-                    <td>{{ rubrica.valorConsumido }}</td>
-                    <td>{{ rubrica.saldoDisponivel }}</td>
+                    <td class="col-1">{{ rubrica.nuRubrica }}</td>
+                    <td class="col-4">{{ rubrica.coRubrica }}</td>
+                    <td> R$ {{ rubrica.totalContrato | number:'1.2-2':'pt-BR' }}</td>
+                    <td> R$ {{ rubrica.vrExecutado | number:'1.2-2':'pt-BR' }}</td>
+                    <td> R$ {{ rubrica.vrSaldo | number:'1.2-2':'pt-BR' }}</td>
                   </tr>
                 </ng-template>
               </p-table>
