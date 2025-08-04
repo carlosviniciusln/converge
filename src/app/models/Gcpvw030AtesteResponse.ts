@@ -1,6 +1,6 @@
 import { Select2Data } from "ng-select2-component";
 
-export interface Gcpvw030DetahamentoDeContratosResponse{
+export interface Gcpvw030DetalhamentoDeContratosResponse{
 
     nuContrato: string,
     coContrato: string,
@@ -29,13 +29,13 @@ export interface Gcpvw030DetahamentoDeContratosResponse{
 
 
 export class Gcpvw030AtesteResponse{
-    contratos : Gcpvw030DetahamentoDeContratosResponse[];
+    contratos : Gcpvw030DetalhamentoDeContratosResponse[];
     listaFornecedor: string[];
     listaContratos: string[];
     totalRecords: number;
 
     constructor(
-        contratos : Gcpvw030DetahamentoDeContratosResponse[],
+        contratos : Gcpvw030DetalhamentoDeContratosResponse[],
         listaFornecedor: string[],
         listaContratos: string[],
     )

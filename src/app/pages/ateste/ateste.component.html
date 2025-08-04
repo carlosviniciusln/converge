@@ -51,8 +51,8 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-contrato>
-                        <tr>
-                            <td (click)="navegarParaDetalhes(contrato.nuContrato)"> {{ contrato.coContrato }}</td>
+                        <tr (click)="navegarParaDetalhes(contrato.nuContrato)" style="cursor: pointer;">
+                            <td> {{ contrato.coContrato }}</td>
                             <td>{{ contrato.noEmpresa }}</td>
                             <td>{{ contrato.inicioVigencia | date : "dd/MM/yyyy" }}</td>
                             <td>{{ contrato.fimVigencia | date : "dd/MM/yyyy" }}</td>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Select2Data } from 'ng-select2-component';
 import { ApiResponse } from 'src/app/models/api-response';
-import { Gcpvw030AtesteResponse, Gcpvw030DetahamentoDeContratosResponse } from 'src/app/models/Gcpvw030AtesteResponse';
+import { Gcpvw030AtesteResponse, Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030AtesteResponse';
 import { ApiService } from 'src/app/services/api.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
 
@@ -22,7 +22,7 @@ export class AtesteComponent implements OnInit {
     /* VARIAVEIS E PROPRIEDADES  */
 
    
-    public listaGcpvw030Ateste : Gcpvw030DetahamentoDeContratosResponse[];
+    public listaGcpvw030Ateste : Gcpvw030DetalhamentoDeContratosResponse[];
     public selectTiposContrato: Select2Data;
     public selectTiposFornecedor: Select2Data;
     public sgFilial : string;

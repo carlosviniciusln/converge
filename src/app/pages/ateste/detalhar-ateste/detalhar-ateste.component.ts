@@ -6,6 +6,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
 import { RegistrarAtesteComponent } from '../registrar-ateste/registrar-ateste.component';
+import { Gcpvw030ObterDetalhesPorContratoResponse } from 'src/app/models/Gcpvw030ObterDetalhesPorContratoResponse';
 
 @Component({
   selector: 'app-detalhar-ateste',
@@ -21,54 +22,15 @@ export class DetalharAtesteComponent implements OnInit {
   ) { }
 
   public nuContrato : string;
-  public rubricas  = [
-    {
-      codigo: '3103-02',
-      descricao: 'Aquisição de Software',
-      valorGlobal: 'R$ 45.282.181,18',
-      valorConsumido: 'R$ 13.200.260,05',
-      saldoDisponivel: 'R$ 32.081.921,13'
-    },
-    {
-      codigo: '3103-02',
-      descricao: 'Aquisição de Software',
-      valorGlobal: 'R$ 45.282.181,18',
-      valorConsumido: 'R$ 13.200.260,05',
-      saldoDisponivel: 'R$ 32.081.921,13'
-    }
-  ];
-  
-  public resumoExecucao = [
-    {
-      descricao: 'VISÃO GERAL DO CONTRATO',
-      valorGlobal: 'R$ 45.282.181,18',
-      valorConsumido: 'R$ 13.200.260,05',
-      saldoDisponivel: 'R$ 32.081.921,13'
-    }
-  ];
-  
-  public contratos : any[] = [{
-    id: '1000',
-    code: 'f230fh0g3',
-    name: 'Bamboo Watch',
-    description: 'Product Description',
-    image: 'bamboo-watch.jpg',
-    price: 65,
-    category: 'Accessories',
-    quantity: 24,
-    inventoryStatus: 'INSTOCK',
-    rating: 5
-}];
   public ContratoV2: ContratoResponseV2;
-  public Contrato: ContratoResponse;
+  public DetalheExecutadoContrato: Gcpvw030ObterDetalhesPorContratoResponse;
+  public DetalheContrato : any[]
   
   ngOnInit(): void {
 
     this.nuContrato = this.route.snapshot.paramMap.get('id');
-    console.log(this.nuContrato, "nuContrato")
     this.obterContrato();
-
-    // criar endpoint para carregar dados do contrato
+    this.ObterDetalhesExecutadoContrato();
   }
 
     public async obterContrato(): Promise<void> {
@@ -78,26 +40,33 @@ export class DetalharAtesteComponent implements OnInit {
           `${Endpoints.URL_CONTRATOS}/detalhe-contrato?nuContrato=` + this.nuContrato
         );
 
-        const response = await this.apiService.get<ApiResponse<ContratoResponse>>(
-          `${Endpoints.URL_CONTRATOS}/` + this.nuContrato
-        );
-        this.Contrato = response.data;
         this.ContratoV2 = responseV2.data;
      
       } catch (error) {
         console.error(error, 'obterContrato');
-        //this.loading = true;
       }
     }
 
-    somaVigencias(vigencias: any[]): number{
-      let vrGlobalTotal = 0;
+    public async ObterDetalhesExecutadoContrato() : Promise<void>{
+      try {
+      const response = await this.apiService.get<ApiResponse<Gcpvw030ObterDetalhesPorContratoResponse>>(
+        `${Endpoints.URL_CONTRATOS}/detalhe-executado-contrato?nuContrato=` + this.nuContrato
+      );
+
+        console.log()
+        this.DetalheContrato = [{
+            totalContrato: response.data.contrato.totalContrato,
+            vrExecutado: response.data.contrato.vrExecutado,
+            vrSaldo: response.data.contrato.vrSaldo
+        }]
+
+      this.DetalheExecutadoContrato = response.data;
+
+      } catch (error) {
+      console.error(error, 'obterContrato');
   
-      vigencias.forEach(element => {
-        vrGlobalTotal += element.vrGlobal
-      });
-      return vrGlobalTotal
     }
+  }
 
     openModalRegistrarAteste() {
         const modalRef = this.modalService.open(RegistrarAtesteComponent, {
@@ -107,6 +76,7 @@ export class DetalharAtesteComponent implements OnInit {
           backdrop: 'static',
           keyboard: false,
         });
+
         // modalRef.componentInstance.nuContrato = nuContrato;
     
         // modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
