@@ -2,6 +2,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
+import { FileUploadModule } from 'primeng/fileupload';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AppComponent } from "./app.component";
@@ -81,6 +82,7 @@ const maskConfig: Partial<IConfig> = {
     MatIconModule,
     SharedLibraryModule,
     MatToolbarModule,MatTableModule,
+    FileUploadModule,
     NgxMaskModule.forRoot(maskConfig)
   ],
   exports: [

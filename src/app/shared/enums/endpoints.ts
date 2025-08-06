@@ -42,7 +42,9 @@ export enum Endpoints {
 
   URL_EXECUCAO_ORCAMENTARIA = 'v1/execucaoOrcamentaria',
 
-  URL_PREPOSTO = 'v1/Preposto'
+  URL_PREPOSTO = 'v1/Preposto',
+
+  URL_ATESTE = 'v1/Ateste'
 
 
 }
