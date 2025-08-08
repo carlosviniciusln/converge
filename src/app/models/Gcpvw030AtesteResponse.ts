@@ -20,7 +20,7 @@ export interface Gcpvw030DetalhamentoDeContratosResponse{
     dtUltimoPagamento: Date,
     deUltimoPagamento: string,
     dtProximaCompetencia: Date,
-    dtInicioPeriodoCompetencia: Date,
+    dtIniPeriodoCompetencia: Date,
     dtFimPeriodoCompetencia: Date,
 
 
