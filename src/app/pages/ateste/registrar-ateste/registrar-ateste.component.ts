@@ -67,13 +67,15 @@ calcularTotal(values: any[]) {
           coContrato: [this.contrato[0].coContrato, [Validators.required]],
           noEmpresa: [this.contrato[0].noEmpresa, [Validators.required]],
           noObjeto: [this.contrato[0].noObjeto, [Validators.required]],
+          nuVigencia: [this.contrato[0].nuVigencia, [Validators.required]],
           inicioVigencia: new FormControl(this.contrato[0].inicioVigencia?.substring(0, 10), [Validators.required]),
           fimVigencia: new FormControl(this.contrato[0].fimVigencia?.substring(0, 10), [Validators.required]),
-          deCompetencia: new FormControl(this.contrato[0].dtProximaCompetencia),
+          // deCompetencia: new FormControl(this.onDtInicioChange(this.contrato[0].deCompetencia)),
           dtInicioPeriodoCompetencia: new FormControl(this.contrato[0].dtInicioPeriodoCompetencia?.substring(0, 10), [Validators.required]),
           dtFimPeriodoCompetencia: new FormControl(this.contrato[0].dtFimPeriodoCompetencia?.substring(0, 10)),
           deRetencao: new FormControl('', [Validators.required]),
           deObservacao: new FormControl(''),
+          vrPagamento: new FormControl(''),
           vrRetencao: new FormControl(''),
           dePenalidade: new FormControl('', [Validators.required]),
           vrMulta: new FormControl(''),
@@ -86,6 +88,15 @@ calcularTotal(values: any[]) {
       return this.form.get('faturamentos') as FormArray;
     }
 
+    onDtInicioChange(value: any): string {
+      const date = new Date(value);
+      let month = date.getMonth(); // Os meses em JavaScript são baseados em zero
+      let year = date.getFullYear();
+
+      const formattedMonth = month < 10 ? `0${month}` : month.toString();
+  
+      return `${formattedMonth}/${year}`;
+    }
 
     
     criarFaturamento(faturamento: number): FormGroup{
@@ -108,6 +119,7 @@ onUpload(event: any): void {
   if (file) {
     this.selectFile = file;
     this.form.get('arquivoAnexado')?.setValue(file);
+    this.toastr.success('Anexo salvo com sucesso.', 'Sucesso');
   }
 }
 
@@ -133,8 +145,10 @@ removerFaturamento(index: number) {
     }
 
     public onSubmit() {
-      console.log("DADOS", this.form);
     
+      this.form.get('vrPagamento')?.setValue(this.total);
+      console.log("DADOS", this.form);
+
       const formData = this.toFormData(this.form);
 
       formData.forEach((value, key) => {
@@ -186,13 +200,16 @@ removerFaturamento(index: number) {
   public async Cadastrar(formValue: any): Promise<void> {
     try {
       await this.http.post(`${environment.end_point}/${Endpoints.URL_ATESTE}`, formValue).subscribe({
-        next: res => console.log('Sucesso', res),
-        error: err => console.error('Erro', err)
+        next: res => {
+          this.toastr.success('Ateste salvo com sucesso', 'Sucesso'),
+          this.activeModal.dismiss();
+        },
+        
+        error: err => {
+          console.error('Erro', err)
+        }
+         
       });
-      
-
-      // this.toastr.success('Cadastro efetuado com sucesso.', 'Sucesso');
-      // this.activeModal.dismiss();
     } catch (error) {
     }
   }

@@ -108,7 +108,7 @@ export class ApiService {
 
   private obterHeadersBase(): HttpHeaders {
     return new HttpHeaders({
-      'Content-Type': '*/*',
+      'Content-Type': 'application/json',
       Accept: 'application/json',
       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
       'Access-Control-Allow-Origin': '*',
