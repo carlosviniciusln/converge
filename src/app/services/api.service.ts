@@ -79,6 +79,26 @@ export class ApiService {
       .toPromise();
   }
 
+  public async postFormData<T>(
+    route: string,
+    formData: FormData,
+    qp: QueryParams = {},
+    showEvents: ShowEvents = { loader: true, error: true }
+  ): Promise<T> {
+    const cfqu = this.correctFormatForQueryUrl(qp);
+    const headers = this.obterHeaders(showEvents);
+  
+    // Remover Content-Type se estiver presente, pois o FormData define automaticamente
+    const cleanHeaders = headers.delete('Content-Type');
+  
+    return this.http
+      .post<T>(`${this.END_POINT}/${route}${cfqu}`, formData, {
+        headers: cleanHeaders,
+      })
+      .toPromise();
+  }
+  
+
   public async put<T>(
     route: string,
     data: any,
@@ -95,7 +115,7 @@ export class ApiService {
       .toPromise();
   }
 
-  private obterHeaders(showEvent: ShowEvents): HttpHeaders {
+  public obterHeaders(showEvent: ShowEvents): HttpHeaders {
     let headers = this.obterHeadersBase();
     if (!showEvent.loader) {
       headers = headers.append(InterceptorSkipLoaderHeader, '');

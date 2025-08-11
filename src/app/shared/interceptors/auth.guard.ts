@@ -38,7 +38,7 @@ export class AuthGuard implements CanActivate {
     // pegar o perfil e verificar se ele tem o perfil técnico, se tiver liberar, se não bloqueia, manda mensagem e redireciona para o dashbord
     const perfil = this.auth.getUserProfile();
 
-    if(perfil === PerfisEnum.FiscalTecnico){
+    if(perfil === PerfisEnum.FiscalTecnico || perfil === PerfisEnum.Administrador){
       return true;
     }
   

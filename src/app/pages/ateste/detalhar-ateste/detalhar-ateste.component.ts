@@ -52,12 +52,21 @@ export class DetalharAtesteComponent implements OnInit {
       const response = await this.apiService.get<ApiResponse<Gcpvw030ObterDetalhesPorContratoResponse>>(
         `${Endpoints.URL_CONTRATOS}/detalhe-executado-contrato?nuContrato=` + this.nuContrato
       );
-
-        console.log()
         this.DetalheContrato = [{
-            totalContrato: response.data.contrato.totalContrato,
-            vrExecutado: response.data.contrato.vrExecutado,
-            vrSaldo: response.data.contrato.vrSaldo
+          nuContrato: response.data.contrato.nuContrato,
+          coContrato: response.data.contrato.coContrato,
+          noObjeto: response.data.contrato.noObjeto,
+          noEmpresa: response.data.contrato.noEmpresa,
+          nuVigencia: response.data.contrato.nuVigencia,
+          deCompetencia: response.data.contrato.dtProximaCompetencia,
+          inicioVigencia: response.data.contrato.inicioVigencia,
+          fimVigencia: response.data.contrato.fimVigencia,
+          dtProximaCompetencia: response.data.contrato.dtProximaCompetencia,
+          dtFimPeriodoCompetencia: response.data.contrato.dtFimPeriodoCompetencia,
+          dtInicioPeriodoCompetencia: response.data.contrato.dtIniPeriodoCompetencia,
+          totalContrato: response.data.contrato.totalContrato,
+          vrExecutado: response.data.contrato.vrExecutado,
+          vrSaldo: response.data.contrato.vrSaldo
         }]
 
       this.DetalheExecutadoContrato = response.data;
@@ -77,7 +86,7 @@ export class DetalharAtesteComponent implements OnInit {
           keyboard: false,
         });
 
-        // modalRef.componentInstance.nuContrato = nuContrato;
+        modalRef.componentInstance.contrato = this.DetalheContrato;
     
         // modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
         //   if (data) {
