@@ -25,6 +25,7 @@
           <label for="coContrato">Contrato</label>
           <input
             pInputText 
+            readonly
             formControlName="coContrato"
             id="coContrato"
             type="text"
@@ -34,6 +35,7 @@
         <div class="col-md-10">
           <label for="noEmpresa">Fornecedor</label>
           <input
+           readonly
             formControlName="noEmpresa"
             id="noEmpresa"
             type="text"
@@ -44,6 +46,7 @@
          <div class="col-md-12" style="padding-top: 10px">
           <label for="noObjeto">Objeto</label>
           <textarea
+            readonly
             style="padding-left: 5px;"
             formControlName="noObjeto"
             id="noObjeto"
@@ -79,6 +82,7 @@
           <div class="col-md-4 pl-0">
             <label for="inicioVigencia">Início</label>
             <input
+              readonly
               formControlName="inicioVigencia"
               style="text-align: center"
               type="date"
@@ -88,6 +92,7 @@
           <div class="col-md-4 pl-0">
             <label for="fimVigencia">Fim</label>
             <input
+              readonly
               formControlName="fimVigencia"
               style="text-align: center"
               type="date"
@@ -108,6 +113,7 @@
             formControlName="deCompetencia"
             class="form-control"
             mask="00/0000"
+            readonly
             placeholder="MM/YYYY"
           />
         </div>
@@ -128,6 +134,7 @@
               formControlName="dtInicioPeriodoCompetencia"
               style="text-align: center"
               type="date"
+              readonly
               class="form-control"
             />
           </div>
@@ -137,6 +144,7 @@
               formControlName="dtFimPeriodoCompetencia"
               style="text-align: center"
               type="date"
+              readonly
               class="form-control"
             />
           </div>
@@ -189,10 +197,10 @@
                 </div>
               <td>
                 <input
-                  formControlName="valor"
+                  formControlName="vrApurado"
                   class="form-control"
                   mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true" placeholder="R$ 0,00"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
                   placeholder="Valor apurado"
                 />
               </td>
@@ -207,7 +215,7 @@
             <tr>
               <td class="text-end fw-bold">VALOR TOTAL PARA PAGAMENTO</td>
               <td class="fw-bold" style="text-align: end">
-                {{ total| currency : "BRL" : "symbol" : "1.2-2" }}
+                {{ total | currency : "BRL" : "symbol" : "1.2-2" }}
               </td>
               <td></td>
             </tr>
@@ -227,6 +235,10 @@
                   formControlName="deRetencao"
                   id="deRetencao"
                   type="text"
+                  [ngClass]="{
+                    'is-invalid': submitted && form.get('deRetencao').invalid
+                  }"
+                  placeholder="Retenção"
                   class="form-control col-9"
                 />
 
@@ -235,8 +247,7 @@
                   id="vrRetencao"
                   type="text"
                   mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true" placeholder="R$ 0,00"
-                  value="R$"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
                   class="form-control col-2"
                 />
             </div>
@@ -250,16 +261,19 @@
                   formControlName="dePenalidade"
                   id="dePenalidade"
                   type="text"
+                  placeholder="Penalidade"
                   class="form-control col-9"
+                  [ngClass]="{
+                    'is-invalid': submitted && form.get('dePenalidade').invalid
+                  }"
                 />
 
                 <input
                   formControlName="vrMulta"
                   id="vrMulta"
-                  value="R$"
                   type="text"
                   mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true" placeholder="R$ 0,00"
+                [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
                   class="form-control col-2"
                 />
             </div>
@@ -276,7 +290,10 @@
             </h4>
             <textarea formControlName="deObservacao" id="deObservacao"
               placeholder="Digite..."
-              class="form-control border border-light rounded" rows="4">
+              class="form-control border border-light rounded" rows="4"
+              [ngClass]="{
+                'is-invalid': submitted && form.get('deObservacao').invalid
+              }" >
             </textarea>
   
           </div>
