@@ -163,12 +163,14 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
 
   public async obterResumoPagamentos(nuContrato: string, nuVigencia: any, coRubricaSelecionada: string): Promise<void> {
     // this.nuContrato = nuContrato;
-    // this.vigenciaUsuarioSelecionada = nuVigencia;
+     this.vigenciaUsuarioSelecionada = nuVigencia;
     try {
       const response = await this.apiService.get<ApiResponse<EvolucaoFinanceira[]>>(
         `${Endpoints.URL_CONTRATOS}/detalhe-resumo-pagamento-evolucao-financeira?nuContrato=${nuContrato}&nuVigencia=${nuVigencia?.nU_VIGENCIA}&coRubrica=${coRubricaSelecionada}`
       );
       this.listaResumoPagamentos = response.data;
+
+      console.log(this.listaResumoPagamentos, "TEST 1")
       this.loading = false;
     } catch (error) {
       console.error('Error fetching data', error);
@@ -489,7 +491,7 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
       }
     }
   }
-  
+
 }
 
 }

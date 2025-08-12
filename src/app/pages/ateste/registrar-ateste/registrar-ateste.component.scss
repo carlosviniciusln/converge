@@ -1,0 +1,49 @@
+.is-invalid {
+  border: 1px solid red !important;
+}
+
+:host .modal-header{
+    padding: 5px 24px 0px 24px !important;
+  }
+
+.footer-ateste{
+    // display: flex;
+    // gap: 15px;
+    // align-items: center;
+    // justify-content: flex-end;
+    // padding: 0px 10px 24px 0px;
+}  
+
+
+::ng-deep  .modal-lg {
+  max-width: 60% !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tfoot>tr>td {
+  background: transparent !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead>tr>th {
+  background: transparent !important;
+}
+
+
+:host ::ng-deep .p-fileupload-choose:not(.p-disabled):hover {
+  background: #005ca9;
+  color: #ffffff;
+  border-color: #005ca9;
+}
+
+:host ::ng-deep .p-button {
+  color: #ffffff;
+  background: #005ca9;
+  border: 1px solid #005ca9;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  border-radius: 3px;
+}
+
+:host ::ng-deep p-dropdown > div {
+  display: flex;
+}

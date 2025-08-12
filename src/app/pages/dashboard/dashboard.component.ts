@@ -7,6 +7,7 @@ import { ApiService } from 'src/app/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
+  PerfisEnum,
   TokenStorageService,
 } from 'src/app/services/token-storage.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
@@ -36,6 +37,7 @@ export class DashboardComponent implements OnInit {
   titleContratosVigencia: string;
   filial1885Data: any = null;
   ultimaAtualizacao: string = '';
+  currentProfile: PerfisEnum;
   numerosRapidosExecContratual: NumerosRapidosExecContratual;
   contratosOrigem: ContratoItem[];
   contratos: ContratoItem[];
@@ -63,6 +65,7 @@ export class DashboardComponent implements OnInit {
   }
 
   obterPermissoes() {
+    this.currentProfile = this.token.getUserPerfil();
     this.permissions = this.token.getActionPolicies(ModuleEnum.Dashboard);
   }
 
@@ -71,15 +74,15 @@ export class DashboardComponent implements OnInit {
     this.obterContratos();
   }
 
-  openModalRedirect(url: string) {
-    this.modalRef = this.modalService.open(ModalRedirectComponent, {
-      ariaLabelledBy: 'modal-basic-title',
-      windowClass: 'modal-dialog-custom-redirect-width',
-    });
-    this.modalRef.componentInstance.url = url;
-    this.modalRef.componentInstance.contratos = this.contratosOrigem;
-    this.modalRef.componentInstance.quantidadeTotal = this.quantidadeTotal;
-  }
+  // openModalRedirect(url: string) {
+  //   this.modalRef = this.modalService.open(ModalRedirectComponent, {
+  //     ariaLabelledBy: 'modal-basic-title',
+  //     windowClass: 'modal-dialog-custom-redirect-width',
+  //   });
+  //   this.modalRef.componentInstance.url = url;
+  //   this.modalRef.componentInstance.contratos = this.contratosOrigem;
+  //   this.modalRef.componentInstance.quantidadeTotal = this.quantidadeTotal;
+  // }
 
   public async obterDashboard() {
     try {
@@ -258,13 +261,24 @@ export class DashboardComponent implements OnInit {
 
       this.contratosOrigem = response?.data?.contratos;
       this.quantidadeTotal = response.data.totalRecords;
-      this.openModalRedirect(url);
-      //    this.openModalNovosContratos();
+      // this.openModalRedirect(url);
+      this.openModalNovosContratos();
       this.assignCopy();
       this.loading = false;
     } catch (error) {
       this.loading = false;
       console.error('Erro ao obter contratos', error);
+    }
+  }
+
+  openModalNovosContratos() {
+    if(this.currentProfile === PerfisEnum.Pagadoria){
+      const modalRef = this.modalService.open(NovosContratosComponent, {
+        ariaLabelledBy: 'modal-basic-title',
+        windowClass: 'modal-dialog-medium-width',
+      });
+      modalRef.componentInstance.contratos = this.contratosOrigem;
+      modalRef.componentInstance.quantidadeTotal = this.quantidadeTotal;
     }
   }
 

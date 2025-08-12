@@ -5,6 +5,7 @@ export interface Login {
     coMatricula: string;
     noUsuario: string;
     nuUsuario: number;
+    noPerfil: string;
     claims: Claim[];
 }
 

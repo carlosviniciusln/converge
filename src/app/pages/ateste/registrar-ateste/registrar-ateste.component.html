@@ -1,0 +1,332 @@
+<div class="modal-header">
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+
+<div class="conteudo" style="padding: 24px 24px 24px 24px">
+  <app-navbar-ateste></app-navbar-ateste>
+
+  <div class="header-ateste" style="text-align: justify">
+    <h4>
+      Atestamos a execução dos bens/serviços recebidos para o contrato e competência abaixo citados, conforme disposto no MN TE236, itens 3.2.3.1 e 4.3.16, considerando atendidas as condições e obrigações contratuais. Esta unidade está de pleno acordo com a quitação dos serviços referentes ao período descrito e, portanto, solicitamos que os trâmites de pagamento sejam providenciados conforme as informações abaixo.
+    </h4>
+  </div>
+
+  <div class="">
+    <form [formGroup]="form" style="padding: 10px" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="coContrato">Contrato</label>
+          <input
+            pInputText 
+            readonly
+            formControlName="coContrato"
+            id="coContrato"
+            type="text"
+            class="form-control"
+          />
+        </div>
+        <div class="col-md-10">
+          <label for="noEmpresa">Fornecedor</label>
+          <input
+           readonly
+            formControlName="noEmpresa"
+            id="noEmpresa"
+            type="text"
+            class="form-control"
+          />
+        </div>
+
+         <div class="col-md-12" style="padding-top: 10px">
+          <label for="noObjeto">Objeto</label>
+          <textarea
+            readonly
+            style="padding-left: 5px;"
+            formControlName="noObjeto"
+            id="noObjeto"
+            placeholder="Digite..."
+            class="form-control border border-light rounded"
+            rows="2"
+          ></textarea>
+        </div>
+      </div>
+
+      <div
+        style="
+          display: flex;
+          padding-top: 20px;
+          justify-content: space-around;
+          align-items: center;
+        "
+      >
+        <div class="col-md-2 pl-0" style="align-self: flex-end;">
+          <label for="noVigencia">Vigência Atual</label>
+        </div>
+
+        <div style="display: flex" class="col-10">
+          <div class="col-md-4 pl-0" style="    padding-right: 16px;
+          display: flex
+      ;
+          width: 200px;
+          align-items: flex-end;
+          justify-content: flex-end;">
+            <label for="noPeriodoVigencia">Periodo vigência:</label>
+          </div>
+
+          <div class="col-md-4 pl-0">
+            <label for="inicioVigencia">Início</label>
+            <input
+              readonly
+              formControlName="inicioVigencia"
+              style="text-align: center"
+              type="date"
+              class="form-control"
+            />
+          </div>
+          <div class="col-md-4 pl-0">
+            <label for="fimVigencia">Fim</label>
+            <input
+              readonly
+              formControlName="fimVigencia"
+              style="text-align: center"
+              type="date"
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        style="display: flex; padding-top: 20px; justify-content: space-around"
+      >
+        <div class="col-md-2 pl-0">
+          <label for="noCompetencia">Competência</label>
+          <input
+            style="text-align: center"
+            type="text"
+            formControlName="deCompetencia"
+            class="form-control"
+            mask="00/0000"
+            readonly
+            placeholder="MM/YYYY"
+          />
+        </div>
+
+        <div style="display: flex" class="col-10">
+          <div class="col-md-4 pl-0" style="
+          display: flex
+      ;
+          width: 200px;
+          align-items: flex-end;
+          justify-content: flex-end;">
+            <label for="dtInicio">Periodo competência:</label>
+          </div>
+
+          <div class="col-md-4 pl-0">
+            <label for="dtInicioPeriodoCompetencia">Início</label>
+            <input
+              formControlName="dtInicioPeriodoCompetencia"
+              style="text-align: center"
+              type="date"
+              readonly
+              class="form-control"
+            />
+          </div>
+          <div class="col-md-4 pl-0">
+            <label for="dtFimPeriodoCompetencia">Fim</label>
+            <input
+              formControlName="dtFimPeriodoCompetencia"
+              style="text-align: center"
+              type="date"
+              readonly
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div style="padding-top: 20px">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>
+              <b>DETALHAMENTO DOS VALORES A PAGAR</b>
+            </h5>
+          </div>
+        </div>
+
+        <p-table
+          #dt
+          [value]="faturamentos.controls"
+          dataKey="id"
+          [showCurrentPageReport]="true"
+          [rowHover]="true"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="col-7">Item(s) de Faturamento</th>
+              <th class="col-3">Valor apurado</th>
+              <th class="col-2">
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary"
+                  (click)="adicionarFaturamento()"
+                >
+                  <i class="tim-icons icon-simple-add"></i>
+                </button>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-faturamento let-i="rowIndex">
+            <tr [formGroup]="faturamento">
+              <td>
+
+                <!--- 
+                    ALTERAR PARA DROPDOWN PARTIR DE UMA LISTA EM BANCO SERVIÇO TIPO / DEVE PODE SER UMA LISTA 
+                -->
+                <div class="c-dropdown">
+                <p-dropdown [options]="listaGcptb018TipoServico"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    formControlName="nuServicoTipo"
+                                    placeholder="Bens/Serviços"></p-dropdown>
+                </div>
+              <td>
+                <input
+                  formControlName="vrApurado"
+                  class="form-control"
+                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
+                  placeholder="Valor apurado"
+                />
+              </td>
+              <td>
+                <button type="button" class="btn-sm btn-secondary" (click)="removerFaturamento(i)">
+                  <i class="tim-icons icon-trash-simple"></i>
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td class="text-end fw-bold">VALOR TOTAL PARA PAGAMENTO</td>
+              <td class="fw-bold" style="text-align: end">
+                {{ total | currency : "BRL" : "symbol" : "1.2-2" }}
+              </td>
+              <td></td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="3">Nenhum contato cadastrado.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div>
+          <div style="padding: 20px 0px 10px 0px;">
+            <h5>Valor de RETENÇÃO</h5>
+            <div style="display: flex; gap:15px">
+                <input
+                  formControlName="deRetencao"
+                  id="deRetencao"
+                  type="text"
+                  [ngClass]="{
+                    'is-invalid': submitted && form.get('deRetencao').invalid
+                  }"
+                  placeholder="Retenção"
+                  class="form-control col-9"
+                />
+
+                <input
+                  formControlName="vrRetencao"
+                  id="vrRetencao"
+                  type="text"
+                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
+                  class="form-control col-2"
+                />
+            </div>
+          </div>
+
+          <div>
+
+            <h5>Valor de PENALIDADES</h5>
+            <div style="display: flex; gap:15px">
+                <input
+                  formControlName="dePenalidade"
+                  id="dePenalidade"
+                  type="text"
+                  placeholder="Penalidade"
+                  class="form-control col-9"
+                  [ngClass]="{
+                    'is-invalid': submitted && form.get('dePenalidade').invalid
+                  }"
+                />
+
+                <input
+                  formControlName="vrMulta"
+                  id="vrMulta"
+                  type="text"
+                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
+                [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
+                  class="form-control col-2"
+                />
+            </div>
+          </div>
+
+        </div>
+
+
+        <div style="display: flex;">
+
+          <div class="col-md-8" style="padding: 24px 0px 24px 0px;">
+            <h4 class="modal-title" id="modal-basic-title" for="deObservacao">
+              <b>Observa&ccedil;&otilde;es</b>
+            </h4>
+            <textarea formControlName="deObservacao" id="deObservacao"
+              placeholder="Digite..."
+              class="form-control border border-light rounded" rows="4"
+              [ngClass]="{
+                'is-invalid': submitted && form.get('deObservacao').invalid
+              }" >
+            </textarea>
+  
+          </div>
+
+          
+        <div class="col-4" style="display: flex;
+            align-content: flex-end;
+            justify-content: space-around;
+            align-items: center;">
+          <p-toast></p-toast>
+          <p-fileUpload 
+              mode="basic" 
+              chooseLabel="Anexar arquivo" 
+              chooseIcon="pi pi-upload"
+              accept=".pdf,.png,.jpg"  
+              (onSelect)="onUpload($event)"
+             >
+            </p-fileUpload>
+      </div>
+
+        </div>
+
+
+      </div>
+    </form>
+
+          <div class="footer-ateste" style="display: flex;
+              gap: 15px;
+              padding: 0px 24px 0px 0px;
+              justify-content: flex-end;">
+                <button style="background-color: #005ca9;" class="btn-sm btn-default" type="submit" (click)="onSubmit()">Salvar Ateste</button>
+                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+         </div>
+         
+  </div>
+</div>

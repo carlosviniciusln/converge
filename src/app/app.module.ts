@@ -2,6 +2,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
+import { FileUploadModule } from 'primeng/fileupload';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AppComponent } from "./app.component";
@@ -47,6 +48,10 @@ import { PlanejamentoGeralComponent } from './pages/planejamento/planejamento-ge
 import { PlanejamentoAbaRubricaComponent } from "./pages/planejamento/planejamento-aba-rubrica/planejamento-aba-rubrica.component";
 import {MatTableModule} from '@angular/material/table';
 import { SharedLibraryModule } from "./shared/shared-library/shared-library.module";
+import { AtesteComponent } from './pages/ateste/ateste.component';
+import { NavbarAtesteComponent } from './pages/ateste/navbar-ateste/navbar-ateste.component';
+import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar-ateste.component';
+import { RegistrarAtesteComponent } from './pages/ateste/registrar-ateste/registrar-ateste.component';
 
 registerLocaleData(ptBr);
 
@@ -77,6 +82,7 @@ const maskConfig: Partial<IConfig> = {
     MatIconModule,
     SharedLibraryModule,
     MatToolbarModule,MatTableModule,
+    FileUploadModule,
     NgxMaskModule.forRoot(maskConfig)
   ],
   exports: [
@@ -99,7 +105,11 @@ const maskConfig: Partial<IConfig> = {
     NovosContratosComponent,
     ModalPlanejamentoComponent,
     PlanejamentoGeralComponent,
-    PlanejamentoAbaRubricaComponent
+    PlanejamentoAbaRubricaComponent,
+    AtesteComponent,
+    NavbarAtesteComponent,
+    DetalharAtesteComponent,
+    RegistrarAtesteComponent
     //AuthLayoutComponent
   ],
   providers: [

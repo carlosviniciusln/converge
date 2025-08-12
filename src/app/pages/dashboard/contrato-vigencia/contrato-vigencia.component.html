@@ -58,7 +58,7 @@
         <!--td class="th-gn" [pRowToggler]="i">{{ i.sG_FILIAL }}</td-->
         <!-- <td>{{i.icArtigo81 ? "Sim" : "Não"}}</td> -->
         <td [pRowToggler]="i">
-          {{ defineInitDate(i) | date : "dd/MM/yyyy" }}
+          {{ i.dT_INICIO | date : "dd/MM/yyyy" }}
         </td>
         <td [pRowToggler]="i">{{ defineEndDate(i) | date : "dd/MM/yyyy" }}</td>
         <td [pRowToggler]="i">{{ i.vR_GLOBAL | currency : "BRL" }}</td>

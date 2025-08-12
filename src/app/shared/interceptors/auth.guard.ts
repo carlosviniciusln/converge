@@ -6,28 +6,44 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { LoginComponent } from 'src/app/pages/login/login.component';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
   constructor(
     private auth: TokenStorageService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+     private modalService: NgbModal,
   ) {}
+
+ permissao = true;
+ perfil : string = 'perfil_tecnico';
+ logado = false
 
   public canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (!this.auth.isAuthenticated()) {
-      this.auth.signOut();
-      this.toastr.error('Acesso Negado!', 'Error');
-      this.router.navigate(['dashboard'], {
-        queryParams: { returnUrl: state.url },
-      });
-      return false;
+  
+    // antes de tudo verifico o perfil do usuário, se não tiver ninguém logado eu abro a tela de login, depois que logar eu verifico no return do 'logar' se ele é do perfil técnico, se for true, se não return com uma mensagem não tem permissão para acessar essa pagina com mensagem e redirecionamento para dasboard com a mensagem não tem permissão! 
+
+    // !
+    if(!this.auth.isAuthenticated()){
+       this.modalService.open(LoginComponent, {ariaLabelledBy: 'modal-basic-title', size: 'sm', windowClass: 'custom-class'});
+       return false;
     }
-    return true;
+    // pegar o perfil e verificar se ele tem o perfil técnico, se tiver liberar, se não bloqueia, manda mensagem e redireciona para o dashbord
+    const perfil = this.auth.getUserProfile();
+
+    if(perfil === PerfisEnum.FiscalTecnico || perfil === PerfisEnum.Administrador){
+      return true;
+    }
+  
+    this.toastr.error('Acesso Negado! Você não possui permissão para acessar esse módulo', 'Error');
+    this.router.navigate(['dashboard']);
+    return false;
   }
 }

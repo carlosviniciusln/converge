@@ -1,0 +1,84 @@
+<div class="content">
+
+    <!-- 
+        TODO: ALINHAR PERFUMARIA E CRIAR CLASSE ESPECIFICA PARA REMOVER CSS INLINE
+    -->
+    <div style="background-color: #f4f4f4; padding: 24px 24px 0px 24px;">
+        <app-navbar-ateste></app-navbar-ateste>
+
+        <div class="header-ateste" style=" text-align: justify;">
+            <h4>
+                Este módulo deverá ser utilizado para ATESTAR (registrar) os valores referentes ao faturamento mensal dos contratos governados pelo SIGVC, conforme previsto no MN TE236, itens 3.2.3.1 e 4.3.16 (obrigações do Gestor Demandante). Selecione, na lista abaixo, o contrato que se deseja registrar o ateste.
+            </h4>
+        </div>
+
+        <div class="conteudo-ateste">
+            <!-- <h5><span>Gestor Demandante: </span><strong>{{sgFilial}}</strong></h5> -->
+            <div class="table-ateste" style="padding-bottom: 20px;">
+                <p-table [value]="listaGcpvw030Ateste" [tableStyle]="{ 'width': '100%'}" >
+                    <ng-template pTemplate="caption">
+                        <div class="table-header">
+                            <div class="row">
+                                <div class="col-md-3 pl-3 pr-1 table-header-title">Gestor Demandante: <strong>{{sgFilial}}</strong>
+                                </div>
+                                <div class="pl-1 pr-1">
+                                    <p-dropdown [options]="selectTiposContrato" [(ngModel)]="selectedTipoContrato"
+                                        [filter]="true" optionLabel="label" optionValue="value"
+                                        (onChange)="updateRelatorio($event, 1)" [showClear]="true"
+                                        placeholder="Contrato"></p-dropdown>
+                                </div>
+
+                                <div class="pl-1 pr-1">
+                                    <p-dropdown [options]="selectTiposFornecedor" [(ngModel)]="selectedTipoFornecedor"
+                                        [filter]="true" optionLabel="label" optionValue="value"
+                                        (onChange)="updateRelatorio($event, 2)" [showClear]="true"
+                                        placeholder="Fornecedor"></p-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Nr. Contrato</th>
+                            <th>Fornecedor</th>
+                            <th>Data Início</th>
+                            <th>Data Término</th>
+                            <th>Valor Global</th>
+                            <th>Valor Pago</th>
+                            <th>Saldo Contratual</th>
+                            <th>Ultima Competência Paga</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-contrato>
+                        <tr (click)="navegarParaDetalhes(contrato.nuContrato)" style="cursor: pointer;">
+                            <td> {{ contrato.coContrato }}</td>
+                            <td>{{ contrato.noEmpresa }}</td>
+                            <td>{{ contrato.inicioVigencia | date : "dd/MM/yyyy" }}</td>
+                            <td>{{ contrato.fimVigencia | date : "dd/MM/yyyy" }}</td>
+                            <td>R$ {{ contrato.totalContrato | number:'1.2-2':'pt-BR'}}</td>
+                            <td>R$ {{ contrato.vrExecutado | number:'1.2-2':'pt-BR' }}</td>
+                            <td>R$ {{ contrato.vrSaldo | number:'1.2-2':'pt-BR' }}</td>
+                            <td>{{ contrato.deUltimoPagamento }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8">Nenhum contrato cadastrado.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div class="card flex justify-center" *ngIf="totalRecords > 10">
+
+                    <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos" (onPageChange)="loadPage($event)" [first]="0"  [rows]="filtroRegistros.pageSize" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10, 20, 50]" ></p-paginator>
+                </div>
+            </div>
+
+            <h4 style="text-align: justify; padding-bottom: 24px;"><span>OBS: </span> Caso o contrato que se desejar o ateste não se encontre nessa lista, acionar imediatamente a CEGTI para
+            para verificação e eventual ajuste.
+            </h4>
+           
+        </div>
+  
+    </div>
+        
+</div>
