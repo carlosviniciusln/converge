@@ -104,24 +104,24 @@ export class ModalPlanejamentoComponent implements OnInit {
             break;
         }
       break;
-      case "Ajuste Programação":
-        switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-          case "Aberta":
-            this.labelButtonsLeft.label = 'Encerrar Programação';
-            this.labelButtonsLeft.value = 'encerrar';
-            this.labelButtonsRight.label = 'Cancelar Programação';
-            this.labelButtonsRight.value = 'cancelar';
-            break;
-          case "Encerrado":
-              this.labelButtonsLeft.label = 'Ajuste de Programação';
-              this.labelButtonsLeft.value = 'ajuste';
-              this.labelButtonsRight.label = 'Nova Programação';
-              this.labelButtonsRight.value = 'nova';
-            break 
-          default:
-            break;
-        }
-      break;
+      // case "Ajuste Programação":
+      //   switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
+      //     case "Aberta":
+      //       this.labelButtonsLeft.label = 'Encerrar Programação';
+      //       this.labelButtonsLeft.value = 'encerrar';
+      //       this.labelButtonsRight.label = 'Cancelar Programação';
+      //       this.labelButtonsRight.value = 'cancelar';
+      //       break;
+      //     case "Encerrado":
+      //         this.labelButtonsLeft.label = 'Ajuste de Programação';
+      //         this.labelButtonsLeft.value = 'ajuste';
+      //         this.labelButtonsRight.label = 'Nova Programação';
+      //         this.labelButtonsRight.value = 'nova';
+      //       break 
+      //     default:
+      //       break;
+      //   }
+      // break;
       case "Reprogramação":
         switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
           case "Aberta":
