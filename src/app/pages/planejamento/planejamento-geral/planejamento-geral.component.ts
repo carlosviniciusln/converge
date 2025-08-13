@@ -16,7 +16,13 @@ import { Filial } from 'src/app/models/filial';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { ContratoResponse } from 'src/app/models/contrato-response';
 import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejamento-cadastro.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
+
+export interface dadosExercicio{
+
+
+}
 @Component({
   selector: 'app-planejamento-geral',
   templateUrl: './planejamento-geral.component.html',
@@ -85,6 +91,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private modalService: NgbModal,
+    private route : ActivatedRoute,
     public token: TokenStorageService,
     private toastr: ToastrService
   ) {
@@ -93,6 +100,13 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.obterDados();
+    // queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
+    this.route.queryParams.subscribe(params => {
+      console.log(params['cO_EXERCICIO']); 
+      console.log(params['tipo']); 
+      console.log(params['statusPlanejamento']); 
+    });
+
   }
 
   obterPermissoes() {

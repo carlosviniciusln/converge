@@ -31,7 +31,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-            <tr [ngClass]="{'dark-row': selectedRowId === rowIndex}" (click)="onRowClick(rowIndex)" style="cursor: pointer;">
+            <tr [ngClass]="{'dark-row': selectedRowId === rowIndex}" (click)="onRowClick(item)" style="cursor: pointer;">
                 <td class="text-centered">
                   {{item.tipo}}
                 </td>

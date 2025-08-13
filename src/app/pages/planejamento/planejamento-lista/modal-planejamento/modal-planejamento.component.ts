@@ -7,6 +7,7 @@ import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/service
 import { ResumoPlanejamentoModel } from 'src/app/models/Gcptb001ContratoResponse';
 import { ApiResponse } from 'src/app/models/api-response';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
  interface DomainDTO {
   value: string,
@@ -28,6 +29,7 @@ export class ModalPlanejamentoComponent implements OnInit {
   permissions: ActionPolicies;
   labelButtonsLeft : DomainDTO = {label: null, value: null, message: null};
   labelButtonsRight : DomainDTO = {label: null, value: null, message: null};
+  labelButtons : DomainDTO = {label: null, value: null, message: null};
   listaPlanejamentos: ResumoPlanejamentoModel[] = [];
   ultimoPlanejamento: ResumoPlanejamentoModel;
   retornoAno: boolean = false;
@@ -50,6 +52,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     private apiService: ApiService,
     public token: TokenStorageService,
     private formBuilder: FormBuilder,
+    private router : Router
   ) {
     this.obterPermissoes();
   }
@@ -95,10 +98,10 @@ export class ModalPlanejamentoComponent implements OnInit {
             this.labelButtonsRight.value = 'cancelar';
             break;
           case "Encerrado":
-            this.labelButtonsLeft.label = 'Ajuste de Programação';
-            this.labelButtonsLeft.value = 'ajuste';
-            this.labelButtonsRight.label = 'Nova Programação';
-            this.labelButtonsRight.value = 'nova';
+            this.labelButtonsLeft.label = 'Nova Programação';
+            this.labelButtonsLeft.value = 'nova';
+            this.labelButtonsRight.label = 'Reabrir Programação';
+            this.labelButtonsRight.value = 'reabrir';
             break;
           default:
             break;
@@ -131,8 +134,8 @@ export class ModalPlanejamentoComponent implements OnInit {
             this.labelButtonsRight.value = 'cancelar';
             break
           case "Encerrado":
-            this.labelButtonsLeft.label = 'Nova Programação';
-            this.labelButtonsLeft.value = 'nova';
+            this.labelButtonsLeft.label = 'Nova Reprogramação';
+            this.labelButtonsLeft.value = 'Reabrir Reprogramação';
             this.labelButtonsRight = null;
             break 
           default:
@@ -161,10 +164,17 @@ export class ModalPlanejamentoComponent implements OnInit {
     });
   }
 
-  onRowClick(rowId: number) {
-    console.log(rowId, "identificador do planejamento")
+  onRowClick(item: any) {
+    console.log(item, "identificador do planejamento")
     this.activeModal.close();
-    window.location.href = '/#/planejamento-orcamentario-detalhe'
+    this.router.navigate(['/planejamento-orcamentario-detalhe'], {
+      queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
+    });
+
+   
+  
+  
+    // window.location.href = '/#/planejamento-orcamentario-detalhe'
   }
 
   async mensagemBotaoClick(cenario: any) {
