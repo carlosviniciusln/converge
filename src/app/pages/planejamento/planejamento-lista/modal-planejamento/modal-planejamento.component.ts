@@ -190,9 +190,9 @@ export class ModalPlanejamentoComponent implements OnInit {
     let retorno = '';
     let tipoProgramacao = this.planejamentosModal[this.planejamentosModal.length - 1].tipo;
 
-    if (botaoClicado == "ajuste") {
-      mensagem = `Tem certeza de que deseja gerar a Programação do Planejamento do ${this.anoSelecionado} - ${tipoProgramacao}?`
-    }
+    // if (botaoClicado == "ajuste") {
+    //   mensagem = `Tem certeza de que deseja gerar a Programação do Planejamento do ${this.anoSelecionado} - ${tipoProgramacao}?`
+    // }
 
     /*if(botaoClicado == "ajuste"){
        `Tem certeza de que deseja gerar a Programação do Planejamento do ${this.anoSelecionado} - ${tipoProgramacao}?`

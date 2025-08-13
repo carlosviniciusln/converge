@@ -1,6 +1,6 @@
 <div class="modal-header">
     <span>
-        <b style="font-size: 22px !important;">Planejamento do exercício {{anoSelecionado}}</b>
+        <b style="font-size: 22px !important;">Planejamentos do Exercício {{anoSelecionado}}</b>
     </span>
     <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
         <span aria-hidden="true">×</span>
@@ -72,11 +72,11 @@
                 (click)="mensagemBotaoClick('nova')">
                 Nova Reprogramação
             </button>
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoAjuste"
+            <!-- <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoAjuste"
                 (click)="mensagemBotaoClick('ajuste')">
                 Ajuste Programação
-            </button>
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.planejamentoEncerrado"
+            </button> -->
+            <button class="btn-sm btn-danger padding-buttons" *ngIf="this.planejamentoEncerrado"
                 (click)="mensagemBotaoClick('encerrar')">
                 Encerrar Programação
             </button>
