@@ -16,6 +16,7 @@ import { Filial } from 'src/app/models/filial';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { ContratoResponse } from 'src/app/models/contrato-response';
 import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejamento-cadastro.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -52,7 +53,10 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectTiposDemanda: Select2Data;
   selectOpcoesIsDigital: Select2Data;
   selectObjeto: Select2Data;
-
+  anoExercicio: number;
+  ordemTipoExercicio: string;
+  nuPlanejamentoExercicio: string;
+  statusExercio: string;
   selectedAno: string = null;
   selectedContrato: string = null;
   selectedFilial: string = null;
@@ -69,6 +73,7 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   permissions: ActionPolicies;
 
+  public labelTeste : string;
   public filtroRegistros: any = {
     pageNumber: 1,
     pageSize: 12,
@@ -85,6 +90,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private modalService: NgbModal,
+    private route : ActivatedRoute,
     public token: TokenStorageService,
     private toastr: ToastrService
   ) {
@@ -93,6 +99,14 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.obterDados();
+    // queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
+    this.route.queryParams.subscribe(params => {
+      this.anoExercicio =params['cO_EXERCICIO']; 
+      this.ordemTipoExercicio = params['tipo']; 
+      this.statusExercio = params['statusPlanejamento']; 
+      this.nuPlanejamentoExercicio = params['statusPlanejamento']; 
+    });
+
   }
 
   obterPermissoes() {

@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from 'src/app/services/api.service';
 import { ApiResponse } from 'src/app/models/api-response';
@@ -26,6 +26,10 @@ import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/service
     ]
 })
 export class PlanejamentoAbaRubricaComponent implements OnInit {
+
+    @Input() nuPlanejamento : string; // UTILIZAR NU PLANEJAMENTO PARA TRAZER LISTA CORRETA DE REGISTROS
+    @Input() anoExercio : number;
+    @Input() tipoExercicio : string;
     permissions: ActionPolicies;
     listaValoresExecutados: ValoresExecutadosResponse[] = [];
     valorExecutado: ValoresExecutadosResponse[] = [];

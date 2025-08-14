@@ -7,36 +7,31 @@ import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/service
 import { ResumoPlanejamentoModel } from 'src/app/models/Gcptb001ContratoResponse';
 import { ApiResponse } from 'src/app/models/api-response';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
+ interface DomainDTO {
+  value: string,
+  label: string,
+  message: string
+}
 @Component({
   selector: 'app-modal-planejamento',
   templateUrl: './modal-planejamento.component.html',
   styleUrls: ['./modal-planejamento.component.scss']
 })
 export class ModalPlanejamentoComponent implements OnInit {
-  public titulo: string = 'Simulação';
-  public subTitulo: string = 'Simulação de Revisão de Preços';
 
   @Input() public anoSelecionado;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
-  permissions: ActionPolicies;
-  loading: boolean = true;
-  submitted = false;
-  showData = false;
-  listaSimulacao: any[] = [];
-  selectedContratos: any[];
   public form: FormGroup;
-  public dtIni;
-  public dtFim;
-  public percentSimulacao;
-  planejamentos: ResumoPlanejamentoModel[] = [];
-  planejamentosModal: ResumoPlanejamentoModel[] = [];
-  tipoProgramacaoSelecionada = '';
-  planejamentoAberto: boolean = false;
-  planejamentoCancelado: boolean = false;
-  planejamentoEncerrado: boolean = false;
-  planejamentoAjuste: boolean = false;
+  
+  permissions: ActionPolicies;
+  labelButtonsLeft : DomainDTO = {label: null, value: null, message: null};
+  labelButtonsRight : DomainDTO = {label: null, value: null, message: null};
+  labelButtons : DomainDTO = {label: null, value: null, message: null};
+  listaPlanejamentos: ResumoPlanejamentoModel[] = [];
+  ultimoPlanejamento: ResumoPlanejamentoModel;
   retornoAno: boolean = false;
   selectedRowId: number | null = null;
 
@@ -50,12 +45,14 @@ export class ModalPlanejamentoComponent implements OnInit {
     Status: null,
   };
 
+
+
   constructor(
     public activeModal: NgbActiveModal,
     private apiService: ApiService,
     public token: TokenStorageService,
     private formBuilder: FormBuilder,
-    private toastr: ToastrService
+    private router : Router
   ) {
     this.obterPermissoes();
   }
@@ -71,79 +68,84 @@ export class ModalPlanejamentoComponent implements OnInit {
   obterPlanejamentos() {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento?coExercicio='+this.anoSelecionado)
     result.then(response => {
-      this.planejamentos = response.data;
-      this.montarPlanejamentosModal(this.planejamentos);
+      this.listaPlanejamentos = response.data;
+      this.montarPlanejamentosModal();
     });
   }
 
-  montarPlanejamentosModal(any) {
-    this.planejamentosModal = any;
-    if (this.planejamentosModal && this.planejamentosModal.length > 0) {
-      let ultimoValor = this.planejamentosModal[this.planejamentosModal.length - 1].statuS_PLANEJAMENTO;
-      let tipoProgramacao = this.planejamentosModal[this.planejamentosModal.length - 1].tipo;
-
-      this.validarBotoes(ultimoValor, tipoProgramacao);
+  montarPlanejamentosModal() {
+   
+    if (this.listaPlanejamentos.length > 0) {
+      this.ultimoPlanejamento = this.listaPlanejamentos[this.listaPlanejamentos.length - 1];
+      this.validarBotoes(this.ultimoPlanejamento);
+    }
+    else{
+      this.validarBotoes(this.listaPlanejamentos[0]);
     }
   }
 
-  limparPlanejamento() {
-    this.planejamentoAberto = false;
-    this.planejamentoEncerrado = false;
-    this.planejamentoCancelado = false;
-    this.planejamentoAjuste = false;
-  }
+  //TODO: MELHORIA: REFATOR EM JSON OU CRIAR METODOS PARA CADA CENARIO 
 
-  validarBotoes(ultimoValor: string, tipoProgramacao: string): void {
-    this.limparPlanejamento();
-
-    console.log('tipoProgramacao: ' + tipoProgramacao, 'ultimoValor: ' + ultimoValor)
-
-    if (ultimoValor == "Encerrado") {
-      this.ajustarValoresBotoes(null, null, false, null);
-      return;
-    }else{
-      this.ajustarValoresBotoes(true, true, true, false);
-      return;
+  validarBotoes(ultimoPlanejamento : ResumoPlanejamentoModel): void {
+    const tipo = ultimoPlanejamento?.tipo.replace(/^\d+\s*-\s*/, "");
+    switch(tipo){
+      case "Programação" :
+        switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
+          case "Aberta":
+            this.labelButtonsLeft.label = 'Encerrar Programação';
+            this.labelButtonsLeft.value = 'encerrar';
+            this.labelButtonsRight.label = 'Cancelar Programação';
+            this.labelButtonsRight.value = 'cancelar';
+            break;
+          case "Encerrado":
+            this.labelButtonsLeft.label = 'Nova Programação';
+            this.labelButtonsLeft.value = 'nova';
+            this.labelButtonsRight.label = 'Reabrir Programação';
+            this.labelButtonsRight.value = 'reabrir';
+            break;
+          default:
+            break;
+        }
+      break;
+      // case "Ajuste Programação":
+      //   switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
+      //     case "Aberta":
+      //       this.labelButtonsLeft.label = 'Encerrar Programação';
+      //       this.labelButtonsLeft.value = 'encerrar';
+      //       this.labelButtonsRight.label = 'Cancelar Programação';
+      //       this.labelButtonsRight.value = 'cancelar';
+      //       break;
+      //     case "Encerrado":
+      //         this.labelButtonsLeft.label = 'Ajuste de Programação';
+      //         this.labelButtonsLeft.value = 'ajuste';
+      //         this.labelButtonsRight.label = 'Nova Programação';
+      //         this.labelButtonsRight.value = 'nova';
+      //       break 
+      //     default:
+      //       break;
+      //   }
+      // break;
+      case "Reprogramação":
+        switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
+          case "Aberta":
+            this.labelButtonsLeft.label = 'Encerrar Programação';
+            this.labelButtonsLeft.value = 'encerrar';
+            this.labelButtonsRight.label = 'Cancelar Programação';
+            this.labelButtonsRight.value = 'cancelar';
+            break
+          case "Encerrado":
+            this.labelButtonsLeft.label = 'Nova Reprogramação';
+            this.labelButtonsLeft.value = 'Reabrir Reprogramação';
+            this.labelButtonsRight = null;
+            break 
+          default:
+            break;
+        }
+      break;
+      default:
+        break;
     }
-///////////////////////////////////////////////////
-    // if (tipoProgramacao.includes("Ajuste") && ultimoValor == "Aberta") {
-    //   this.ajustarValoresBotoes(false, false, true, true);
-    //   return;
-    // }
 
-    // if (tipoProgramacao.includes("Ajuste") && ultimoValor == "Encerrado") {
-    //   this.ajustarValoresBotoes(true, true, false, false);
-    //   return;
-    // }
-    // if (tipoProgramacao.includes("reprog") && ultimoValor == "Aberto") {
-    //   this.ajustarValoresBotoes(false, false, true, true);
-    //   return;
-    // }
-    // if (tipoProgramacao.includes("reprog") && ultimoValor == "Encerrado") {
-    //   this.ajustarValoresBotoes(true, false, false, false);
-    //   return;
-    // }
-    // if (tipoProgramacao.includes("Prog") && ultimoValor == "Aberta") {
-    //   this.ajustarValoresBotoes(false, false, true, true);
-    //   return;
-    // }
-
-    // if (tipoProgramacao.includes("Prog") && ultimoValor == "Encerrado") {
-    //   this.ajustarValoresBotoes(true, true, false, false);
-    //   return;
-    // }
-  }
-
-  ajustarValoresBotoes(aberto?, ajuste?, encerrado?, cancelado?) {
-    this.planejamentoAberto = aberto;
-    this.planejamentoAjuste = ajuste;
-    this.planejamentoEncerrado = encerrado;
-    this.planejamentoCancelado = cancelado;
-  }
-
-
-  fechar() {
-    this.activeModal.dismiss();
   }
 
   atualizarPlanejamento(botaoClicado) {
@@ -156,51 +158,54 @@ export class ModalPlanejamentoComponent implements OnInit {
 
     result.then(response => {
       if (response && response.data) {
-        this.planejamentos = response.data;
+        this.listaPlanejamentos = response.data;
         this.obterPlanejamentos();
-        this.atualizarRetorno(response.data, botaoClicado);
       }
     });
   }
-  atualizarRetorno(retorno, botaoClicado){
-    console.log(retorno)
-    //if(retor)
 
-  }
-
-  onRowClick(rowId: number) {
-    console.log('---')
-    // if (this.selectedRowId === rowId) {
-    //   this.selectedRowId = null;
-    // } else {
-    //   this.selectedRowId = rowId;
-    // }
+  onRowClick(item: any) {
+    console.log(item, "identificador do planejamento")
     this.activeModal.close();
-    window.location.href = '/#/planejamento-orcamentario-detalhe'
+    this.router.navigate(['/planejamento-orcamentario-detalhe'], {
+      queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO, nuPlanejamento: item.nU_PLANEJAMENTO}
+    });
+
+   
+  
+  
+    // window.location.href = '/#/planejamento-orcamentario-detalhe'
   }
 
-  async mensagemBotaoClick(botaoClicado) {
+  async mensagemBotaoClick(cenario: any) {
 
-    this.validarAno();
-    if(this.retornoAno){
-      return;
-    }
 
-    let mensagem = '';
-    let retorno = '';
-    let tipoProgramacao = this.planejamentosModal[this.planejamentosModal.length - 1].tipo;
+    /*
+     Regra de negócio: Botão Ajuste Programação ao ser acionado deverá gerar o próximo Tipo para o respectivo ano/exercício.
 
-    // if (botaoClicado == "ajuste") {
-    //   mensagem = `Tem certeza de que deseja gerar a Programação do Planejamento do ${this.anoSelecionado} - ${tipoProgramacao}?`
+     RN 40:Ao clicar no botão Ajuste Programação, a partir do último Tipo/Status que deverá ser igual a Programação ou igual a Ajuste Programação e 
+     deverá gerar a próxima programação de Ajuste Programação do planejamento do respectivo ano/exercício.
+     RN41: Emitir mensagem através de pop-up para confirmação da execução “Tem certeza de que deseja gerar a Programação do Planejamento do Exercício 9999 – 99 – XXXXXXXXXXXX?” Sim ou Não.
+           Onde: 9999 é o ano do exercício. 99 – é o número do Tipo sequencial.XXXXXXXXXXXX – é o nome/descrição do Tipo que neste caso será sempre Ajuste Programação.
+           Exemplo: “Tem certeza de que deseja gerar a Programação do Planejamento do Exercício 2026 – 01 – Ajuste Programação?” Sim/Não
+           Quando = Não, apenas apagar o pop-up.
+           Quando = Sim, seguir o processo.
+
+
+    
+    */
+
+
+    // this.validarAno();
+    // if(this.retornoAno){
+    //   return;
     // }
 
-    /*if(botaoClicado == "ajuste"){
-       `Tem certeza de que deseja gerar a Programação do Planejamento do ${this.anoSelecionado} - ${tipoProgramacao}?`
-    }*/
+
 
     const alert = await Swal.fire({
-      title: '',
-      text: mensagem,
+      title: `Exercício ${this.anoSelecionado}`,
+      text: `Tem certeza de que deseja cancelar o Planejamento ${this.ultimoPlanejamento.tipo}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim!',
@@ -216,7 +221,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     if (!alert) {
       return;
     }
-    this.atualizarPlanejamento(botaoClicado);
+    this.atualizarPlanejamento(cenario.value);
   }
 
   async validarAno() {
@@ -225,11 +230,10 @@ export class ModalPlanejamentoComponent implements OnInit {
     let anoAtual = new Date().getFullYear().toString();
 
     if (anoAtual > this.anoSelecionado) {
-      let tipoProgramacao = this.planejamentosModal[this.planejamentosModal.length - 1].tipo;
-
+     
       const alert = await Swal.fire({
         title: '',
-        text:  `Exercício ${this.anoSelecionado} - ${tipoProgramacao}, não pode ser gerado, exercício está Encerrado`,
+        text:  `Exercício ${this.anoSelecionado} - ${this.ultimoPlanejamento.tipo}, não pode ser gerado, exercício está Encerrado`,
         icon: 'warning',
         showCancelButton: false,
         confirmButtonText: 'Ok!',

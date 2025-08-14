@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Select2Data } from 'ng-select2-component';
+import { ToastrService } from 'ngx-toastr';
 import { ApiResponse } from 'src/app/models/api-response';
 import { Gcpvw030AtesteResponse, Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030AtesteResponse';
 import { ApiService } from 'src/app/services/api.service';
@@ -16,6 +17,7 @@ export class AtesteComponent implements OnInit {
 
   constructor(
        private apiService: ApiService,
+       private toastr: ToastrService,
   ) { }
 
 
@@ -72,12 +74,17 @@ export class AtesteComponent implements OnInit {
           `${Endpoints.URL_CONTRATOS}/contratos-filiais`,filtrosLimpos
         );
         
-        this.sgFilial = response.data?.contratos[0].sgFilial;
-        this.listaGcpvw030Ateste = response.data.contratos || [];
-        this.selectTiposContrato = response.data.listaContratos.map(x => ({label: x, value: x}));
-        this.selectTiposFornecedor = response.data.listaFornecedor.map(x => ({label: x, value: x}));
-        this.totalRecords = response.data.totalRecords;
-        this.loading = false;
+        
+        if(response.data.totalRecords > 0){
+          this.sgFilial = response.data?.contratos[0].sgFilial;
+          this.listaGcpvw030Ateste = response.data.contratos || [];
+          this.selectTiposContrato = response.data.listaContratos.map(x => ({label: x, value: x}));
+          this.selectTiposFornecedor = response.data.listaFornecedor.map(x => ({label: x, value: x}));
+          this.totalRecords = response.data.totalRecords;
+          this.loading = false;
+        }else{
+          this.toastr.info('Usuário logado não possui contratos', 'Info');
+        }
     
       } catch (error) {
         console.error(error, 'obter GCPVW0030');
