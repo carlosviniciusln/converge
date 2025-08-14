@@ -1,0 +1,21 @@
+export interface PlanejamentoOrcamentarioModel {
+  nU_PLANEJAMENTO: number,
+  nU_EXERCICIO_ORCAMENTO: number,
+  cO_EXERCICIO: number,
+  nU_CONTRATO: number,
+  cO_CONTRATO: string,
+  nO_RUBRICA_TIPO: string,
+  nO_EMPRESA: string,
+  nU_FILIAL: number,
+  sG_FILIAL: string,
+  nU_VIGENCIA: number,
+  nU_RUBRICA: number,
+  cO_RUBRICA: string,
+  dE_RUBRICA: string,
+  vR_LIMITE: number,
+  dE_PERIODO: string,
+  vR_PLANEJADO_MES: number,
+  vR_EXECUTADO: number,
+  vR_DIFERENCA: number,
+  pC_EP: number
+}

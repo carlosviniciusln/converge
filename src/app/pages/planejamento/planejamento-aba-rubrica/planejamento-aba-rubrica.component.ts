@@ -1,3 +1,4 @@
+import { PlanejamentoOrcamentarioComponent } from './../planejamento-lista/planejamento-orcamentario.component';
 import { Component, OnInit} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from 'src/app/services/api.service';
@@ -6,6 +7,7 @@ import { ValoresExecutadosResponse } from 'src/app/models/Gcptb001ContratoRespon
 import { Endpoints } from 'src/app/shared/enums/endpoints';
 import * as fileSaver from 'file-saver';
 import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { PlanejamentoOrcamentarioModel } from 'src/app/models/planejamento-orcamentario';
 
 @Component({
     selector: 'app-planejamento-aba-rubrica',
@@ -27,8 +29,8 @@ import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/service
 })
 export class PlanejamentoAbaRubricaComponent implements OnInit {
     permissions: ActionPolicies;
-    listaValoresExecutados: ValoresExecutadosResponse[] = [];
-    valorExecutado: ValoresExecutadosResponse[] = [];
+    listaPlanejamentoOrcamentario: PlanejamentoOrcamentarioModel[] = [];
+    planejamentoOrcamentario: PlanejamentoOrcamentarioModel[] = [];
     pagamentosFilialContrato: ValoresExecutadosResponse[] = [];
     pagamentosRubricaContrato: ValoresExecutadosResponse[] = [];
 
@@ -46,30 +48,31 @@ export class PlanejamentoAbaRubricaComponent implements OnInit {
 
     filterItem(value: string) {
         if (!value) {
-            this.listaValoresExecutados = this.valorExecutado;
+            this.listaPlanejamentoOrcamentario = this.planejamentoOrcamentario;
         } else {
             const lowerCaseValue = value.toLowerCase();
-            this.listaValoresExecutados = this.valorExecutado?.filter(item => {
-                return (item.ano && item.ano.toString().includes(value)) ||
-                    (item.contrato && item.contrato.toLowerCase().includes(lowerCaseValue)) ||
-                    (item.objeto && item.objeto.toLowerCase().includes(value.toLowerCase())) ||
-                    (item.gn && item.gn.toLowerCase().includes(lowerCaseValue)) ||
-                    (item.vrTotalExecutado && item.vrTotalExecutado.toString().includes(value)) ||
-                    (item.vrTotalPrevisto && item.vrTotalPrevisto.toString().includes(value));
+            this.listaPlanejamentoOrcamentario = this.planejamentoOrcamentario?.filter(item => {
+                return (item.cO_EXERCICIO && item.cO_EXERCICIO.toString().includes(value)) ||
+                    (item.cO_CONTRATO && item.cO_CONTRATO.toLowerCase().includes(lowerCaseValue)) ||
+                    (item.nO_EMPRESA && item.nO_EMPRESA.toLowerCase().includes(value.toLowerCase())) ||
+                    (item.sG_FILIAL && item.sG_FILIAL.toLowerCase().includes(lowerCaseValue)) ||
+                    (item.cO_RUBRICA && item.cO_RUBRICA.toString().includes(value)) ||
+                    (item.dE_RUBRICA && item.dE_RUBRICA.toString().includes(value));
             });
         }
     }
 
     exportExcel() {
 
-        const dadosFiltrados = this.listaValoresExecutados.map(item => {
+        const dadosFiltrados = this.listaPlanejamentoOrcamentario.map(item => {
             return {
-                Ano: item.ano,
-                Contrato: item.contrato,
-                UD: item.gn,
-                Objeto: item.objeto,
-                "Total Executado": item.vrTotalExecutado,
-                "Total Previsto": item.vrTotalPrevisto
+                Ano: item.cO_EXERCICIO,
+                Contrato: item.cO_CONTRATO,
+                UD: item.sG_FILIAL,
+                Empresa: item.nO_EMPRESA,
+                "Limite": item.vR_LIMITE,
+                "Diferença": item.vR_DIFERENCA,
+                "% EP": item.pC_EP
             }
         })
         import("xlsx").then(xlsx => {
@@ -92,10 +95,10 @@ export class PlanejamentoAbaRubricaComponent implements OnInit {
     public async obterValores() {
         try {
             const response = await this.apiService.get<
-                ApiResponse<ValoresExecutadosResponse[]>
-            >(`${Endpoints.URL_VALOR_EXECUTADO}/obter-todos`);
-            this.valorExecutado = response.data;
-            this.listaValoresExecutados = response.data;
+                ApiResponse<PlanejamentoOrcamentarioModel[]>
+            >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_RUBRICA}`);
+            this.planejamentoOrcamentario = response.data;
+            this.listaPlanejamentoOrcamentario = response.data;
         } catch (error) {
             console.error(error, 'obterValores');
         }

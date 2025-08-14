@@ -44,7 +44,10 @@ export enum Endpoints {
 
   URL_PREPOSTO = 'v1/Preposto',
 
-  URL_ATESTE = 'v1/Ateste'
+  URL_ATESTE = 'v1/Ateste',
 
-
+  URL_PLANEJAMENTO_ORCAMENTARIO_RUBRICA = 'v1​/PlanejamentoOrcamentario​/rubrica',
+  URL_PLANEJAMENTO_ORCAMENTARIO_UD = 'v1​/PlanejamentoOrcamentario​/rubrica-ud',
+  URL_PLANEJAMENTO_ORCAMENTARIO_CONTRATO = 'v1​/PlanejamentoOrcamentario​/ud-contrato',
+  URL_PLANEJAMENTO_ORCAMENTARIO_MES = 'v1​/PlanejamentoOrcamentario​/contrato-mes'
 }
