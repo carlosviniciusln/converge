@@ -10,7 +10,7 @@
     <mat-tab-group>
 
       <mat-tab label="Contrato">
-        <p class="c-p">Planejamento Orçamentário - Exercício <span style="color: black; font-weight: 700;">2025</span> - 1 - Reprogramação - <span style="color: green;">Aberta</span></p>
+        <p class="c-p">Planejamento Orçamentário - Exercício <span style="color: black; font-weight: 700;">{{anoExercicio}}</span> - {{ordemTipoExercicio}} - <span style="color: green;">{{statusExercio}}</span></p>
         
         <div  class="" style="margin: 14px">
           <table border="1" width="100%" style="text-align: center; border-color: rgb(231, 231, 231);">
@@ -199,7 +199,8 @@
       </mat-tab>
 
     <mat-tab label="Rubrica">
-            <app-planejamento-aba-rubrica></app-planejamento-aba-rubrica>
+          <!-- criar dto e juntar dados -->
+            <app-planejamento-aba-rubrica [nuPlanejamento]="nuPlanejamentoExercicio" [anoExercio]="anoExercicio" [tipoExercicio]="ordemTipoExercicio"></app-planejamento-aba-rubrica>
       </mat-tab>
      
     </mat-tab-group>

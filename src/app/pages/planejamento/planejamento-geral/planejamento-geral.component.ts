@@ -18,11 +18,6 @@ import { ContratoResponse } from 'src/app/models/contrato-response';
 import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejamento-cadastro.component';
 import { ActivatedRoute, Router } from '@angular/router';
 
-
-export interface dadosExercicio{
-
-
-}
 @Component({
   selector: 'app-planejamento-geral',
   templateUrl: './planejamento-geral.component.html',
@@ -58,7 +53,10 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectTiposDemanda: Select2Data;
   selectOpcoesIsDigital: Select2Data;
   selectObjeto: Select2Data;
-
+  anoExercicio: number;
+  ordemTipoExercicio: string;
+  nuPlanejamentoExercicio: string;
+  statusExercio: string;
   selectedAno: string = null;
   selectedContrato: string = null;
   selectedFilial: string = null;
@@ -75,6 +73,7 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   permissions: ActionPolicies;
 
+  public labelTeste : string;
   public filtroRegistros: any = {
     pageNumber: 1,
     pageSize: 12,
@@ -102,9 +101,10 @@ export class PlanejamentoGeralComponent implements OnInit {
     await this.obterDados();
     // queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
     this.route.queryParams.subscribe(params => {
-      console.log(params['cO_EXERCICIO']); 
-      console.log(params['tipo']); 
-      console.log(params['statusPlanejamento']); 
+      this.anoExercicio =params['cO_EXERCICIO']; 
+      this.ordemTipoExercicio = params['tipo']; 
+      this.statusExercio = params['statusPlanejamento']; 
+      this.nuPlanejamentoExercicio = params['statusPlanejamento']; 
     });
 
   }

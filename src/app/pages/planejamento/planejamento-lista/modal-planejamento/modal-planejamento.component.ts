@@ -168,7 +168,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     console.log(item, "identificador do planejamento")
     this.activeModal.close();
     this.router.navigate(['/planejamento-orcamentario-detalhe'], {
-      queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
+      queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO, nuPlanejamento: item.nU_PLANEJAMENTO}
     });
 
    
