@@ -27,7 +27,8 @@
                 {{item.cO_EXERCICIO}}</a>
               </td>
               <td class="text-centered">
-                {{item.statuS_PLANEJAMENTO == 'Encerrado' ? item.statuS_PLANEJAMENTO : item.tipo}}
+                <!--- conferir regra -->
+                {{item.tipo}}
               </td>
               <td  class="text-centered">
                 {{item.capeX_PLANEJADO | currency : 'BRL'}}
