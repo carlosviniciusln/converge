@@ -78,6 +78,7 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
   obterPlanejamentos() {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento')
     result.then(response => {
+      console.log(response, "Primeira tela")
       this.planejamentos = response.data;
     });
   }

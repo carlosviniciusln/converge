@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api.service';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { ResumoPlanejamentoModel } from 'src/app/models/Gcptb001ContratoResponse';
 import { ApiResponse } from 'src/app/models/api-response';
 import Swal from 'sweetalert2';
@@ -33,6 +33,8 @@ export class ModalPlanejamentoComponent implements OnInit {
   listaPlanejamentos: ResumoPlanejamentoModel[] = [];
   ultimoPlanejamento: ResumoPlanejamentoModel;
   retornoAno: boolean = false;
+  currentProfile: PerfisEnum;
+  isPerfilPrivilegiado = false
   selectedRowId: number | null = null;
 
   filtroRegistros: any = {
@@ -59,6 +61,12 @@ export class ModalPlanejamentoComponent implements OnInit {
 
   ngOnInit(): void {
     this.obterPlanejamentos();
+      this.currentProfile = this.token.getUserPerfil();
+        this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
+        
+        if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT'){
+          this.isPerfilPrivilegiado = true;
+        }
   }
 
   obterPermissoes() {
@@ -68,6 +76,8 @@ export class ModalPlanejamentoComponent implements OnInit {
   obterPlanejamentos() {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento?coExercicio='+this.anoSelecionado)
     result.then(response => {
+
+      console.log(response, "DATA")
       this.listaPlanejamentos = response.data;
       this.montarPlanejamentosModal();
     });
@@ -91,7 +101,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     switch(tipo){
       case "Programação" :
         switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-          case "Aberta":
+          case "Aberto":
             this.labelButtonsLeft.label = 'Encerrar Programação';
             this.labelButtonsLeft.value = 'encerrar';
             this.labelButtonsRight.label = 'Cancelar Programação';
@@ -127,7 +137,7 @@ export class ModalPlanejamentoComponent implements OnInit {
       // break;
       case "Reprogramação":
         switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-          case "Aberta":
+          case "Aberto":
             this.labelButtonsLeft.label = 'Encerrar Programação';
             this.labelButtonsLeft.value = 'encerrar';
             this.labelButtonsRight.label = 'Cancelar Programação';

@@ -67,11 +67,11 @@
     </p-table>
     <div class="modal-footer">
         <div class="d-flex align-items-center">
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsLeft"
+            <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsLeft && isPerfilPrivilegiado"
                 (click)="mensagemBotaoClick(labelButtonsLeft)">
                {{labelButtonsLeft.label}}
             </button>
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsRight"
+            <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsRight && isPerfilPrivilegiado"
                 (click)="mensagemBotaoClick(labelButtonsRight)">
              {{labelButtonsRight.label}}
             </button>
