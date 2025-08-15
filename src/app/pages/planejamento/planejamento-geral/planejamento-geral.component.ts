@@ -80,13 +80,13 @@ export class PlanejamentoGeralComponent implements OnInit {
     pageNumber: 1,
     pageSize: 12,
     NuAno: null,
-    NuFilial: null,
-    NuContrato: null,
+    ud: null,
+    contrato: null,
     NuPlanejamentoStatus: null,
     NuPlanejamentoTipo: null,
-    NuDemandaTipo: null,
+    tipo: null,
     IsDigital: null,
-    DeObjeto: '',
+    objeto: '',
     nuPlanejamento: 0
   };
 
@@ -113,14 +113,6 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.filtroRegistros = {
       pageNumber: 1,
       pageSize: 12,
-      NuAno: null,
-      NuFilial: null,
-      NuContrato: null,
-      NuPlanejamentoStatus: null,
-      NuPlanejamentoTipo: null,
-      NuDemandaTipo: null,
-      IsDigital: null,
-      DeObjeto: '',
       nuPlanejamento: this.nuPlanejamentoExercicio
     };
     await this.obterPlanejamentosOrc();
@@ -131,266 +123,11 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
   }
 
-  async obterDados(op?: number) {
-    let list = [8, 7, 6, 5, 4, 3, 2, 1, 0];
-
-    if (op != null) {
-      list = list.filter((x) => x !== op);
-    }
-
-    list.forEach((element) => {
-      switch (element) {
-        case 0:
-          this.obterPlanejamentos();
-          break;
-        case 1:
-          this.obterAnosOrcamentarios();
-          break;
-        case 2:
-          this.obterFiliais();
-          break;
-        case 3:
-          this.obterContratos();
-          break;
-        case 4:
-          this.obterStatusPlanejamento();
-          break;
-        case 5:
-          this.obterTiposPlanejamento();
-          break;
-        case 6:
-          this.obterTiposDemanda();
-          break;
-        case 7:
-          this.obterClassificacoesPlanejamento();
-          break;
-        case 8:
-          this.obterObjetos();
-          break;
-        default:
-          break;
-      }
-    });
-  }
-
-  public async obterAnosOrcamentarios(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<string[]>>(
-        `${Endpoints.URL_ORCAMENTO}/filtro/anos-orcamentarios`,
-        this.filtroRegistros
-      );
-
-      this.listaAnos = response.data;
-      this.selectAnos = this.listaAnos.map(
-        (m) => ({ value: m, label: m } as Select2Option)
-      );
-    } catch (error) { }
-  }
-
-  public async obterFiliais(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<Filial[]>>(
-        `${Endpoints.URL_ORCAMENTO}/filtro/gerencias-nacionais`,
-        this.filtroRegistros
-      );
-
-      this.listaFiliais = response.data;
-
-      this.selectFiliais = this.listaFiliais
-        .filter((f) => f.nuFilialPai != null)
-        .map(
-          (m) => ({ value: m.nuFilial, label: m.sgFilial } as Select2Option)
-        );
-    } catch (error) { }
-  }
-
-  public async obterContratos(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<ContratoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/filtro/contratos`, this.filtroRegistros);
-
-      this.listaContratos = response.data;
-
-      this.selectContratos = this.listaContratos.map(
-        (m) =>
-        ({
-          value: m.nuContrato,
-          label: m.coContrato + ' - ' + m.noEmpresa,
-        } as Select2Option)
-      );
-    } catch (error) { }
-  }
-
-  public async obterStatusPlanejamento(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<PlanejamentoStatusResponse[]>
-      >(
-        `${Endpoints.URL_ORCAMENTO}/filtro/status-planejamento`,
-        this.filtroRegistros
-      );
-
-      this.listaStatusPlanejamento = response.data;
-
-      this.selectStatusPlanejamento = this.listaStatusPlanejamento.map(
-        (m) =>
-        ({
-          value: m.nuPlanejamentoStatus,
-          label: m.noPlanejamentoStatus,
-        } as Select2Option)
-      );
-    } catch (error) { }
-  }
-
-  public async obterTiposPlanejamento(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<PlanejamentoTipoResponse[]>
-      >(
-        `${Endpoints.URL_ORCAMENTO}/filtro/tipos-planejamento`,
-        this.filtroRegistros
-      );
-
-      this.listaTiposPlanejamento = response.data;
-
-      this.selectTiposPlanejamento = this.listaTiposPlanejamento.map(
-        (m) =>
-        ({
-          value: m.nuPlanejamentoTipo,
-          label: m.dePlanejamentoTipo,
-        } as Select2Option)
-      );
-    } catch (error) { }
-  }
-
-  public async obterTiposDemanda(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<DemandaTipoResponse[]>
-      >(
-        `${Endpoints.URL_ORCAMENTO}/filtro/tipos-demanda`,
-        this.filtroRegistros
-      );
-
-      this.listaTiposDemanda = response.data;
-
-      this.selectTiposDemanda = this.listaTiposDemanda.map(
-        (m) => ({ value: m.nuDemanda, label: m.deDemanda } as Select2Option)
-      );
-    } catch (error) { }
-  }
-
-
-
-  public async obterObjetos(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<PlanejamentoObjetoResponse[]>
-      >(
-        `${Endpoints.URL_ORCAMENTO}/objetos`,
-      );
-
-      this.listaObjetoPlanejamento = response.data;
-
-      this.selectObjeto = this.listaObjetoPlanejamento.map(
-        (m) =>
-        ({
-          value: m.deObjeto,
-          label: m.deObjeto,
-        } as Select2Option)
-      );
-    } catch (error) { }
-  }
-
-  public async obterClassificacoesPlanejamento(): Promise<void> {
-    try {
-      this.selectOpcoesIsDigital = this.listaOpcoesIsDigital.map(
-        (m) =>
-        ({
-          value: m.value,
-          label: m.label,
-        } as Select2Option)
-      );
-    } catch (error) { }
-  }
-
-  async updateRelatorio(e, op: number): Promise<void> {
-    this.loading = true;
-    switch (op) {
-      case 1: {
-        this.filtroRegistros.NuAno = e.value;
-        if (e.value == null || this.selectAnos.length > 1) {
-          await this.obterDados(op);
-        }
-        break;
-      }
-      case 2: {
-        this.filtroRegistros.NuFilial = e.value;
-        if (e.value == null || this.selectFiliais.length > 1) {
-          await this.obterDados(op);
-        }
-        break;
-      }
-      case 3: {
-        this.filtroRegistros.NuContrato = e.value;
-        if (e.value == null || this.selectContratos.length > 1) {
-          await this.obterDados(op);
-        }
-        break;
-      }
-      case 4: {
-        this.filtroRegistros.NuPlanejamentoStatus = e.value;
-        if (e.value == null || this.selectStatusPlanejamento.length > 1) {
-          await this.obterDados(op);
-        }
-        break;
-      }
-      case 5: {
-        this.filtroRegistros.NuPlanejamentoTipo = e.value;
-        if (e.value == null || this.selectTiposPlanejamento.length > 1) {
-          await this.obterDados(op);
-        }
-        break;
-      }
-      case 6: {
-        this.filtroRegistros.NuDemandaTipo = e.value;
-        if (e.value == null || this.selectTiposDemanda.length > 1) {
-          await this.obterDados(op);
-        }
-        break;
-      }
-      case 7: {
-        this.filtroRegistros.IsDigital = e.value;
-        await this.obterDados(op);
-        break;
-      }
-      case 8: {
-        this.filtroRegistros.DeObjeto = e.value;
-        if (e.value == null || this.selectObjeto.length > 1) {
-          await this.obterDados(op);
-        }
-        break;
-      }
-      // {
-      //   this.filtroRegistros.DeObjeto = e.value;
-      //   await this.obterDados(op);
-      //   break;
-      // }
-      default: {
-        await this.obterDados();
-        break;
-      }
-    }
-
-    this.loading = false;
-  }
-
-  loadPage(page: number) {
+  async loadPage(page: number) {
     if (page !== this.previousPage) {
       this.previousPage = page;
       this.filtroRegistros.pageNumber = page;
-      this.obterPlanejamentos();
+      await this.obterPlanejamentosOrc();
     }
   }
 
@@ -408,7 +145,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
-        this.obterPlanejamentos();
+        this.obterPlanejamentosOrc();
       }
     });
   }
@@ -462,12 +199,74 @@ export class PlanejamentoGeralComponent implements OnInit {
       this.loading = false;
     } catch (error) {
       this.loading = false;
-      console.error('Erro ao obter planejamentos', error);
+      console.error('Erro ao obter dados do dashboard', error);
     }
   }
 
-  public async obterPlanejamentosOrc(): Promise<void> {
+  async updateRelatorio(e, op: number): Promise<void> {
+    this.loading = true;
+    if(e.value == null){
+        this.filtroRegistros = {
+          pageNumber: 1,
+          pageSize: 12,
+          nuPlanejamento: this.nuPlanejamentoExercicio
+        };
+        this.obterPlanejamentosOrc();
+    }
+    else{
+      switch (op) {
+        case 3: {
+          this.filtroRegistros.Ud = e.value;
+          if (e.value == null || this.selectFiliais.length > 1) {
+              await this.obterPlanejamentosOrc();
+          }
+          break;
+        }
+        case 4: {
+          this.filtroRegistros.contrato = e.value;
+          if (e.value == null || this.selectContratos.length > 1) {
+              await this.obterPlanejamentosOrc();
+          }
+          break;
+        }
+        case 5: {
+          this.filtroRegistros.tipo = e.value;
+          if (e.value == null || this.selectTiposDemanda.length > 1) {
+              await this.obterPlanejamentosOrc();
+          }
+          break;
+        }
+        case 6: {
+          this.filtroRegistros.contrato = e.value;
+          if (e.value == null || this.selectContratos.length > 1) {
+              await this.obterPlanejamentosOrc();
+          }
+          break;
+        }
+        case 7: {
+          this.filtroRegistros.contrato = e.value;
+          if (e.value == null || this.selectContratos.length > 1) {
+              await this.obterPlanejamentosOrc();
+          }
+          break;
+        }
+        case 8: {
+          this.filtroRegistros.objeto = e.value;
+          if (e.value == null || this.selectObjeto.length > 1) {
+              await this.obterPlanejamentosOrc();
+          }
+          break;
+        }
+        default: {
+          this.obterPlanejamentosOrc();
+          break;
+        }
+      }
+    }
+    this.loading = false;
+  }
 
+  public async obterPlanejamentosOrc(): Promise<void> {
     this.loading = true;
     try {
       const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
@@ -475,6 +274,8 @@ export class PlanejamentoGeralComponent implements OnInit {
         this.planejamentos = response?.data?.contratos;
         this.selectContratos = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
         this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
+        this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: g, value: g }));
+        this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: g, value: g }));
         this.quantidadeTotal = response.data.totalRecords;
       this.loading = false;
     } catch (error) {
@@ -482,15 +283,4 @@ export class PlanejamentoGeralComponent implements OnInit {
       console.error('Erro ao obter planejamentos', error);
     }
   }
-
-  private limparFiltrosNulos(filtros: any): any {
-    const filtrosLimpos: any = {};
-    Object.keys(filtros).forEach((key) => {
-      if (filtros[key] !== null && filtros[key] !== undefined && filtros[key] !== '') {
-        filtrosLimpos[key] = filtros[key];
-      }
-    });
-    return filtrosLimpos;
-  }
-
 }

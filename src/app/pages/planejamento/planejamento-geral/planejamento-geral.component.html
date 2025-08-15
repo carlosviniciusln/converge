@@ -51,39 +51,39 @@
                             </button>
                           </div>
                         </div>
-                        <div class="pl-1 pr-1">
+                        <!-- <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
-                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 5)" [showClear]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
                             placeholder="Planejamento" *ngIf="!loading"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectAnos" [(ngModel)]="selectedAno" [filter]="true" optionLabel="label"
-                            optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
+                            optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
                             placeholder="Exercício"></p-dropdown>
-                        </div>
+                        </div> -->
                         <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectFiliais" [(ngModel)]="selectedFilial" [filter]="true" optionLabel="label"
-                            optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
+                            optionValue="value" (onChange)="updateRelatorio($event, 3)" [showClear]="true"
                             placeholder="UD"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectContratos" [(ngModel)]="selectedContrato" [filter]="true"
-                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 3)" [showClear]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 4)" [showClear]="true"
                             placeholder="Contrato"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectTiposDemanda" [(ngModel)]="selectedTipoDemanda" [filter]="true"
-                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 6)" [showClear]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 5)" [showClear]="true"
                             placeholder="Tipo"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
-                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)" [showClear]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 6)" [showClear]="true"
                             placeholder="Digital"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
-                            [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 4)"
+                            [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)"
                             [showClear]="true" placeholder="Status"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
