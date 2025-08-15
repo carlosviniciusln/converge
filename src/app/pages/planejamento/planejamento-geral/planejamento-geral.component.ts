@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService } from 'src/app/services/api.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
@@ -17,6 +17,7 @@ import { Select2Data, Select2Option } from 'ng-select2-component';
 import { ContratoResponse } from 'src/app/models/contrato-response';
 import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejamento-cadastro.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -28,7 +29,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   tabs: string[] = ['Contrato', 'Rubrica']
   title: string = 'Planejamento Orçamentário';
 
-  planejamentos: PlanejamentoOrcamentarioResponse[];
+  planejamentos: ContratoPlanejamentosOrcamentario[];
   listaAnos: string[];
   listaContratos: ContratoResponse[];
   listaFiliais: Filial[];
@@ -66,6 +67,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectedOpcaoIsDigital: string = null;
   selectedObjeto: string = null;
 
+  dadosDashboard: PlanejamentoOrcamentarioModel[] = [];
   quantidadeTotal: number = 0;
   loading: boolean = true;
   previousPage: any;
@@ -85,6 +87,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     NuDemandaTipo: null,
     IsDigital: null,
     DeObjeto: '',
+    nuPlanejamento: 0
   };
 
   constructor(
@@ -98,15 +101,30 @@ export class PlanejamentoGeralComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.obterDados();
+
     // queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
     this.route.queryParams.subscribe(params => {
-      this.anoExercicio =params['cO_EXERCICIO']; 
-      this.ordemTipoExercicio = params['tipo']; 
-      this.statusExercio = params['statusPlanejamento']; 
-      this.nuPlanejamentoExercicio = params['statusPlanejamento']; 
+      this.anoExercicio =params['cO_EXERCICIO'];
+      this.ordemTipoExercicio = params['tipo'];
+      this.statusExercio = params['statusPlanejamento'];
+      this.nuPlanejamentoExercicio = params['nuPlanejamento'];
     });
 
+    this.filtroRegistros = {
+      pageNumber: 1,
+      pageSize: 12,
+      NuAno: null,
+      NuFilial: null,
+      NuContrato: null,
+      NuPlanejamentoStatus: null,
+      NuPlanejamentoTipo: null,
+      NuDemandaTipo: null,
+      IsDigital: null,
+      DeObjeto: '',
+      nuPlanejamento: this.nuPlanejamentoExercicio
+    };
+    await this.obterPlanejamentosOrc();
+    await this.obterdadosDashboard();
   }
 
   obterPermissoes() {
@@ -263,6 +281,8 @@ export class PlanejamentoGeralComponent implements OnInit {
     } catch (error) { }
   }
 
+
+
   public async obterObjetos(): Promise<void> {
     try {
       const response = await this.apiService.get<
@@ -394,36 +414,36 @@ export class PlanejamentoGeralComponent implements OnInit {
   }
 
   public async obterPlanejamentos(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponsePaginado<PlanejamentoOrcamentarioResponse>
-      >(`${Endpoints.URL_ORCAMENTO}/paginado`, this.filtroRegistros);
+    // try {
+    //   const response = await this.apiService.get<
+    //     ApiResponsePaginado<PlanejamentoOrcamentarioResponse>
+    //   >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}?NuPlanejamento=${this.nuPlanejamentoExercicio}`, this.filtroRegistros);
 
-      this.planejamentos = response.data.results;
-      this.quantidadeTotal = response.data.totalRecords;
+    //   this.planejamentos = response.data.results;
+    //   this.quantidadeTotal = response.data.totalRecords;
 
-      this.planejamentos.forEach((element) => {
-        var vrTotalOrcamentoPlanejamento = 0;
-        element.gcptb027PrevisoesDesembolso.forEach((subelement) => {
-          vrTotalOrcamentoPlanejamento +=
-            subelement.vrJaneiro +
-            subelement.vrFevereiro +
-            subelement.vrMarco +
-            subelement.vrAbril +
-            subelement.vrMaio +
-            subelement.vrJunho +
-            subelement.vrJulho +
-            subelement.vrAgosto +
-            subelement.vrSetembro +
-            subelement.vrOutubro +
-            subelement.vrNovembro +
-            subelement.vrDezembro;
-        });
-        element.vrTotalOrcamentoPlanejamento = vrTotalOrcamentoPlanejamento;
-      });
+    //   this.planejamentos.forEach((element) => {
+    //     var vrTotalOrcamentoPlanejamento = 0;
+    //     element.gcptb027PrevisoesDesembolso.forEach((subelement) => {
+    //       vrTotalOrcamentoPlanejamento +=
+    //         subelement.vrJaneiro +
+    //         subelement.vrFevereiro +
+    //         subelement.vrMarco +
+    //         subelement.vrAbril +
+    //         subelement.vrMaio +
+    //         subelement.vrJunho +
+    //         subelement.vrJulho +
+    //         subelement.vrAgosto +
+    //         subelement.vrSetembro +
+    //         subelement.vrOutubro +
+    //         subelement.vrNovembro +
+    //         subelement.vrDezembro;
+    //     });
+    //     element.vrTotalOrcamentoPlanejamento = vrTotalOrcamentoPlanejamento;
+    //   });
 
-      this.loading = false;
-    } catch (error) { }
+    //   this.loading = false;
+    // } catch (error) { }
   }
 
   public downloadPlanejamentoDesembolso() {
@@ -431,6 +451,46 @@ export class PlanejamentoGeralComponent implements OnInit {
       `${Endpoints.URL_ORCAMENTO}/excel`,
       this.filtroRegistros
     );
+  }
+
+  public async obterdadosDashboard(): Promise<void>{
+    this.loading = true;
+    try {
+      const response = await this.apiService.get<ApiResponse<PlanejamentoOrcamentarioModel[]>>
+        (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_DASHBOARD}`, this.filtroRegistros);
+      this.dadosDashboard = response?.data;
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      console.error('Erro ao obter planejamentos', error);
+    }
+  }
+
+  public async obterPlanejamentosOrc(): Promise<void> {
+
+    this.loading = true;
+    try {
+      const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
+        (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
+        this.planejamentos = response?.data?.contratos;
+        this.selectContratos = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
+        this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
+        this.quantidadeTotal = response.data.totalRecords;
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      console.error('Erro ao obter planejamentos', error);
+    }
+  }
+
+  private limparFiltrosNulos(filtros: any): any {
+    const filtrosLimpos: any = {};
+    Object.keys(filtros).forEach((key) => {
+      if (filtros[key] !== null && filtros[key] !== undefined && filtros[key] !== '') {
+        filtrosLimpos[key] = filtros[key];
+      }
+    });
+    return filtrosLimpos;
   }
 
 }

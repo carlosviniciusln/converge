@@ -1,5 +1,5 @@
 import { PlanejamentoOrcamentarioComponent } from './../planejamento-lista/planejamento-orcamentario.component';
-import { Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from 'src/app/services/api.service';
 import { ApiResponse } from 'src/app/models/api-response';
@@ -29,7 +29,7 @@ import { PlanejamentoOrcamentarioModel } from 'src/app/models/planejamento-orcam
 })
 export class PlanejamentoAbaRubricaComponent implements OnInit {
 
-    @Input() nuPlanejamento : string; // UTILIZAR NU PLANEJAMENTO PARA TRAZER LISTA CORRETA DE REGISTROS
+    @Input() nuPlanejamento : string;
     @Input() anoExercio : number;
     @Input() tipoExercicio : string;
     permissions: ActionPolicies;
@@ -43,8 +43,16 @@ export class PlanejamentoAbaRubricaComponent implements OnInit {
 
     ngOnInit() {
         this.obterPermissoes();
-        this.obterValores();
+
     }
+
+
+ngOnChanges(changes: SimpleChanges) {
+  if (changes['nuPlanejamento'] && changes['nuPlanejamento'].currentValue) {
+    this.obterValores(this.nuPlanejamento);
+  }
+}
+
 
     obterPermissoes() {
         this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
@@ -96,49 +104,69 @@ export class PlanejamentoAbaRubricaComponent implements OnInit {
         fileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
     }
 
-    public async obterValores() {
+    public async obterValores(nuplanejamento: string) {
         try {
             const response = await this.apiService.get<
                 ApiResponse<PlanejamentoOrcamentarioModel[]>
-            >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_RUBRICA}`);
+            >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_RUBRICA}?nuPlanejamento=${nuplanejamento}`);
             this.planejamentoOrcamentario = response.data;
             this.listaPlanejamentoOrcamentario = response.data;
         } catch (error) {
-            console.error(error, 'obterValores');
+            console.error(error, 'obterValores por rubrica');
         }
     }
 
-    async detalharRubrica(registro: ValoresExecutadosResponse) {
+    async detalharPorUD(registro: PlanejamentoOrcamentarioModel) {
         try {
             registro.expanded = !registro.expanded;
             if (registro.expanded && !registro.detalhes) {
                 const response = await this.apiService.get<
-                    ApiResponse<ValoresExecutadosResponse[]>
-                >(`${Endpoints.URL_VALOR_EXECUTADO}/obter-pagamentos-filial-contrato?coContrato=` + registro.contrato + `&gn=` + registro.gn)
+                    ApiResponse<PlanejamentoOrcamentarioModel[]>
+                >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_UD}?nuPlanejamento=${this.nuPlanejamento}&nuRubrica=${registro.nU_RUBRICA}`)
                 registro.detalhes = response.data;
             }
         } catch (error) {
-            console.error(error, 'detalharRubrica');
+            console.error(error, 'detalharPorUD');
         }
     }
 
-    async detalharPagamento(registro: ValoresExecutadosResponse, detalhe: any) {
-        console.log(registro)
-        console.log(detalhe)
+    async detalharPorContrato(registro: PlanejamentoOrcamentarioModel, detalhe: any) {
+      console.log(detalhe)
         try {
             if (!detalhe.segundoNivel) {
-                detalhe.segundoNivel = {};
+                detalhe.segundoNivel = [];
             }
             detalhe.expanded = !detalhe.expanded;
             if (detalhe.expanded && !detalhe.segundoNivel.data) {
                 const response = await
-                this.apiService.get<ApiResponse<ValoresExecutadosResponse[]>>
-                (`${Endpoints.URL_VALOR_EXECUTADO}/obter-pagamentos-rubrica-contrato?coContrato=${registro.contrato}&rubrica=${detalhe.coRubrica}&gn=${registro.gn}`);
-                detalhe.segundoNivel.data = response.data;
+                this.apiService.get<ApiResponse<PlanejamentoOrcamentarioModel[]>>
+                (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_CONTRATO}?nuPlanejamento=${this.nuPlanejamento}&nuRubrica=${registro.nU_RUBRICA}&nuFilial=${detalhe.nU_FILIAL}`);
+                registro.segundoNivel = response?.data;
+                console.log('segundooo', registro.segundoNivel)
             }
         }
         catch (error) {
-            console.error(error, 'detalharPagamento');
+            console.error(error, 'detalharPorContrato');
         }
     }
+
+    async detalharPorMes(registro: PlanejamentoOrcamentarioModel, detalhe: any) {
+      try {
+          if (!detalhe.terceiroNivel) {
+              detalhe.terceiroNivel = [];
+          }
+          detalhe.expanded = !detalhe.expanded;
+          if (detalhe.expanded && !detalhe.terceiroNivel.data) {
+              const response = await
+              this.apiService.get<ApiResponse<PlanejamentoOrcamentarioModel[]>>
+              (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_MES}?nuPlanejamento=${this.nuPlanejamento}&nuRubrica=${registro.nU_RUBRICA}&nuContrato=${detalhe.nU_CONTRATO}`);
+              registro.terceiroNivel = response.data;
+              console.log('TERCEIRO NUIVEL', registro.terceiroNivel)
+          }
+      }
+      catch (error) {
+          console.error(error, 'detalharPorUD');
+      }
+  }
+
 }

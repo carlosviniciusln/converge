@@ -46,8 +46,10 @@ export enum Endpoints {
 
   URL_ATESTE = 'v1/Ateste',
 
-  URL_PLANEJAMENTO_ORCAMENTARIO_RUBRICA = 'v1​/PlanejamentoOrcamentario​/rubrica',
-  URL_PLANEJAMENTO_ORCAMENTARIO_UD = 'v1​/PlanejamentoOrcamentario​/rubrica-ud',
-  URL_PLANEJAMENTO_ORCAMENTARIO_CONTRATO = 'v1​/PlanejamentoOrcamentario​/ud-contrato',
-  URL_PLANEJAMENTO_ORCAMENTARIO_MES = 'v1​/PlanejamentoOrcamentario​/contrato-mes'
+  URL_PLANEJAMENTO_ORCAMENTARIO_RUBRICA = 'v1/PlanejamentoOrcamentario/rubrica',
+  URL_PLANEJAMENTO_ORCAMENTARIO_UD = 'v1/PlanejamentoOrcamentario/rubrica-ud',
+  URL_PLANEJAMENTO_ORCAMENTARIO_CONTRATO = 'v1/PlanejamentoOrcamentario/ud-contrato',
+  URL_PLANEJAMENTO_ORCAMENTARIO_MES = 'v1/PlanejamentoOrcamentario/contrato-mes',
+  URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO = 'v1/PlanejamentoOrcamentario/filter-paginado',
+  URL_PLANEJAMENTO_ORCAMENTARIO_DASHBOARD = 'v1/PlanejamentoOrcamentario/dashboard'
 }

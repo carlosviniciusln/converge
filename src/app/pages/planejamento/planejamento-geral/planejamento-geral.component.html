@@ -15,23 +15,23 @@
         <div  class="" style="margin: 14px">
           <table border="1" width="100%" style="text-align: center; border-color: rgb(231, 231, 231);">
             <tr>
-              <th colspan="5">CAPEX</th>
+              <th colspan="5">{{dadosDashboard[0]?.nO_RUBRICA_TIPO}}</th>
             </tr>
             <tr style="background-color: rgb(245, 245, 245);">
-              <td style="font-weight: bold;">Solicitado <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
-              <td style="font-weight: bold;">Limite/Planejado <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
-              <td style="font-weight: bold;">Diferença <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
-              <td style="font-weight: bold;">Executado <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
-              <td style="font-weight: bold;">%EP <p style="color:blue; font-weight: bold;">R$ 999.999,00</p></td>
+              <td style="font-weight: bold;">Solicitado <p style="color:blue; font-weight: bold;">{{dadosDashboard[0]?.vR_PLANEJADO_MES | currency : "BRL" }}</p></td>
+              <td style="font-weight: bold;">Limite/Planejado <p style="color:blue; font-weight: bold;">{{dadosDashboard[0]?.vR_LIMITE | currency : "BRL" }}</p></td>
+              <td style="font-weight: bold;">Diferença <p style="color:blue; font-weight: bold;">{{dadosDashboard[0]?.vR_DIFERENCA | currency : "BRL" }}</p></td>
+              <td style="font-weight: bold;">Executado <p style="color:blue; font-weight: bold;">{{dadosDashboard[0]?.vR_EXECUTADO | currency : "BRL" }}</p></td>
+              <td style="font-weight: bold;">%EP <p style="color:blue; font-weight: bold;">{{dadosDashboard[0]?.pC_EP }}%</p></td>
             </tr>
             <tr>
-              <th colspan="5">OPEX</th>
-              <tr style="background-color:rgb(245, 245, 245);">
-                <td style="font-weight: bold;">Solicitado <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
-                <td style="font-weight: bold;">Limite/Planejado <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
-                <td style="font-weight: bold;">Diferença <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
-                <td style="font-weight: bold;">Executado <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
-                <td style="font-weight: bold;">%EP <p style="color:orange; font-weight: bold;">R$ 999.999,00</p></td>
+              <th colspan="5">{{dadosDashboard[1]?.nO_RUBRICA_TIPO}}</th>
+              <tr style="background-color: rgb(245, 245, 245);">
+                <td style="font-weight: bold;">Solicitado <p style="color:orange; font-weight: bold;">{{dadosDashboard[1]?.vR_PLANEJADO_MES | currency : "BRL" }}</p></td>
+                <td style="font-weight: bold;">Limite/Planejado <p style="color:orange; font-weight: bold;">{{dadosDashboard[1]?.vR_LIMITE | currency : "BRL" }}</p></td>
+                <td style="font-weight: bold;">Diferença <p style="color:orange; font-weight: bold;">{{dadosDashboard[1]?.vR_DIFERENCA | currency : "BRL" }}</p></td>
+                <td style="font-weight: bold;">Executado <p style="color:orange; font-weight: bold;">{{dadosDashboard[1]?.vR_EXECUTADO | currency : "BRL" }}</p></td>
+                <td style="font-weight: bold;">%EP <p style="color:orange; font-weight: bold;">{{dadosDashboard[1]?.pC_EP }}%</p></td>
               </tr>
           </table>
         </div>
@@ -132,12 +132,12 @@
                     openModalPlanejamento(
                       'consultar',
                       false,
-                      planejamento.nuPlanejamentoOrcamentario
+                      planejamento.nU_ORC
                     )
                   ">
                       <td style="text-align: center">
                         <span class="p-column-title">Código</span>
-                        {{ planejamento.coPlanejamentoOrcamentario }}
+                        {{ planejamento.nU_ORC }}
                       </td>
                       <!-- <td style="text-align: center">
                         <span class="p-column-title">Planejamento</span>
@@ -149,27 +149,27 @@
                       </td> -->
                       <td style="text-align: center">
                         <span class="p-column-title">UD</span>
-                        {{ planejamento.gcptb005Filial.sgFilial }}
+                        {{ planejamento.sG_FILIAL }}
                       </td>
                       <td style="text-align: center">
                         <span class="p-column-title">Contrato</span>
-                        {{ planejamento.gcptb001Contrato?.coContrato }}
+                        {{ planejamento.cO_CONTRATO }}
                       </td>
                       <td style="width: 40%">
                         <span class="p-column-title">Objeto</span>
-                        {{ planejamento.deObjeto }}
+                        {{ planejamento.nO_OBJETO }}
                       </td>
                       <td>
                         <span class="p-column-title">Tipo</span>
-                        {{ planejamento.gcptb023DemandaTipo.deDemanda }}
+                        {{ planejamento.dE_DEMANDA }}
                       </td>
                       <td style="text-align: center">
                         <span class="p-column-title">Status</span>
-                        {{ planejamento.gcptb025PlanejamentoStatus.noPlanejamentoStatus }}
+                        {{ planejamento.nO_STATUS }}
                       </td>
                       <td style="text-align: right">
                         <span class="p-column-title">Valor</span>
-                        {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
+                        {{ planejamento.vR_PLANEJAMENTO | currency : "BRL" }}
                       </td>
                       <!-- <td style="text-align: right">
                         <span class="p-column-title">Valor</span>
@@ -199,9 +199,8 @@
       </mat-tab>
 
     <mat-tab label="Rubrica">
-          <!-- criar dto e juntar dados -->
-            <app-planejamento-aba-rubrica [nuPlanejamento]="nuPlanejamentoExercicio" [anoExercio]="anoExercicio" [tipoExercicio]="ordemTipoExercicio"></app-planejamento-aba-rubrica>
-      </mat-tab>
+      <app-planejamento-aba-rubrica [nuPlanejamento]="nuPlanejamentoExercicio" [anoExercio]="anoExercicio" [tipoExercicio]="ordemTipoExercicio"></app-planejamento-aba-rubrica>
+    </mat-tab>
 
     </mat-tab-group>
   </div>
