@@ -1,5 +1,5 @@
 import { PlanejamentoOrcamentarioComponent } from './../planejamento-lista/planejamento-orcamentario.component';
-import { Component, OnInit} from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ApiService } from 'src/app/services/api.service';
 import { ApiResponse } from 'src/app/models/api-response';
@@ -28,6 +28,10 @@ import { PlanejamentoOrcamentarioModel } from 'src/app/models/planejamento-orcam
     ]
 })
 export class PlanejamentoAbaRubricaComponent implements OnInit {
+
+    @Input() nuPlanejamento : string; // UTILIZAR NU PLANEJAMENTO PARA TRAZER LISTA CORRETA DE REGISTROS
+    @Input() anoExercio : number;
+    @Input() tipoExercicio : string;
     permissions: ActionPolicies;
     listaPlanejamentoOrcamentario: PlanejamentoOrcamentarioModel[] = [];
     planejamentoOrcamentario: PlanejamentoOrcamentarioModel[] = [];
