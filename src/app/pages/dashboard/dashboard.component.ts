@@ -272,7 +272,7 @@ export class DashboardComponent implements OnInit {
   }
 
   openModalNovosContratos() {
-    if(this.currentProfile === PerfisEnum.Pagadoria){
+    if(this.currentProfile === PerfisEnum.Pagadoria || this.currentProfile === PerfisEnum.Administrador){
       const modalRef = this.modalService.open(NovosContratosComponent, {
         ariaLabelledBy: 'modal-basic-title',
         windowClass: 'modal-dialog-medium-width',
