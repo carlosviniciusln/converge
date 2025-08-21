@@ -33,6 +33,7 @@ export class ModalPlanejamentoComponent implements OnInit {
   listaPlanejamentos: ResumoPlanejamentoModel[] = [];
   ultimoPlanejamento: ResumoPlanejamentoModel;
   retornoAno: boolean = false;
+  anoAtual: number;
   currentProfile: PerfisEnum;
   isPerfilPrivilegiado = false
   selectedRowId: number | null = null;
@@ -54,7 +55,8 @@ export class ModalPlanejamentoComponent implements OnInit {
     private apiService: ApiService,
     public token: TokenStorageService,
     private formBuilder: FormBuilder,
-    private router : Router
+    private router : Router,
+    private toastr: ToastrService,
   ) {
     this.obterPermissoes();
   }
@@ -67,6 +69,7 @@ export class ModalPlanejamentoComponent implements OnInit {
         if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT'){
           this.isPerfilPrivilegiado = true;
         }
+        this.anoAtual = new Date().getFullYear();
   }
 
   obterPermissoes() {
@@ -76,8 +79,6 @@ export class ModalPlanejamentoComponent implements OnInit {
   obterPlanejamentos() {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento?coExercicio='+this.anoSelecionado)
     result.then(response => {
-
-      console.log(response, "DATA")
       this.listaPlanejamentos = response.data;
       this.montarPlanejamentosModal();
     });
@@ -104,14 +105,18 @@ export class ModalPlanejamentoComponent implements OnInit {
           case "Aberto":
             this.labelButtonsLeft.label = 'Encerrar Programação';
             this.labelButtonsLeft.value = 'encerrar';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
             this.labelButtonsRight.label = 'Cancelar Programação';
             this.labelButtonsRight.value = 'cancelar';
+            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
             break;
           case "Encerrado":
-            this.labelButtonsLeft.label = 'Nova Programação';
+            this.labelButtonsLeft.label = 'Nova Reprogramação';
             this.labelButtonsLeft.value = 'nova';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento';
             this.labelButtonsRight.label = 'Reabrir Programação';
             this.labelButtonsRight.value = 'reabrir';
+            this.labelButtonsRight.message = 'Tem certeza que deseja reabrir o planejamento';
             break;
           default:
             break;
@@ -140,12 +145,23 @@ export class ModalPlanejamentoComponent implements OnInit {
           case "Aberto":
             this.labelButtonsLeft.label = 'Encerrar Programação';
             this.labelButtonsLeft.value = 'encerrar';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
             this.labelButtonsRight.label = 'Cancelar Programação';
             this.labelButtonsRight.value = 'cancelar';
+            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
             break
           case "Encerrado":
             this.labelButtonsLeft.label = 'Nova Reprogramação';
-            this.labelButtonsLeft.value = 'Reabrir Reprogramação';
+            this.labelButtonsLeft.value = 'nova';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento';
+            this.labelButtonsRight.label = 'Reabrir Reprogramação';
+            this.labelButtonsRight.message = 'Tem certeza que deseja reabrir o planejamento';
+            this.labelButtonsRight.value = 'reabrir';
+            break 
+          case "Cancelado":
+            this.labelButtonsLeft.label = 'Nova Reprogramação';
+            this.labelButtonsLeft.value = 'nova';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento'
             this.labelButtonsRight = null;
             break 
           default:
@@ -161,61 +177,33 @@ export class ModalPlanejamentoComponent implements OnInit {
   atualizarPlanejamento(botaoClicado) {
     this.form = this.formBuilder.group({
       ano: [this.anoSelecionado],
-      acao: [botaoClicado]
+      acao: [botaoClicado],
+      NuPlanejamento: [this.ultimoPlanejamento.nU_PLANEJAMENTO]
     });
-
     const result = this.apiService.post<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/planejamento', this.form.value)
 
     result.then(response => {
       if (response && response.data) {
         this.listaPlanejamentos = response.data;
         this.obterPlanejamentos();
+        this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
       }
     });
   }
 
   onRowClick(item: any) {
-    console.log(item, "identificador do planejamento")
     this.activeModal.close();
     this.router.navigate(['/planejamento-orcamentario-detalhe'], {
       queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO, nuPlanejamento: item.nU_PLANEJAMENTO}
     });
 
-   
-  
-  
-    // window.location.href = '/#/planejamento-orcamentario-detalhe'
   }
 
   async mensagemBotaoClick(cenario: any) {
 
-
-    /*
-     Regra de negócio: Botão Ajuste Programação ao ser acionado deverá gerar o próximo Tipo para o respectivo ano/exercício.
-
-     RN 40:Ao clicar no botão Ajuste Programação, a partir do último Tipo/Status que deverá ser igual a Programação ou igual a Ajuste Programação e 
-     deverá gerar a próxima programação de Ajuste Programação do planejamento do respectivo ano/exercício.
-     RN41: Emitir mensagem através de pop-up para confirmação da execução “Tem certeza de que deseja gerar a Programação do Planejamento do Exercício 9999 – 99 – XXXXXXXXXXXX?” Sim ou Não.
-           Onde: 9999 é o ano do exercício. 99 – é o número do Tipo sequencial.XXXXXXXXXXXX – é o nome/descrição do Tipo que neste caso será sempre Ajuste Programação.
-           Exemplo: “Tem certeza de que deseja gerar a Programação do Planejamento do Exercício 2026 – 01 – Ajuste Programação?” Sim/Não
-           Quando = Não, apenas apagar o pop-up.
-           Quando = Sim, seguir o processo.
-
-
-    
-    */
-
-
-    // this.validarAno();
-    // if(this.retornoAno){
-    //   return;
-    // }
-
-
-
     const alert = await Swal.fire({
       title: `Exercício ${this.anoSelecionado}`,
-      text: `Tem certeza de que deseja cancelar o Planejamento ${this.ultimoPlanejamento.tipo}?`,
+      text: cenario.message + ` ${this.ultimoPlanejamento.tipo}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim!',
@@ -237,9 +225,7 @@ export class ModalPlanejamentoComponent implements OnInit {
   async validarAno() {
 
     this.retornoAno = false;
-    let anoAtual = new Date().getFullYear().toString();
-
-    if (anoAtual > this.anoSelecionado) {
+    if (this.anoAtual > this.anoSelecionado) {
      
       const alert = await Swal.fire({
         title: '',

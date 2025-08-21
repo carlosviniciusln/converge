@@ -131,7 +131,6 @@ ngOnChanges(changes: SimpleChanges) {
     }
 
     async detalharPorContrato(registro: PlanejamentoOrcamentarioModel, detalhe: any) {
-      console.log(detalhe)
         try {
             if (!detalhe.segundoNivel) {
                 detalhe.segundoNivel = [];
@@ -142,7 +141,6 @@ ngOnChanges(changes: SimpleChanges) {
                 this.apiService.get<ApiResponse<PlanejamentoOrcamentarioModel[]>>
                 (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_CONTRATO}?nuPlanejamento=${this.nuPlanejamento}&nuRubrica=${registro.nU_RUBRICA}&nuFilial=${detalhe.nU_FILIAL}`);
                 registro.segundoNivel = response?.data;
-                console.log('segundooo', registro.segundoNivel)
             }
         }
         catch (error) {
@@ -161,7 +159,6 @@ ngOnChanges(changes: SimpleChanges) {
               this.apiService.get<ApiResponse<PlanejamentoOrcamentarioModel[]>>
               (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_MES}?nuPlanejamento=${this.nuPlanejamento}&nuRubrica=${registro.nU_RUBRICA}&nuContrato=${detalhe.nU_CONTRATO}`);
               registro.terceiroNivel = response.data;
-              console.log('TERCEIRO NUIVEL', registro.terceiroNivel)
           }
       }
       catch (error) {

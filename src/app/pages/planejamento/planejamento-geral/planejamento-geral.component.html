@@ -44,7 +44,7 @@
                   [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0">
                   <ng-template pTemplate="caption">
                       <div class="c-menu">
-                        <div class="pl-1 pr-1">
+                        <div class="pl-1 pr-1" *ngIf="statusExercio != 'Encerrado' && statusExercio != 'Cancelado'">
                           <div class="text-right">
                             <button type="button" class="btn-sm btn-add" (click)="openModalPlanejamento('adicionar', true)" style="width: 131px;">
                               Novo Registro
