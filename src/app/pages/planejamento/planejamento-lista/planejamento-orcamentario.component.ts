@@ -78,15 +78,14 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
   obterPlanejamentos() {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento')
     result.then(response => {
-      console.log(response, "Primeira tela")
       this.planejamentos = response.data;
     });
   }
 
   async novoExercicio(){
-const ultimoItem: ResumoPlanejamentoModel = this.planejamentos[this.planejamentos.length - 1];
-this.anoAtual = ultimoItem.cO_EXERCICIO;
-
+    const ultimoItem: ResumoPlanejamentoModel = this.planejamentos[this.planejamentos.length - 1];
+    const dataAtual = new Date();
+    this.anoAtual = dataAtual.getFullYear();
     const alert = await Swal.fire({
       title: '',
       text: 'Tem Certeza de que deseja gerar o Planejamento Orçamentário do exercício ' + (this.anoAtual + 1) + '?',
@@ -103,6 +102,20 @@ this.anoAtual = ultimoItem.cO_EXERCICIO;
     });
 
     if(!alert){
+      return;
+    }
+
+    if(ultimoItem.cO_EXERCICIO === this.anoAtual + 1){
+      const alert = await Swal.fire({
+                   title: '',
+                   text:  `Exercício ${ultimoItem.cO_EXERCICIO} já foi gerado o Planejamento, por segurança, não é possível ser gerado novamente.`,
+                   icon: 'warning',
+                   showCancelButton: false,
+                   confirmButtonText: 'Ok!',
+                 }).then((result) => {
+                   console.log(result, "Result")
+                 });
+               
       return;
     }
     this.toastr.warning('Aguarde, gerando o exercício ' + (this.anoAtual + 1) + ', isso pode levar alguns minutos...');

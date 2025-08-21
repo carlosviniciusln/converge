@@ -337,7 +337,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
         ApiResponse<PlanejamentoOrcamentarioConsultaResponse>
       >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/contrato?nuContrato=${nuContrato}`);
 
-      console.log(response.data)
       if (response.succeeded && response.data) {
         this.form.patchValue({
           nuContrato: response.data.contrato,
