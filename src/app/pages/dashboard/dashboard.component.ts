@@ -160,8 +160,6 @@ export class DashboardComponent implements OnInit {
       }
       return item
     });
-    data = data.filter(item => item.iC_UNIDADE_PAI == true);
-
     this.execucao = this.filterGerencias(data);
   }
 
