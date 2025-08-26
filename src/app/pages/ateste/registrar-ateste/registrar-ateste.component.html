@@ -19,23 +19,25 @@
   </div>
 
   <div class="">
-    <form [formGroup]="form" style="padding: 10px">
+    <form [formGroup]="form" style="padding: 10px" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-md-2">
-          <label for="noContrato">Contrato</label>
+          <label for="coContrato">Contrato</label>
           <input
             pInputText 
-            formControlName="noContrato"
-            id="noContrato"
+            readonly
+            formControlName="coContrato"
+            id="coContrato"
             type="text"
             class="form-control"
           />
         </div>
         <div class="col-md-10">
-          <label for="noFornecedor">Fornecedor</label>
+          <label for="noEmpresa">Fornecedor</label>
           <input
-            formControlName="noFornecedor"
-            id="noFornecedor"
+           readonly
+            formControlName="noEmpresa"
+            id="noEmpresa"
             type="text"
             class="form-control"
           />
@@ -44,6 +46,8 @@
          <div class="col-md-12" style="padding-top: 10px">
           <label for="noObjeto">Objeto</label>
           <textarea
+            readonly
+            style="padding-left: 5px;"
             formControlName="noObjeto"
             id="noObjeto"
             placeholder="Digite..."
@@ -76,18 +80,20 @@
           </div>
 
           <div class="col-md-4 pl-0">
-            <label for="dtInicioVigencia">Início</label>
+            <label for="inicioVigencia">Início</label>
             <input
-              formControlName="dtInicioVigencia"
+              readonly
+              formControlName="inicioVigencia"
               style="text-align: center"
               type="date"
               class="form-control"
             />
           </div>
           <div class="col-md-4 pl-0">
-            <label for="dtFimVigencia">Fim</label>
+            <label for="fimVigencia">Fim</label>
             <input
-              formControlName="dtFimVigencia"
+              readonly
+              formControlName="fimVigencia"
               style="text-align: center"
               type="date"
               class="form-control"
@@ -104,12 +110,10 @@
           <input
             style="text-align: center"
             type="text"
-            formControlName="noCompetencia"
+            formControlName="deCompetencia"
             class="form-control"
-            [ngClass]="{
-              'is-invalid': false
-            }"
             mask="00/0000"
+            readonly
             placeholder="MM/YYYY"
           />
         </div>
@@ -125,20 +129,22 @@
           </div>
 
           <div class="col-md-4 pl-0">
-            <label for="dtInicioCompetencia">Início</label>
+            <label for="dtInicioPeriodoCompetencia">Início</label>
             <input
-              formControlName="dtInicioCompetencia"
+              formControlName="dtInicioPeriodoCompetencia"
               style="text-align: center"
               type="date"
+              readonly
               class="form-control"
             />
           </div>
           <div class="col-md-4 pl-0">
-            <label for="dtFimCompetencia">Fim</label>
+            <label for="dtFimPeriodoCompetencia">Fim</label>
             <input
-              formControlName="dtFimCompetencia"
+              formControlName="dtFimPeriodoCompetencia"
               style="text-align: center"
               type="date"
+              readonly
               class="form-control"
             />
           </div>
@@ -186,14 +192,15 @@
                 <div class="c-dropdown">
                 <p-dropdown [options]="listaGcptb018TipoServico"
                                     [filter]="true" optionLabel="label" optionValue="value"
-                                    (onChange)="updateRelatorio($event)"
-                                    formControlName="itens"
+                                    formControlName="nuServicoTipo"
                                     placeholder="Bens/Serviços"></p-dropdown>
                 </div>
               <td>
                 <input
-                  formControlName="valor"
+                  formControlName="vrApurado"
                   class="form-control"
+                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
                   placeholder="Valor apurado"
                 />
               </td>
@@ -208,7 +215,7 @@
             <tr>
               <td class="text-end fw-bold">VALOR TOTAL PARA PAGAMENTO</td>
               <td class="fw-bold" style="text-align: end">
-                {{ 0 | currency : "BRL" : "symbol" : "1.2-2" }}
+                {{ total | currency : "BRL" : "symbol" : "1.2-2" }}
               </td>
               <td></td>
             </tr>
@@ -225,9 +232,13 @@
             <h5>Valor de RETENÇÃO</h5>
             <div style="display: flex; gap:15px">
                 <input
-                  formControlName="noCriador"
-                  id="noCriador"
+                  formControlName="deRetencao"
+                  id="deRetencao"
                   type="text"
+                  [ngClass]="{
+                    'is-invalid': submitted && form.get('deRetencao').invalid
+                  }"
+                  placeholder="Retenção"
                   class="form-control col-9"
                 />
 
@@ -235,7 +246,8 @@
                   formControlName="vrRetencao"
                   id="vrRetencao"
                   type="text"
-                  value="R$"
+                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
                   class="form-control col-2"
                 />
             </div>
@@ -246,17 +258,22 @@
             <h5>Valor de PENALIDADES</h5>
             <div style="display: flex; gap:15px">
                 <input
-                  formControlName="noPenalidades"
-                  id="noPenalidades"
+                  formControlName="dePenalidade"
+                  id="dePenalidade"
                   type="text"
+                  placeholder="Penalidade"
                   class="form-control col-9"
+                  [ngClass]="{
+                    'is-invalid': submitted && form.get('dePenalidade').invalid
+                  }"
                 />
 
                 <input
-                  formControlName="vrPenalidades"
-                  id="vrPenalidades"
-                  value="R$"
+                  formControlName="vrMulta"
+                  id="vrMulta"
                   type="text"
+                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
+                [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
                   class="form-control col-2"
                 />
             </div>
@@ -272,8 +289,11 @@
               <b>Observa&ccedil;&otilde;es</b>
             </h4>
             <textarea formControlName="deObservacao" id="deObservacao"
-            placeholder="Digite..."
-              class="form-control border border-light rounded" rows="4">
+              placeholder="Digite..."
+              class="form-control border border-light rounded" rows="4"
+              [ngClass]="{
+                'is-invalid': submitted && form.get('deObservacao').invalid
+              }" >
             </textarea>
   
           </div>
@@ -288,10 +308,8 @@
               mode="basic" 
               chooseLabel="Anexar arquivo" 
               chooseIcon="pi pi-upload"
-              name="demo[]" 
-              url="teste" 
-              accept="image/*"  
-              (onUpload)="onUpload($event)"
+              accept=".pdf,.png,.jpg"  
+              (onSelect)="onUpload($event)"
              >
             </p-fileUpload>
       </div>
@@ -306,7 +324,7 @@
               gap: 15px;
               padding: 0px 24px 0px 0px;
               justify-content: flex-end;">
-                <button style="background-color: #005ca9;" class="btn-sm btn-default" type="submit">Salvar Ateste</button>
+                <button style="background-color: #005ca9;" class="btn-sm btn-default" type="submit" (click)="onSubmit()">Salvar Ateste</button>
                 <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
          </div>
          

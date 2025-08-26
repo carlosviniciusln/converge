@@ -53,14 +53,14 @@ export const AdminLayoutRoutes: Routes = [
     path: 'planejamento/limites/create',
     component: LimitesRubricasCadastroComponent,
   },
-  { path: 'planejamento-orcamentario', component: PlanejamentoOrcamentarioComponent },
+  // { path: 'planejamento-orcamentario', component: PlanejamentoOrcamentarioComponent },
   { path: 'pagamento', component: PagamentoComponent },
   { path: 'consumo', component: ConsumoComponent },
   { path: 'consumo-arp', component: ConsumoArpComponent },
   { path: 'export-data-pagamento', component: ExportPagamentoComponent },
   { path: 'informe/analitico', component: AnaliticoComponent },
   { path: 'informe/sintetico', component: SinteticoComponent },
-  { path: 'planejamento-orcamentario-detalhe', component: PlanejamentoGeralComponent },
+  // { path: 'planejamento-orcamentario-detalhe', component: PlanejamentoGeralComponent },
   //{ path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'empenho', component: EmpenhoComponent },
@@ -73,7 +73,7 @@ export const AdminLayoutRoutes: Routes = [
   //   { path: "typography", component: TypographyComponent },
   //   { path: "rtl", component: RtlComponent },
 
-  { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
-  { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
+  // { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
+  // { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
 
 ];

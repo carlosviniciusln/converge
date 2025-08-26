@@ -115,23 +115,21 @@ export class ValoresExecutadosComponent implements OnInit {
         }
     }
 
-    async detalharPagamento(registro: ValoresExecutadosResponse, detalhe: any) { 
-        console.log(registro)
-        console.log(detalhe)
-        try { 
-            if (!detalhe.segundoNivel) { 
-                detalhe.segundoNivel = {}; 
-            } 
-            detalhe.expanded = !detalhe.expanded; 
-            if (detalhe.expanded && !detalhe.segundoNivel.data) { 
-                const response = await 
+    async detalharPagamento(registro: ValoresExecutadosResponse, detalhe: any) {
+        try {
+            if (!detalhe.segundoNivel) {
+                detalhe.segundoNivel = {};
+            }
+            detalhe.expanded = !detalhe.expanded;
+            if (detalhe.expanded && !detalhe.segundoNivel.data) {
+                const response = await
                 this.apiService.get<ApiResponse<ValoresExecutadosResponse[]>>
                 (`${Endpoints.URL_VALOR_EXECUTADO}/obter-pagamentos-rubrica-contrato?coContrato=${registro.contrato}&rubrica=${detalhe.coRubrica}&gn=${registro.gn}`);
-                detalhe.segundoNivel.data = response.data; 
-            } 
-        } 
-        catch (error) { 
-            console.error(error, 'detalharPagamento'); 
-        } 
+                detalhe.segundoNivel.data = response.data;
+            }
+        }
+        catch (error) {
+            console.error(error, 'detalharPagamento');
+        }
     }
 }

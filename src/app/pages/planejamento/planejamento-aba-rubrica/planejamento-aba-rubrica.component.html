@@ -1,11 +1,11 @@
  <div class="row">
         <div class="col-12">
-            <p-table #dt [autoLayout]="true" [value]="listaValoresExecutados" dataKey="id" [rows]="10" [paginator]="true" [globalFilterFields]="['ano', 'contrato', 'gn', 'objeto', 'vrTotalPrevisto', 'vrTotalExecutado']" currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+            <p-table #dt [autoLayout]="true" [value]="listaPlanejamentoOrcamentario" dataKey="cO_RUBRICA" [rows]="10" [paginator]="true" [globalFilterFields]="['ano', 'contrato', 'gn', 'vrDiferenca', 'vrExecutado','pcEp']" currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
                 [showCurrentPageReport]="true">
                 <ng-template pTemplate="caption">
                     <div class="table-header">
                         <div class="row">
-                            <div class="col-md-7 table-header-title">Exercício 2025 - <span style="color:green">1 - Reprogramação</span></div>
+                            <div class="col-md-7 table-header-title">Exercício {{anoExercio}} - <span style="color:green">{{tipoExercicio}}</span></div>
                             <div class="col-md-1 pl-1 pr-1 text-right">
                                 <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()" *ngIf="permissions?.Exportar ?? false"><i class="tim-icons icon-cloud-download-93"></i></button>
                             </div>
@@ -21,31 +21,29 @@
                         <th pSortableColumn="ano" style="font-size: 14px;">Rubrica</th>
                         <th pSortableColumn="contrato" style="font-size: 14px;">Descrição</th>
                         <th pSortableColumn="gn" style="font-size: 14px;">Planejado</th>
-                        <th pSortableColumn="objeto" style="font-size: 14px;">Limite</th>
-                        <th pSortableColumn="vrTotalPrevisto" style="font-size: 14px;">Diferença</th>
-                        <th pSortableColumn="vrTotalExecutado" style="font-size: 14px;">Executado</th>
-                        <th pSortableColumn="vrTotalExecutado" style="font-size: 14px;">%EP</th>
+                        <th pSortableColumn="vrDiferenca" style="font-size: 14px;">Diferença</th>
+                        <th pSortableColumn="vrExecutado" style="font-size: 14px;">Executado</th>
+                        <th pSortableColumn="pcEp" style="font-size: 14px;">%EP</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-registro let-expanded="expanded">
-                    <tr>
-                        <td>
-                            <button type="button" pButton pRipple [pRowToggler]="registro" (click)="detalharRubrica(registro)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
-                        </td>
-                        <td>{{registro.ano}}</td>
-                        <td>{{registro.contrato}}</td>
-                        <td>{{registro.gn}}</td>
-                        <td><span pTooltip="{{registro.objeto}}" tooltipPosition="top" placeholder="Top" class="truncated-text" [attr.data-fulltext]="registro.objeto">{{registro.objeto}}</span></td>
-                        <td>{{registro.vrTotalPrevisto | currency:'BRL'}}</td>
-                        <td>{{registro.vrTotalExecutado | currency:'BRL'}}</td>
-                        <td>{{registro.vrTotalExecutado | currency:'BRL'}}</td>
+                <ng-template pTemplate="body" let-rubrica let-expanded="expanded">
+                  <tr>
+                      <td>
+                          <button type="button" pButton pRipple [pRowToggler]="rubrica" (click)="detalharPorUD(rubrica)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
+                      </td>
+                        <td>{{rubrica.cO_RUBRICA}}</td>
+                        <td>{{rubrica.dE_RUBRICA}}</td>
+                        <td>{{rubrica.vR_PLANEJADO_MES | currency:'BRL'}}</td>
+                        <td>{{rubrica.vR_DIFERENCA | currency:'BRL'}}</td>
+                        <td>{{rubrica.vR_EXECUTADO | currency:'BRL'}}</td>
+                        <td>{{rubrica.pC_EP}}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="rowexpansion" let-registro>
                         <tr *ngIf="registro.expanded">
                             <td colspan="7">
                                 <div class="p-p-3">
-                                    <p-table [value]="registro.detalhes" dataKey="coRubrica">
+                                    <p-table [value]="registro.detalhes" dataKey="sG_FILIAL">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th style="width: 3rem"> </th>
@@ -57,27 +55,28 @@
                                                 <th pSortableColumn="vrRubricaPrevisto">%EP</th>
                                             </tr>
                                         </ng-template>
-                                        <ng-template pTemplate="body" let-rubrica let-expanded="expanded">
+                                        <ng-template pTemplate="body" let-ud let-expanded="expanded">
                                             <tr>
                                                 <td>
-                                                    <button type="button" pButton pRipple [pRowToggler]="rubrica" (click)="detalharPagamento(registro, rubrica)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
+                                                    <button type="button" pButton pRipple [pRowToggler]="ud" (click)="detalharPorContrato(registro, ud)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
                                                 </td>
-                                                <td>{{rubrica.coRubrica}}</td>
-                                                <td>{{rubrica.deRubrica}}</td>
-                                                <td> </td>
-                                                <td> </td>
-                                                <td>{{rubrica.vrTotalPrevisto | currency:'BRL'}}</td>
-                                                <td>{{rubrica.vrTotalExecutado | currency:'BRL'}}</td>
+                                                <td>{{ud.sG_FILIAL}}</td>
+                                                <td>{{ud.vR_PLANEJADO_MES | currency:'BRL'}}</td>
+                                                <td>{{ud.vR_LIMITE | currency:'BRL'}}</td>
+                                                <td>{{ud.vR_DIFERENCA | currency:'BRL'}}</td>
+                                                <td>{{ud.vR_EXECUTADO | currency:'BRL'}}</td>
+                                                <td>{{ud.pC_EP}}</td>
                                             </tr>
                                         </ng-template>
 
-                                        <ng-template pTemplate="rowexpansion" let-pagamento>
+                                        <ng-template pTemplate="rowexpansion" let-contrato>
                                             <tr>
                                                 <td colspan="7">
                                                     <div class="p-p-3">
-                                                        <p-table [value]="pagamento.segundoNivel?.data" dataKey="id">
+                                                        <p-table [value]="registro?.segundoNivel" dataKey="nU_CONTRATO">
                                                             <ng-template pTemplate="header">
                                                                 <tr>
+                                                                    <th style="width: 3rem"> </th>
                                                                     <th>Contrato</th>
                                                                     <th>Planejado</th>
                                                                     <th>Limite</th>
@@ -86,16 +85,49 @@
                                                                     <th>%EP</th>
                                                                 </tr>
                                                             </ng-template>
-                                                            <ng-template pTemplate="body" let-detalhe>
+                                                            <ng-template pTemplate="body" let-contr let-expanded="expanded">
                                                                 <tr>
-                                                                    <td>{{detalhe.mes}}</td>
-                                                                    <td>{{detalhe.vrTotalPrevisto | currency:'BRL'}}</td>
-                                                                    <td>{{detalhe.vrTotalExecutado | currency:'BRL'}}</td>
-                                                                    <td>{{detalhe.vrTotalExecutado | currency:'BRL'}}</td>
-                                                                    <td>{{detalhe.vrTotalExecutado | currency:'BRL'}}</td>
-                                                                    <td>{{detalhe.vrTotalExecutado | currency:'BRL'}}</td>
+                                                                    <td>
+                                                                        <button type="button" pButton pRipple [pRowToggler]="contr" (click)="detalharPorMes(registro, contr)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
+                                                                    </td>
+                                                                    <td>{{contr.cO_CONTRATO}}</td>
+                                                                    <td>{{contr.vR_PLANEJADO_MES | currency:'BRL'}}</td>
+                                                                    <td>{{contr.vR_LIMITE | currency:'BRL'}}</td>
+                                                                    <td>{{contr.vR_DIFERENCA | currency:'BRL'}}</td>
+                                                                    <td>{{contr.vR_EXECUTADO | currency:'BRL'}}</td>
+                                                                    <td>{{contr.pC_EP}}</td>
                                                                 </tr>
                                                             </ng-template>
+                                                            <ng-template pTemplate="rowexpansion" let-contrato>
+                                                              <tr>
+                                                                  <td colspan="7">
+                                                                      <div class="p-p-3">
+                                                                          <p-table [value]="registro?.terceiroNivel" dataKey="nU_CONTRATO">
+                                                                              <ng-template pTemplate="header">
+                                                                                  <tr>
+                                                                                      <th>Período</th>
+                                                                                      <th>Planejado</th>
+                                                                                      <th>Limite</th>
+                                                                                      <th>Diferença</th>
+                                                                                      <th>Executado</th>
+                                                                                      <th>%EP</th>
+                                                                                  </tr>
+                                                                              </ng-template>
+                                                                              <ng-template pTemplate="body" let-mes let-expanded="expanded">
+                                                                                  <tr>
+                                                                                      <td>{{mes.dE_PERIODO}}</td>
+                                                                                      <td>{{mes.vR_PLANEJADO_MES | currency:'BRL'}}</td>
+                                                                                      <td>{{mes.vR_LIMITE | currency:'BRL'}}</td>
+                                                                                      <td>{{mes.vR_DIFERENCA | currency:'BRL'}}</td>
+                                                                                      <td>{{mes.vR_EXECUTADO | currency:'BRL'}}</td>
+                                                                                      <td>{{mes.pC_EP}}</td>
+                                                                                  </tr>
+                                                                              </ng-template>
+                                                                          </p-table>
+                                                                      </div>
+                                                                  </td>
+                                                              </tr>
+                                                          </ng-template>
                                                         </p-table>
                                                     </div>
                                                 </td>

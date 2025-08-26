@@ -8,16 +8,16 @@
           <ng-template pTemplate="header">
             <tr class="bordered-orange">
               <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Exercício</th>
-              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Status</th>
+              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Tipo</th>
               <th colspan="3" class="header-extra">CAPEX</th>
               <th colspan="3" class="header-extra">OPEX</th>
             </tr>
             <tr class="bordered-orange">
               <th>Planejado</th>
-              <th>Execução</th>
+              <th>Executado</th>
               <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
               <th>Planejado</th>
-              <th>Execução</th>
+              <th>Executado</th>
               <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
             </tr>
           </ng-template>
@@ -27,7 +27,8 @@
                 {{item.cO_EXERCICIO}}</a>
               </td>
               <td class="text-centered">
-                {{item.statuS_PLANEJAMENTO == 'Encerrado' ? item.statuS_PLANEJAMENTO : item.tipo}}
+                <!--- conferir regra -->
+                {{item.tipo}}
               </td>
               <td  class="text-centered">
                 {{item.capeX_PLANEJADO | currency : 'BRL'}}
