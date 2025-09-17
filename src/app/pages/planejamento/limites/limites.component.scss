@@ -1,0 +1,16 @@
+.truncated-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 25rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.table-header-subtitle {
+  p {
+    margin-top: 24px;
+    font-size: 14px;
+    color: #ff4081;
+  }
+}

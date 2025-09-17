@@ -22,7 +22,7 @@ import { Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030
 export class RegistrarAtesteComponent implements OnInit {
   @Input() public contrato: Gcpvw030DetalhamentoDeContratosResponse;
   faturamentos: any;
-  
+
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -114,7 +114,149 @@ export class RegistrarAtesteComponent implements OnInit {
       faturamentos: new FormArray([]),
     });
   }
-  onDtInicioChange(deCompetencia: any): any {
-    throw new Error('Method not implemented.');
+
+  get faturamentos(): FormArray {
+    return this.form.get('faturamentos') as FormArray;
+  }
+
+  onDtInicioChange(value: any): string {
+    const date = new Date(value);
+    let month = date.getMonth();
+    let year = date.getFullYear();
+    const formattedMonth = month < 10 ? `0${month}` : month.toString();
+
+    return `${formattedMonth}/${year}`;
+  }
+
+  criarFaturamento(faturamento: number): FormGroup {
+    return this.formBuilder.group({
+      nuServicoTipo: ['', Validators.required],
+      vrApurado: ['', Validators.required],
+    });
+  }
+
+  adicionarFaturamento() {
+    this.faturamentos.push(this.criarFaturamento(this.faturamentos.length + 1));
+  }
+
+  onUpload(event: any): void {
+    const file = event.files?.[0];
+    if (file) {
+      this.selectFile = file;
+      this.form.get('arquivoAnexado')?.setValue(file);
+      this.toastr.success('Anexo salvo com sucesso.', 'Sucesso');
+    }
+  }
+
+  removerFaturamento(index: number) {
+    this.faturamentos.removeAt(index);
+  }
+
+  public async obterTipoServicos(): Promise<void> {
+    try {
+      const response = await this.apiService.get<ApiResponse<any[]>>(
+        `${Endpoints.URL_RUBRICA}/servicos`
+      );
+
+      console.log('lista backend', response);
+
+      this.listaGcptb018TipoServico =
+        response.data.map((c) => ({
+          label: c.noServicoTipo,
+          value: c.nuServicoTipo,
+        })) || [];
+      this.loading = false;
+    } catch (error) {
+      console.error(error, 'obter GCPTB18');
+    }
+  }
+
+  public onSubmit() {
+    this.submitted = true;
+    this.form.markAllAsTouched();
+    if (this.form.invalid) {
+
+      this.faturamentos.controls.forEach((grupo: AbstractControl) => {
+        const contatoGroup = grupo as FormGroup;
+        Object.keys(contatoGroup.controls).forEach((campo) => {
+          const control = contatoGroup.get(campo);
+
+          if (control?.invalid) {
+            if (control.errors?.required) {
+              this.toastr.error(`O campo item(s) de faturamento é obrigatório`, 'Error');
+            }
+          }
+        });
+      });
+
+      Object.keys(this.form.controls).forEach((campo) => {
+        const control = this.form.get(campo);
+        if (control?.invalid) {
+          if (control.errors?.required) {
+            this.toastr.error(`O campo ${campo} é obrigatório`, 'Error');
+          }
+
+          if (control.errors?.pattern) {
+            this.toastr.error(`O campo ${campo} está fora do padrão`, 'Error');
+          }
+
+          // if (control.errors?.email) {
+          //   this.toastr.error(`E-mail inválido`, 'Error');
+          // }
+          // if (control.errors?.mask) {
+          //   this.toastr.error(`Telefone inválido`, 'Error');
+          // }
+        }
+      });
+      return;
+    }
+
+    this.form.get('vrPagamento')?.setValue(this.total);
+    const vrMulta = this.form.get('vrMulta')?.value.replace('R$', '').trim();
+    const vrRetencao = this.form
+      .get('vrRetencao')
+      ?.value.replace('R$', '')
+      .trim();
+    this.form.get('vrMulta')?.setValue(vrMulta);
+    this.form.get('vrRetencao')?.setValue(vrRetencao);
+    const formData = this.toFormData(this.form);
+
+    // formData.forEach((value, key) => {
+    //   console.log(key, value);
+    // });
+
+    this.Cadastrar(formData);
+  }
+
+  toFormData(formGroup: FormGroup): FormData {
+    const formData = new FormData();
+    const values = formGroup.getRawValue();
+
+    for (const key in values) {
+      if (values.hasOwnProperty(key)) {
+        const value = values[key];
+
+        if (value instanceof File) {
+          formData.append(key, value, value.name);
+        } else if (Array.isArray(value) || typeof value === 'object') {
+          formData.append(key, JSON.stringify(value));
+        } else if (value !== null && value !== undefined) {
+          formData.append(key, value.toString());
+        }
+      }
+    }
+
+    return formData;
+  }
+
+  public async Cadastrar(formValue: FormData): Promise<void> {
+    try {
+      await this.apiService.postFormData<any>(Endpoints.URL_ATESTE, formValue);
+      this.toastr.success('Ateste salvo com sucesso', 'Sucesso');
+      this.activeModal.dismiss();
+    } catch (error) {
+      console.error('Erro ao salvar ateste:', error);
+      this.toastr.error('Erro ao salvar ateste', 'Erro');
+    }
   }
 }
