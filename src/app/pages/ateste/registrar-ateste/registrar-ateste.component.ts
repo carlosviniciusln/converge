@@ -170,7 +170,6 @@ export class RegistrarAtesteComponent implements OnInit {
   }
 
   public onSubmit() {
-    console.log(this.form);
     this.submitted = true;
     this.form.markAllAsTouched();
     if (this.form.invalid) {
@@ -184,20 +183,6 @@ export class RegistrarAtesteComponent implements OnInit {
             if (control.errors?.required) {
               this.toastr.error(`O campo item(s) de faturamento é obrigatório`, 'Error');
             }
-
-            // if (control.errors?.pattern) {
-            //   this.toastr.error(
-            //     `O campo ${campo} está fora do padrão`,
-            //     'Error'
-            //   );
-            // }
-
-            // if(control.errors?.email){
-            //   this.toastr.error(`E-mail inválido`, "Error");
-            // }
-            // if(control.errors?.mask){
-            //   this.toastr.error(`Telefone inválido`, "Error");
-            // }
           }
         });
       });

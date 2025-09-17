@@ -28,10 +28,10 @@
                   <input readonly formControlName="noEmpresa" id="noEmpresa" placeholder="Digite o Fornecedor" type="text"
                     class="form-control" [ngClass]="{ 'is-invalid': submitted && f.noEmpresa.invalid }" />
                 </div>
-    
+
                 <div class="col-md-6 pr-0">
                   <label for="nuFilial">Gerência:</label>
-                  <select 
+                  <select
                   id="nuFilial"
                   class="form-control"
                   formControlName="nuFilial"
@@ -131,7 +131,7 @@
                     </div>
                   </div>
                 </div>
-    
+
                 <div *ngIf="isDerivadoAta" class="col-md-12 min-height-59" style="margin-top: 20px;">
                   <label for="nuProcesso">Vinculação ARP</label>
                   <div class="row">
@@ -158,7 +158,7 @@
               </div>
             </div>
           </div>
-    
+
           <br />
           <div class="row">
             <div class="col-md-6">
@@ -196,7 +196,7 @@
                   Data de início deve ser maior que a data de fim da vigência anterior.
                 </div>
               </div>
-    
+
               <div class="col-2 pr-0 ">
                 <label for="dtTermino">Data Fim</label>
                 <div *ngIf="!useDtFimOptions[i]; else selectDtTermino">
@@ -233,7 +233,7 @@
                 }" />
                 <p class="small-text">ciclo mensal</p>
               </div>
-    
+
               <div class="col-1 pr-0" style="position: relative; bottom: 25px;">
                 <div>
                   <label for="dtInicioCompetencia" style="min-inline-size: max-content;">
@@ -260,7 +260,7 @@
                 >
                 </p-dropdown>
               </div>
-              
+
               <div style="margin-left: 24px;">
                 <br />
                 <button *ngIf="i > 0" type="button" class="btn-sm btn-secondary" (click)="excluirVigencia(i)">
@@ -273,7 +273,7 @@
 
               </div>
 
-    
+
               <div class="col-md-12">
                 <div class="modal-title" id="modal-basic-title" style="display: flex; align-items: center; padding: 10px;">
                   <h5><b>Rubricas e Valor Global</b></h5>
@@ -310,7 +310,7 @@
                         <i class="tim-icons icon-trash-simple"></i>
                       </button>
                     </div>
-                    
+
                     <div class="c-button-add">
                       <button *ngIf="!(r > 0)" type="button" class="btn-sm btn-secondary" (click)="adicionarRubrica(i)">
                         <i class="tim-icons icon-simple-add"></i>

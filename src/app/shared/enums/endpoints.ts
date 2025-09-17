@@ -51,5 +51,9 @@ export enum Endpoints {
   URL_PLANEJAMENTO_ORCAMENTARIO_CONTRATO = 'v1/PlanejamentoOrcamentario/ud-contrato',
   URL_PLANEJAMENTO_ORCAMENTARIO_MES = 'v1/PlanejamentoOrcamentario/contrato-mes',
   URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO = 'v1/PlanejamentoOrcamentario/filter-paginado',
-  URL_PLANEJAMENTO_ORCAMENTARIO_DASHBOARD = 'v1/PlanejamentoOrcamentario/dashboard'
+  URL_PLANEJAMENTO_ORCAMENTARIO_DASHBOARD = 'v1/PlanejamentoOrcamentario/dashboard',
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL1= 'v1/PlanejamentoOrcamentario/limite-nivel-1',
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL2 = 'v1/PlanejamentoOrcamentario/limite-nivel-2',
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL3 = 'v1/PlanejamentoOrcamentario/limite-nivel-3',
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL4 = 'v1/PlanejamentoOrcamentario/limite-nivel-4'
 }

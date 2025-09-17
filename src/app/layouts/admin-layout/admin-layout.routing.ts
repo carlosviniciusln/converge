@@ -29,6 +29,7 @@ import { AtesteComponent } from 'src/app/pages/ateste/ateste.component';
 import { AuthGuard } from 'src/app/shared/interceptors/auth.guard';
 import { DetalharAtesteComponent } from 'src/app/pages/ateste/detalhar-ateste/detalhar-ateste.component';
 import { DevelopComponent } from 'src/app/components/develop/develop.component';
+import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -59,6 +60,8 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'empenho', component: EmpenhoComponent },
   { path: 'mod-develop', component: DevelopComponent },
+  { path: 'orcamento/limites', component: LimitesComponent },
+
   //   { path: "icons", component: IconsComponent },
   //   { path: "maps", component: MapComponent },
   //   { path: "notifications", component: NotificationsComponent },
