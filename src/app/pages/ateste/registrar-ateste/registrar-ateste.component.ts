@@ -21,6 +21,8 @@ import { Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030
 })
 export class RegistrarAtesteComponent implements OnInit {
   @Input() public contrato: Gcpvw030DetalhamentoDeContratosResponse;
+  faturamentos: any;
+
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -40,6 +42,9 @@ export class RegistrarAtesteComponent implements OnInit {
     this.formulario();
     this.obterTipoServicos();
     this.ngOnChanges();
+  }
+  obterTipoServicos() {
+    throw new Error('Method not implemented.');
   }
 
   ngOnChanges() {
