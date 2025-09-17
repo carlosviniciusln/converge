@@ -50,19 +50,16 @@ export class RegistrarAtesteComponent implements OnInit {
 
   calcularTotal(values: any[]) {
     this.total = values.reduce((acc, curr, index) => {
-      let valorStr = curr.vrApurado?.toString().trim() || '0';
+
+      let valorStr = curr.vrApurado?.toString().trim() || '';
 
       valorStr = valorStr.replace('R$', '').trim();
-
-      if (!valorStr.includes(',')) {
-        valorStr += ',00';
-      }
 
       this.faturamentos
         .at(index)
         .get('vrApurado')
         ?.setValue(valorStr, { emitEvent: false });
-      const valorNumerico = valorStr.replace(/\./g, '').replace(',', '.');
+      const valorNumerico = valorStr.replace(/\./g, '');
       const vrApurado = parseFloat(valorNumerico) || 0;
 
       return acc + vrApurado;
@@ -71,11 +68,11 @@ export class RegistrarAtesteComponent implements OnInit {
 
   formulario() {
     this.form = this.formBuilder.group({
-      nuContrato: [this.contrato[0].nuContrato, [Validators.required]],
-      coContrato: [this.contrato[0].coContrato, [Validators.required]],
-      noEmpresa: [this.contrato[0].noEmpresa, [Validators.required]],
-      noObjeto: [this.contrato[0].noObjeto, [Validators.required]],
-      nuVigencia: [this.contrato[0].nuVigencia, [Validators.required]],
+      nuContrato: [this.contrato[0]?.nuContrato, [Validators.required]],
+      coContrato: [this.contrato[0]?.coContrato, [Validators.required]],
+      noEmpresa: [this.contrato[0]?.noEmpresa, [Validators.required]],
+      noObjeto: [this.contrato[0]?.noObjeto, [Validators.required]],
+      nuVigencia: [this.contrato[0]?.nuVigencia, [Validators.required]],
       inicioVigencia: new FormControl(
         this.contrato[0].inicioVigencia?.substring(0, 10),
         [Validators.required]
@@ -100,14 +97,14 @@ export class RegistrarAtesteComponent implements OnInit {
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
       deObservacao: new FormControl('', [Validators.required]),
-      vrPagamento: new FormControl(0),
-      vrRetencao: new FormControl('0,00', [Validators.required]),
+      vrPagamento: new FormControl(''),
+      vrRetencao: new FormControl('', [Validators.required]),
       dePenalidade: new FormControl('', [
         Validators.required,
         Validators.maxLength(100),
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
-      vrMulta: new FormControl('0,00', [Validators.required]),
+      vrMulta: new FormControl('', [Validators.required]),
       arquivoAnexado: new FormControl(null),
       faturamentos: new FormArray([]),
     });

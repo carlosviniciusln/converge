@@ -67,7 +67,7 @@
                                             <td>{{tipo.nO_RUBRICA_TIPO}}</td>
                                             <td>{{tipo.vR_LIMITE | currency:'BRL'}}</td>
                                             <td>{{tipo.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                                            <td>{{tipo.vR_DIFERENCA}}</td>
+                                            <td>{{tipo.vR_DIFERENCA | currency:'BRL'}}</td>
                                         </tr>
                                     </ng-template>
 
@@ -99,7 +99,7 @@
                                                                 <td>{{contr.dE_RUBRICA}}</td>
                                                                 <td>{{contr.vR_LIMITE | currency:'BRL'}}</td>
                                                                 <td>{{contr.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                                                                <td>{{contr.vR_DIFERENCA}}</td>
+                                                                <td>{{contr.vR_DIFERENCA | currency:'BRL'}}</td>
                                                             </tr>
                                                         </ng-template>
                                                         <ng-template pTemplate="rowexpansion" let-contrato>
@@ -128,7 +128,7 @@
                                                                                   <td>{{ud.dE_RUBRICA}}</td>
                                                                                   <td>{{ud.vR_LIMITE | currency:'BRL'}}</td>
                                                                                   <td>{{ud.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                                                                                  <td>{{ud.vR_DIFERENCA}}</td>
+                                                                                  <td>{{ud.vR_DIFERENCA | currency:'BRL'}}</td>
                                                                               </tr>
                                                                           </ng-template>
                                                                       </p-table>

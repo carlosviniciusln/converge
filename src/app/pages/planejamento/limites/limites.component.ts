@@ -89,19 +89,50 @@ ngOnInit() {
   }
 
   //FILTRO
-  filterItem(value: string) {
-    if (!value) {
-        this.listaLimites = this.listaLimitesCompleta;
-    } else {
-        const lowerCaseValue = value.toLowerCase();
-        this.listaLimites = this.listaLimites?.filter(item => {
-            return (item.cO_EXERCICIO && item.cO_EXERCICIO.toString().includes(value)) ||
-                (item.sG_FILIAL && item.sG_FILIAL.toLowerCase().includes(lowerCaseValue)) ||
-                (item.cO_RUBRICA && item.cO_RUBRICA.toString().includes(value)) ||
-                (item.dE_RUBRICA && item.dE_RUBRICA.toString().includes(value));
-        });
+
+
+filterItem(value: string) {
+  if (!value) {
+    this.listaLimites = this.listaLimitesCompleta;
+    return;
+  }
+
+  const lowerCaseValue = value.toLowerCase();
+
+  const matchAndClean = (item: LimitesModel): LimitesModel | null => {
+    // Verifica se o item principal corresponde
+    const matchPrincipal =
+      item.cO_EXERCICIO.toString().includes(lowerCaseValue) ||
+      (item.dE_PLANEJAMENTO_TIPO && item.dE_PLANEJAMENTO_TIPO.toLowerCase().includes(lowerCaseValue)) ||
+      (item.nO_RUBRICA_TIPO && item.nO_RUBRICA_TIPO.toLowerCase().includes(lowerCaseValue)) ||
+      (item.dE_RUBRICA && item.dE_RUBRICA.toLowerCase().includes(lowerCaseValue)) ||
+      (item.nO_STATUS && item.nO_STATUS.toLowerCase().includes(lowerCaseValue)) ||
+      (item.sG_FILIAL && item.sG_FILIAL.toLowerCase().includes(lowerCaseValue));
+
+    // Filtra os subníveis
+    const detalhesFiltrados = item.detalhes?.map(matchAndClean).filter(Boolean) ?? [];
+    const segundoNivelFiltrado = item.segundoNivel?.map(matchAndClean).filter(Boolean) ?? [];
+    const terceiroNivelFiltrado = item.terceiroNivel?.map(matchAndClean).filter(Boolean) ?? [];
+
+    // Se o item principal ou algum subnível corresponde, retorna o item com subníveis filtrados
+    if (matchPrincipal || detalhesFiltrados.length || segundoNivelFiltrado.length || terceiroNivelFiltrado.length) {
+      return {
+        ...item,
+        detalhes: detalhesFiltrados,
+        segundoNivel: segundoNivelFiltrado,
+        terceiroNivel: terceiroNivelFiltrado
+      };
     }
+
+    return null;
+  };
+
+  this.listaLimites = this.listaLimitesCompleta
+    .map(matchAndClean)
+    .filter(Boolean) as LimitesModel[];
 }
+
+
 
 //requisições
 public async obterValores() {
@@ -125,6 +156,7 @@ async detalharPorTipoRubrica(registro: LimitesModel) {
               ApiResponse<LimitesModel[]>
           >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL2}?nuPlanejamento=${registro.nU_PLANEJAMENTO}`)
           registro.detalhes = response.data;
+          console.log(registro.detalhes)
       }
   } catch (error) {
       console.error(error, 'obterValores nivel 2');

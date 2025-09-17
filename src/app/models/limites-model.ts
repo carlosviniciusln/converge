@@ -37,7 +37,8 @@ export interface StatusPlanejamentoModel{
   nU_PLANEJAMENTO: number,
   nU_ORDEM: number,
   cO_EXERCICIO: number,
-  nO_STATUS: string
+  nO_STATUS: string,
+  tipo: string
 }
 
 export interface listaErroUploadModel {

@@ -24,7 +24,7 @@
         <div class="col-md-2">
           <label for="coContrato">Contrato</label>
           <input
-            pInputText 
+            pInputText
             readonly
             formControlName="coContrato"
             id="coContrato"
@@ -186,8 +186,8 @@
             <tr [formGroup]="faturamento">
               <td>
 
-                <!--- 
-                    ALTERAR PARA DROPDOWN PARTIR DE UMA LISTA EM BANCO SERVIÇO TIPO / DEVE PODE SER UMA LISTA 
+                <!---
+                    ALTERAR PARA DROPDOWN PARTIR DE UMA LISTA EM BANCO SERVIÇO TIPO / DEVE PODE SER UMA LISTA
                 -->
                 <div class="c-dropdown">
                 <p-dropdown [options]="listaGcptb018TipoServico"
@@ -196,13 +196,15 @@
                                     placeholder="Bens/Serviços"></p-dropdown>
                 </div>
               <td>
-                <input
+                <!-- <input
                   formControlName="vrApurado"
                   class="form-control"
                   mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"
                   placeholder="Valor apurado"
-                />
+                /> -->
+                <input formControlName="vrApurado" type="text" class="form-control col-12" mask="separator.2" [allowNegativeNumbers]="true"
+                    [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true"/>
               </td>
               <td>
                 <button type="button" class="btn-sm btn-secondary" (click)="removerFaturamento(i)">
@@ -244,10 +246,9 @@
 
                 <input
                   formControlName="vrRetencao"
-                  id="vrRetencao"
                   type="text"
                   mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"
                   class="form-control col-2"
                 />
             </div>
@@ -259,7 +260,6 @@
             <div style="display: flex; gap:15px">
                 <input
                   formControlName="dePenalidade"
-                  id="dePenalidade"
                   type="text"
                   placeholder="Penalidade"
                   class="form-control col-9"
@@ -268,14 +268,8 @@
                   }"
                 />
 
-                <input
-                  formControlName="vrMulta"
-                  id="vrMulta"
-                  type="text"
-                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
-                  class="form-control col-2"
-                />
+                <input formControlName="vrMulta" type="text" class="form-control col-2" mask="separator.2" [allowNegativeNumbers]="true"
+                    [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true"/>
             </div>
           </div>
 
@@ -295,20 +289,20 @@
                 'is-invalid': submitted && form.get('deObservacao').invalid
               }" >
             </textarea>
-  
+
           </div>
 
-          
+
         <div class="col-4" style="display: flex;
             align-content: flex-end;
             justify-content: space-around;
             align-items: center;">
           <p-toast></p-toast>
-          <p-fileUpload 
-              mode="basic" 
-              chooseLabel="Anexar arquivo" 
+          <p-fileUpload
+              mode="basic"
+              chooseLabel="Anexar arquivo"
               chooseIcon="pi pi-upload"
-              accept=".pdf,.png,.jpg"  
+              accept=".pdf,.png,.jpg"
               (onSelect)="onUpload($event)"
              >
             </p-fileUpload>
@@ -327,6 +321,6 @@
                 <button style="background-color: #005ca9;" class="btn-sm btn-default" type="submit" (click)="onSubmit()">Salvar Ateste</button>
                 <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
          </div>
-         
+
   </div>
 </div>
