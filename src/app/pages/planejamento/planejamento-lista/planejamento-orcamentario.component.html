@@ -8,7 +8,7 @@
           <ng-template pTemplate="header">
             <tr class="bordered-orange">
               <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Exercício</th>
-              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Tipo</th>
+              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Status</th>
               <th colspan="3" class="header-extra">CAPEX</th>
               <th colspan="3" class="header-extra">OPEX</th>
             </tr>
@@ -27,8 +27,7 @@
                 {{item.cO_EXERCICIO}}</a>
               </td>
               <td class="text-centered">
-                <!--- conferir regra -->
-                {{item.tipo}}
+                {{item.statuS_PLANEJAMENTO}}
               </td>
               <td  class="text-centered">
                 {{item.capeX_PLANEJADO | currency : 'BRL'}}

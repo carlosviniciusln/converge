@@ -327,7 +327,7 @@ export class ModalLimitesComponent implements OnInit {
       const response = await this.apiService.get<
         ApiResponse<StatusPlanejamentoModel>
       >(
-        `${Endpoints.URL_CONTRATOS}/status-planejamento?nuPlanejamento=` + nuAno
+        `${Endpoints.URL_CONTRATOS}/status-planejamento?nuExercicio=` + nuAno
       );
 
       this.statusPlanejamentoSelecionado = response.data;
