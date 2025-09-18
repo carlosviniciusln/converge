@@ -7,14 +7,13 @@
               <div class="col-md-7 table-header-title">Limites</div>
                 <div class="table-header">
                     <div class="row">
-                        <div class="col-md-1 pl-1 pr-1 text-right">
-                            <button type="button" class="btn-sm btn-default" (click)="openModalPlanejamento()" *ngIf="isPerfilAdminOrcamento">Novo Registro</button>
-                        </div>
-                        <div class="col-md-1 pl-1 pr-1 text-right">
+                        <div class="col-md-8 text-right">
+                            <button type="button" class="btn-sm btn-default mr-2" (click)="openModalPlanejamento()" *ngIf="isPerfilAdminOrcamento">Novo Registro</button>
+                            <button type="button" class="btn-sm btn-default mr-2" (click)="openModalUpload()" *ngIf="isPerfilAdminOrcamento">Upload <i class="pi pi-upload" aria-hidden="true" style="color:white"></i></button>
                             <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()"><i class="tim-icons icon-cloud-download-93"></i></button>
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" #myInput (input)="filterItem(myInput.value)" id="pPesquisar" placeholder="Digite para pesquisar" />
+                          <input type="text" class="form-control" #myInput (input)="filterItem(myInput.value)" id="pPesquisar" placeholder="Digite para pesquisar" />
                         </div>
                     </div>
                 </div>
@@ -22,11 +21,11 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th style="width: 3rem;"></th>
-                    <th pSortableColumn="ano" style="font-size: 14px;">Exercício</th>
-                    <th pSortableColumn="contrato" style="font-size: 14px;">Tipo</th>
-                    <th pSortableColumn="gn" style="font-size: 14px;">Limite/Planejado</th>
-                    <th pSortableColumn="vrDiferenca" style="font-size: 14px;">Solicitado</th>
-                    <th pSortableColumn="vrExecutado" style="font-size: 14px;">Diferença</th>
+                    <th style="font-size: 14px;">Exercício</th>
+                    <th style="font-size: 14px;">Tipo</th>
+                    <th style="font-size: 14px;">Limite/Planejado</th>
+                    <th style="font-size: 14px;">Solicitado</th>
+                    <th pSortableColumn="vR_DIFERENCA" style="font-size: 14px;">Diferença</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-visaoum let-expanded="expanded">
@@ -38,7 +37,7 @@
                     <td>{{visaoum.dE_PLANEJAMENTO_TIPO}}</td>
                     <td>{{visaoum.vR_LIMITE | currency:'BRL'}}</td>
                     <td>{{visaoum.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                    <td>{{visaoum.vR_DIFERENCA | currency:'BRL'}}</td>
+                    <td>{{visaoum.vR_DIFERENCA | currency:'BRL'}} <span *ngIf="visaoum.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-registro>
@@ -49,12 +48,12 @@
                                     <ng-template pTemplate="header">
                                         <tr>
                                             <th style="width: 3rem"> </th>
-                                            <th pSortableColumn="rubrica">Exercício</th>
-                                            <th pSortableColumn="descricao">Tipo</th>
-                                            <th pSortableColumn="descricao">Descrição</th>
-                                            <th pSortableColumn="descricao">Limite/Planejado</th>
-                                            <th pSortableColumn="vrRubricaExecutado">Solicitado</th>
-                                            <th pSortableColumn="vrRubricaPrevisto">Diferença</th>
+                                            <th>Exercício</th>
+                                            <th>Tipo</th>
+                                            <th>Descrição</th>
+                                            <th>Limite/Planejado</th>
+                                            <th>Solicitado</th>
+                                            <th pSortableColumn="vR_DIFERENCA">Diferença</th>
                                         </tr>
                                     </ng-template>
                                     <ng-template pTemplate="body" let-tipo let-expanded="expanded">
@@ -67,7 +66,7 @@
                                             <td>{{tipo.nO_RUBRICA_TIPO}}</td>
                                             <td>{{tipo.vR_LIMITE | currency:'BRL'}}</td>
                                             <td>{{tipo.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                                            <td>{{tipo.vR_DIFERENCA | currency:'BRL'}}</td>
+                                            <td>{{tipo.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="tipo.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
                                         </tr>
                                     </ng-template>
 
@@ -83,9 +82,9 @@
                                                                 <th>Tipo</th>
                                                                 <th>Rubrica</th>
                                                                 <th>Descrição</th>
-                                                                <th pSortableColumn="descricao">Limite/Planejado</th>
-                                                                <th pSortableColumn="vrRubricaExecutado">Solicitado</th>
-                                                                <th pSortableColumn="vrRubricaPrevisto">Diferença</th>
+                                                                <th>Limite/Planejado</th>
+                                                                <th>Solicitado</th>
+                                                                <th pSortableColumn="vR_DIFERENCA">Diferença</th>
                                                             </tr>
                                                         </ng-template>
                                                         <ng-template pTemplate="body" let-contr let-expanded="expanded">
@@ -99,7 +98,7 @@
                                                                 <td>{{contr.dE_RUBRICA}}</td>
                                                                 <td>{{contr.vR_LIMITE | currency:'BRL'}}</td>
                                                                 <td>{{contr.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                                                                <td>{{contr.vR_DIFERENCA | currency:'BRL'}}</td>
+                                                                <td>{{contr.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="contr.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
                                                             </tr>
                                                         </ng-template>
                                                         <ng-template pTemplate="rowexpansion" let-contrato>
@@ -114,9 +113,9 @@
                                                                                   <th>UD</th>
                                                                                   <th>Rubrica</th>
                                                                                   <th>Descrição</th>
-                                                                                  <th pSortableColumn="descricao">Limite/Planejado</th>
-                                                                                  <th pSortableColumn="vrRubricaExecutado">Solicitado</th>
-                                                                                  <th pSortableColumn="vrRubricaPrevisto">Diferença</th>
+                                                                                  <th>Limite/Planejado</th>
+                                                                                  <th>Solicitado</th>
+                                                                                  <th pSortableColumn="vR_DIFERENCA">Diferença</th>
                                                                               </tr>
                                                                           </ng-template>
                                                                           <ng-template pTemplate="body" let-ud let-expanded="expanded">
@@ -126,9 +125,9 @@
                                                                                   <td>{{ud.sG_FILIAL}}</td>
                                                                                   <td>{{ud.cO_RUBRICA}}</td>
                                                                                   <td>{{ud.dE_RUBRICA}}</td>
-                                                                                  <td>{{ud.vR_LIMITE | currency:'BRL'}}</td>
+                                                                                  <td style="color:blue; text-decoration: underline; cursor: pointer;">{{ud.vR_LIMITE | currency:'BRL'}}</td>
                                                                                   <td>{{ud.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                                                                                  <td>{{ud.vR_DIFERENCA | currency:'BRL'}}</td>
+                                                                                  <td>{{ud.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="ud.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
                                                                               </tr>
                                                                           </ng-template>
                                                                       </p-table>

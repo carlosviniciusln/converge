@@ -29,6 +29,8 @@ export interface LimitesModel {
 export interface ExercicioModel {
   nU_EXERCICIO_ORCAMENTO: number,
   cO_EXERCICIO: number,
+  dE_EXERCICIO: string,
+  nU_PLANEJAMENTO: number,
   nU_USUARIO: number,
   dH_CADASTRO: string,
 }

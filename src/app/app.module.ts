@@ -54,6 +54,7 @@ import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar
 import { RegistrarAtesteComponent } from './pages/ateste/registrar-ateste/registrar-ateste.component';
 import { LimitesComponent } from './pages/planejamento/limites/limites.component';
 import { ModalLimitesComponent } from "./pages/planejamento/limites/modal-limites/modal-limites.component";
+import { ModalUploadComponent } from './pages/planejamento/limites/modal-upload/modal-upload.component';
 
 registerLocaleData(ptBr);
 
@@ -113,7 +114,8 @@ const maskConfig: Partial<IConfig> = {
     DetalharAtesteComponent,
     RegistrarAtesteComponent,
     LimitesComponent,
-    ModalLimitesComponent
+    ModalLimitesComponent,
+    ModalUploadComponent
     //AuthLayoutComponent
   ],
   providers: [

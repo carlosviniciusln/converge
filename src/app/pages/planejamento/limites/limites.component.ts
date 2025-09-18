@@ -8,6 +8,7 @@ import { Endpoints } from 'src/app/shared/enums/endpoints';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { ModalLimitesComponent } from './modal-limites/modal-limites.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalUploadComponent } from './modal-upload/modal-upload.component';
 
 @Component({
   selector: 'app-limites',
@@ -66,16 +67,18 @@ ngOnInit() {
   exportExcel() {
     const dadosFiltrados = this.listaLimites.map(item => {
         return {
-            Ano: item.cO_EXERCICIO,
-            Rubrica: item.cO_RUBRICA,
-            'Valor Planejamento': item.vR_PLANEJAMENTO
+            'Ano': item.cO_EXERCICIO,
+            'Tipo': item.dE_PLANEJAMENTO_TIPO,
+            'Limite/Planejado': item.vR_LIMITE,
+            'Solicitado': item.vR_PLANEJAMENTO,
+            'Diferença': item.vR_DIFERENCA
         }
     })
     import("xlsx").then(xlsx => {
         const worksheet = xlsx.utils.json_to_sheet(dadosFiltrados);
         const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
         const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-        this.saveAsExcelFile(excelBuffer, "contratos");
+        this.saveAsExcelFile(excelBuffer, "Orçamento_Limites_");
     });
   }
 
@@ -85,7 +88,7 @@ ngOnInit() {
     const data: Blob = new Blob([buffer], {
         type: EXCEL_TYPE
     });
-    fileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    fileSaver.saveAs(data, fileName + new Date().getTime() + EXCEL_EXTENSION);
   }
 
   //FILTRO
@@ -142,7 +145,6 @@ public async obterValores() {
       >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL1}`);
       this.listaLimitesCompleta = response.data;
       this.listaLimites = response.data;
-      console.log(this.listaLimites)
   } catch (error) {
       console.error(error, 'obterValores nivel 1');
   }
@@ -156,7 +158,6 @@ async detalharPorTipoRubrica(registro: LimitesModel) {
               ApiResponse<LimitesModel[]>
           >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL2}?nuPlanejamento=${registro.nU_PLANEJAMENTO}`)
           registro.detalhes = response.data;
-          console.log(registro.detalhes)
       }
   } catch (error) {
       console.error(error, 'obterValores nivel 2');
@@ -203,6 +204,17 @@ async detalharPorUd(registro: LimitesModel, detalhe: any) {
 
 openModalPlanejamento() {
   const modalRef = this.modalService.open(ModalLimitesComponent, {
+    ariaLabelledBy: 'modal-basic-title',
+    size: 'md',
+    windowClass: 'custom-class',
+    backdrop: 'static',
+    keyboard: false,
+  });
+  //modalRef.componentInstance.anoSelecionado = anoSelecionado;
+}
+
+openModalUpload() {
+  const modalRef = this.modalService.open(ModalUploadComponent, {
     ariaLabelledBy: 'modal-basic-title',
     size: 'md',
     windowClass: 'custom-class',

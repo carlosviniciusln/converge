@@ -1,215 +1,118 @@
-<mat-tab-group>
-  <mat-tab label="Cadastro" style="margin-left: 19px;">
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">
-        <b>Cadastro</b
-        ><br /><small>Cadastro de limites de rubrica</small>
-      </h4>
-      <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        (click)="activeModal.dismiss('Cross click')"
-      >
-        <span aria-hidden="true">×</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form [formGroup]="formCadastro">
-        <div class="row" style="margin-top: -6px;">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-12 pr-0">
-                <label for="nuAnoOrcamentario">Exercício:</label>
-                <select
-                  class="form-control"
-                  id="nuAnoOrcamentario"
-                  formControlName="nuAnoOrcamentario"
-                  [ngClass]="{
-                    'is-invalid': submitted && f.nuAnoOrcamentario.invalid
-                  }"
-                  (change)="obterExercicio()"
-                >
-                  <option value="" disabled selected>
-                    Selecione o ano de exercício
-                  </option>
-                  <option
-                    *ngFor="let a of listaExercicios"
-                    [ngValue]="a.nU_EXERCICIO_ORCAMENTO"
-                  >
-                    {{ a.cO_EXERCICIO }}
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-12 pr-0">
-                <label>Tipo:</label>
-                <input
-                readonly
-                type="text"
-                class="form-control"
-                value="{{statusPlanejamentoSelecionado?.nU_ORDEM}} - {{statusPlanejamentoSelecionado?.tipo}}"
-              />
-              </div>
-                <input formControlName="nuPlanejamento" type="text" hidden/>
-                <input formControlName="nuRubrica" type="text" hidden/>
-            </div>
-            <div class="row">
-              <div class="col-md-4 pr-0">
-                <label for="nuRubrica">Rubrica:</label>
-                <p-dropdown [options]="selectRubrica"
-                                    [filter]="true" optionLabel="label" optionValue="value"
-                                    (onChange)="fillRubrica($event)" [showClear]="true"
-                                    placeholder="Selecione"></p-dropdown>
-              </div>
-              <div class="col-md-8 pr-0">
-                <label>Descrição da Rubrica:</label>
-                <input class="form-control" style="font-size: 10pt;" type="text" value="{{descricaoRubrica}}" readonly/>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-4 pr-0">
-                <label for="nuUnidadeDemandante">Unidade Demandante:</label>
-                <p-dropdown [options]="selectFilial" formControlName="nuUnidadeDemandante"
-                                    [filter]="true" optionLabel="label" optionValue="value"
-                                    (onChange)="obterExercicio()" [showClear]="true"
-                                    placeholder="Selecione"></p-dropdown>
-              </div>
-              <div class="col-md-8 pr-0">
-                <label for="vrLimite">Valor Limite:</label>
-                  <input formControlName="vrLimite" type="text" class="form-control" mask="separator.2" [allowNegativeNumbers]="true"
-                    [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true"/>
-              </div>
-            </div>
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>Cadastro</b><br /><small>Cadastro de limites de rubrica</small>
+  </h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="formCadastro">
+    <div class="row" style="margin-top: -6px">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12 pr-0">
+            <label for="nuPlanejamento">Exercício:</label>
+            <select
+              class="form-control"
+              id="nuPlanejamento"
+              formControlName="nuPlanejamento"
+              [ngClass]="{
+                'is-invalid': submitted && f.nuPlanejamento.invalid
+              }"
+            >
+              <option value="" disabled selected>
+                Selecione o ano de exercício
+              </option>
+              <option
+                *ngFor="let a of listaExercicios"
+                [ngValue]="a.nU_PLANEJAMENTO"
+              >
+                {{ a.dE_EXERCICIO }}
+              </option>
+            </select>
+          </div>
+          <br />
+          <br />
+          <br />
+          <input formControlName="nuRubrica" type="text" hidden />
+        </div>
+        <div class="row">
+          <div class="col-md-5 pr-0">
+            <label for="nuRubrica">Rubrica:</label>
+            <p-dropdown
+              [options]="selectRubrica"
+              [filter]="true"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="fillRubrica($event)"
+              [showClear]="true"
+              placeholder="Selecione"
+              class="col-6"
+            ></p-dropdown>
+          </div>
+          <div class="col-md-7 pr-0">
+            <label>Descrição da Rubrica:</label>
+            <input
+              class="form-control"
+              style="font-size: 10pt"
+              type="text"
+              value="{{ descricaoRubrica }}"
+              readonly
+            />
           </div>
         </div>
-        <div class="modal-footer">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-8 pr-0 text-right">
-              </div>
-              <div class="col-md-4 pr-0 text-right">
-                <button class="btn-sm btn-default" type="submit" (click)="onSubmitCadastro()">
-                  Salvar
-                </button>
-              </div>
-            </div>
+        <div class="row">
+          <div class="col-md-5 pr-0">
+            <label for="nuUnidadeDemandante">Unidade Demandante:</label>
+            <p-dropdown
+              [options]="selectFilial"
+              formControlName="nuUnidadeDemandante"
+              [filter]="true"
+              optionLabel="label"
+              optionValue="value"
+              [showClear]="true"
+              placeholder="Selecione"
+              class="col-6"
+            ></p-dropdown>
+          </div>
+          <div class="col-md-7 pr-0">
+            <label for="vrLimite">Valor Limite:</label>
+            <input
+              formControlName="vrLimite"
+              type="text"
+              class="form-control"
+              mask="separator.2"
+              [allowNegativeNumbers]="true"
+              [thousandSeparator]="'.'"
+              [decimalMarker]="','"
+              prefix="R$ "
+              [dropSpecialCharacters]="true"
+            />
           </div>
         </div>
-      </form>
+      </div>
     </div>
-  </mat-tab>
-  <mat-tab label="Upload">
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">
-        <b>Upload de Arquivo</b
-        ><br /><small>Cadastro de limites de rubrica</small>
-      </h4>
-      <button
-        type="button"
-        class="close"
-        aria-label="Close"
-        (click)="activeModal.dismiss('Cross click')"
-      >
-        <span aria-hidden="true">×</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form [formGroup]="form">
-        <div class="row" style="margin-top: -6px;">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-12 pr-0">
-                <label for="nuAnoOrcamentario">Exercício:</label>
-                <select
-                  class="form-control"
-                  id="nuAnoOrcamentario"
-                  formControlName="nuAnoOrcamentario"
-                  [ngClass]="{
-                    'is-invalid': submitted && f.nuAnoOrcamentario.invalid
-                  }"
-                  (change)="obterExercicioUpload()"
-                >
-                  <option value="" disabled selected>
-                    Selecione o ano de exercício
-                  </option>
-                  <option
-                    *ngFor="let a of listaExercicios"
-                    [ngValue]="a.nU_EXERCICIO_ORCAMENTO"
-                  >
-                    {{ a.cO_EXERCICIO }}
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-12 pr-0">
-                <label>Tipo:</label>
-                <input
-                readonly
-                type="text"
-                class="form-control"
-                value="{{statusPlanejamentoSelecionadoUpload?.cO_EXERCICIO}} - {{statusPlanejamentoSelecionadoUpload?.nU_ORDEM}} - {{statusPlanejamentoSelecionadoUpload?.nO_STATUS}}"
-              />
-              </div>
-                <input formControlName="nuPlanejamento" type="text" value="{{statusPlanejamentoSelecionado?.nU_PLANEJAMENTO}}" hidden/>
-            </div>
-            <div class="row">
-              <div class="col-md-12 pr-0">
-                <label>Anexar Arquivo:</label>
-                <div class="col-md-8" style="margin-left: -14px;">
-                  <p-toast></p-toast>
-                  <p-fileUpload
-                    #fileUpload
-                    mode="basic"
-                    chooseLabel="Selecionar arquivo..."
-                    chooseIcon="pi pi-upload"
-                    accept=".xlsx"
-                    (onSelect)="onUpload($event)">
-                  </p-fileUpload>
-                  <a *ngIf="isUploaded" (click)="removerArquivo(fileUpload)" class="btnRemover">Remover</a>
-                </div>
-              </div>
-            </div>
+    <div class="modal-footer">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-8 pr-0 text-right"></div>
+          <div class="col-md-4 pr-0 text-right">
+            <button
+              class="btn-sm btn-default"
+              type="submit"
+              (click)="onSubmit()"
+            >
+              Salvar
+            </button>
           </div>
         </div>
-        <br />
-        <div *ngIf="listaErros.length > 0">
-          <hr />
-          <div class="table-ateste" style="padding-bottom: 20px;">
-            <span style="color:red">Lista de erros</span>
-            <p-table [value]="listaErros" [tableStyle]="{ 'width': '100%'}" >
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>Linha</th>
-                        <th>Campo</th>
-                        <th>Erro</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-contrato>
-                    <tr>
-                        <td>{{ contrato.linha }}</td>
-                        <td>{{ contrato.campo }}</td>
-                        <td>{{ contrato.erro }}</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-        </div>
-        <div class="modal-footer">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-8 pr-0 text-right">
-                <button class="btn-sm" style="background: white; color: green; border: 1px solid green;" type="submit" (click)="baixarModelo()">
-                  Exportar Planilha Padrão <i class="fa fa-external-link"></i>
-                </button>
-              </div>
-              <div class="col-md-4 pr-0 text-right">
-                <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" [disabled]="isDisabled">
-                  Carregar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
+      </div>
     </div>
-  </mat-tab>
-</mat-tab-group>
+  </form>
+</div>
