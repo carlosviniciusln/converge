@@ -1,4 +1,4 @@
-<div class="content">
+<!-- <div class="content">
   <div *ngIf="this.ultimaAtualizacao">
     <p class="card-title date-info" style="margin-top: -40px !important;">
       <b>Atualizado em: {{ this.ultimaAtualizacao }}</b>
@@ -15,6 +15,372 @@
         </div>
       </mat-tab>
     </mat-tab-group>
+  </div>
+
+</div> -->
+<div class="content" *ngIf="!loading && (execucao || orcamentos)">
+
+  <div *ngIf="this.ultimaAtualizacao">
+    <p class="card-title date-info" style="margin-top: -40px;">
+      <b>Atualizado em: {{ this.ultimaAtualizacao }}</b>
+    </p>
+  </div>
+  <div class="card">
+    <mat-tab-group (selectedIndexChange)="exibeDetalhes($event)">
+      <mat-tab *ngFor="let tab of tabs" label="{{ tab }}">
+        <div *ngIf="tab == 'Execução Contratual'" class="general-layout">
+          <div class="value-box truncated-text" pTooltip="Contratos com status 'EM VIGOR' no SICLG." tooltipPosition="top" placeholder="Top">
+            <h4>Contratos Vigentes - Quantidade</h4>
+            <p>{{ this.numerosRapidosExecContratual?.qT_CONTRATO_VIGENTE }}</p>
+          </div>
+
+          <div class="value-box truncated-text" pTooltip="Soma de todos os pagamentos realizados nas vigências atuais dos contratos." tooltipPosition="top" placeholder="Top">
+            <h4>Contratos Vigentes - Total Executado</h4>
+            <p>{{ this.numerosRapidosExecContratual?.vR_EXECUTADO_VIGENTE | currency: "BRL" }}</p>
+          </div>
+
+          <div class="value-box truncated-text" pTooltip="Total de pagamentos do ano corrente." tooltipPosition="top" placeholder="Top">
+            <h4>Pagamentos do Ano - Qtde. Total</h4>
+            <p>{{ this.numerosRapidosExecContratual?.qT_PAGAMENTO_ANO | number:'1.0-0' }}</p>
+          </div>
+
+          <div class="value-box truncated-text" pTooltip="Soma do valor global das vigências atuais dos contratos vigentes." tooltipPosition="top" placeholder="Top">
+            <h4>Contratos Vigentes - Total Global</h4>
+            <p>{{ this.numerosRapidosExecContratual?.vR_GLOBAL_VIGENTE | currency: "BRL" }}</p>
+          </div>
+
+          <div class="value-box truncated-text" pTooltip="Soma de todas as retenções MENOS a soma de todas as liberações das vigências atuais dos contratos." tooltipPosition="top" placeholder="Top">
+            <h4>Contratos Vigentes - Total Retido</h4>
+            <p>{{ this.numerosRapidosExecContratual?.vR_RETIDO_VIGENTE | currency: "BRL" }}</p>
+          </div>
+
+          <div class="value-box truncated-text" pTooltip="Soma dos pagamentos do ano corrente." tooltipPosition="top" placeholder="Top">
+            <h4>Pagamentos do Ano - Valor Total</h4>
+            <p>{{ this.numerosRapidosExecContratual?.vR_EXECUTADO_ANO | currency: "BRL" }}</p>
+          </div>
+          <!-- <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/TI/Governan%C3%A7a/Contratos%20TI/Painel_Contratos_VITEC?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe> -->
+        </div>
+        <p-table #dt [value]="execucao" styleClass="p-datatable-customers" *ngIf="tab == 'Execução Contratual'"
+          [rowHover]="true" [filterDelay]="0"
+          [globalFilterFields]="['sG_FILIAL', 'qT_CONTRATO_ATIVO', 'qT_PROXIMO30', 'qT_PROXIMO90', 'qT_PROXIMO180', 'qT_CONTRATO_INATIVO']"
+          sortMode="single">
+          <ng-template pTemplate="header">
+            <tr class="bordered">
+              <th rowspan="2" pSortableColumn="sG_FILIAL">VP / UD</th>
+              <th rowspan="2" pSortableColumn="qT_CONTRATO_ATIVO">Total Contratos Ativos (vigentes)</th>
+              <th colspan="3" class="text-centered">CONTRATOS COM DESEQUILÍBRIO FINANCEIRO</th>
+              <th colspan="3" class="text-centered">CONTRATOS A VENCER</th>
+              <th rowspan="2" pSortableColumn="qT_CONTRATO_INATIVO">INATIVOS (ENCERRADOS)</th>
+            </tr>
+            <tr class="bordered">
+              <th>Acima do Estimado</th>
+              <th>Abaixo do Estimado</th>
+              <th>Saldo Esgotado</th>
+              <th pSortableColumn="qT_PROXIMO30">Próximos 30 dias</th>
+              <th pSortableColumn="qT_PROXIMO90">Próximos 90 dias</th>
+              <th pSortableColumn="qT_PROXIMO180">Próximos 180 dias</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+            <tr [ngClass]="[item.sG_FILIAL.startsWith('VI') ? 'p-selectable-row example template-body' : 'p-selectable-row template-body']">
+              <td>
+                {{item.sG_FILIAL}}
+              </td>
+              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock1"
+                (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, null, null, null, 'c_at', item.coContrato)">
+                <a [ngClass]="{'none-decoration': item.qT_CONTRATO_ATIVO == 0}">
+                  {{item.qT_CONTRATO_ATIVO}}
+                </a>
+              </td>
+              <ng-template #elseBlock1>
+                <td>
+                  {{item.qT_CONTRATO_ATIVO}}
+                </td>
+              </ng-template>
+              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock2"
+                (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, null, null, null, 'ac_est', item.coContrato)">
+                <a [ngClass]="{'none-decoration': item.qT_ACIMA_ESTIMADO == 0 }">
+                  {{item.qT_ACIMA_ESTIMADO}}
+                </a>
+              </td>
+              <ng-template #elseBlock2>
+                <td>
+                  {{item.qT_ACIMA_ESTIMADO}}
+                </td>
+              </ng-template>
+              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock3"
+                (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, null, null, null, 'ab_est', item.coContrato)">
+                <a [ngClass]="{'none-decoration': item.qT_ABAIXO_ESTIMADO == 0 }">
+                  {{ item.qT_ABAIXO_ESTIMADO}}
+                </a>
+              </td>
+              <ng-template #elseBlock3>
+                <td>
+                  {{item.qT_ABAIXO_ESTIMADO}}
+                </td>
+              </ng-template>
+              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock4"
+                (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, null, null, null, 's_es', item.coContrato)">
+                <a [ngClass]="{'none-decoration': item.qT_SALDO_ESGOTADO == 0 }">
+                  {{ item.qT_SALDO_ESGOTADO}}
+                </a>
+              </td>
+              <ng-template #elseBlock4>
+                <td>
+                  {{item.qT_SALDO_ESGOTADO}}
+                </td>
+              </ng-template>
+              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock5"
+                (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, 0, 30, null, 'p30', item.coContrato)">
+                <a [ngClass]="{'none-decoration': item.qT_PROXIMO30 == 0 }">
+                  {{item.qT_PROXIMO30 }}
+                </a>
+              </td>
+              <ng-template #elseBlock5>
+                <td>
+                  {{item.qT_PROXIMO30}}
+                </td>
+              </ng-template>
+              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock6"
+                (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, 0, 90, null, 'p90', item.coContrato)">
+                <a [ngClass]="{'none-decoration': item.qT_PROXIMO90 == 0 }">
+                  {{item.qT_PROXIMO90 }}
+                </a>
+              </td>
+              <ng-template #elseBlock6>
+                <td>
+                  {{item.qT_PROXIMO90}}
+                </td>
+              </ng-template>
+              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock7"
+                (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, 0, 180, null, 'p180', item.coContrato)">
+                <a [ngClass]="{'none-decoration': item.qT_PROXIMO180 == 0 }">
+                  {{item.qT_PROXIMO180 }}
+                </a>
+              </td>
+              <ng-template #elseBlock7>
+                <td>
+                  {{item.qT_PROXIMO180}}
+                </td>
+              </ng-template>
+              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock8"
+                (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, -1, -1, null, 'c_in', item.coContrato)">
+                <a [ngClass]="{'none-decoration': item.qT_CONTRATO_INATIVO == 0 }">
+                  {{ item.qT_CONTRATO_INATIVO}}
+                </a>
+              </td>
+              <ng-template #elseBlock8>
+                <td>
+                  {{item.qT_CONTRATO_INATIVO}}
+                </td>
+              </ng-template>
+            </tr>
+            <ng-container *ngFor="let subitem of item.filhos">
+              <tr class="p-selectable-row template-body">
+                <td class="sub-item"
+                  (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, null, null, null)">
+                  {{subitem.sG_FILIAL }}</td>
+                <td (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, null, null, null, 'c_at')"
+                  [ngClass]="{'none-cursor': subitem.qT_CONTRATO_ATIVO == 0 }">
+                  <a [ngClass]="{'none-decoration': subitem.qT_CONTRATO_ATIVO == 0 }">
+                    {{subitem.qT_CONTRATO_ATIVO }}
+                  </a>
+                </td>
+                <td
+                  (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, null, null, null, 'ac_est')"
+                  [ngClass]="{'none-cursor': subitem.qT_ACIMA_ESTIMADO == 0 }">
+                  <a [ngClass]="{'none-decoration': subitem.qT_ACIMA_ESTIMADO == 0 }">
+                    {{subitem.qT_ACIMA_ESTIMADO }}
+                  </a>
+                </td>
+                <td
+                  (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, null, null, null, 'ab_est')"
+                  [ngClass]="{'none-cursor': subitem.qT_ABAIXO_ESTIMADO == 0 }">
+                  <a [ngClass]="{'none-decoration': subitem.qT_ABAIXO_ESTIMADO == 0 }">
+                    {{subitem.qT_ABAIXO_ESTIMADO }}
+                  </a>
+                </td>
+                <td (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, null, null, null, 's_es')"
+                  [ngClass]="{'none-cursor': subitem.qT_SALDO_ESGOTADO == 0 }">
+                  <a [ngClass]="{'none-decoration': subitem.qT_SALDO_ESGOTADO == 0 }">
+                    {{subitem.qT_SALDO_ESGOTADO }}
+                  </a>
+                </td>
+                <td (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, 0, 30, null, 'p30')"
+                  [ngClass]="{'none-cursor': subitem.qT_PROXIMO30 == 0 }">
+                  <a [ngClass]="{'none-decoration': subitem.qT_PROXIMO30 == 0 }">
+                    {{ subitem.qT_PROXIMO30 }}
+                  </a>
+                </td>
+                <td (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, 0, 90, null, 'p90')"
+                  [ngClass]="{'none-cursor': subitem.qT_PROXIMO90 == 0 }">
+                  <a [ngClass]="{'none-decoration': subitem.qT_PROXIMO90 == 0 }">
+                    {{ subitem.qT_PROXIMO90 }}
+                  </a>
+                </td>
+                <td (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, 0, 180, null, 'p180')"
+                  [ngClass]="{'none-cursor': subitem.qT_PROXIMO180 == 0 }">
+                  <a [ngClass]="{'none-decoration': subitem.qT_PROXIMO180 == 0 }">
+                    {{ subitem.qT_PROXIMO180 }}
+                  </a>
+                </td>
+                <td (click)="openModalContratoVigencia(subitem.sG_FILIAL, subitem.nU_FILIAL, -1, -1, null, 'c_in')"
+                  [ngClass]="{'none-cursor': subitem.qT_CONTRATO_INATIVO == 0 }">
+                  <a [ngClass]="{'none-decoration': subitem.qT_CONTRATO_INATIVO == 0 }">
+                    {{ subitem.qT_CONTRATO_INATIVO }}
+                  </a>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-template>
+        </p-table>
+
+        <div>
+          <div *ngIf="tab == 'Orçamento' && filial1885Data" class="general-layout">
+            <div class="value-box">
+              <h4>Dotação CAPEX</h4>
+              <p>{{ filial1885Data?.vR_INVESTIMENTO_PLANEJADO | currency: "BRL" }}</p>
+            </div>
+
+            <div class="value-box">
+              <h4>CAPEX Executado</h4>
+              <p>{{ filial1885Data?.vR_INVESTIMENTO_EXECUTADO | currency: "BRL" }}</p>
+            </div>
+
+            <div class="value-box">
+              <h4>CAPEX - % DOT x EXEC</h4>
+              <p>{{ filial1885Data?.pC_INVESTIMENTO_REALIZADO }}%</p>
+            </div>
+
+            <div class="value-box">
+              <h4>Dotação OPEX</h4>
+              <p>{{ filial1885Data?.vR_CUSTEIO_PLANEJADO | currency: "BRL" }}</p>
+            </div>
+
+            <div class="value-box">
+              <h4>OPEX Executado</h4>
+              <p>{{ filial1885Data?.vR_CUSTEIO_EXECUTADO | currency: "BRL" }}</p>
+            </div>
+
+            <div class="value-box">
+              <h4>OPEX - % DOT x EXEC</h4>
+              <p>{{ filial1885Data?.pC_CUSTEIO_REALIZADO }}%</p>
+            </div>
+            <strong class="info">
+              OS VALORES DOS CARDS ACIMA SE REFEREM À EXECUÇÃO DA DOTAÇÃO DAS RUBRICAS ORÇAMENTÁRIAS. <br>
+              O PAINEL ABAIXO APRESENTA OS VALORES DE EXECUÇÃO DO PLANEJADO PARA OS CONTRATOS.
+            </strong>
+          </div>
+          <mat-tab-group *ngIf="tab == 'Orçamento'">
+            <mat-tab *ngFor="let tabCapexOpex of tabsCapexOpex" label="{{ tabCapexOpex }}" class="subtab">
+              <p-table *ngIf="tabCapexOpex == 'Investimento (CAPEX)'" #dt [value]="orcamentos"
+                tyleClass="p-datatable-customers" [rowHover]="true" [filterDelay]="0" [globalFilterFields]="['sG_FILIAL', 'vR_INVESTIMENTO_PLANEJADO', 'vR_CUSTEIO_PLANEJADO',
+            'vR_INVESTIMENTO_EXECUTADO', 'pC_INVESTIMENTO_REALIZADO', 'vR_CUSTEIO_EXECUTADO', 'pC_CUSTEIO_REALIZADO']"
+                sortMode="single">
+                <ng-template pTemplate="header">
+                  <tr class="bordered-orange">
+                    <th rowspan="2" colspan="1" pSortableColumn="sG_FILIAL">VP / UD</th>
+                  </tr>
+                  <tr class="bordered-orange">
+                    <th>Planejado</th>
+                    <th>Executado</th>
+                    <th>% Executado X Planejado</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                  <tr class="p-selectable-row orange-style template-body none-cursor">
+                    <td class="none-cursor">
+                      {{item.sG_FILIAL}}
+                    <td class="text-end none-cursor">
+                      {{ item.vR_INVESTIMENTO_PLANEJADO | currency: "BRL" }}
+                    </td>
+                    <td (click)="openModalRubrica(2, item.nU_FILIAL, item.sG_FILIAL)" class="text-end">
+                      {{ item.vR_INVESTIMENTO_EXECUTADO | currency: "BRL" }}
+                    </td>
+                    <td class="text-center none-cursor">
+                      {{item.pC_INVESTIMENTO_REALIZADO}}%
+                    </td>
+                  </tr>
+                  <ng-container *ngFor="let subitem of item.filhos">
+                    <tr class="p-selectable-row orcamento-filhos none-cursor">
+                      <td class="sub-item none-cursor">
+                        {{subitem.sG_FILIAL}}
+                      </td>
+                      <td class="sub-item text-end none-cursor">
+                        {{subitem.vR_INVESTIMENTO_PLANEJADO | currency: "BRL" }}
+                      </td>
+                      <td class="sub-item text-end" style="cursor: pointer;"
+                        (click)="openModalRubrica(2, subitem.nU_FILIAL, subitem.sG_FILIAL)">
+                        <a>
+                          {{subitem.vR_INVESTIMENTO_EXECUTADO | currency: "BRL" }}
+                        </a>
+                      </td>
+                      <td class="sub-item text-center none-cursor">
+                        {{subitem.pC_INVESTIMENTO_REALIZADO}}%
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-template>
+              </p-table>
+              <div>
+                <div *ngIf="tabCapexOpex == 'Custeio (OPEX)'">
+                  <p-table #dt [value]="orcamentos"
+                    tyleClass="p-datatable-customers" [rowHover]="true" [filterDelay]="0" [globalFilterFields]="['sG_FILIAL', 'vR_INVESTIMENTO_PLANEJADO', 'vR_CUSTEIO_PLANEJADO',
+            'vR_INVESTIMENTO_EXECUTADO', 'pC_INVESTIMENTO_REALIZADO', 'vR_CUSTEIO_EXECUTADO', 'pC_CUSTEIO_REALIZADO']"
+                    sortMode="single">
+                    <ng-template pTemplate="header">
+                      <tr class="bordered-orange">
+                        <th rowspan="2" colspan="1" pSortableColumn="sG_FILIAL">VP / UD</th>
+                      </tr>
+                      <tr class="bordered-orange">
+                        <th>Planejado</th>
+                        <th>Executado</th>
+                        <th>% Executado X Planejado</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                      <tr class="p-selectable-row orange-style template-body none-cursor">
+                        <td class="none-cursor">
+                          {{item.sG_FILIAL}}
+                        <td class="text-end none-cursor">
+                          {{ item.vR_CUSTEIO_PLANEJADO | currency: "BRL" }}
+                        </td>
+                        <td (click)="openModalRubrica(1, item.nU_FILIAL, item.sG_FILIAL)" class="text-end">
+                          {{ item.vR_CUSTEIO_EXECUTADO | currency: "BRL" }}
+                        </td>
+                        <td class="text-center none-cursor">
+                          {{item.pC_CUSTEIO_REALIZADO}}%
+                        </td>
+                      </tr>
+                      <ng-container *ngFor="let subitem of item.filhos">
+                        <tr class="p-selectable-row orcamento-filhos none-cursor">
+                          <td class="sub-item none-cursor">
+                            {{subitem.sG_FILIAL}}
+                          </td>
+                          <td class="sub-item text-end none-cursor">
+                            {{subitem.vR_CUSTEIO_PLANEJADO | currency: "BRL" }}
+                          </td>
+                          <td class="sub-item text-end" style="cursor: pointer;"
+                            (click)="openModalRubrica(1, subitem.nU_FILIAL, subitem.sG_FILIAL)">
+                            <a>
+                              {{subitem.vR_CUSTEIO_EXECUTADO | currency: "BRL" }}
+                            </a>
+                          </td>
+                          <td class="sub-item text-center none-cursor">
+                            {{subitem.pC_CUSTEIO_REALIZADO}}%
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <!-- <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/5018%20-%20SUGTI/SUGTI02/PUBLICADO/PORTAL/Orcamento_v1_sc?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe> -->
   </div>
 
 </div>

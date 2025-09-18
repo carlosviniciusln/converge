@@ -49,23 +49,30 @@ export class RegistrarAtesteComponent implements OnInit {
     });
   }
 
-  calcularTotal(values: any[]) {
-    this.total = values.reduce((acc, curr, index) => {
 
-      let valorStr = curr.vrApurado?.toString().trim() || '';
+calcularTotal(values: any[]) {
+  this.total = values.reduce((acc, curr, index) => {
+    let valorStr = curr.vrApurado?.toString().trim() || '';
 
-      valorStr = valorStr.replace('R$', '').trim();
+    // Remove o símbolo R$ e espaços
+    valorStr = valorStr.replace('R$', '').trim();
 
-      this.faturamentos
-        .at(index)
-        .get('vrApurado')
-        ?.setValue(valorStr, { emitEvent: false });
-      const valorNumerico = valorStr.replace(/\./g, '');
-      const vrApurado = parseFloat(valorNumerico) || 0;
+    // Atualiza o campo com o valor limpo
+    this.faturamentos
+      .at(index)
+      .get('vrApurado')
+      ?.setValue(valorStr, { emitEvent: false });
 
-      return acc + vrApurado;
-    }, 0);
-  }
+    // Remove os pontos (milhares) e troca vírgula por ponto (decimal)
+    const valorNumerico = valorStr.replace(/\./g, '').replace(',', '.');
+
+    // Converte para número
+    const vrApurado = parseFloat(valorNumerico) || 0;
+
+    return acc + vrApurado;
+  }, 0);
+}
+
 
   formulario() {
     this.form = this.formBuilder.group({
@@ -208,11 +215,10 @@ export class RegistrarAtesteComponent implements OnInit {
     }
 
     this.form.get('vrPagamento')?.setValue(this.total);
+    const vrApurado = this.form.get('vrApurado')?.value.replace('R$', '').trim();
     const vrMulta = this.form.get('vrMulta')?.value.replace('R$', '').trim();
-    const vrRetencao = this.form
-      .get('vrRetencao')
-      ?.value.replace('R$', '')
-      .trim();
+    const vrRetencao = this.form.get('vrRetencao')?.value.replace('R$', '').trim();
+    this.form.get('vrApurado')?.setValue(vrApurado);
     this.form.get('vrMulta')?.setValue(vrMulta);
     this.form.get('vrRetencao')?.setValue(vrRetencao);
     const formData = this.toFormData(this.form);
