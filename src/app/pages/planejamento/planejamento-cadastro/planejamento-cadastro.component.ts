@@ -107,7 +107,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     private toastr: ToastrService,
     public token: TokenStorageService,
     private modalService: NgbModal
-  ) { 
+  ) {
     this.obterPermissoes();
   }
 
@@ -672,7 +672,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     try {
       this.submitted = true;
       var codigoContrato = this.form.controls['coContrato'].value
-      this.form.controls['coContrato'].setValue(codigoContrato);
+      this.form.controls['nuContrato'].setValue(codigoContrato);
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
@@ -851,7 +851,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           'Sucesso'
         );
         setTimeout(() => {
-          location.reload(); 
+          location.reload();
        }, 2000);
       } catch (error) {
         console.error(error, 'aquirsd');
