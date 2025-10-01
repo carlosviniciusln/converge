@@ -1,0 +1,118 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>Cadastro</b><br /><small>Cadastro de limites de rubrica</small>
+  </h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="formCadastro">
+    <div class="row" style="margin-top: -6px">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12 pr-0">
+            <label for="nuPlanejamento">Exercício:</label>
+            <select
+              class="form-control"
+              id="nuPlanejamento"
+              formControlName="nuPlanejamento"
+              [ngClass]="{
+                'is-invalid': submitted && f.nuPlanejamento.invalid
+              }"
+            >
+              <option value="" disabled selected>
+                Selecione o ano de exercício
+              </option>
+              <option
+                *ngFor="let a of listaExercicios"
+                [ngValue]="a.nU_PLANEJAMENTO"
+              >
+                {{ a.dE_EXERCICIO }}
+              </option>
+            </select>
+          </div>
+          <br />
+          <br />
+          <br />
+          <input formControlName="nuRubrica" type="text" hidden />
+        </div>
+        <div class="row">
+          <div class="col-md-5 pr-0">
+            <label for="nuRubrica">Rubrica:</label>
+            <p-dropdown
+              [options]="selectRubrica"
+              [filter]="true"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="fillRubrica($event)"
+              [showClear]="true"
+              placeholder="Selecione"
+              class="col-6"
+            ></p-dropdown>
+          </div>
+          <div class="col-md-7 pr-0">
+            <label>Descrição da Rubrica:</label>
+            <input
+              class="form-control"
+              style="font-size: 10pt"
+              type="text"
+              value="{{ descricaoRubrica }}"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5 pr-0">
+            <label for="nuUnidadeDemandante">Unidade Demandante:</label>
+            <p-dropdown
+              [options]="selectFilial"
+              formControlName="nuUnidadeDemandante"
+              [filter]="true"
+              optionLabel="label"
+              optionValue="value"
+              [showClear]="true"
+              placeholder="Selecione"
+              class="col-6"
+            ></p-dropdown>
+          </div>
+          <div class="col-md-7 pr-0">
+            <label for="vrLimite">Valor Limite:</label>
+            <input
+              formControlName="vrLimite"
+              type="text"
+              class="form-control"
+              mask="separator.2"
+              [allowNegativeNumbers]="true"
+              [thousandSeparator]="'.'"
+              [decimalMarker]="','"
+              prefix="R$ "
+              [dropSpecialCharacters]="true"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-8 pr-0 text-right"></div>
+          <div class="col-md-4 pr-0 text-right">
+            <button
+              class="btn-sm btn-default"
+              type="submit"
+              (click)="onSubmit()"
+            >
+              Salvar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -29,6 +29,7 @@ import { AtesteComponent } from 'src/app/pages/ateste/ateste.component';
 import { AuthGuard } from 'src/app/shared/interceptors/auth.guard';
 import { DetalharAtesteComponent } from 'src/app/pages/ateste/detalhar-ateste/detalhar-ateste.component';
 import { DevelopComponent } from 'src/app/components/develop/develop.component';
+import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -39,20 +40,14 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'contrato/detalhe/:voltar/:id', component: ContratoDetalheComponent },
   { path: 'contrato/evolucao-financeira/:id', component: EvolucaoFinanceiraComponent },
   { path: 'contrato/exec-orc-mensalizacao/:id', component: MensalizacaoComponent },
-  {
-    path: 'contrato/evolucao-financeira-aquisicao/:id',
-    component: EvolucaoFinanceiraAquisicaoComponent,
-  },
+  { path: 'contrato/evolucao-financeira-aquisicao/:id', component: EvolucaoFinanceiraAquisicaoComponent },
   { path: 'contrato/conciliacao', component: ContratoPendenteComponent },
   { path: 'contrato/artigos', component: ArtigoPagamentoComponent },
   { path: 'planejamento', component: PlanejamentoComponent },
   { path: 'planejamento/create', component: PlanejamentoCadastroComponent },
   { path: 'planejamento/limites', component: LimitesRubricasComponent },
   { path: 'valores-executados', component: ValoresExecutadosComponent },
-  {
-    path: 'planejamento/limites/create',
-    component: LimitesRubricasCadastroComponent,
-  },
+  { path: 'planejamento/limites/create', component: LimitesRubricasCadastroComponent },
   { path: 'planejamento-orcamentario', component: PlanejamentoOrcamentarioComponent },
   { path: 'pagamento', component: PagamentoComponent },
   { path: 'consumo', component: ConsumoComponent },
@@ -65,6 +60,8 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'empenho', component: EmpenhoComponent },
   { path: 'mod-develop', component: DevelopComponent },
+  { path: 'orcamento/limites', component: LimitesComponent },
+
   //   { path: "icons", component: IconsComponent },
   //   { path: "maps", component: MapComponent },
   //   { path: "notifications", component: NotificationsComponent },
@@ -74,6 +71,5 @@ export const AdminLayoutRoutes: Routes = [
   //   { path: "rtl", component: RtlComponent },
 
   { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
-  { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
-
+  { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]}
 ];

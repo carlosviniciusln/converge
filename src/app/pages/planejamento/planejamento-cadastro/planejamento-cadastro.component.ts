@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
@@ -44,7 +44,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   gcpvw008MensalizacaoAnoExercicio: Gcpvw008Mensalizacao[] = [];
   rubricas: Gcpvw008Mensalizacao[] = [];
 
-  public form: UntypedFormGroup;
+  public form: FormGroup;
   public listaContratos: ContratoResponse[] = [];
   public listaFiliais: Filial[] = [];
   public listaRubricas: Rubrica[] = [];
@@ -102,12 +102,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apiService: ApiService,
     private toastr: ToastrService,
     public token: TokenStorageService,
     private modalService: NgbModal
-  ) { 
+  ) {
     this.obterPermissoes();
   }
 
@@ -165,60 +165,60 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.form = this.formBuilder.group({
       nuPlanejamentoOrcamentario: [0],
       coPlanejamentoOrcamentario: [''],
-      nuAno: new UntypedFormControl({ value: '', disabled: !this.isEditable }, [
+      nuAno: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
       ]),
-      nuFilial: new UntypedFormControl({ value: '', disabled: !this.isEditable }, [
+      nuFilial: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
       ]),
-      deObjeto: new UntypedFormControl({ value: '', disabled: !this.isEditable }, [
+      deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
       ]),
-      deJustificativa: new UntypedFormControl(
+      deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      deObservacao: new UntypedFormControl(
+      deObservacao: new FormControl(
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuPlanejamentoStatus: new UntypedFormControl(
+      nuPlanejamentoStatus: new FormControl(
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuDemandaTipo: new UntypedFormControl(
+      nuDemandaTipo: new FormControl(
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuContrato: new UntypedFormControl({ value: '', disabled: !this.isEditable }),
+      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }),
       coContrato: [''],
-      nuObjetivoEstrategicoPdti: new UntypedFormControl(
+      nuObjetivoEstrategicoPdti: new FormControl(
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuObjetivoEstrategicoPei: new UntypedFormControl(
+      nuObjetivoEstrategicoPei: new FormControl(
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuClassificacaoPlanejamento: new UntypedFormControl(
+      nuClassificacaoPlanejamento: new FormControl(
         { value: 1, disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuPlanejamentoTipo: new UntypedFormControl(
+      nuPlanejamentoTipo: new FormControl(
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
       noCriador: [''],
       dhCadastro: [''],
-      icServicoContinuo: new UntypedFormControl({ value: 0, disabled: true }, [
+      icServicoContinuo: new FormControl({ value: 0, disabled: true }, [
         Validators.required,
       ]),
-      icDigital: new UntypedFormControl(
+      icDigital: new FormControl(
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      previsoesDesembolso: new UntypedFormArray([]),
-      vrTotalOrcamentoPlanejamento: new UntypedFormControl(
+      previsoesDesembolso: new FormArray([]),
+      vrTotalOrcamentoPlanejamento: new FormControl(
         { value: 0, disabled: true },
         [Validators.required]
       ),
@@ -229,8 +229,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
     return this.form.controls;
   }
 
-  get previsoesDesembolso(): UntypedFormArray {
-    return this.form.get('previsoesDesembolso') as UntypedFormArray;
+  get previsoesDesembolso(): FormArray {
+    return this.form.get('previsoesDesembolso') as FormArray;
   }
 
   adicionarPrevisaoDesembolso(desabilitar: boolean) {
@@ -242,29 +242,29 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.somaValorTotalPlanejamentoOrcamentario();
   }
 
-  novaPrevisaoDesembolso(desabilitar: boolean): UntypedFormGroup {
-    return new UntypedFormGroup({
-      nuPrevisaoDesembolso: new UntypedFormControl(0, [Validators.required]),
-      nuPlanejamentoOrcamentario: new UntypedFormControl(
+  novaPrevisaoDesembolso(desabilitar: boolean): FormGroup {
+    return new FormGroup({
+      nuPrevisaoDesembolso: new FormControl(0, [Validators.required]),
+      nuPlanejamentoOrcamentario: new FormControl(
         this.planejamento?.nuPlanejamentoOrcamentario ?? 0,
         [Validators.required]
       ),
-      nuRubrica: new UntypedFormControl(0, [Validators.required]),
-      nuPreComprometimento: new UntypedFormControl(0, [Validators.required]),
-      vrPreComprometimento: new UntypedFormControl(0, [Validators.required]),
-      vrJaneiro: new UntypedFormControl(0, [Validators.required]),
-      vrFevereiro: new UntypedFormControl(0, [Validators.required]),
-      vrMarco: new UntypedFormControl(0, [Validators.required]),
-      vrAbril: new UntypedFormControl(0, [Validators.required]),
-      vrMaio: new UntypedFormControl(0, [Validators.required]),
-      vrJunho: new UntypedFormControl(0, [Validators.required]),
-      vrJulho: new UntypedFormControl(0, [Validators.required]),
-      vrAgosto: new UntypedFormControl(0, [Validators.required]),
-      vrSetembro: new UntypedFormControl(0, [Validators.required]),
-      vrOutubro: new UntypedFormControl(0, [Validators.required]),
-      vrNovembro: new UntypedFormControl(0, [Validators.required]),
-      vrDezembro: new UntypedFormControl(0, [Validators.required]),
-      vrTotalRubrica: new UntypedFormControl(0, [Validators.required]),
+      nuRubrica: new FormControl(0, [Validators.required]),
+      nuPreComprometimento: new FormControl(0, [Validators.required]),
+      vrPreComprometimento: new FormControl(0, [Validators.required]),
+      vrJaneiro: new FormControl(0, [Validators.required]),
+      vrFevereiro: new FormControl(0, [Validators.required]),
+      vrMarco: new FormControl(0, [Validators.required]),
+      vrAbril: new FormControl(0, [Validators.required]),
+      vrMaio: new FormControl(0, [Validators.required]),
+      vrJunho: new FormControl(0, [Validators.required]),
+      vrJulho: new FormControl(0, [Validators.required]),
+      vrAgosto: new FormControl(0, [Validators.required]),
+      vrSetembro: new FormControl(0, [Validators.required]),
+      vrOutubro: new FormControl(0, [Validators.required]),
+      vrNovembro: new FormControl(0, [Validators.required]),
+      vrDezembro: new FormControl(0, [Validators.required]),
+      vrTotalRubrica: new FormControl(0, [Validators.required]),
     });
   }
 
@@ -289,7 +289,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
 
   onValorRubricaChange(i: number) {
-    var prevDes = <UntypedFormArray>this.previsoesDesembolso.at(i);
+    var prevDes = <FormArray>this.previsoesDesembolso.at(i);
     prevDes.controls['vrTotalRubrica'].setValue(
       prevDes.controls['vrJaneiro'].value +
       prevDes.controls['vrFevereiro'].value +
@@ -312,7 +312,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
     const previsoesDesembolso = this.form.get(
       'previsoesDesembolso'
-    ) as UntypedFormArray;
+    ) as FormArray;
     previsoesDesembolso.controls.forEach((element) => {
       vrTotalOrcamentoPlanejamentoTemp += element.get('vrTotalRubrica').value;
     });
@@ -418,73 +418,73 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
       this.previsoesDesembolso.clear();
       response.data.gcptb027PrevisoesDesembolso.map((x) => {
-        const previsaoDesembolso = new UntypedFormGroup({
-          nuPrevisaoDesembolso: new UntypedFormControl(x.nuPrevisaoDesembolso),
-          nuPlanejamentoOrcamentario: new UntypedFormControl(
+        const previsaoDesembolso = new FormGroup({
+          nuPrevisaoDesembolso: new FormControl(x.nuPrevisaoDesembolso),
+          nuPlanejamentoOrcamentario: new FormControl(
             x.nuPlanejamentoOrcamentario,
             [Validators.required]
           ),
-          nuRubrica: new UntypedFormControl(
+          nuRubrica: new FormControl(
             { value: x.nuRubrica, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrJaneiro: new UntypedFormControl(
+          vrJaneiro: new FormControl(
             { value: x.vrJaneiro, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrFevereiro: new UntypedFormControl(
+          vrFevereiro: new FormControl(
             { value: x.vrFevereiro, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrMarco: new UntypedFormControl(
+          vrMarco: new FormControl(
             { value: x.vrMarco, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrAbril: new UntypedFormControl(
+          vrAbril: new FormControl(
             { value: x.vrAbril, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrMaio: new UntypedFormControl(
+          vrMaio: new FormControl(
             { value: x.vrMaio, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrJunho: new UntypedFormControl(
+          vrJunho: new FormControl(
             { value: x.vrJunho, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrJulho: new UntypedFormControl(
+          vrJulho: new FormControl(
             { value: x.vrJulho, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrAgosto: new UntypedFormControl(
+          vrAgosto: new FormControl(
             { value: x.vrAgosto, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrSetembro: new UntypedFormControl(
+          vrSetembro: new FormControl(
             { value: x.vrSetembro, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrOutubro: new UntypedFormControl(
+          vrOutubro: new FormControl(
             { value: x.vrOutubro, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrNovembro: new UntypedFormControl(
+          vrNovembro: new FormControl(
             { value: x.vrNovembro, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrDezembro: new UntypedFormControl(
+          vrDezembro: new FormControl(
             { value: x.vrDezembro, disabled: !this.isEditable },
             [Validators.required]
           ),
-          nuPreComprometimento: new UntypedFormControl(
+          nuPreComprometimento: new FormControl(
             { value: x.nuPreComprometimento, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrPreComprometimento: new UntypedFormControl(
+          vrPreComprometimento: new FormControl(
             { value: x.vrPreComprometimento, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrTotalRubrica: new UntypedFormControl(
+          vrTotalRubrica: new FormControl(
             {
               value:
                 x.vrJaneiro +
@@ -672,7 +672,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     try {
       this.submitted = true;
       var codigoContrato = this.form.controls['coContrato'].value
-      this.form.controls['coContrato'].setValue(codigoContrato);
+      this.form.controls['nuContrato'].setValue(codigoContrato);
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
@@ -851,7 +851,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           'Sucesso'
         );
         setTimeout(() => {
-          location.reload(); 
+          location.reload();
        }, 2000);
       } catch (error) {
         console.error(error, 'aquirsd');

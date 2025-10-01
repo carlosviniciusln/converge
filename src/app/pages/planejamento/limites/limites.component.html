@@ -1,0 +1,151 @@
+<div class="content">
+  <div class="row">
+    <div class="col-12">
+        <p-table #dt [autoLayout]="true" [value]="listaLimites" dataKey="nU_PLANEJAMENTO" [rows]="10" [paginator]="true" [globalFilterFields]="['ano', 'contrato', 'gn', 'vrDiferenca', 'vrExecutado','pcEp']" currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+            [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+              <div class="col-md-7 table-header-title">Limites</div>
+                <div class="table-header">
+                    <div class="row">
+                        <div class="col-md-8 text-right">
+                            <button type="button" class="btn-sm btn-default mr-2" (click)="openModalPlanejamento()" *ngIf="isPerfilAdminOrcamento">Novo Registro</button>
+                            <button type="button" class="btn-sm btn-default mr-2" (click)="openModalUpload()" *ngIf="isPerfilAdminOrcamento">Upload <i class="pi pi-upload" aria-hidden="true" style="color:white"></i></button>
+                            <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()"><i class="tim-icons icon-cloud-download-93"></i></button>
+                        </div>
+                        <div class="col-md-4">
+                          <input type="text" class="form-control" #myInput (input)="filterItem(myInput.value)" id="pPesquisar" placeholder="Digite para pesquisar" />
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 3rem;"></th>
+                    <th style="font-size: 14px;">Exercício</th>
+                    <th style="font-size: 14px;">Tipo</th>
+                    <th style="font-size: 14px;">Limite/Planejado</th>
+                    <th style="font-size: 14px;">Solicitado</th>
+                    <th pSortableColumn="vR_DIFERENCA" style="font-size: 14px;">Diferença</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-visaoum let-expanded="expanded">
+              <tr>
+                  <td>
+                      <button type="button" pButton pRipple [pRowToggler]="visaoum" (click)="detalharPorTipoRubrica(visaoum)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
+                  </td>
+                    <td>{{visaoum.cO_EXERCICIO}}</td>
+                    <td>{{visaoum.dE_PLANEJAMENTO_TIPO}}</td>
+                    <td>{{visaoum.vR_LIMITE | currency:'BRL'}}</td>
+                    <td>{{visaoum.vR_PLANEJAMENTO | currency:'BRL'}}</td>
+                    <td>{{visaoum.vR_DIFERENCA | currency:'BRL'}} <span *ngIf="visaoum.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-registro>
+                    <tr *ngIf="registro.expanded">
+                        <td colspan="7">
+                            <div class="p-p-3">
+                                <p-table [value]="registro.detalhes" dataKey="nO_RUBRICA_TIPO">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th style="width: 3rem"> </th>
+                                            <th>Exercício</th>
+                                            <th>Tipo</th>
+                                            <th>Descrição</th>
+                                            <th>Limite/Planejado</th>
+                                            <th>Solicitado</th>
+                                            <th pSortableColumn="vR_DIFERENCA">Diferença</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-tipo let-expanded="expanded">
+                                        <tr>
+                                            <td>
+                                                <button type="button" pButton pRipple [pRowToggler]="tipo" (click)="detalharPorRubricaTipo(registro, tipo)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
+                                            </td>
+                                            <td>{{tipo.cO_EXERCICIO}}</td>
+                                            <td>{{tipo.dE_PLANEJAMENTO_TIPO}}</td>
+                                            <td>{{tipo.nO_RUBRICA_TIPO}}</td>
+                                            <td>{{tipo.vR_LIMITE | currency:'BRL'}}</td>
+                                            <td>{{tipo.vR_PLANEJAMENTO | currency:'BRL'}}</td>
+                                            <td>{{tipo.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="tipo.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
+                                        </tr>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="rowexpansion" let-contrato>
+                                        <tr>
+                                            <td colspan="7">
+                                                <div class="p-p-3">
+                                                    <p-table [value]="registro?.segundoNivel" dataKey="cO_RUBRICA">
+                                                        <ng-template pTemplate="header">
+                                                            <tr>
+                                                                <th style="width: 3rem"> </th>
+                                                                <th>Exercício</th>
+                                                                <th>Tipo</th>
+                                                                <th>Rubrica</th>
+                                                                <th>Descrição</th>
+                                                                <th>Limite/Planejado</th>
+                                                                <th>Solicitado</th>
+                                                                <th pSortableColumn="vR_DIFERENCA">Diferença</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-contr let-expanded="expanded">
+                                                            <tr>
+                                                                <td>
+                                                                    <button type="button" pButton pRipple [pRowToggler]="contr" (click)="detalharPorUd(registro, contr)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
+                                                                </td>
+                                                                <td>{{contr.cO_EXERCICIO}}</td>
+                                                                <td>{{contr.dE_PLANEJAMENTO_TIPO}}</td>
+                                                                <td>{{contr.cO_RUBRICA}}</td>
+                                                                <td>{{contr.dE_RUBRICA}}</td>
+                                                                <td>{{contr.vR_LIMITE | currency:'BRL'}}</td>
+                                                                <td>{{contr.vR_PLANEJAMENTO | currency:'BRL'}}</td>
+                                                                <td>{{contr.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="contr.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="rowexpansion" let-contrato>
+                                                          <tr>
+                                                              <td colspan="7">
+                                                                  <div class="p-p-3">
+                                                                      <p-table [value]="registro?.terceiroNivel" dataKey="nU_CONTRATO">
+                                                                          <ng-template pTemplate="header">
+                                                                              <tr>
+                                                                                  <th>Exercício</th>
+                                                                                  <th>Tipo</th>
+                                                                                  <th>UD</th>
+                                                                                  <th>Rubrica</th>
+                                                                                  <th>Descrição</th>
+                                                                                  <th>Limite/Planejado</th>
+                                                                                  <th>Solicitado</th>
+                                                                                  <th pSortableColumn="vR_DIFERENCA">Diferença</th>
+                                                                              </tr>
+                                                                          </ng-template>
+                                                                          <ng-template pTemplate="body" let-ud let-expanded="expanded">
+                                                                              <tr>
+                                                                                  <td>{{ud.cO_EXERCICIO}}</td>
+                                                                                  <td>{{ud.dE_PLANEJAMENTO_TIPO}}</td>
+                                                                                  <td>{{ud.sG_FILIAL}}</td>
+                                                                                  <td>{{ud.cO_RUBRICA}}</td>
+                                                                                  <td>{{ud.dE_RUBRICA}}</td>
+                                                                                  <td style="color:blue; text-decoration: underline; cursor: pointer;">{{ud.vR_LIMITE | currency:'BRL'}}</td>
+                                                                                  <td>{{ud.vR_PLANEJAMENTO | currency:'BRL'}}</td>
+                                                                                  <td>{{ud.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="ud.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
+                                                                              </tr>
+                                                                          </ng-template>
+                                                                      </p-table>
+                                                                  </div>
+                                                              </td>
+                                                          </tr>
+                                                      </ng-template>
+                                                    </p-table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+        </p-table>
+    </div>
+  </div>
+</div>

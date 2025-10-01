@@ -31,6 +31,7 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   planejamentos: ContratoPlanejamentosOrcamentario[];
   listaAnos: string[];
+  listaNuOrc: number[];
   listaContratos: ContratoResponse[];
   listaFiliais: Filial[];
   listaStatusPlanejamento: PlanejamentoStatusResponse[];
@@ -49,6 +50,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectAnos: Select2Data;
   selectContratos: Select2Data;
   selectFiliais: Select2Data;
+  selectNuOrcs: Select2Data;
   selectStatusPlanejamento: Select2Data;
   selectTiposPlanejamento: Select2Data;
   selectTiposDemanda: Select2Data;
@@ -61,6 +63,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectedAno: string = null;
   selectedContrato: string = null;
   selectedFilial: string = null;
+  selectedNuOrc: number = null;
   selectedStatusPlanejamento: string = null;
   selectedTipoPlanejamento: string = null;
   selectedTipoDemanda: string = null;
@@ -81,6 +84,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     pageSize: 12,
     NuAno: null,
     ud: null,
+    nuOrc: 0,
     contrato: null,
     NuPlanejamentoStatus: null,
     NuPlanejamentoTipo: null,
@@ -215,6 +219,13 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
     else{
       switch (op) {
+        case 2: {
+          this.filtroRegistros.nuOrc = e.value;
+          if (e.value == null || this.selectNuOrcs.length > 1) {
+              await this.obterPlanejamentosOrc();
+          }
+          break;
+        }
         case 3: {
           this.filtroRegistros.Ud = e.value;
           if (e.value == null || this.selectFiliais.length > 1) {
@@ -276,6 +287,7 @@ export class PlanejamentoGeralComponent implements OnInit {
         this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
         this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: g, value: g }));
         this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: g, value: g }));
+        this.selectNuOrcs = response?.data?.listaNuOrc.map(g => ({ label: g, value: g }));
         this.quantidadeTotal = response.data.totalRecords;
       this.loading = false;
     } catch (error) {

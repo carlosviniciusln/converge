@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api.service';
@@ -24,8 +24,8 @@ export class ModalPlanejamentoComponent implements OnInit {
   @Input() public anoSelecionado;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
-  public form: UntypedFormGroup;
-  
+  public form: FormGroup;
+
   permissions: ActionPolicies;
   labelButtonsLeft : DomainDTO = {label: null, value: null, message: null};
   labelButtonsRight : DomainDTO = {label: null, value: null, message: null};
@@ -54,7 +54,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private apiService: ApiService,
     public token: TokenStorageService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private router : Router,
     private toastr: ToastrService,
   ) {
@@ -65,7 +65,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     this.obterPlanejamentos();
       this.currentProfile = this.token.getUserPerfil();
         this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
-        
+
         if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT'){
           this.isPerfilPrivilegiado = true;
         }
@@ -80,29 +80,37 @@ export class ModalPlanejamentoComponent implements OnInit {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento?coExercicio='+this.anoSelecionado)
     result.then(response => {
       this.listaPlanejamentos = response.data;
-      this.montarPlanejamentosModal();
+      this.montarPlanejamentosModal(this.listaPlanejamentos);
     });
   }
 
-  montarPlanejamentosModal() {
-   
-    if (this.listaPlanejamentos.length > 0) {
-      this.ultimoPlanejamento = this.listaPlanejamentos[this.listaPlanejamentos.length - 1];
+  montarPlanejamentosModal(lista: ResumoPlanejamentoModel[]) {
+    this.validarAno()
+    if (lista.length > 0) {
+      this.ultimoPlanejamento = lista[this.listaPlanejamentos.length - 1];
       this.validarBotoes(this.ultimoPlanejamento);
     }
     else{
-      this.validarBotoes(this.listaPlanejamentos[0]);
+      this.validarBotoes(lista[0]);
     }
   }
 
-  //TODO: MELHORIA: REFATOR EM JSON OU CRIAR METODOS PARA CADA CENARIO 
+  //TODO: MELHORIA: REFATOR EM JSON OU CRIAR METODOS PARA CADA CENARIO
 
   validarBotoes(ultimoPlanejamento : ResumoPlanejamentoModel): void {
     const tipo = ultimoPlanejamento?.tipo.replace(/^\d+\s*-\s*/, "");
     switch(tipo){
       case "Programação" :
         switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-          case "Aberto":
+          case "Aberta":
+            this.labelButtonsLeft.label = 'Encerrar Programação';
+            this.labelButtonsLeft.value = 'encerrar';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
+            this.labelButtonsRight.label = 'Cancelar Programação';
+            this.labelButtonsRight.value = 'cancelar';
+            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
+            break;
+          case "Em Avaliação":
             this.labelButtonsLeft.label = 'Encerrar Programação';
             this.labelButtonsLeft.value = 'encerrar';
             this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
@@ -119,30 +127,22 @@ export class ModalPlanejamentoComponent implements OnInit {
             this.labelButtonsRight.message = 'Tem certeza que deseja reabrir o planejamento';
             break;
           default:
+            this.labelButtonsLeft = null;
+            this.labelButtonsRight = null;
             break;
         }
       break;
-      // case "Ajuste Programação":
-      //   switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-      //     case "Aberta":
-      //       this.labelButtonsLeft.label = 'Encerrar Programação';
-      //       this.labelButtonsLeft.value = 'encerrar';
-      //       this.labelButtonsRight.label = 'Cancelar Programação';
-      //       this.labelButtonsRight.value = 'cancelar';
-      //       break;
-      //     case "Encerrado":
-      //         this.labelButtonsLeft.label = 'Ajuste de Programação';
-      //         this.labelButtonsLeft.value = 'ajuste';
-      //         this.labelButtonsRight.label = 'Nova Programação';
-      //         this.labelButtonsRight.value = 'nova';
-      //       break 
-      //     default:
-      //       break;
-      //   }
-      // break;
       case "Reprogramação":
         switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-          case "Aberto":
+          case "Aberta":
+            this.labelButtonsLeft.label = 'Encerrar Programação';
+            this.labelButtonsLeft.value = 'encerrar';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
+            this.labelButtonsRight.label = 'Cancelar Programação';
+            this.labelButtonsRight.value = 'cancelar';
+            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
+            break;
+          case "Em Avaliação":
             this.labelButtonsLeft.label = 'Encerrar Programação';
             this.labelButtonsLeft.value = 'encerrar';
             this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
@@ -157,14 +157,18 @@ export class ModalPlanejamentoComponent implements OnInit {
             this.labelButtonsRight.label = 'Reabrir Reprogramação';
             this.labelButtonsRight.message = 'Tem certeza que deseja reabrir o planejamento';
             this.labelButtonsRight.value = 'reabrir';
-            break 
+            break
           case "Cancelado":
             this.labelButtonsLeft.label = 'Nova Reprogramação';
             this.labelButtonsLeft.value = 'nova';
             this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento'
             this.labelButtonsRight = null;
-            break 
+            break
           default:
+            this.labelButtonsLeft.label = 'Nova Reprogramação';
+            this.labelButtonsLeft.value = 'nova';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento'
+            this.labelButtonsRight = null;
             break;
         }
       break;
@@ -223,13 +227,11 @@ export class ModalPlanejamentoComponent implements OnInit {
   }
 
   async validarAno() {
-
     this.retornoAno = false;
     if (this.anoAtual > this.anoSelecionado) {
-     
       const alert = await Swal.fire({
         title: '',
-        text:  `Exercício ${this.anoSelecionado} - ${this.ultimoPlanejamento.tipo}, não pode ser gerado, exercício está Encerrado`,
+        text:  `Exercício ${this.anoSelecionado} está Encerrado`,
         icon: 'warning',
         showCancelButton: false,
         confirmButtonText: 'Ok!',
