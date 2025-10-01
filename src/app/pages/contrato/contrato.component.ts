@@ -12,7 +12,7 @@ import {
   TokenStorageService,
 } from 'src/app/services/token-storage.service';
 import * as fileSaver from 'file-saver';
-//import { LazyLoadEvent } from 'primeng/api';
+import { LazyLoadEvent } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
 

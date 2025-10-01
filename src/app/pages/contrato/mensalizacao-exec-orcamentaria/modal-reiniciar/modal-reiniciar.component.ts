@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api.service';
@@ -16,21 +16,21 @@ export class ModalReiniciarComponent implements OnInit {
   public vigencia;
   public nuContrato;
   public nuVigenciaRubrica;
-  public form: UntypedFormGroup;
+  public form: FormGroup;
   submitted = false;
   constructor(
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apiService: ApiService,
     public token: TokenStorageService
   ) { }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      nuContrato: new UntypedFormControl(this.nuContrato, [Validators.required]),
-      nuVigencia: new UntypedFormControl(this.vigencia, [Validators.required]),
-      icReinicio: new UntypedFormControl(true, [Validators.required]),
+      nuContrato: new FormControl(this.nuContrato, [Validators.required]),
+      nuVigencia: new FormControl(this.vigencia, [Validators.required]),
+      icReinicio: new FormControl(true, [Validators.required]),
     });
   }
 

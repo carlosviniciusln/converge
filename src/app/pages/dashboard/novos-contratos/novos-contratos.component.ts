@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-//import { LazyLoadEvent } from 'primeng/api';
+import { LazyLoadEvent } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 import { ApiResponse } from 'src/app/models/api-response';
 import { ContratoApiResponse, ContratoItem, Gcptb001ContratoResponse } from 'src/app/models/Gcptb001ContratoResponse';

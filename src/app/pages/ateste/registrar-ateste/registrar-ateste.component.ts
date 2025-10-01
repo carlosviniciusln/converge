@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -22,14 +22,15 @@ import { Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030
 export class RegistrarAtesteComponent implements OnInit {
   @Input() public contrato: Gcpvw030DetalhamentoDeContratosResponse;
 
+
   constructor(
     public activeModal: NgbActiveModal,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private toastr: ToastrService,
     private apiService: ApiService
   ) {}
 
-  public form: UntypedFormGroup;
+  public form: FormGroup;
   public loading = false;
   public total: number;
   public selectFile: File | null = null;
@@ -48,73 +49,77 @@ export class RegistrarAtesteComponent implements OnInit {
     });
   }
 
-  calcularTotal(values: any[]) {
-    this.total = values.reduce((acc, curr, index) => {
-      let valorStr = curr.vrApurado?.toString().trim() || '0';
 
-      valorStr = valorStr.replace('R$', '').trim();
+calcularTotal(values: any[]) {
+  this.total = values.reduce((acc, curr, index) => {
+    let valorStr = curr.vrApurado?.toString().trim() || '';
 
-      if (!valorStr.includes(',')) {
-        valorStr += ',00';
-      }
+    // Remove o símbolo R$ e espaços
+    valorStr = valorStr.replace('R$', '').trim();
 
-      this.faturamentos
-        .at(index)
-        .get('vrApurado')
-        ?.setValue(valorStr, { emitEvent: false });
-      const valorNumerico = valorStr.replace(/\./g, '').replace(',', '.');
-      const vrApurado = parseFloat(valorNumerico) || 0;
+    // Atualiza o campo com o valor limpo
+    this.faturamentos
+      .at(index)
+      .get('vrApurado')
+      ?.setValue(valorStr, { emitEvent: false });
 
-      return acc + vrApurado;
-    }, 0);
-  }
+    // Remove os pontos (milhares) e troca vírgula por ponto (decimal)
+    const valorNumerico = valorStr.replace(/\./g, '').replace(',', '.');
+
+    // Converte para número
+    const vrApurado = parseFloat(valorNumerico) || 0;
+
+    return acc + vrApurado;
+  }, 0);
+}
+
 
   formulario() {
     this.form = this.formBuilder.group({
-      nuContrato: [this.contrato[0].nuContrato, [Validators.required]],
-      coContrato: [this.contrato[0].coContrato, [Validators.required]],
-      noEmpresa: [this.contrato[0].noEmpresa, [Validators.required]],
-      noObjeto: [this.contrato[0].noObjeto, [Validators.required]],
-      nuVigencia: [this.contrato[0].nuVigencia, [Validators.required]],
-      inicioVigencia: new UntypedFormControl(
+      nuContrato: [this.contrato[0]?.nuContrato, [Validators.required]],
+      coContrato: [this.contrato[0]?.coContrato, [Validators.required]],
+      noEmpresa: [this.contrato[0]?.noEmpresa, [Validators.required]],
+      noObjeto: [this.contrato[0]?.noObjeto, [Validators.required]],
+      nuVigencia: [this.contrato[0]?.nuVigencia, [Validators.required]],
+      inicioVigencia: new FormControl(
         this.contrato[0].inicioVigencia?.substring(0, 10),
         [Validators.required]
       ),
-      fimVigencia: new UntypedFormControl(
+      fimVigencia: new FormControl(
         this.contrato[0].fimVigencia?.substring(0, 10),
         [Validators.required]
       ),
-      deCompetencia: new UntypedFormControl(
+      deCompetencia: new FormControl(
         this.onDtInicioChange(this.contrato[0].deCompetencia)
       ),
-      dtInicioPeriodoCompetencia: new UntypedFormControl(
+      dtInicioPeriodoCompetencia: new FormControl(
         this.contrato[0].dtInicioPeriodoCompetencia?.substring(0, 10),
         [Validators.required]
       ),
-      dtFimPeriodoCompetencia: new UntypedFormControl(
+      dtFimPeriodoCompetencia: new FormControl(
         this.contrato[0].dtFimPeriodoCompetencia?.substring(0, 10)
       ),
-      deRetencao: new UntypedFormControl('', [
+      deRetencao: new FormControl('', [
         Validators.required,
         Validators.maxLength(100),
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
-      deObservacao: new UntypedFormControl('', [Validators.required]),
-      vrPagamento: new UntypedFormControl(0),
-      vrRetencao: new UntypedFormControl('0,00', [Validators.required]),
-      dePenalidade: new UntypedFormControl('', [
+      deObservacao: new FormControl('', [Validators.required]),
+      vrPagamento: new FormControl(''),
+      vrRetencao: new FormControl('', [Validators.required]),
+      dePenalidade: new FormControl('', [
         Validators.required,
         Validators.maxLength(100),
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
-      vrMulta: new UntypedFormControl('0,00', [Validators.required]),
-      arquivoAnexado: new UntypedFormControl(null),
-      faturamentos: new UntypedFormArray([]),
+      vrMulta: new FormControl('', [Validators.required]),
+      arquivoAnexado: new FormControl(null),
+      faturamentos: new FormArray([]),
     });
   }
 
-  get faturamentos(): UntypedFormArray {
-    return this.form.get('faturamentos') as UntypedFormArray;
+  get faturamentos(): FormArray {
+    return this.form.get('faturamentos') as FormArray;
   }
 
   onDtInicioChange(value: any): string {
@@ -126,7 +131,7 @@ export class RegistrarAtesteComponent implements OnInit {
     return `${formattedMonth}/${year}`;
   }
 
-  criarFaturamento(faturamento: number): UntypedFormGroup {
+  criarFaturamento(faturamento: number): FormGroup {
     return this.formBuilder.group({
       nuServicoTipo: ['', Validators.required],
       vrApurado: ['', Validators.required],
@@ -170,13 +175,12 @@ export class RegistrarAtesteComponent implements OnInit {
   }
 
   public onSubmit() {
-    console.log(this.form);
     this.submitted = true;
     this.form.markAllAsTouched();
     if (this.form.invalid) {
 
       this.faturamentos.controls.forEach((grupo: AbstractControl) => {
-        const contatoGroup = grupo as UntypedFormGroup;
+        const contatoGroup = grupo as FormGroup;
         Object.keys(contatoGroup.controls).forEach((campo) => {
           const control = contatoGroup.get(campo);
 
@@ -184,20 +188,6 @@ export class RegistrarAtesteComponent implements OnInit {
             if (control.errors?.required) {
               this.toastr.error(`O campo item(s) de faturamento é obrigatório`, 'Error');
             }
-
-            // if (control.errors?.pattern) {
-            //   this.toastr.error(
-            //     `O campo ${campo} está fora do padrão`,
-            //     'Error'
-            //   );
-            // }
-
-            // if(control.errors?.email){
-            //   this.toastr.error(`E-mail inválido`, "Error");
-            // }
-            // if(control.errors?.mask){
-            //   this.toastr.error(`Telefone inválido`, "Error");
-            // }
           }
         });
       });
@@ -225,11 +215,10 @@ export class RegistrarAtesteComponent implements OnInit {
     }
 
     this.form.get('vrPagamento')?.setValue(this.total);
+    const vrApurado = this.form.get('vrApurado')?.value.replace('R$', '').trim();
     const vrMulta = this.form.get('vrMulta')?.value.replace('R$', '').trim();
-    const vrRetencao = this.form
-      .get('vrRetencao')
-      ?.value.replace('R$', '')
-      .trim();
+    const vrRetencao = this.form.get('vrRetencao')?.value.replace('R$', '').trim();
+    this.form.get('vrApurado')?.setValue(vrApurado);
     this.form.get('vrMulta')?.setValue(vrMulta);
     this.form.get('vrRetencao')?.setValue(vrRetencao);
     const formData = this.toFormData(this.form);
@@ -241,7 +230,7 @@ export class RegistrarAtesteComponent implements OnInit {
     this.Cadastrar(formData);
   }
 
-  toFormData(formGroup: UntypedFormGroup): FormData {
+  toFormData(formGroup: FormGroup): FormData {
     const formData = new FormData();
     const values = formGroup.getRawValue();
 

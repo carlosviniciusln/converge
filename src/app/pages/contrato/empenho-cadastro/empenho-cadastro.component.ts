@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormBuilder,
+  FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -30,7 +30,7 @@ export class EmpenhoCadastroComponent implements OnInit {
 
   permissions: ActionPolicies;
 
-  public form: UntypedFormGroup;
+  public form: FormGroup;
 
   public empenho: Gcptb016Empenho;
 
@@ -44,7 +44,7 @@ export class EmpenhoCadastroComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apiService: ApiService,
     public token: TokenStorageService
   ) {
@@ -59,8 +59,8 @@ export class EmpenhoCadastroComponent implements OnInit {
     this.form = this.formBuilder.group({
       nuEmpenho: [0],
       nuContrato: [this.nuContrato, [Validators.required]],
-      dePeriodo: new UntypedFormControl('', [Validators.required]),
-      vrTotal: new UntypedFormControl(null, [Validators.required]),
+      dePeriodo: new FormControl('', [Validators.required]),
+      vrTotal: new FormControl(null, [Validators.required]),
     });
 
     if (this.nuEmpenho) {

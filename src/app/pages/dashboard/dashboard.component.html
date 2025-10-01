@@ -1,3 +1,23 @@
+<!-- <div class="content">
+  <div *ngIf="this.ultimaAtualizacao">
+    <p class="card-title date-info" style="margin-top: -40px !important;">
+      <b>Atualizado em: {{ this.ultimaAtualizacao }}</b>
+    </p>
+  </div>
+  <div class="card">
+    <mat-tab-group (selectedIndexChange)="exibeDetalhes($event)">
+      <mat-tab *ngFor="let tab of tabs" label="{{ tab }}">
+        <div *ngIf="tab == 'Execução Contratual'" class="general-layout">
+          <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/5018%20-%20SUGTI/SUGTI02/PUBLICADO/PORTAL/Contratos_v1_sc?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe>
+        </div>
+        <div *ngIf="tab == 'Orçamento'" class="general-layout">
+          <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/5018%20-%20SUGTI/SUGTI02/PUBLICADO/PORTAL/Orcamento_v1_sc?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+</div> -->
 <div class="content" *ngIf="!loading && (execucao || orcamentos)">
 
   <div *ngIf="this.ultimaAtualizacao">
@@ -9,7 +29,7 @@
     <mat-tab-group (selectedIndexChange)="exibeDetalhes($event)">
       <mat-tab *ngFor="let tab of tabs" label="{{ tab }}">
         <div *ngIf="tab == 'Execução Contratual'" class="general-layout">
-          <!-- <div class="value-box truncated-text" pTooltip="Contratos com status 'EM VIGOR' no SICLG." tooltipPosition="top" placeholder="Top">
+          <div class="value-box truncated-text" pTooltip="Contratos com status 'EM VIGOR' no SICLG." tooltipPosition="top" placeholder="Top">
             <h4>Contratos Vigentes - Quantidade</h4>
             <p>{{ this.numerosRapidosExecContratual?.qT_CONTRATO_VIGENTE }}</p>
           </div>
@@ -37,10 +57,10 @@
           <div class="value-box truncated-text" pTooltip="Soma dos pagamentos do ano corrente." tooltipPosition="top" placeholder="Top">
             <h4>Pagamentos do Ano - Valor Total</h4>
             <p>{{ this.numerosRapidosExecContratual?.vR_EXECUTADO_ANO | currency: "BRL" }}</p>
-          </div> -->
-          <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/TI/Governan%C3%A7a/Contratos%20TI/Painel_Contratos_VITEC?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe>
+          </div>
+          <!-- <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/TI/Governan%C3%A7a/Contratos%20TI/Painel_Contratos_VITEC?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe> -->
         </div>
-        <!-- <p-table #dt [value]="execucao" styleClass="p-datatable-customers" *ngIf="tab == 'Execução Contratual'"
+        <p-table #dt [value]="execucao" styleClass="p-datatable-customers" *ngIf="tab == 'Execução Contratual'"
           [rowHover]="true" [filterDelay]="0"
           [globalFilterFields]="['sG_FILIAL', 'qT_CONTRATO_ATIVO', 'qT_PROXIMO30', 'qT_PROXIMO90', 'qT_PROXIMO180', 'qT_CONTRATO_INATIVO']"
           sortMode="single">
@@ -62,7 +82,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-            <tr class="p-selectable-row example template-body">
+            <tr [ngClass]="[item.sG_FILIAL.startsWith('VI') ? 'p-selectable-row example template-body' : 'p-selectable-row template-body']">
               <td>
                 {{item.sG_FILIAL}}
               </td>
@@ -213,11 +233,11 @@
               </tr>
             </ng-container>
           </ng-template>
-        </p-table> -->
+        </p-table>
 
         <div>
           <div *ngIf="tab == 'Orçamento' && filial1885Data" class="general-layout">
-            <!-- <div class="value-box">
+            <div class="value-box">
               <h4>Dotação CAPEX</h4>
               <p>{{ filial1885Data?.vR_INVESTIMENTO_PLANEJADO | currency: "BRL" }}</p>
             </div>
@@ -356,11 +376,11 @@
                 </div>
               </div>
             </mat-tab>
-          </mat-tab-group> -->
-        <!-- </div>
+          </mat-tab-group>
+        </div>
       </mat-tab>
-    </mat-tab-group> -->
-    <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/5018%20-%20SUGTI/SUGTI02/PUBLICADO/PORTAL/Orcamento_v1_sc?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe>
+    </mat-tab-group>
+    <!-- <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/5018%20-%20SUGTI/SUGTI02/PUBLICADO/PORTAL/Orcamento_v1_sc?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe> -->
   </div>
 
 </div>

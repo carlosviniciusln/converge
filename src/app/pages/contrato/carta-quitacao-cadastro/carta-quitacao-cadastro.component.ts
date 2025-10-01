@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormBuilder,
+  FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -33,7 +33,7 @@ export class CartaQuitacaoCadastroComponent implements OnInit {
 
   permissions: ActionPolicies;
 
-  public form: UntypedFormGroup;
+  public form: FormGroup;
   public listaAnos: number[] = [];
   public listaStatus: any[] = [];
 
@@ -49,7 +49,7 @@ export class CartaQuitacaoCadastroComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apiService: ApiService,
     public token: TokenStorageService
   ) {
@@ -71,9 +71,9 @@ export class CartaQuitacaoCadastroComponent implements OnInit {
     this.form = this.formBuilder.group({
       nuCartaQuitacao: [0],
       nuContrato: [this.nuContrato, [Validators.required]],
-      nuAno: new UntypedFormControl('', [Validators.required]),
-      dtRecebimento: new UntypedFormControl(null, [Validators.required]),
-      nuCartaQuitacaoStatus: new UntypedFormControl('', [Validators.required]),
+      nuAno: new FormControl('', [Validators.required]),
+      dtRecebimento: new FormControl(null, [Validators.required]),
+      nuCartaQuitacaoStatus: new FormControl('', [Validators.required]),
     });
 
     if (this.nuCartaQuitacao) {

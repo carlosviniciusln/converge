@@ -9,8 +9,7 @@
   </button>
 </div>
 
-<div class="conteudo" style="padding: 24px 24px 24px 24px">
-  <app-navbar-ateste></app-navbar-ateste>
+<div class="conteudo" style="padding: 84px 24px 24px 24px">
 
   <div class="header-ateste" style="text-align: justify">
     <h4>
@@ -24,7 +23,7 @@
         <div class="col-md-2">
           <label for="coContrato">Contrato</label>
           <input
-            pInputText 
+            pInputText
             readonly
             formControlName="coContrato"
             id="coContrato"
@@ -186,8 +185,8 @@
             <tr [formGroup]="faturamento">
               <td>
 
-                <!--- 
-                    ALTERAR PARA DROPDOWN PARTIR DE UMA LISTA EM BANCO SERVIÇO TIPO / DEVE PODE SER UMA LISTA 
+                <!---
+                    ALTERAR PARA DROPDOWN PARTIR DE UMA LISTA EM BANCO SERVIÇO TIPO / DEVE PODE SER UMA LISTA
                 -->
                 <div class="c-dropdown">
                 <p-dropdown [options]="listaGcptb018TipoServico"
@@ -196,13 +195,15 @@
                                     placeholder="Bens/Serviços"></p-dropdown>
                 </div>
               <td>
-                <input
+                <!-- <input
                   formControlName="vrApurado"
                   class="form-control"
                   mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"
                   placeholder="Valor apurado"
-                />
+                /> -->
+                <input formControlName="vrApurado" type="text" class="form-control col-12" mask="separator.2" [allowNegativeNumbers]="true"
+                    [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"/>
               </td>
               <td>
                 <button type="button" class="btn-sm btn-secondary" (click)="removerFaturamento(i)">
@@ -213,7 +214,7 @@
           </ng-template>
           <ng-template pTemplate="footer">
             <tr>
-              <td class="text-end fw-bold">VALOR TOTAL PARA PAGAMENTO</td>
+              <h5> VALOR TOTAL PARA PAGAMENTO <i class="fa fa-info-circle" pTooltip="Valor Total do Pagamento: valor a pagar considerando os descontos por eventuais ajustes de faturamento (não incluir valor de multa)." tooltipPosition="top" placeholder="Top"></i></h5>
               <td class="fw-bold" style="text-align: end">
                 {{ total | currency : "BRL" : "symbol" : "1.2-2" }}
               </td>
@@ -229,7 +230,9 @@
 
         <div>
           <div style="padding: 20px 0px 10px 0px;">
-            <h5>Valor de RETENÇÃO</h5>
+            <h5> Retenção <i class="fa fa-info-circle" pTooltip="1- Retenções Provisórias: Obedecem etapas contratuais de pagamento, serão liberadas ao fornecedor (ex.: retenção de instalação/transferência de conhecimento).
+2- Retenções Definitivas: Não são devolvidas ao fornecedor (ex.: desconto de TRADE IN). Não incluem descontos de ajustes de faturamento em razão do nível de serviço atingido ou glosas por serviços não prestados.
+3- Retenções Provisórias de Multas: Valores de multas retidas provisoriamente, pois estão em processo de conciliação e que, após decisão final, poderão ser aplicadas em definitivo ou devolvidas de forma parcial/total. É necessária a concordância da empresa contratada." tooltipPosition="top" placeholder="Top"></i></h5>
             <div style="display: flex; gap:15px">
                 <input
                   formControlName="deRetencao"
@@ -244,10 +247,9 @@
 
                 <input
                   formControlName="vrRetencao"
-                  id="vrRetencao"
                   type="text"
                   mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
+                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"
                   class="form-control col-2"
                 />
             </div>
@@ -255,11 +257,11 @@
 
           <div>
 
-            <h5>Valor de PENALIDADES</h5>
+            <h5> Penalidades <i class="fa fa-info-circle" pTooltip="Multas Definitivas: São aplicadas de forma definitiva, após o processo de conciliação. É necessária a concordância da empresa Contratada.
+As multas a serem informadas neste formulário se tratam especificamente daquelas tratadas diretamente entre a Unidade Demandante e a empresa Contratada na fase de negociação amigável. NÃO devem ser informados valores de multa em tratamento pela Gestão Formal (CEFOR) via processo administrativo." tooltipPosition="top" placeholder="Top"></i></h5>
             <div style="display: flex; gap:15px">
                 <input
                   formControlName="dePenalidade"
-                  id="dePenalidade"
                   type="text"
                   placeholder="Penalidade"
                   class="form-control col-9"
@@ -268,14 +270,8 @@
                   }"
                 />
 
-                <input
-                  formControlName="vrMulta"
-                  id="vrMulta"
-                  type="text"
-                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false" placeholder="R$ 0,00"
-                  class="form-control col-2"
-                />
+                <input formControlName="vrMulta" type="text" class="form-control col-2" mask="separator.2" [allowNegativeNumbers]="true"
+                    [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true"/>
             </div>
           </div>
 
@@ -295,20 +291,20 @@
                 'is-invalid': submitted && form.get('deObservacao').invalid
               }" >
             </textarea>
-  
+
           </div>
 
-          
+
         <div class="col-4" style="display: flex;
             align-content: flex-end;
             justify-content: space-around;
             align-items: center;">
           <p-toast></p-toast>
-          <p-fileUpload 
-              mode="basic" 
-              chooseLabel="Anexar arquivo" 
+          <p-fileUpload
+              mode="basic"
+              chooseLabel="Anexar arquivo"
               chooseIcon="pi pi-upload"
-              accept=".pdf,.png,.jpg"  
+              accept=".pdf,.png,.jpg"
               (onSelect)="onUpload($event)"
              >
             </p-fileUpload>
@@ -327,6 +323,6 @@
                 <button style="background-color: #005ca9;" class="btn-sm btn-default" type="submit" (click)="onSubmit()">Salvar Ateste</button>
                 <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
          </div>
-         
+
   </div>
 </div>

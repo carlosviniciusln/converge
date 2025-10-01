@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormBuilder,
+  FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -38,7 +38,7 @@ export class PagamentoCadastroComponent implements OnInit {
 
   permissions: ActionPolicies;
   loading: boolean = true;
-  public form: UntypedFormGroup;
+  public form: FormGroup;
   public listaRubricas: Gcptb017VigenciaRubrica[] = [];
   public listaTipos: PagamentoTipo[] = [];
   public listaOrcamentos: Orcamento[] = [];
@@ -56,7 +56,7 @@ export class PagamentoCadastroComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apiService: ApiService,
     public token: TokenStorageService
   ) {
@@ -74,8 +74,8 @@ export class PagamentoCadastroComponent implements OnInit {
 
     if (this.nuPagamento) {
       this.form = this.formBuilder.group({
-        dePeriodo: new UntypedFormControl('', [Validators.required]),
-        coNumeroAteste: new UntypedFormControl(''),
+        dePeriodo: new FormControl('', [Validators.required]),
+        coNumeroAteste: new FormControl(''),
         nuPagamento: [this.nuPagamento],
         nuPagamentoTipo: [{ value: '' }],
         nuContrato: [{ value: '' }],
@@ -103,21 +103,21 @@ export class PagamentoCadastroComponent implements OnInit {
         nuContrato: [this.nuContrato, [Validators.required]],
         nuVigencia: ['', [Validators.required]],
         nuVigenciaRubrica: ['', [Validators.required]],
-        nuOrcamento: new UntypedFormControl('', [Validators.required]),
-        dePeriodo: new UntypedFormControl('', [Validators.required]),
-        coNumeroAteste: new UntypedFormControl(''),
-        vrCredito: new UntypedFormControl(0, [Validators.required]),
-        vrGlosa: new UntypedFormControl(0, [Validators.required]),
-        vrMulta: new UntypedFormControl(0, [Validators.required]),
-        vrExecutado: new UntypedFormControl('', [Validators.required]),
-        dtFaturamento: new UntypedFormControl(''),
-        dtNotaFiscal: new UntypedFormControl(''),
-        dtPagamento: new UntypedFormControl(''),
-        dtPagamentoEfetivo: new UntypedFormControl(''),
-        qtdItens: new UntypedFormControl(''),
-        qtdTradeIn: new UntypedFormControl(''),
-        nuSap: new UntypedFormControl('', [Validators.required]),
-        qtTotalSolicitado: new UntypedFormControl(''),
+        nuOrcamento: new FormControl('', [Validators.required]),
+        dePeriodo: new FormControl('', [Validators.required]),
+        coNumeroAteste: new FormControl(''),
+        vrCredito: new FormControl(0, [Validators.required]),
+        vrGlosa: new FormControl(0, [Validators.required]),
+        vrMulta: new FormControl(0, [Validators.required]),
+        vrExecutado: new FormControl('', [Validators.required]),
+        dtFaturamento: new FormControl(''),
+        dtNotaFiscal: new FormControl(''),
+        dtPagamento: new FormControl(''),
+        dtPagamentoEfetivo: new FormControl(''),
+        qtdItens: new FormControl(''),
+        qtdTradeIn: new FormControl(''),
+        nuSap: new FormControl('', [Validators.required]),
+        qtTotalSolicitado: new FormControl(''),
       });
     }
     this.loading = false;
