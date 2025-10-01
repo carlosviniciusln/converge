@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -30,7 +30,7 @@ export class LimitesRubricasCadastroComponent implements OnInit {
   @Input() public isEditable: boolean;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public listaOrcamentos: Orcamento[] = [];
   public listaRubricas: RubricaGrupo[] = [];
   public listaGruposRemanejamento: Gcptb028GrupoRemanejamento[] = [];
@@ -72,7 +72,7 @@ export class LimitesRubricasCadastroComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
     private toastr: ToastrService
   ) {}
@@ -116,22 +116,22 @@ export class LimitesRubricasCadastroComponent implements OnInit {
 
   formulario() {
     this.form = this.formBuilder.group({
-      nuAnoOrcamentario: new FormControl({ value: null, disabled: this.currentPageAction != PageAction.Cadastrar }, [
+      nuAnoOrcamentario: new UntypedFormControl({ value: null, disabled: this.currentPageAction != PageAction.Cadastrar }, [
         Validators.required,
       ]),
-      nuRubrica: new FormControl({ value: null, disabled:  this.currentPageAction != PageAction.Cadastrar }, [
+      nuRubrica: new UntypedFormControl({ value: null, disabled:  this.currentPageAction != PageAction.Cadastrar }, [
         Validators.required,
       ]),
-      nuGrupoRemanejamento: new FormControl({ value: null, disabled: true }, [
+      nuGrupoRemanejamento: new UntypedFormControl({ value: null, disabled: true }, [
         Validators.required,
       ]),
-      nuFilial: new FormControl({ value: null, disabled:  this.currentPageAction != PageAction.Cadastrar }, [
+      nuFilial: new UntypedFormControl({ value: null, disabled:  this.currentPageAction != PageAction.Cadastrar }, [
         Validators.required,
       ]),
-      nuPlanejamentoTipo: new FormControl({ value: null, disabled:  this.currentPageAction != PageAction.Cadastrar }, [
+      nuPlanejamentoTipo: new UntypedFormControl({ value: null, disabled:  this.currentPageAction != PageAction.Cadastrar }, [
         Validators.required,
       ]),
-      vrLimiteRubrica: new FormControl(
+      vrLimiteRubrica: new UntypedFormControl(
         { value: 0, disabled: !this.isEditable },
         [Validators.required]
       ),

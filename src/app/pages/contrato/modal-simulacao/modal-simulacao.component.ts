@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { LazyLoadEvent } from 'primeng/api';
+//import { LazyLoadEvent } from 'primeng/api';
+import { TableLazyLoadEvent } from 'primeng/table';
 import { ApiService } from 'src/app/services/api.service';
 import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
@@ -27,7 +28,7 @@ export class ModalSimulacaoComponent implements OnInit {
   showData = false;
   listaSimulacao: any[] = [];
   selectedContratos: any[];
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public dtIni;
   public dtFim;
   public percentSimulacao;
@@ -45,7 +46,7 @@ export class ModalSimulacaoComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
     public token: TokenStorageService
   ) {
@@ -66,14 +67,14 @@ export class ModalSimulacaoComponent implements OnInit {
 
   initForm() {
     this.form = this.formBuilder.group({
-      nuContrato: new FormControl(this.nuContrato, [Validators.required]),
-      dtIni: new FormControl(this.dtIni, [Validators.required]),
-      dtFim: new FormControl(this.dtFim, [Validators.required]),
-      percentSimulacao: new FormControl(this.percentSimulacao, [Validators.required])
+      nuContrato: new UntypedFormControl(this.nuContrato, [Validators.required]),
+      dtIni: new UntypedFormControl(this.dtIni, [Validators.required]),
+      dtFim: new UntypedFormControl(this.dtFim, [Validators.required]),
+      percentSimulacao: new UntypedFormControl(this.percentSimulacao, [Validators.required])
     });
   }
 
-  loadPage(event: LazyLoadEvent) {
+  loadPage(event: TableLazyLoadEvent) {
     const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
     const pageSize = event.rows || this.filtroRegistros.pageSize;
 

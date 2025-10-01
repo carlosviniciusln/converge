@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -24,13 +24,13 @@ export class RetencaoCadastroComponent implements OnInit {
   permissions: ActionPolicies;
   currentUser: any;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public titulo: string = 'Cadastro';
   public subTitulo: string = 'Cadastro de Retenção';
 
   constructor(
     public activeModal: NgbActiveModal,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
     private toastr: ToastrService,
     private token: TokenStorageService
@@ -45,17 +45,17 @@ export class RetencaoCadastroComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      dE_PERIODO: new FormControl({ value: this.retencao?.dE_PERIODO, disabled: true }),
-      nU_RETENCAO: new FormControl({ value: this.retencao?.nU_RETENCAO, disabled: true }),
-      nU_LIBERACAO: new FormControl({ value: this.retencao?.nU_LIBERACAO, disabled: true }),
-      nU_CONTRATO: new FormControl({ value: this.retencao?.nU_CONTRATO, disabled: true }),
-      cO_CONTRATO: new FormControl({ value: this.retencao?.cO_CONTRATO, disabled: true }),
-      nU_PEDIDO: new FormControl({ value: this.retencao?.nU_PEDIDO, disabled: true }),
-      nU_ATESTE: new FormControl({ value: this.retencao?.nU_ATESTE, disabled: true }),
-      vR_PENALIDADE: new FormControl({ value: this.retencao?.vR_PENALIDADE, disabled: true }),
+      dE_PERIODO: new UntypedFormControl({ value: this.retencao?.dE_PERIODO, disabled: true }),
+      nU_RETENCAO: new UntypedFormControl({ value: this.retencao?.nU_RETENCAO, disabled: true }),
+      nU_LIBERACAO: new UntypedFormControl({ value: this.retencao?.nU_LIBERACAO, disabled: true }),
+      nU_CONTRATO: new UntypedFormControl({ value: this.retencao?.nU_CONTRATO, disabled: true }),
+      cO_CONTRATO: new UntypedFormControl({ value: this.retencao?.cO_CONTRATO, disabled: true }),
+      nU_PEDIDO: new UntypedFormControl({ value: this.retencao?.nU_PEDIDO, disabled: true }),
+      nU_ATESTE: new UntypedFormControl({ value: this.retencao?.nU_ATESTE, disabled: true }),
+      vR_PENALIDADE: new UntypedFormControl({ value: this.retencao?.vR_PENALIDADE, disabled: true }),
       observacao: [this.retencao?.observacao, [Validators.required]],
-      nU_TIPO_PENALIDADE: new FormControl({ value: this.retencao?.nU_TIPO_PENALIDADE, disabled: true }),
-      dE_TIPO_PENALIDADE: new FormControl({ value: this.retencao?.dE_TIPO_PENALIDADE, disabled: true }),
+      nU_TIPO_PENALIDADE: new UntypedFormControl({ value: this.retencao?.nU_TIPO_PENALIDADE, disabled: true }),
+      dE_TIPO_PENALIDADE: new UntypedFormControl({ value: this.retencao?.dE_TIPO_PENALIDADE, disabled: true }),
     });
 
     if (this.retencao) {

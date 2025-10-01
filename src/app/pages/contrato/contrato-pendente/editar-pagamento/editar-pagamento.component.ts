@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
-  FormBuilder,
+  UntypedFormBuilder,
   FormControl,
-  FormGroup,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -40,7 +40,7 @@ export class EditarPagamentoComponent implements OnInit {
 
   permissions: ActionPolicies;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public listaRubricas: Gcptb017VigenciaRubrica[] = [];
   public listaTipos: PagamentoTipo[] = [];
   public listaOrcamentos: Orcamento[] = [];
@@ -58,7 +58,7 @@ export class EditarPagamentoComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
     public token: TokenStorageService
   ) {

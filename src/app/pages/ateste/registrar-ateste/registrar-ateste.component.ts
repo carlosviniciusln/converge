@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -24,12 +24,12 @@ export class RegistrarAtesteComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private toastr: ToastrService,
     private apiService: ApiService
   ) {}
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   public loading = false;
   public total: number;
   public selectFile: File | null = null;
@@ -76,45 +76,45 @@ export class RegistrarAtesteComponent implements OnInit {
       noEmpresa: [this.contrato[0].noEmpresa, [Validators.required]],
       noObjeto: [this.contrato[0].noObjeto, [Validators.required]],
       nuVigencia: [this.contrato[0].nuVigencia, [Validators.required]],
-      inicioVigencia: new FormControl(
+      inicioVigencia: new UntypedFormControl(
         this.contrato[0].inicioVigencia?.substring(0, 10),
         [Validators.required]
       ),
-      fimVigencia: new FormControl(
+      fimVigencia: new UntypedFormControl(
         this.contrato[0].fimVigencia?.substring(0, 10),
         [Validators.required]
       ),
-      deCompetencia: new FormControl(
+      deCompetencia: new UntypedFormControl(
         this.onDtInicioChange(this.contrato[0].deCompetencia)
       ),
-      dtInicioPeriodoCompetencia: new FormControl(
+      dtInicioPeriodoCompetencia: new UntypedFormControl(
         this.contrato[0].dtInicioPeriodoCompetencia?.substring(0, 10),
         [Validators.required]
       ),
-      dtFimPeriodoCompetencia: new FormControl(
+      dtFimPeriodoCompetencia: new UntypedFormControl(
         this.contrato[0].dtFimPeriodoCompetencia?.substring(0, 10)
       ),
-      deRetencao: new FormControl('', [
+      deRetencao: new UntypedFormControl('', [
         Validators.required,
         Validators.maxLength(100),
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
-      deObservacao: new FormControl('', [Validators.required]),
-      vrPagamento: new FormControl(0),
-      vrRetencao: new FormControl('0,00', [Validators.required]),
-      dePenalidade: new FormControl('', [
+      deObservacao: new UntypedFormControl('', [Validators.required]),
+      vrPagamento: new UntypedFormControl(0),
+      vrRetencao: new UntypedFormControl('0,00', [Validators.required]),
+      dePenalidade: new UntypedFormControl('', [
         Validators.required,
         Validators.maxLength(100),
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
-      vrMulta: new FormControl('0,00', [Validators.required]),
-      arquivoAnexado: new FormControl(null),
-      faturamentos: new FormArray([]),
+      vrMulta: new UntypedFormControl('0,00', [Validators.required]),
+      arquivoAnexado: new UntypedFormControl(null),
+      faturamentos: new UntypedFormArray([]),
     });
   }
 
-  get faturamentos(): FormArray {
-    return this.form.get('faturamentos') as FormArray;
+  get faturamentos(): UntypedFormArray {
+    return this.form.get('faturamentos') as UntypedFormArray;
   }
 
   onDtInicioChange(value: any): string {
@@ -126,7 +126,7 @@ export class RegistrarAtesteComponent implements OnInit {
     return `${formattedMonth}/${year}`;
   }
 
-  criarFaturamento(faturamento: number): FormGroup {
+  criarFaturamento(faturamento: number): UntypedFormGroup {
     return this.formBuilder.group({
       nuServicoTipo: ['', Validators.required],
       vrApurado: ['', Validators.required],
@@ -176,7 +176,7 @@ export class RegistrarAtesteComponent implements OnInit {
     if (this.form.invalid) {
 
       this.faturamentos.controls.forEach((grupo: AbstractControl) => {
-        const contatoGroup = grupo as FormGroup;
+        const contatoGroup = grupo as UntypedFormGroup;
         Object.keys(contatoGroup.controls).forEach((campo) => {
           const control = contatoGroup.get(campo);
 
@@ -241,7 +241,7 @@ export class RegistrarAtesteComponent implements OnInit {
     this.Cadastrar(formData);
   }
 
-  toFormData(formGroup: FormGroup): FormData {
+  toFormData(formGroup: UntypedFormGroup): FormData {
     const formData = new FormData();
     const values = formGroup.getRawValue();
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api.service';
@@ -24,7 +24,7 @@ export class ModalPlanejamentoComponent implements OnInit {
   @Input() public anoSelecionado;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
   
   permissions: ActionPolicies;
   labelButtonsLeft : DomainDTO = {label: null, value: null, message: null};
@@ -54,7 +54,7 @@ export class ModalPlanejamentoComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private apiService: ApiService,
     public token: TokenStorageService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router : Router,
     private toastr: ToastrService,
   ) {

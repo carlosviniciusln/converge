@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormControl } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api.service';
@@ -19,7 +19,7 @@ export class MensalizacaoEditarComponent implements OnInit {
 
   permissions: ActionPolicies;
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   public titulo: string = 'Editar';
   public subTitulo: string = 'Editar Valor Planejado';
@@ -44,7 +44,7 @@ export class MensalizacaoEditarComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     private toastr: ToastrService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
     public token: TokenStorageService
   ) {
@@ -70,13 +70,13 @@ export class MensalizacaoEditarComponent implements OnInit {
     }
 
     this.form = this.formBuilder.group({
-      periodo: new FormControl(this.dE_PERIODO, [Validators.required]),
-      vrExecutado: new FormControl(this.valorPlanejado, [Validators.required]),
-      vr_PLANEJADO: new FormControl(null, [Validators.required]),
-      observacao: new FormControl(this.observacao, [Validators.required]),
-      nuContrato: new FormControl(this.nuContrato, [Validators.required]),
-      nuVigenciaEditada: new FormControl(this.nuVigenciaEditada, [Validators.required]),
-      nuVigenciaRubrica: new FormControl(this.nuVigenciaRubrica, [Validators.required]),
+      periodo: new UntypedFormControl(this.dE_PERIODO, [Validators.required]),
+      vrExecutado: new UntypedFormControl(this.valorPlanejado, [Validators.required]),
+      vr_PLANEJADO: new UntypedFormControl(null, [Validators.required]),
+      observacao: new UntypedFormControl(this.observacao, [Validators.required]),
+      nuContrato: new UntypedFormControl(this.nuContrato, [Validators.required]),
+      nuVigenciaEditada: new UntypedFormControl(this.nuVigenciaEditada, [Validators.required]),
+      nuVigenciaRubrica: new UntypedFormControl(this.nuVigenciaRubrica, [Validators.required]),
     });
   }
 

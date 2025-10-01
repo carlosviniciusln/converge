@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiResponse } from 'src/app/models/api-response';
 import { Login } from 'src/app/models/login';
@@ -14,7 +14,7 @@ import { Endpoints } from 'src/app/shared/enums/endpoints';
 })
 export class LoginComponent implements OnInit {
 
-  public form: FormGroup;
+  public form: UntypedFormGroup;
 
   isLoggedIn = false;
   isLoginFailed = false;
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal, 
-    private formBuilder: FormBuilder, 
+    private formBuilder: UntypedFormBuilder, 
     private apiService: ApiService,
     private tokenStorage: TokenStorageService) {
       if (this.tokenStorage.getToken()) {

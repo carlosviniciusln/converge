@@ -1,10 +1,10 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import {
   AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   ValidationErrors,
   ValidatorFn,
   Validators,
@@ -47,8 +47,8 @@ export class ContratoCadastroComponent implements OnInit {
 
   currentProfile: PerfisEnum;
 
-  public form: FormGroup;
-  public contatoForm: FormGroup;
+  public form: UntypedFormGroup;
+  public contatoForm: UntypedFormGroup;
   public listaContatosOriginal: ContatoItem[] = [];
   public sequencial = 1
   public selectTab: number = 0;
@@ -106,7 +106,7 @@ export class ContratoCadastroComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
     private toastr: ToastrService,
     private token: TokenStorageService
@@ -156,7 +156,7 @@ export class ContratoCadastroComponent implements OnInit {
       this.isPerfilPrivilegiado = true;
     }
   }
-  criarContato(contador: number): FormGroup{
+  criarContato(contador: number): UntypedFormGroup{
     return this.formBuilder.group({
      nuPreposto:[0],
      nuContrato:[0],
@@ -212,7 +212,7 @@ export class ContratoCadastroComponent implements OnInit {
       let tipoSelecionado = this.vigencias.controls[i].get('nuVigenciaTipo')?.value;
 
       if (tipoSelecionado == this.SUPRESSAO_VALUE) {
-        const rub = vigencia.get('rubricas') as FormArray;
+        const rub = vigencia.get('rubricas') as UntypedFormArray;
         rub.controls.forEach((rubItem, r) => {
           let valorAtual = rubItem.get('vrTotal')?.value;
           if (valorAtual)
@@ -249,8 +249,8 @@ export class ContratoCadastroComponent implements OnInit {
 
   validarSupressaoOnChange(index: any) {
 
-    const vigencia = this.vigencias.at(index) as FormGroup;
-    const rub = vigencia.get('rubricas') as FormArray;
+    const vigencia = this.vigencias.at(index) as UntypedFormGroup;
+    const rub = vigencia.get('rubricas') as UntypedFormArray;
     rub.controls.forEach((rubItem, r) => {
       let valorAtual = rubItem.get('vrTotal')?.value;
       if (valorAtual)
@@ -281,8 +281,8 @@ export class ContratoCadastroComponent implements OnInit {
     });
   }
 
-  get contatos(): FormArray {
-    return this.contatoForm.get('contatos') as FormArray;
+  get contatos(): UntypedFormArray {
+    return this.contatoForm.get('contatos') as UntypedFormArray;
   }
 
   async adicionarContato(){
@@ -344,20 +344,20 @@ export class ContratoCadastroComponent implements OnInit {
       coContrato: ['', [Validators.required]],
       noEmpresa: ['', [Validators.required]],
       noObjeto: ['', [Validators.required]],
-      nuContratoTipo: new FormControl('', [Validators.required]),
-      nuFilial: new FormControl('', [Validators.required]),
-      nuDiaFechamentoFatura: new FormControl(''),
-      icDiaUtilFechamentoFatura: new FormControl(0),
-      nuDiaNotaFiscal: new FormControl(''),
-      icDiaUtilNotaFiscal: new FormControl(0),
-      nuDiaPagamentoFatura: new FormControl(''),
-      icDiaUtilPagamentoFatura: new FormControl(0),
-      nuAnalistaCaixa: new FormControl('', [Validators.required]),
-      nuFiscalAdm: new FormControl('', [Validators.required]),
-      icArtigo81: new FormControl(0),
-      icAtivo: new FormControl(1),
-      vigencias: new FormArray([]),
-      nuAta: new FormControl(''),
+      nuContratoTipo: new UntypedFormControl('', [Validators.required]),
+      nuFilial: new UntypedFormControl('', [Validators.required]),
+      nuDiaFechamentoFatura: new UntypedFormControl(''),
+      icDiaUtilFechamentoFatura: new UntypedFormControl(0),
+      nuDiaNotaFiscal: new UntypedFormControl(''),
+      icDiaUtilNotaFiscal: new UntypedFormControl(0),
+      nuDiaPagamentoFatura: new UntypedFormControl(''),
+      icDiaUtilPagamentoFatura: new UntypedFormControl(0),
+      nuAnalistaCaixa: new UntypedFormControl('', [Validators.required]),
+      nuFiscalAdm: new UntypedFormControl('', [Validators.required]),
+      icArtigo81: new UntypedFormControl(0),
+      icAtivo: new UntypedFormControl(1),
+      vigencias: new UntypedFormArray([]),
+      nuAta: new UntypedFormControl(''),
     });
   }
 
@@ -365,8 +365,8 @@ export class ContratoCadastroComponent implements OnInit {
     return this.form.controls;
   }
 
-  get vigencias(): FormArray {
-    return this.form.get('vigencias') as FormArray;
+  get vigencias(): UntypedFormArray {
+    return this.form.get('vigencias') as UntypedFormArray;
   }
 
   onNuVigenciaTipoChange(value: any, index: number) {
@@ -385,7 +385,7 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   subscribeToNuVigenciaTipoChanges(index: number) {
-    const vigenciaGroup = this.vigencias.at(index) as FormGroup;
+    const vigenciaGroup = this.vigencias.at(index) as UntypedFormGroup;
     vigenciaGroup.get('nuVigenciaTipo').valueChanges.subscribe((value) => {
       this.onNuVigenciaTipoChange(value, index);
     });
@@ -403,7 +403,7 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   subscribeToDtInicioChanges(index: number) {
-    const vigenciaGroup = this.vigencias.at(index) as FormGroup;
+    const vigenciaGroup = this.vigencias.at(index) as UntypedFormGroup;
     vigenciaGroup.get('dtInicio').valueChanges.subscribe((value) => {
       vigenciaGroup.get('dtInicioCompetencia').setValue(this.onDtInicioChange(value));
     });
@@ -429,7 +429,7 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   adicionarRubrica(i: number) {
-    (this.vigencias.at(i).get('rubricas') as FormArray).push(
+    (this.vigencias.at(i).get('rubricas') as UntypedFormArray).push(
       this.novaRubrica(null)
     );
   }
@@ -439,29 +439,29 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   excluirRubrica(vigenciaIndex: number, i: number) {
-    (this.vigencias.at(vigenciaIndex).get('rubricas') as FormArray).removeAt(i);
+    (this.vigencias.at(vigenciaIndex).get('rubricas') as UntypedFormArray).removeAt(i);
   }
 
-  novaVigencia(desabilitar: boolean, index: number): FormGroup {
-    return new FormGroup(
+  novaVigencia(desabilitar: boolean, index: number): UntypedFormGroup {
+    return new UntypedFormGroup(
       {
-        nuVigencia: new FormControl(0),
-        nuVigenciaTipo: new FormControl({ value: '', disabled: desabilitar }, [
+        nuVigencia: new UntypedFormControl(0),
+        nuVigenciaTipo: new UntypedFormControl({ value: '', disabled: desabilitar }, [
           Validators.required,
         ]),
-        dtInicio: new FormControl('', [Validators.required]),
-        dtTermino: new FormControl('', [Validators.required]),
-        nuDiaInicio: new FormControl(null, [Validators.required]),
-        nuDiaTermino: new FormControl(null, [Validators.required]),
-        dtInicioCompetencia: new FormControl(null, [Validators.required]),
-        coProtocoloVigencia: new FormControl(null),
-        rubricas: new FormArray([]),
+        dtInicio: new UntypedFormControl('', [Validators.required]),
+        dtTermino: new UntypedFormControl('', [Validators.required]),
+        nuDiaInicio: new UntypedFormControl(null, [Validators.required]),
+        nuDiaTermino: new UntypedFormControl(null, [Validators.required]),
+        dtInicioCompetencia: new UntypedFormControl(null, [Validators.required]),
+        coProtocoloVigencia: new UntypedFormControl(null),
+        rubricas: new UntypedFormArray([]),
       },
       { validators: [this.validarDatas, this.validarVigencia(index)] }
     );
   }
 
-  validarDatas(group: FormGroup): any | null {
+  validarDatas(group: UntypedFormGroup): any | null {
     const dtInicio = group.get('dtInicio').value;
     const dtTermino = group.get('dtTermino').value;
 
@@ -482,7 +482,7 @@ export class ContratoCadastroComponent implements OnInit {
   }
 
   validarVigencia(index: number): any {
-    return (group: FormGroup): any | null => {
+    return (group: UntypedFormGroup): any | null => {
       const nuVigenciaTipo = group.get('nuVigenciaTipo').value;
       const dtInicio = group.get('dtInicio').value;
 
@@ -533,19 +533,19 @@ export class ContratoCadastroComponent implements OnInit {
     };
   }
 
-  novaRubrica(rubrica: Gcptb017VigenciaRubrica | null): FormGroup {
-    return new FormGroup({
-      nuVigenciaRubrica: new FormControl(
+  novaRubrica(rubrica: Gcptb017VigenciaRubrica | null): UntypedFormGroup {
+    return new UntypedFormGroup({
+      nuVigenciaRubrica: new UntypedFormControl(
         rubrica ? rubrica.nuVigenciaRubrica : 0
       ),
-      nuRubrica: new FormControl(rubrica ? rubrica.nuRubrica : '', [
+      nuRubrica: new UntypedFormControl(rubrica ? rubrica.nuRubrica : '', [
         Validators.required,
       ]),
-      nuServicoTipo: new FormControl(rubrica ? rubrica.nuServicoTipo : 1, [
+      nuServicoTipo: new UntypedFormControl(rubrica ? rubrica.nuServicoTipo : 1, [
         Validators.required,
       ]),
-      vrTotal: new FormControl(rubrica?.vrTotal, [Validators.required]),
-      vrMediaEstimada: new FormControl(rubrica?.vrMediaEstimada ?? 0),
+      vrTotal: new UntypedFormControl(rubrica?.vrTotal, [Validators.required]),
+      vrMediaEstimada: new UntypedFormControl(rubrica?.vrMediaEstimada ?? 0),
     });
   }
 
@@ -558,23 +558,23 @@ export class ContratoCadastroComponent implements OnInit {
       this.vigencias.clear();
 
       response.data.gcptb006Vigencias.map((x, index) => {
-        const vigencia = new FormGroup(
+        const vigencia = new UntypedFormGroup(
           {
-            nuVigencia: new FormControl(x.nuVigencia),
-            nuVigenciaTipo: new FormControl(x.nuVigenciaTipo, [
+            nuVigencia: new UntypedFormControl(x.nuVigencia),
+            nuVigenciaTipo: new UntypedFormControl(x.nuVigenciaTipo, [
               Validators.required,
             ]),
-            dtInicio: new FormControl(x.dtInicio.toString().substring(0, 10), [
+            dtInicio: new UntypedFormControl(x.dtInicio.toString().substring(0, 10), [
               Validators.required,
             ]),
-            dtTermino: new FormControl(x.dtTermino.toString().substring(0, 10), [
+            dtTermino: new UntypedFormControl(x.dtTermino.toString().substring(0, 10), [
               Validators.required,
             ]),
-            nuDiaInicio: new FormControl(x.nuDiaInicio, [Validators.required]),
-            nuDiaTermino: new FormControl(x.nuDiaTermino, [Validators.required]),
-            dtInicioCompetencia: new FormControl(x.dtInicioCompetencia, [Validators.required]),
-            coProtocoloVigencia: new FormControl(x.coProtocoloVigencia),
-            rubricas: new FormArray([]),
+            nuDiaInicio: new UntypedFormControl(x.nuDiaInicio, [Validators.required]),
+            nuDiaTermino: new UntypedFormControl(x.nuDiaTermino, [Validators.required]),
+            dtInicioCompetencia: new UntypedFormControl(x.dtInicioCompetencia, [Validators.required]),
+            coProtocoloVigencia: new UntypedFormControl(x.coProtocoloVigencia),
+            rubricas: new UntypedFormArray([]),
           },
           { validators: [this.validarDatas, this.validarVigencia(index)] }
         );
@@ -586,12 +586,12 @@ export class ContratoCadastroComponent implements OnInit {
         if(x.nuVigenciaTipo)
 
         x.gcptb017VigenciaRubricas.map((m) => {
-          (vigencia.get('rubricas') as FormArray).push(this.novaRubrica(m));
+          (vigencia.get('rubricas') as UntypedFormArray).push(this.novaRubrica(m));
         });
 
         if(index === 0){
           if(x.gcptb017VigenciaRubricas.length == 0){
-            (vigencia.get('rubricas') as FormArray).push(this.novaRubrica(null));
+            (vigencia.get('rubricas') as UntypedFormArray).push(this.novaRubrica(null));
           }
           vigencia.get('coProtocoloVigencia').disable();
           this.listaProtocoloVigencia = [...this.listaProtocoloVigencia.filter(p => p.cO_PROTOCOLO_VIGENCIA !=  vigencia.get('coProtocoloVigencia').value)]
@@ -867,7 +867,7 @@ export class ContratoCadastroComponent implements OnInit {
       this.contatoForm.updateValueAndValidity();
       if(this.contatoForm.invalid){
           this.contatos.controls.forEach((grupo: AbstractControl) => {
-            const contatoGroup = grupo as FormGroup;
+            const contatoGroup = grupo as UntypedFormGroup;
             // if(contatoGroup.errors?.validador){
             //   this.toastr.error(`Preencha pelo menos o campo "E-mail" ou "Telefone"`, "Error");
             // }
@@ -952,11 +952,11 @@ export class ContratoCadastroComponent implements OnInit {
 
     this.form.markAllAsTouched();
 
-    this.vigencias.controls.forEach((vigenciaGroup: FormGroup) => {
+    this.vigencias.controls.forEach((vigenciaGroup: UntypedFormGroup) => {
       vigenciaGroup.markAllAsTouched();
 
-      const rubricas = vigenciaGroup.get('rubricas') as FormArray;
-      rubricas.controls.forEach((rubricaGroup: FormGroup) => {
+      const rubricas = vigenciaGroup.get('rubricas') as UntypedFormArray;
+      rubricas.controls.forEach((rubricaGroup: UntypedFormGroup) => {
         rubricaGroup.markAllAsTouched();
       });
     });
