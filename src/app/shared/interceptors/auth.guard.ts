@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { LoginComponent } from 'src/app/pages/login/login.component';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard  {
+export class AuthGuard implements CanActivate {
   constructor(
     private auth: TokenStorageService,
     private router: Router,
