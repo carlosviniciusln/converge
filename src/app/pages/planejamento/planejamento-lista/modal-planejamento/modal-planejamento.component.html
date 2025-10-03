@@ -1,80 +1,80 @@
 <div class="modal-header">
-    <span>
-        <b style="font-size: 22px !important;">Planejamentos do Exercício {{anoSelecionado}}</b>
-    </span>
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">×</span>
-    </button>
+  <span>
+      <b style="font-size: 22px !important;">Planejamentos do Exercício {{anoSelecionado}}</b>
+  </span>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">×</span>
+  </button>
 </div>
 
 <div class="modal-body">
-    <p-table #dt [value]="listaPlanejamentos" tyleClass="p-datatable-customers" [rowHover]="true" sortMode="single">
-        <ng-template pTemplate="header">
-            <tr class="bordered-orange">
-                <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Tipo
-                </th>
-                <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Status
-                </th>
-                <th colspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Data Tipo</th>
-                <th colspan="3" class="header-extra" style="text-align: center; vertical-align: middle;">CAPEX</th>
-                <th colspan="3" class="header-extra" style="text-align: center; vertical-align: middle;">OPEX</th>
-            </tr>
-            <tr class="bordered-orange">
-                <th class="text-centered">Início</th>
-                <th class="text-centered">Fim</th>
-                <th class="text-centered">Planejado</th>
-                <th class="text-centered">Executado</th>
-                <th class="text-centered" pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
-                <th class="text-centered">Planejado</th>
-                <th class="text-centered">Executado</th>
-                <th class="text-centered" pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-            <tr [ngClass]="{'dark-row': selectedRowId === rowIndex}" (click)="onRowClick(item)" style="cursor: pointer;">
-                <td class="text-centered">
-                  {{item.tipo}}
-                </td>
-                <td class="text-centered">
-                  {{item.statuS_PLANEJAMENTO}}
-                </td>
-                <td class="text-centered">
-                    {{item.dT_ABERTURA | date:'dd/MM/yyyy'}}
-                </td>
-                <td class="text-centered">
-                    {{item.dT_FECHAMENTO | date:'dd/MM/yyyy'}}
-                </td>
-                <td>
-                    {{item.capeX_PLANEJADO | currency : 'BRL'}}
-                </td>
-                <td>
-                    {{item.capeX_EXECUTADO | currency : 'BRL'}}
-                </td>
-                <td>
-                    {{item.perC_CAPEX}}
-                </td>
-                <td>
-                    {{item.opeX_PLANEJADO | currency : 'BRL'}}
-                </td>
-                <td>
-                    {{item.opeX_EXECUTADO | currency : 'BRL'}}
-                </td>
-                <td>
-                    {{item.perC_OPEX}}
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-    <div class="modal-footer">
-        <div class="d-flex align-items-center" *ngIf="ultimoPlanejamento && ultimoPlanejamento && anoAtual">
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsLeft && isPerfilPrivilegiado && (ultimoPlanejamento.cO_EXERCICIO >= anoAtual)"
-                (click)="mensagemBotaoClick(labelButtonsLeft)">
-               {{labelButtonsLeft.label}}
-            </button>
-            <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsRight && isPerfilPrivilegiado && (ultimoPlanejamento.cO_EXERCICIO >= anoAtual)"
-                (click)="mensagemBotaoClick(labelButtonsRight)">
-             {{labelButtonsRight.label}}
-            </button>
-        </div>
-    </div>
+  <p-table #dt [value]="listaPlanejamentos" tyleClass="p-datatable-customers" [rowHover]="true" sortMode="single">
+      <ng-template pTemplate="header">
+          <tr class="bordered-orange">
+              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Tipo
+              </th>
+              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Status
+              </th>
+              <th colspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Data Tipo</th>
+              <th colspan="3" class="header-extra" style="text-align: center; vertical-align: middle;">CAPEX</th>
+              <th colspan="3" class="header-extra" style="text-align: center; vertical-align: middle;">OPEX</th>
+          </tr>
+          <tr class="bordered-orange">
+              <th class="text-centered">Início</th>
+              <th class="text-centered">Fim</th>
+              <th class="text-centered">Planejado</th>
+              <th class="text-centered">Executado</th>
+              <th class="text-centered" pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
+              <th class="text-centered">Planejado</th>
+              <th class="text-centered">Executado</th>
+              <th class="text-centered" pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr [ngClass]="{'dark-row': selectedRowId === rowIndex}" (click)="onRowClick(item)" style="cursor: pointer;">
+              <td class="text-centered">
+                {{item.tipo}}
+              </td>
+              <td class="text-centered">
+                {{item.statuS_PLANEJAMENTO}}
+              </td>
+              <td class="text-centered">
+                  {{item.dT_ABERTURA | date:'dd/MM/yyyy'}}
+              </td>
+              <td class="text-centered">
+                  {{item.dT_FECHAMENTO | date:'dd/MM/yyyy'}}
+              </td>
+              <td>
+                  {{item.capeX_PLANEJADO | currency : 'BRL'}}
+              </td>
+              <td>
+                  {{item.capeX_EXECUTADO | currency : 'BRL'}}
+              </td>
+              <td>
+                  {{item.perC_CAPEX}}
+              </td>
+              <td>
+                  {{item.opeX_PLANEJADO | currency : 'BRL'}}
+              </td>
+              <td>
+                  {{item.opeX_EXECUTADO | currency : 'BRL'}}
+              </td>
+              <td>
+                  {{item.perC_OPEX}}
+              </td>
+          </tr>
+      </ng-template>
+  </p-table>
+  <div class="modal-footer">
+      <div class="d-flex align-items-center">
+          <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsLeft && isPerfilPrivilegiado && (ultimoPlanejamento?.statuS_PLANEJAMENTO !== 'Encerrado' || ultimoPlanejamento.cO_EXERCICIO >= anoAtual)"
+              (click)="mensagemBotaoClick(labelButtonsLeft)">
+             {{labelButtonsLeft.label}}
+          </button>
+          <button class="btn-sm btn-default padding-buttons" *ngIf="this.labelButtonsRight && isPerfilPrivilegiado && (ultimoPlanejamento?.statuS_PLANEJAMENTO !== 'Encerrado' || ultimoPlanejamento.cO_EXERCICIO >= anoAtual)"
+              (click)="mensagemBotaoClick(labelButtonsRight)">
+           {{labelButtonsRight.label}}
+          </button>
+      </div>
+  </div>
 </div>
