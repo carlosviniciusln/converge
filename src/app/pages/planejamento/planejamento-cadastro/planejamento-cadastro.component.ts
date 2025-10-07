@@ -233,6 +233,19 @@ export class PlanejamentoCadastroComponent implements OnInit {
     return this.form.get('previsoesDesembolso') as FormArray;
   }
 
+  
+
+currencyOptions = {
+  prefix: 'R$ ',
+  thousands: '.',
+  decimal: ',',
+  precision: 2,
+  allowNegative: false,
+  inputMode: 'numeric'
+};
+
+
+
   adicionarPrevisaoDesembolso(desabilitar: boolean) {
     this.previsoesDesembolso.push(this.novaPrevisaoDesembolso(desabilitar));
   }
@@ -288,39 +301,57 @@ export class PlanejamentoCadastroComponent implements OnInit {
     }
   }
 
-  onValorRubricaChange(i: number) {
-    var prevDes = <FormArray>this.previsoesDesembolso.at(i);
-    prevDes.controls['vrTotalRubrica'].setValue(
-      prevDes.controls['vrJaneiro'].value +
-      prevDes.controls['vrFevereiro'].value +
-      prevDes.controls['vrMarco'].value +
-      prevDes.controls['vrAbril'].value +
-      prevDes.controls['vrMaio'].value +
-      prevDes.controls['vrJunho'].value +
-      prevDes.controls['vrJulho'].value +
-      prevDes.controls['vrAgosto'].value +
-      prevDes.controls['vrSetembro'].value +
-      prevDes.controls['vrOutubro'].value +
-      prevDes.controls['vrNovembro'].value +
-      prevDes.controls['vrDezembro'].value
-    );
-    this.somaValorTotalPlanejamentoOrcamentario();
-  }
+  
+onValorRubricaChange(i: number) {
+  const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
+
+  const limparValor = (valor: string): number => {
+    if (!valor) return 0;
+    return parseFloat(
+      valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.')
+    ) || 0;
+  };
+
+  const total =
+    limparValor(prevDes.get('vrJaneiro')?.value) +
+    limparValor(prevDes.get('vrFevereiro')?.value) +
+    limparValor(prevDes.get('vrMarco')?.value) +
+    limparValor(prevDes.get('vrAbril')?.value) +
+    limparValor(prevDes.get('vrMaio')?.value) +
+    limparValor(prevDes.get('vrJunho')?.value) +
+    limparValor(prevDes.get('vrJulho')?.value) +
+    limparValor(prevDes.get('vrAgosto')?.value) +
+    limparValor(prevDes.get('vrSetembro')?.value) +
+    limparValor(prevDes.get('vrOutubro')?.value) +
+    limparValor(prevDes.get('vrNovembro')?.value) +
+    limparValor(prevDes.get('vrDezembro')?.value);
+
+  prevDes.get('vrTotalRubrica')?.setValue(total.toFixed(2));
+
+  this.somaValorTotalPlanejamentoOrcamentario();
+}
+
 
   somaValorTotalPlanejamentoOrcamentario() {
-    var vrTotalOrcamentoPlanejamentoTemp = 0;
+  let vrTotalOrcamentoPlanejamentoTemp = 0;
 
-    const previsoesDesembolso = this.form.get(
-      'previsoesDesembolso'
-    ) as FormArray;
-    previsoesDesembolso.controls.forEach((element) => {
-      vrTotalOrcamentoPlanejamentoTemp += element.get('vrTotalRubrica').value;
-    });
+  const previsoesDesembolso = this.form.get('previsoesDesembolso') as FormArray;
 
-    this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(
-      vrTotalOrcamentoPlanejamentoTemp
-    );
-  }
+  const limparValor = (valor: string): number => {
+    if (!valor) return 0;
+    return parseFloat(
+      valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.')
+    ) || 0;
+  };
+
+  previsoesDesembolso.controls.forEach((element) => {
+    vrTotalOrcamentoPlanejamentoTemp += limparValor(element.get('vrTotalRubrica')?.value);
+  });
+
+  this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(
+    vrTotalOrcamentoPlanejamentoTemp.toFixed(2)
+  );
+}
 
   onContratoChange(event: any) {
     //Limpa formulário antes de preencher os campos.
