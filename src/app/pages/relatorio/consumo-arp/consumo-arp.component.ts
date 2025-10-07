@@ -11,7 +11,8 @@ import {
   TokenStorageService,
 } from 'src/app/services/token-storage.service';
 import * as fileSaver from 'file-saver';
-import { LazyLoadEvent } from 'primeng/api';
+//import { LazyLoadEvent } from 'primeng/api';
+import { TableLazyLoadEvent } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoCadastroComponent } from '../../contrato/contrato-cadastro/contrato-cadastro.component'; 
 
@@ -191,7 +192,7 @@ export class ConsumoArpComponent implements OnInit {
     this.loading = false;
   }
 
-  loadPage(event: LazyLoadEvent) {
+  loadPage(event: TableLazyLoadEvent) {
     const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
     const pageSize = event.rows || this.filtroRegistros.pageSize;
 

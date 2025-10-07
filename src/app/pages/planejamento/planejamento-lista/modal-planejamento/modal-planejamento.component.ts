@@ -80,18 +80,18 @@ export class ModalPlanejamentoComponent implements OnInit {
     const result = this.apiService.get<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/resumo-planejamento?coExercicio='+this.anoSelecionado)
     result.then(response => {
       this.listaPlanejamentos = response.data;
-      this.montarPlanejamentosModal();
+      this.montarPlanejamentosModal(this.listaPlanejamentos);
     });
   }
 
-  montarPlanejamentosModal() {
-
-    if (this.listaPlanejamentos.length > 0) {
-      this.ultimoPlanejamento = this.listaPlanejamentos[this.listaPlanejamentos.length - 1];
+  montarPlanejamentosModal(lista: ResumoPlanejamentoModel[]) {
+    this.validarAno()
+    if (lista.length > 0) {
+      this.ultimoPlanejamento = lista[this.listaPlanejamentos.length - 1];
       this.validarBotoes(this.ultimoPlanejamento);
     }
     else{
-      this.validarBotoes(this.listaPlanejamentos[0]);
+      this.validarBotoes(lista[0]);
     }
   }
 
@@ -99,15 +99,18 @@ export class ModalPlanejamentoComponent implements OnInit {
 
   validarBotoes(ultimoPlanejamento : ResumoPlanejamentoModel): void {
     const tipo = ultimoPlanejamento?.tipo.replace(/^\d+\s*-\s*/, "");
-
-const tipoNormalizado = tipo.toLowerCase().includes('reprogramação')
-? 'Reprogramação'
-: 'Programação';
-
-    switch(tipoNormalizado){
+    switch(tipo){
       case "Programação" :
         switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-          case "Criado":
+          case "Aberta":
+            this.labelButtonsLeft.label = 'Encerrar Programação';
+            this.labelButtonsLeft.value = 'encerrar';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
+            this.labelButtonsRight.label = 'Cancelar Programação';
+            this.labelButtonsRight.value = 'cancelar';
+            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
+            break;
+          case "Em Avaliação":
             this.labelButtonsLeft.label = 'Encerrar Programação';
             this.labelButtonsLeft.value = 'encerrar';
             this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
@@ -124,30 +127,22 @@ const tipoNormalizado = tipo.toLowerCase().includes('reprogramação')
             this.labelButtonsRight.message = 'Tem certeza que deseja reabrir o planejamento';
             break;
           default:
+            this.labelButtonsLeft = null;
+            this.labelButtonsRight = null;
             break;
         }
       break;
-      // case "Ajuste Programação":
-      //   switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-      //     case "Aberta":
-      //       this.labelButtonsLeft.label = 'Encerrar Programação';
-      //       this.labelButtonsLeft.value = 'encerrar';
-      //       this.labelButtonsRight.label = 'Cancelar Programação';
-      //       this.labelButtonsRight.value = 'cancelar';
-      //       break;
-      //     case "Encerrado":
-      //         this.labelButtonsLeft.label = 'Ajuste de Programação';
-      //         this.labelButtonsLeft.value = 'ajuste';
-      //         this.labelButtonsRight.label = 'Nova Programação';
-      //         this.labelButtonsRight.value = 'nova';
-      //       break
-      //     default:
-      //       break;
-      //   }
-      // break;
       case "Reprogramação":
         switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
-          case "Criado":
+          case "Aberta":
+            this.labelButtonsLeft.label = 'Encerrar Programação';
+            this.labelButtonsLeft.value = 'encerrar';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
+            this.labelButtonsRight.label = 'Cancelar Programação';
+            this.labelButtonsRight.value = 'cancelar';
+            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
+            break;
+          case "Em Avaliação":
             this.labelButtonsLeft.label = 'Encerrar Programação';
             this.labelButtonsLeft.value = 'encerrar';
             this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
@@ -170,6 +165,10 @@ const tipoNormalizado = tipo.toLowerCase().includes('reprogramação')
             this.labelButtonsRight = null;
             break
           default:
+            this.labelButtonsLeft.label = 'Nova Reprogramação';
+            this.labelButtonsLeft.value = 'nova';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento'
+            this.labelButtonsRight = null;
             break;
         }
       break;
@@ -228,13 +227,11 @@ const tipoNormalizado = tipo.toLowerCase().includes('reprogramação')
   }
 
   async validarAno() {
-
     this.retornoAno = false;
     if (this.anoAtual > this.anoSelecionado) {
-
       const alert = await Swal.fire({
         title: '',
-        text:  `Exercício ${this.anoSelecionado} - ${this.ultimoPlanejamento.tipo}, não pode ser gerado, exercício está Encerrado`,
+        text:  `Exercício ${this.anoSelecionado} está Encerrado`,
         icon: 'warning',
         showCancelButton: false,
         confirmButtonText: 'Ok!',
