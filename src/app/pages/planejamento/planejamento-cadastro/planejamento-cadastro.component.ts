@@ -264,7 +264,7 @@ currencyOptions = {
       ),
       nuRubrica: new FormControl(0, [Validators.required]),
       nuPreComprometimento: new FormControl(0, [Validators.required]),
-      vrPreComprometimento: new FormControl(0, [Validators.required]),
+      nuReserva: new FormControl(0, [Validators.required]),
       vrJaneiro: new FormControl(0, [Validators.required]),
       vrFevereiro: new FormControl(0, [Validators.required]),
       vrMarco: new FormControl(0, [Validators.required]),
@@ -331,8 +331,7 @@ onValorRubricaChange(i: number) {
   this.somaValorTotalPlanejamentoOrcamentario();
 }
 
-
-  somaValorTotalPlanejamentoOrcamentario() {
+somaValorTotalPlanejamentoOrcamentario() {
   let vrTotalOrcamentoPlanejamentoTemp = 0;
 
   const previsoesDesembolso = this.form.get('previsoesDesembolso') as FormArray;
@@ -348,9 +347,35 @@ onValorRubricaChange(i: number) {
     vrTotalOrcamentoPlanejamentoTemp += limparValor(element.get('vrTotalRubrica')?.value);
   });
 
-  this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(
-    vrTotalOrcamentoPlanejamentoTemp.toFixed(2)
-  );
+  // Formata o total com duas casas decimais e vírgula
+  const totalFormatado = 'R$ ' + vrTotalOrcamentoPlanejamentoTemp
+    .toFixed(2)
+    .replace('.', ',')
+    .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(totalFormatado);
+}
+
+ajustarCentavos(index: number, campo: string): void {
+  const grupo = this.previsoesDesembolso.at(index) as FormGroup;
+  const valor = grupo.get(campo)?.value;
+
+  if (!valor || typeof valor !== 'string') return;
+
+  // Remove prefixo e separadores para verificar se é inteiro
+  const valorLimpo = valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.');
+  const numero = parseFloat(valorLimpo);
+
+  if (!isNaN(numero)) {
+    const partes = valorLimpo.split('.');
+    const temCentavos = partes.length > 1 && partes[1].length > 0;
+
+    if (!temCentavos) {
+      // Apenas atualiza o valor do FormControl com número formatado
+      // sem interferir na máscara
+      grupo.get(campo)?.setValue(numero.toFixed(2).replace('.', ','), { emitEvent: true });
+    }
+  }
 }
 
   onContratoChange(event: any) {
@@ -511,8 +536,8 @@ onValorRubricaChange(i: number) {
             { value: x.nuPreComprometimento, disabled: !this.isEditable },
             [Validators.required]
           ),
-          vrPreComprometimento: new FormControl(
-            { value: x.vrPreComprometimento, disabled: !this.isEditable },
+          nuReserva: new FormControl(
+            { value: x.nuReserva, disabled: !this.isEditable },
             [Validators.required]
           ),
           vrTotalRubrica: new FormControl(

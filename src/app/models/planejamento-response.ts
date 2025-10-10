@@ -114,4 +114,5 @@ export interface PrevisaoDesembolsoResponse {
     vrTotalRubrica: number;
     nuPreComprometimento: number;
     vrPreComprometimento: number;
+    nuReserva: number;
 }
