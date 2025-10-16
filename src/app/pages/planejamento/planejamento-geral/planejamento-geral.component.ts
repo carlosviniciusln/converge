@@ -135,7 +135,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
   }
 
-  openModalPlanejamento(tipoModal: string, isEditable: boolean, nuPlanejamento?: number) {
+  openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: ContratoPlanejamentosOrcamentario) {
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -144,7 +144,8 @@ export class PlanejamentoGeralComponent implements OnInit {
       keyboard: false,
     });
 
-    modalRef.componentInstance.nuPlanejamento = nuPlanejamento;
+    //console.log("click", planejamento)
+    modalRef.componentInstance.planejamentoTb = planejamento
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {

@@ -116,3 +116,31 @@ export interface PrevisaoDesembolsoResponse {
     vrPreComprometimento: number;
     nuReserva: number;
 }
+
+/* novo mapeamento */
+export interface PlanejamentoConsultaGeralResponse {
+    nuPlanejamento: number;
+    nuContrato: number;
+    coContrato: string;
+    nuExercicioOrcamento: number;
+    coExercicio: number;
+    nuFilial: number;
+    deUnidadeDemandante: string;
+    nuStatusPlanejamentoItem: number;
+    noStatus: string;
+    nuTipoDemanda: number;
+    deDemanda: string;
+    nuPlanejamentoTipo: number;
+    dePlanejamentoTipo: string;
+    deObjeto: string;
+    nuObjetivoPdtic?: number; // Nullable
+    deObjetivoPdtic: string;
+    nuObjetivoPei?: number; // Nullable
+    deObjetivoPei: string;
+    deJustificativa: string;
+    deCategoria?: string; // Nullable
+    deServicoContinua: string;
+    nuUsuario: number;
+    coMatricula: string;
+    dhCadastro: Date;
+  }
