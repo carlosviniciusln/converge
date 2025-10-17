@@ -711,7 +711,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public async Alterar(): Promise<void> {
     try {
       this.submitted = true;
-
+  
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
@@ -720,20 +720,68 @@ export class PlanejamentoCadastroComponent implements OnInit {
         }
         console.log(invalids);
         return;
-      } else if (this.form.controls['nuClassificacaoPlanejamento'].value == 1 && (this.form.controls['icDigital'].value == 1 || this.form.controls['icDigital'].value == 2)) {
+      }
+  
+      if (
+        this.form.value.nuClassificacaoPlanejamento === 1 &&
+        (this.form.value.icDigital === 1 || this.form.value.icDigital === 2)
+      ) {
         this.toastr.error('Informe a categoria da classificação digital.', 'Erro');
         return;
       }
-
-      await this.apiService.put<any>(
-        `${Endpoints.URL_ORCAMENTO}/${this.nuPlanejamento}`,
-        this.form.value
+  
+      const planejamentoItem = {
+        nuPlanejamentoItem: this.form.value.nuPlanejamentoOrcamentario,
+        nuPlanejamento: this.form.value.nuAno,
+        nuContrato: this.form.value.nuContrato,
+        nuFilial: this.form.value.nuFilial,
+        nuRubrica: this.form.value.nuRubrica,
+        nuStatusPlanejamentoItem: this.form.value.nuPlanejamentoStatus,
+        nuTipoDemanda: this.form.value.nuDemandaTipo,
+        nuVigencia: this.form.value.nuVigencia,
+  
+        deObjeto: this.form.value.deObjeto,
+        deObjetivoPDTIC: this.form.value.nuObjetivoEstrategicoPdti,
+        deObjetivoPEI: this.form.value.nuObjetivoEstrategicoPei,
+        deJustificativa: this.form.value.deJustificativa,
+  
+        nuPreComprometimento: this.form.value.nuPreComprometimento,
+        nuReserva: this.form.value.nuReserva,
+  
+        vrPlanejamentoItem: this.form.value.vrTotalOrcamentoPlanejamento,
+        vrJaneiro: this.form.value.vrJaneiro,
+        vrFevereiro: this.form.value.vrFevereiro,
+        vrMarco: this.form.value.vrMarco,
+        vrAbril: this.form.value.vrAbril,
+        vrMaio: this.form.value.vrMaio,
+        vrJunho: this.form.value.vrJunho,
+        vrJulho: this.form.value.vrJulho,
+        vrAgosto: this.form.value.vrAgosto,
+        vrSetembro: this.form.value.vrSetembro,
+        vrOutubro: this.form.value.vrOutubro,
+        vrNovembro: this.form.value.vrNovembro,
+        vrDezembro: this.form.value.vrDezembro,
+  
+        nuUsuario: this.token.getUser()?.nuUsuario ?? 0,
+        dhAlteracao: new Date(),
+        nuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
+  
+        previsoesDesembolso: this.form.value.previsoesDesembolso
+      };
+  
+      console.log('Dados enviados:', planejamentoItem);
+  
+      await this.apiService.post<any>(
+        `${Endpoints.URL_ORCAMENTO}/cadastrar-planejamento-item`,
+        planejamentoItem
       );
-
+  
       this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
     } catch (error) {
+      console.error('Erro ao alterar planejamento:', error);
+      this.toastr.error('Erro ao salvar alterações.', 'Erro');
       this.atualizarPagina.emit(false);
     }
   }
