@@ -36,7 +36,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./planejamento-cadastro.component.scss'],
 })
 export class PlanejamentoCadastroComponent implements OnInit {
-  @Input() public nuPlanejamento: number;
+  @Input() public nuPlanejamento: any;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
@@ -112,6 +112,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.definirPageAction();
 
     this.formulario();
@@ -127,12 +128,13 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.obterObjetivosEstrategicosPdti();
     this.obterObjetivosEstrategicosPei();
 
-    if (this.nuPlanejamento) {
+    if (this.nuPlanejamento.nU_ORC) {
       this.obterPlanejamento();
     } else {
-      this.nuPlanejamento = 0;
+      this.nuPlanejamento.nU_ORC = 0;
       this.editarTextos();
     }
+    this.loading = false;
   }
 
   obterPermissoes() {
@@ -392,7 +394,7 @@ ajustarCentavos(index: number, campo: string): void {
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioConsultaResponse>
       >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/contrato?nuContrato=${nuContrato}`);
-
+console.log(response.data)
       if (response.succeeded && response.data) {
         this.form.patchValue({
           nuContrato: response.data.contrato,
@@ -414,159 +416,160 @@ ajustarCentavos(index: number, campo: string): void {
 
   public async obterPlanejamento(): Promise<void> {
     try {
-      const response = await this.apiService.get<
-        ApiResponse<PlanejamentoOrcamentarioResponse>
-      >(`${Endpoints.URL_ORCAMENTO}/` + this.nuPlanejamento);
-
-      this.planejamento = response.data;
+      // const response = await this.apiService.get<
+      //   ApiResponse<PlanejamentoOrcamentarioResponse>
+      // >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL);
+      // //this.planejamento = response.data[0];
+      // console.log(this.planejamento)
+      console.log(this.nuPlanejamento)
       this.form.controls['nuPlanejamentoOrcamentario'].setValue(
-        response.data.nuPlanejamentoOrcamentario
+        this.nuPlanejamento.nU_PLANEJAMENTO
       );
       this.form.controls['coPlanejamentoOrcamentario'].setValue(
-        response.data.coPlanejamentoOrcamentario
+        this.nuPlanejamento.coPlanejamentoOrcamentario
       );
-      this.form.controls['nuAno'].setValue(response.data.nuAno);
-      this.form.controls['nuFilial'].setValue(response.data.nuFilial);
-      this.form.controls['deObjeto'].setValue(response.data.deObjeto);
-      this.form.controls['deJustificativa'].setValue(
-        response.data.deJustificativa
-      );
-      this.form.controls['deObservacao'].setValue(
-        response.data.deObservacao
-      );
+      this.form.controls['nuAno'].setValue(this.nuPlanejamento.nU_EXERCICIO_ORCAMENTO);
+      this.form.controls['nuFilial'].setValue(this.nuPlanejamento.nU_FILIAL);
+      this.form.controls['deObjeto'].setValue(this.nuPlanejamento.nO_OBJETO);
+      // this.form.controls['deJustificativa'].setValue(
+      //   this.nuPlanejamento.deJustificativa
+      // );
+      // this.form.controls['deObservacao'].setValue(
+      //   this.nuPlanejamento.deObservacao
+      // );
       this.form.controls['nuPlanejamentoStatus'].setValue(
-        response.data.nuPlanejamentoStatus
+        this.nuPlanejamento.nU_STATUS_PLANEJAMENTO
       );
-      this.form.controls['nuDemandaTipo'].setValue(response.data.nuDemandaTipo);
+      this.form.controls['nuDemandaTipo'].setValue(this.nuPlanejamento.nU_TIPO_DEMANDA);
       this.onPlanejadoParaChange();
-      this.form.controls['nuContrato'].setValue(response.data.nuContrato);
-      if (response.data.gcptb001Contrato?.coContrato)
+      this.form.controls['nuContrato'].setValue(this.nuPlanejamento.nU_CONTRATO);
+      if (this.nuPlanejamento.cO_CONTRATO)
         this.form.controls['coContrato'].setValue(
-          response.data.gcptb001Contrato.coContrato
+          this.nuPlanejamento.cO_CONTRATO
         );
-      this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
-        response.data.nuObjetivoEstrategicoPdti
-      );
-      this.form.controls['nuObjetivoEstrategicoPei'].setValue(
-        response.data.nuObjetivoEstrategicoPei
-      );
-      if (response.data.gcptb024ClassificacaoPlanejamento.noEnquadramento == 'Digital') {
+      // this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
+      //   this.nuPlanejamento.nuObjetivoEstrategicoPdti
+      // );
+      // this.form.controls['nuObjetivoEstrategicoPei'].setValue(
+      //   this.nuPlanejamento.nuObjetivoEstrategicoPei
+      // );
+      if (this.nuPlanejamento.dE_DEMANDA == 'Digital') {
         this.form.controls['icDigital'].setValue(1);
-      } else if (response.data.gcptb024ClassificacaoPlanejamento.noEnquadramento == 'Digital - TD') {
+      } else if (this.nuPlanejamento.dE_DEMANDA == 'Digital - TD') {
         this.form.controls['icDigital'].setValue(2);
       } else {
         this.form.controls['icDigital'].setValue(3);
       }
-      this.form.controls['nuClassificacaoPlanejamento'].setValue(
-        response.data.nuClassificacaoPlanejamento
-      );
-      this.form.controls['nuPlanejamentoTipo'].setValue(
-        response.data.nuPlanejamentoTipo
-      );
+      // this.form.controls['nuClassificacaoPlanejamento'].setValue(
+      //   this.nuPlanejamento.nuClassificacaoPlanejamento
+      // );
+      // this.form.controls['nuPlanejamentoTipo'].setValue(
+      //   this.nuPlanejamento.nuPlanejamentoTipo
+      // );
       this.form.controls['noCriador'].setValue('NULL');
-      this.form.controls['dhCadastro'].setValue(
-        response.data.dhCadastro.toString().substring(8, 10) +
-        '/' +
-        response.data.dhCadastro.toString().substring(5, 7) +
-        '/' +
-        response.data.dhCadastro.toString().substring(0, 4)
-      );
+      // this.form.controls['dhCadastro'].setValue(
+      //   this.nuPlanejamento.dhCadastro.toString().substring(8, 10) +
+      //   '/' +
+      //   this.nuPlanejamento.dhCadastro.toString().substring(5, 7) +
+      //   '/' +
+      //   this.nuPlanejamento.dhCadastro.toString().substring(0, 4)
+      // );
 
-      this.previsoesDesembolso.clear();
-      response.data.gcptb027PrevisoesDesembolso.map((x) => {
-        const previsaoDesembolso = new FormGroup({
-          nuPrevisaoDesembolso: new FormControl(x.nuPrevisaoDesembolso),
-          nuPlanejamentoOrcamentario: new FormControl(
-            x.nuPlanejamentoOrcamentario,
-            [Validators.required]
-          ),
-          nuRubrica: new FormControl(
-            { value: x.nuRubrica, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrJaneiro: new FormControl(
-            { value: x.vrJaneiro, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrFevereiro: new FormControl(
-            { value: x.vrFevereiro, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrMarco: new FormControl(
-            { value: x.vrMarco, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrAbril: new FormControl(
-            { value: x.vrAbril, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrMaio: new FormControl(
-            { value: x.vrMaio, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrJunho: new FormControl(
-            { value: x.vrJunho, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrJulho: new FormControl(
-            { value: x.vrJulho, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrAgosto: new FormControl(
-            { value: x.vrAgosto, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrSetembro: new FormControl(
-            { value: x.vrSetembro, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrOutubro: new FormControl(
-            { value: x.vrOutubro, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrNovembro: new FormControl(
-            { value: x.vrNovembro, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrDezembro: new FormControl(
-            { value: x.vrDezembro, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          nuPreComprometimento: new FormControl(
-            { value: x.nuPreComprometimento, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          nuReserva: new FormControl(
-            { value: x.nuReserva, disabled: !this.isEditable },
-            [Validators.required]
-          ),
-          vrTotalRubrica: new FormControl(
-            {
-              value:
-                x.vrJaneiro +
-                x.vrFevereiro +
-                x.vrMarco +
-                x.vrAbril +
-                x.vrMaio +
-                x.vrJunho +
-                x.vrJulho +
-                x.vrAgosto +
-                x.vrSetembro +
-                x.vrOutubro +
-                x.vrNovembro +
-                x.vrDezembro,
-              disabled: true,
-            },
-            [Validators.required]
-          ),
-        });
+      // this.previsoesDesembolso.clear();
+      // this.nuPlanejamento.gcptb027PrevisoesDesembolso.map((x) => {
+      //   const previsaoDesembolso = new FormGroup({
+      //     nuPrevisaoDesembolso: new FormControl(x.nuPrevisaoDesembolso),
+      //     nuPlanejamentoOrcamentario: new FormControl(
+      //       x.nuPlanejamentoOrcamentario,
+      //       [Validators.required]
+      //     ),
+      //     nuRubrica: new FormControl(
+      //       { value: x.nuRubrica, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrJaneiro: new FormControl(
+      //       { value: x.vrJaneiro, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrFevereiro: new FormControl(
+      //       { value: x.vrFevereiro, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrMarco: new FormControl(
+      //       { value: x.vrMarco, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrAbril: new FormControl(
+      //       { value: x.vrAbril, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrMaio: new FormControl(
+      //       { value: x.vrMaio, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrJunho: new FormControl(
+      //       { value: x.vrJunho, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrJulho: new FormControl(
+      //       { value: x.vrJulho, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrAgosto: new FormControl(
+      //       { value: x.vrAgosto, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrSetembro: new FormControl(
+      //       { value: x.vrSetembro, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrOutubro: new FormControl(
+      //       { value: x.vrOutubro, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrNovembro: new FormControl(
+      //       { value: x.vrNovembro, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrDezembro: new FormControl(
+      //       { value: x.vrDezembro, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     nuPreComprometimento: new FormControl(
+      //       { value: x.nuPreComprometimento, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     nuReserva: new FormControl(
+      //       { value: x.nuReserva, disabled: !this.isEditable },
+      //       [Validators.required]
+      //     ),
+      //     vrTotalRubrica: new FormControl(
+      //       {
+      //         value:
+      //           x.vrJaneiro +
+      //           x.vrFevereiro +
+      //           x.vrMarco +
+      //           x.vrAbril +
+      //           x.vrMaio +
+      //           x.vrJunho +
+      //           x.vrJulho +
+      //           x.vrAgosto +
+      //           x.vrSetembro +
+      //           x.vrOutubro +
+      //           x.vrNovembro +
+      //           x.vrDezembro,
+      //         disabled: true,
+      //       },
+      //       [Validators.required]
+      //     ),
+      //   });
 
-        this.previsoesDesembolso.push(previsaoDesembolso);
-      });
+      //   this.previsoesDesembolso.push(previsaoDesembolso);
+      // });
 
-      this.buildClassificacaoPlanejamento(response.data.gcptb024ClassificacaoPlanejamento)
-      this.somaValorTotalPlanejamentoOrcamentario();
-      this.obterMensalizacaoContrato(response.data.gcptb001Contrato.nuContrato)
+      //this.buildClassificacaoPlanejamento(this.nuPlanejamento.gcptb024ClassificacaoPlanejamento)
+      //this.somaValorTotalPlanejamentoOrcamentario();
+      //this.obterMensalizacaoContrato(this.nuPlanejamento.nU_CONTRATO)
     } catch (error) {
       console.error(error);
     }
@@ -782,7 +785,7 @@ ajustarCentavos(index: number, campo: string): void {
       }
 
       await this.apiService.put<any>(
-        `${Endpoints.URL_ORCAMENTO}/${this.nuPlanejamento}`,
+        `${Endpoints.URL_ORCAMENTO}/${this.nuPlanejamento.nU_ORC}`,
         this.form.value
       );
 
