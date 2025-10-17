@@ -58,6 +58,19 @@ export interface PlanejamentoOrcamentarioResponse {
     sG_FILIAL?: string;
     vR_PLANEJAMENTO?: number;
 
+    // coMatricula?: string;
+    // deCategoria?: number;
+    // deJustificativa?: string;
+    // deObjetivoPdtic?: string;
+    // deObjetivoPei?: string;
+    // dePlanejamentoTipo?: string;
+    // deServicoContinua?: string;
+    // deUnidadeDemandante?: string;
+    // dhCadastro?: string;
+    // noStatus?: string;
+    
+    
+
 }
 
 export interface PlanejamentoOrcamentarioConsultaResponse {

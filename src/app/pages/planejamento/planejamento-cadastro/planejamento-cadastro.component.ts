@@ -416,11 +416,11 @@ console.log(response.data)
 
   public async obterPlanejamento(): Promise<void> {
     try {
-      // const response = await this.apiService.get<
-      //   ApiResponse<PlanejamentoOrcamentarioResponse>
-      // >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL);
-      // //this.planejamento = response.data[0];
-      // console.log(this.planejamento)
+       const response = await this.apiService.get<
+         ApiResponse<PlanejamentoOrcamentarioResponse>
+       >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL);
+       this.planejamento = response.data[0];
+       console.log(this.planejamento)
       console.log(this.nuPlanejamento)
       this.form.controls['nuPlanejamentoOrcamentario'].setValue(
         this.nuPlanejamento.nU_PLANEJAMENTO
@@ -431,9 +431,9 @@ console.log(response.data)
       this.form.controls['nuAno'].setValue(this.nuPlanejamento.nU_EXERCICIO_ORCAMENTO);
       this.form.controls['nuFilial'].setValue(this.nuPlanejamento.nU_FILIAL);
       this.form.controls['deObjeto'].setValue(this.nuPlanejamento.nO_OBJETO);
-      // this.form.controls['deJustificativa'].setValue(
-      //   this.nuPlanejamento.deJustificativa
-      // );
+       this.form.controls['deJustificativa'].setValue(
+        this.nuPlanejamento.deJustificativa
+       );
       // this.form.controls['deObservacao'].setValue(
       //   this.nuPlanejamento.deObservacao
       // );
@@ -447,12 +447,12 @@ console.log(response.data)
         this.form.controls['coContrato'].setValue(
           this.nuPlanejamento.cO_CONTRATO
         );
-      // this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
-      //   this.nuPlanejamento.nuObjetivoEstrategicoPdti
-      // );
-      // this.form.controls['nuObjetivoEstrategicoPei'].setValue(
-      //   this.nuPlanejamento.nuObjetivoEstrategicoPei
-      // );
+       this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
+         this.nuPlanejamento.deObjetivoPdtic
+       );
+       this.form.controls['nuObjetivoEstrategicoPei'].setValue(
+         this.nuPlanejamento.deObjetivoPei
+       );
       if (this.nuPlanejamento.dE_DEMANDA == 'Digital') {
         this.form.controls['icDigital'].setValue(1);
       } else if (this.nuPlanejamento.dE_DEMANDA == 'Digital - TD') {
@@ -463,9 +463,11 @@ console.log(response.data)
       // this.form.controls['nuClassificacaoPlanejamento'].setValue(
       //   this.nuPlanejamento.nuClassificacaoPlanejamento
       // );
-      // this.form.controls['nuPlanejamentoTipo'].setValue(
-      //   this.nuPlanejamento.nuPlanejamentoTipo
-      // );
+       this.form.controls['nuPlanejamentoTipo'].setValue(
+         this.nuPlanejamento.dePlanejamentoTipo
+       );
+
+       
       this.form.controls['noCriador'].setValue('NULL');
       // this.form.controls['dhCadastro'].setValue(
       //   this.nuPlanejamento.dhCadastro.toString().substring(8, 10) +
