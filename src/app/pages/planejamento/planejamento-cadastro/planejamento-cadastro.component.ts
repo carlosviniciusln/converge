@@ -772,29 +772,79 @@ console.log(response.data)
   public async Alterar(): Promise<void> {
     try {
       this.submitted = true;
-
+  
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
         for (const name in controls) {
           if (controls[name].invalid) invalids.push(name);
         }
-        console.log(invalids);
+        console.log('Campos inválidos:', invalids);
         return;
-      } else if (this.form.controls['nuClassificacaoPlanejamento'].value == 1 && (this.form.controls['icDigital'].value == 1 || this.form.controls['icDigital'].value == 2)) {
+      }
+  
+      if (
+        this.form.value.nuClassificacaoPlanejamento === 1 &&
+        (this.form.value.icDigital === 1 || this.form.value.icDigital === 2)
+      ) {
         this.toastr.error('Informe a categoria da classificação digital.', 'Erro');
         return;
       }
-
-      await this.apiService.put<any>(
-        `${Endpoints.URL_ORCAMENTO}/${this.nuPlanejamento.nU_ORC}`,
-        this.form.value
+  
+      const previsao = this.previsoesDesembolso.controls[0]?.value ?? {};
+  
+      const planejamentoItem = {
+        NuPlanejamentoItem: this.form.value.nuPlanejamentoOrcamentario ?? 0,
+        NuPlanejamento: this.form.value.nuAno ?? 0,
+        NuContrato: this.form.value.nuContrato ?? 0,
+        NuFilial: this.form.value.nuFilial ?? 0,
+        NuRubrica: previsao.nuRubrica ?? 0,
+        NuStatusPlanejamentoItem: this.form.value.nuPlanejamentoStatus ?? 0,
+        NuTipoDemanda: this.form.value.nuDemandaTipo ?? 0,
+        NuVigencia: this.form.value.nuVigencia ?? 0,
+  
+        DeObjeto: this.form.value.deObjeto ?? '',
+        DeObjetivoPDTIC: this.form.value.nuObjetivoEstrategicoPdti?.toString() ?? '',
+        DeObjetivoPEI: this.form.value.nuObjetivoEstrategicoPei?.toString() ?? '',
+        DeJustificativa: this.form.value.deJustificativa ?? '',
+        NuPreComprometimento: previsao.nuPreComprometimento ?? 0,
+        NuReserva: this.form.value.nuReserva ?? 0,
+  
+        VrPlanejamentoItem: this.form.value.vrTotalOrcamentoPlanejamento ?? 0.0,
+        VrJaneiro: previsao.vrJaneiro ?? 0.0,
+        VrFevereiro: previsao.vrFevereiro ?? 0.0,
+        VrMarco: previsao.vrMarco ?? 0.0,
+        VrAbril: previsao.vrAbril ?? 0.0,
+        VrMaio: previsao.vrMaio ?? 0.0,
+        VrJunho: previsao.vrJunho ?? 0.0,
+        VrJulho: previsao.vrJulho ?? 0.0,
+        VrAgosto: previsao.vrAgosto ?? 0.0,
+        VrSetembro: previsao.vrSetembro ?? 0.0,
+        VrOutubro: previsao.vrOutubro ?? 0.0,
+        VrNovembro: previsao.vrNovembro ?? 0.0,
+        VrDezembro: previsao.vrDezembro ?? 0.0,
+  
+        NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
+        DhCadastro: this.form.value.dhCadastro ?? new Date().toISOString(),
+        DhExclusao: '',
+        NuUsuarioExclusao: 0,
+        NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
+        DhAlteracao: new Date().toISOString()
+      };
+  
+      console.log('Dados enviados:', planejamentoItem);
+  
+      await this.apiService.post<any>(
+        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-planejamento-item`,
+        planejamentoItem
       );
-
+  
       this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
     } catch (error) {
+      console.error('Erro ao alterar planejamento:', error);
+      this.toastr.error('Erro ao salvar alterações.', 'Erro');
       this.atualizarPagina.emit(false);
     }
   }
