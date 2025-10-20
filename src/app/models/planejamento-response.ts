@@ -22,6 +22,12 @@ export interface PlanejamentoOrcamentarioResponse {
     vrPreComprometimento?: number;
     nuPlanejamentoTipo: number; // Tipo Planejamento [Programação, Reprogramação]
     vrTotalOrcamentoPlanejamento: number;
+    coContrato?: string;
+    nuObjetivoPdtic?: number;
+    nuObjetivoPei?: number;
+    noStatus?: number;
+    nuExercicioOrcamento?: number;
+    nuStatusPlanejamentoItem?: number;
 
     // nuUsuario: number;
     // nuAnalistaCaixa: number;
@@ -57,19 +63,7 @@ export interface PlanejamentoOrcamentarioResponse {
     nU_TIPO_DEMANDA?: number;
     sG_FILIAL?: string;
     vR_PLANEJAMENTO?: number;
-
-    // coMatricula?: string;
-    // deCategoria?: number;
-    // deJustificativa?: string;
-    // deObjetivoPdtic?: string;
-    // deObjetivoPei?: string;
-    // dePlanejamentoTipo?: string;
-    // deServicoContinua?: string;
-    // deUnidadeDemandante?: string;
-    // dhCadastro?: string;
-    // noStatus?: string;
-    
-    
+    deObjetivoPdtic?: string;
 
 }
 

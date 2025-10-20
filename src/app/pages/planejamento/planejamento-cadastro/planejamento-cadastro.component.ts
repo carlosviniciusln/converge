@@ -428,7 +428,7 @@ console.log(response.data)
       this.form.controls['coPlanejamentoOrcamentario'].setValue(
         this.nuPlanejamento.coPlanejamentoOrcamentario
       );
-      this.form.controls['nuAno'].setValue(this.nuPlanejamento.nU_EXERCICIO_ORCAMENTO);
+      this.form.controls['nuAno'].setValue(this.planejamento.nuExercicioOrcamento);
       this.form.controls['nuFilial'].setValue(this.nuPlanejamento.nU_FILIAL);
       this.form.controls['deObjeto'].setValue(this.nuPlanejamento.nO_OBJETO);
        this.form.controls['deJustificativa'].setValue(
@@ -438,20 +438,21 @@ console.log(response.data)
       //   this.nuPlanejamento.deObservacao
       // );
       this.form.controls['nuPlanejamentoStatus'].setValue(
-        this.nuPlanejamento.nU_STATUS_PLANEJAMENTO
+        this.planejamento.nuStatusPlanejamentoItem
       );
       this.form.controls['nuDemandaTipo'].setValue(this.nuPlanejamento.nU_TIPO_DEMANDA);
       this.onPlanejadoParaChange();
       this.form.controls['nuContrato'].setValue(this.nuPlanejamento.nU_CONTRATO);
-      if (this.nuPlanejamento.cO_CONTRATO)
+      if (this.planejamento.cO_CONTRATO)
         this.form.controls['coContrato'].setValue(
           this.nuPlanejamento.cO_CONTRATO
         );
        this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
-         this.nuPlanejamento.deObjetivoPdtic
+         this.planejamento.nuObjetivoPdtic
+         
        );
        this.form.controls['nuObjetivoEstrategicoPei'].setValue(
-         this.nuPlanejamento.deObjetivoPei
+         this.planejamento.nuObjetivoPei
        );
       if (this.nuPlanejamento.dE_DEMANDA == 'Digital') {
         this.form.controls['icDigital'].setValue(1);
@@ -464,18 +465,18 @@ console.log(response.data)
       //   this.nuPlanejamento.nuClassificacaoPlanejamento
       // );
        this.form.controls['nuPlanejamentoTipo'].setValue(
-         this.nuPlanejamento.dePlanejamentoTipo
+         this.planejamento.nuPlanejamentoTipo
        );
 
-       
+
       this.form.controls['noCriador'].setValue('NULL');
-      // this.form.controls['dhCadastro'].setValue(
-      //   this.nuPlanejamento.dhCadastro.toString().substring(8, 10) +
-      //   '/' +
-      //   this.nuPlanejamento.dhCadastro.toString().substring(5, 7) +
-      //   '/' +
-      //   this.nuPlanejamento.dhCadastro.toString().substring(0, 4)
-      // );
+       this.form.controls['dhCadastro'].setValue(
+       this.planejamento.dhCadastro.toString().substring(8, 10) +
+        '/' +
+         this.planejamento.dhCadastro.toString().substring(5, 7) +
+        '/' +
+        this.planejamento.dhCadastro.toString().substring(0, 4)
+       );
 
       // this.previsoesDesembolso.clear();
       // this.nuPlanejamento.gcptb027PrevisoesDesembolso.map((x) => {
