@@ -79,12 +79,12 @@
       </a>
       <div [ngClass]="isOrcamentoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
         <ul class="nav">
-          <!-- <li routerlinkactive="active" class="nav-item">
+          <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/planejamento">
               <p>Planejamento</p>
             </a>
-          </li> -->
-          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+          </li>
+          <li  routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/planejamento-orcamentario">
               <p>Planejamento Orçamentário</p>
             </a>

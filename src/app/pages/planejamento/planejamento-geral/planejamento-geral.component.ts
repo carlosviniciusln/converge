@@ -248,15 +248,15 @@ export class PlanejamentoGeralComponent implements OnInit {
           break;
         }
         case 6: {
-          this.filtroRegistros.contrato = e.value;
-          if (e.value == null || this.selectContratos.length > 1) {
+          this.filtroRegistros.IsDigital = e.value;
+          if (e.value == null || this.selectOpcoesIsDigital.length > 1) {
               await this.obterPlanejamentosOrc();
           }
           break;
         }
         case 7: {
-          this.filtroRegistros.contrato = e.value;
-          if (e.value == null || this.selectContratos.length > 1) {
+          this.filtroRegistros.NuPlanejamentoStatus = e.value;
+          if (e.value == null || this.selectStatusPlanejamento.length > 1) {
               await this.obterPlanejamentosOrc();
           }
           break;
@@ -287,7 +287,9 @@ export class PlanejamentoGeralComponent implements OnInit {
         this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
         this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: g, value: g }));
         this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: g, value: g }));
+        this.selectStatusPlanejamento = response?.data?.listaStatus.map(g => ({ label: g, value: g }));
         this.selectNuOrcs = response?.data?.listaNuOrc.map(g => ({ label: g, value: g }));
+        this.selectOpcoesIsDigital = this.listaOpcoesIsDigital.map(g => ({ label: g.label, value: g.value }));
         this.quantidadeTotal = response.data.totalRecords;
       this.loading = false;
     } catch (error) {
