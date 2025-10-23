@@ -3,6 +3,76 @@ import { Filial } from "./filial";
 import { Orcamento } from "./orcamento";
 
 export interface PlanejamentoOrcamentarioResponse {
+    nuPlanejamentoItem: number;
+    nuPlanejamentoOrcamentario: number;
+    coPlanejamentoOrcamentario: string; // ano e numeração sequencial
+    nuAno: number; // ano Exercicio
+    nuFilial: number; // [GEPAC, GEQTI, GECMI, GEPTI, ...]
+    deObjeto: string;
+    deJustificativa: string; // Justificativa Orcamento
+    deObservacao: string; // Observação Orcamento
+    nuPlanejamentoStatus: number; // [Em Avaliação, Em Revisão, Validado]
+    nuDemandaTipo: number; // Planejado Para (Razão): [Nova Contratação, Alteração Contratual, Continuidade de Contrato Vigente]
+    nuTipoDemanda?: number;
+    // boServicoContinuo: boolean; // [Sim, Não] Atrelado a nuDemandaTipo?
+    nuContrato?: number;
+    //txCriticidade: string; // [Baixa, Média, Alta]
+    nuObjetivoEstrategicoPdti: number;
+    nuObjetivoEstrategicoPei: number;
+    nuClassificacaoPlanejamento: number;
+    nuPreComprometimento?: number;
+    vrPreComprometimento?: number;
+    nuPlanejamentoTipo: number; // Tipo Planejamento [Programação, Reprogramação]
+    vrTotalOrcamentoPlanejamento: number;
+    coContrato?: string;
+    nuObjetivoPdtic?: number;
+    nuObjetivoPei?: number;
+    noStatus?: number;
+    nuExercicioOrcamento?: number;
+    nuStatusPlanejamentoItem?: number;
+    /**/
+    coMatricula: string;
+    coExercicio?: number;
+
+    // nuUsuario: number;
+    // nuAnalistaCaixa: number;
+    // nuColaborador: number;
+    // noUsuario: string;
+    // noAnalistaCaixa: string;
+    // noColaborador: string;
+
+    dhCadastro: Date;
+    // dhExclusao: Date;
+
+    gcptb001Contrato?: ContratoResponse;
+    gcptb005Filial: Filial;
+    gcptb010Orcamento?: Orcamento;
+    gcptb019PlanejamentoTipo: PlanejamentoTipoResponse;
+    gcptb023DemandaTipo: DemandaTipoResponse;
+    gcptb024ClassificacaoPlanejamento: ClassificacaoPlanejamentoResponse;
+    gcptb025PlanejamentoStatus: PlanejamentoStatusResponse;
+    gcptb026ObjetivoEstrategico: ObjetivoEstrategicoResponse;
+    gcptb027PrevisoesDesembolso: PrevisaoDesembolsoResponse[];
+
+    cO_CONTRATO?: string;
+    cO_EXERCICIO?: number;
+    dE_DEMANDA?: string;
+    nO_OBJETO?: string;
+    nO_STATUS?: string;
+    nU_CONTRATO?: number;
+    nU_EXERCICIO_ORCAMENTO?: number;
+    nU_FILIAL?: number;
+    nU_ORC?: number;
+    nU_PLANEJAMENTO?: number;
+    nU_STATUS_PLANEJAMENTO?: number;
+    nU_TIPO_DEMANDA?: number;
+    sG_FILIAL?: string;
+    vR_PLANEJAMENTO?: number;
+    deObjetivoPdtic?: string;
+
+}
+
+export interface PlanejamentoItemResponse {
     nuPlanejamentoOrcamentario: number;
     coPlanejamentoOrcamentario: string; // ano e numeração sequencial
     nuAno: number; // ano Exercicio
@@ -29,25 +99,25 @@ export interface PlanejamentoOrcamentarioResponse {
     nuExercicioOrcamento?: number;
     nuStatusPlanejamentoItem?: number;
 
-    // nuUsuario: number;
-    // nuAnalistaCaixa: number;
-    // nuColaborador: number;
-    // noUsuario: string;
-    // noAnalistaCaixa: string;
-    // noColaborador: string;
-
     dhCadastro: Date;
     // dhExclusao: Date;
+    nuPrevisaoDesembolso: string;
+    nuRubrica: string;
+    vrJaneiro: number;
+    vrFevereiro: number;
+    vrMarco: number;
+    vrAbril: number;
+    vrMaio: number;
+    vrJunho: number;
+    vrJulho: number;
+    vrAgosto: number;
+    vrSetembro: number;
+    vrOutubro: number;
+    vrNovembro: number;
+    vrDezembro: number;
+    vrTotalRubrica: number;
+    nuReserva: number;
 
-    gcptb001Contrato?: ContratoResponse;
-    gcptb005Filial: Filial;
-    gcptb010Orcamento?: Orcamento;
-    gcptb019PlanejamentoTipo: PlanejamentoTipoResponse;
-    gcptb023DemandaTipo: DemandaTipoResponse;
-    gcptb024ClassificacaoPlanejamento: ClassificacaoPlanejamentoResponse;
-    gcptb025PlanejamentoStatus: PlanejamentoStatusResponse;
-    gcptb026ObjetivoEstrategico: ObjetivoEstrategicoResponse;
-    gcptb027PrevisoesDesembolso: PrevisaoDesembolsoResponse[];
 
     cO_CONTRATO?: string;
     cO_EXERCICIO?: number;
