@@ -36,6 +36,8 @@ export enum Endpoints {
 
   URL_ORCAMENTO = 'v1/orcamento',
 
+  URL_ORCAMENTO_CADASTRO = 'v1/PlanejamentoOrcamentario/cadastrar-planejamento-item',
+
   URL_PLANEJAMENTO_ORCAMENTO = 'v1/PlanejamentoOrcamentario',
 
   URL_MENSALIZACAO = 'v1/mensalizacao',

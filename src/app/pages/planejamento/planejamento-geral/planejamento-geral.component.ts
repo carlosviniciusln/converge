@@ -58,7 +58,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectObjeto: Select2Data;
   anoExercicio: number;
   ordemTipoExercicio: string;
-  nuPlanejamentoExercicio: string;
+  nuPlanejamentoExercicio?: number;
   statusExercio: string;
   selectedAno: string = null;
   selectedContrato: string = null;
@@ -110,8 +110,11 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.anoExercicio =params['cO_EXERCICIO'];
       this.ordemTipoExercicio = params['tipo'];
-      this.statusExercio = params['statusPlanejamento'];
-      this.nuPlanejamentoExercicio = params['nuPlanejamento'];
+      this.statusExercio = params['statusPlanejamento'];      
+      
+      const valor = Number(params['nuPlanejamento']);
+      this.nuPlanejamentoExercicio = isNaN(valor) ? 0 : valor;
+
     });
 
     this.filtroRegistros = {
@@ -121,6 +124,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     };
     await this.obterPlanejamentosOrc();
     await this.obterdadosDashboard();
+    console.log("nuPlanejamentoExercicio", this.nuPlanejamentoExercicio)
   }
 
   obterPermissoes() {
@@ -135,7 +139,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
   }
 
-  openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: any) {
+  openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: any, nuPlanejamentoOrcamento?:number) {
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -145,6 +149,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     });
 
     modalRef.componentInstance.nuPlanejamento = planejamento;
+    modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {

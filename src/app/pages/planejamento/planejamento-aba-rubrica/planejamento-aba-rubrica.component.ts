@@ -29,7 +29,8 @@ import { PlanejamentoOrcamentarioModel } from 'src/app/models/planejamento-orcam
 })
 export class PlanejamentoAbaRubricaComponent implements OnInit {
 
-    @Input() nuPlanejamento : string;
+    @Input() nuPlanejamento? : number;
+    @Input() nuPlanejamentoOrcamentario? : number;
     @Input() anoExercio : number;
     @Input() tipoExercicio : string;
     permissions: ActionPolicies;
@@ -49,7 +50,7 @@ export class PlanejamentoAbaRubricaComponent implements OnInit {
 
 ngOnChanges(changes: SimpleChanges) {
   if (changes['nuPlanejamento'] && changes['nuPlanejamento'].currentValue) {
-    this.obterValores(this.nuPlanejamento);
+    this.obterValores(this.nuPlanejamento+"");
   }
 }
 
