@@ -209,7 +209,6 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   async updateRelatorio(e, op: number): Promise<void> {
     this.loading = true;
-    console.log(op, "TESTE")
     if(e.value == null){
         this.filtroRegistros = {
           pageNumber: 1,
