@@ -55,6 +55,7 @@ import { RegistrarAtesteComponent } from './pages/ateste/registrar-ateste/regist
 import { LimitesComponent } from './pages/planejamento/limites/limites.component';
 import { ModalLimitesComponent } from "./pages/planejamento/limites/modal-limites/modal-limites.component";
 import { ModalUploadComponent } from './pages/planejamento/limites/modal-upload/modal-upload.component';
+import { CheckboxModule } from 'primeng/checkbox';
 
 registerLocaleData(ptBr);
 
@@ -67,6 +68,7 @@ const maskConfig: Partial<IConfig> = {
     BrowserModule,
     MatMenuModule,
     CommonModule,
+    CheckboxModule,
     BrowserAnimationsModule,
     TooltipModule,
     TableModule,

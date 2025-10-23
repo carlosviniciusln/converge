@@ -63,5 +63,6 @@ export interface ContratoPlanejamentosOrcamentario {
   nO_STATUS: string,
   nU_FILIAL: number,
   sG_FILIAL: string,
-  vR_PLANEJAMENTO: number
+  vR_PLANEJAMENTO: number,
+  sT_SELECIONADO: boolean
 }
