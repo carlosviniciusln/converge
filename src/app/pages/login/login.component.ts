@@ -20,14 +20,14 @@ export class LoginComponent implements OnInit {
   isLoginFailed = false;
   errorMessage = '';
   roles: string[] = [];
-  
+
   submitted = false;
 
   checked1: boolean = false;
 
   constructor(
-    public activeModal: NgbActiveModal, 
-    private formBuilder: FormBuilder, 
+    public activeModal: NgbActiveModal,
+    private formBuilder: FormBuilder,
     private apiService: ApiService,
     private tokenStorage: TokenStorageService) {
       if (this.tokenStorage.getToken()) {
@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    
+
     this.form = this.formBuilder.group({
       matricula: ['', [Validators.required]],
       senha: ['', [Validators.required]],

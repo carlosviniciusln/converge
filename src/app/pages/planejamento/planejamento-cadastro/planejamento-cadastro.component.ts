@@ -26,9 +26,10 @@ import { ContratoResponse } from 'src/app/models/contrato-response';
 import { Orcamento } from 'src/app/models/orcamento';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Select2Data, Select2Option } from 'ng-select2-component';
-import { ActionPolicies, ModuleEnum, PageAction, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ActionPolicies, ModuleEnum, PageAction, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { Gcpvw008Mensalizacao } from 'src/app/models/Gcptb001ContratoResponse';
 import Swal from 'sweetalert2';
+import { IUser } from 'src/app/models/DTOs/IUser';
 
 @Component({
   selector: 'app-planejamento-cadastro',
@@ -95,6 +96,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public actionButtonLabel: string;
   public currentPageAction: PageAction;
 
+  public currentProfile: IUser;
+  public isPerfilPrivilegiado = false;
+
   selectContratos: Select2Data;
   selectedContrato: string = null;
 
@@ -108,11 +112,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
     public token: TokenStorageService,
     private modalService: NgbModal
   ) {
-    this.obterPermissoes();
+
   }
 
   ngOnInit(): void {
     this.loading = true;
+    this.obterPermissoes();
     this.definirPageAction();
 
     this.formulario();
@@ -139,6 +144,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
+    this.currentProfile  = this.token.obterUsuarioEstruturado() as IUser;
+
+    if(this.nuPlanejamento.cO_FILIAL == this.currentProfile.coUnidade)
+      this.isPerfilPrivilegiado = true;
   }
 
   definirPageAction() {
@@ -235,7 +244,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     return this.form.get('previsoesDesembolso') as FormArray;
   }
 
-  
+
 
 currencyOptions = {
   prefix: 'R$ ',
@@ -303,7 +312,7 @@ currencyOptions = {
     }
   }
 
-  
+
 onValorRubricaChange(i: number) {
   const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
 
@@ -394,7 +403,6 @@ ajustarCentavos(index: number, campo: string): void {
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioConsultaResponse>
       >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/contrato?nuContrato=${nuContrato}`);
-console.log(response.data)
       if (response.succeeded && response.data) {
         this.form.patchValue({
           nuContrato: response.data.contrato,
@@ -420,8 +428,6 @@ console.log(response.data)
          ApiResponse<PlanejamentoOrcamentarioResponse>
        >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL);
        this.planejamento = response.data[0];
-       console.log(this.planejamento)
-      console.log(this.nuPlanejamento)
       this.form.controls['nuPlanejamentoOrcamentario'].setValue(
         this.nuPlanejamento.nU_PLANEJAMENTO
       );
@@ -449,7 +455,7 @@ console.log(response.data)
         );
        this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
          this.planejamento.nuObjetivoPdtic
-         
+
        );
        this.form.controls['nuObjetivoEstrategicoPei'].setValue(
          this.planejamento.nuObjetivoPei
@@ -773,7 +779,7 @@ console.log(response.data)
   public async Alterar(): Promise<void> {
     try {
       this.submitted = true;
-  
+
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
@@ -783,7 +789,7 @@ console.log(response.data)
         console.log('Campos inválidos:', invalids);
         return;
       }
-  
+
       if (
         this.form.value.nuClassificacaoPlanejamento === 1 &&
         (this.form.value.icDigital === 1 || this.form.value.icDigital === 2)
@@ -791,9 +797,9 @@ console.log(response.data)
         this.toastr.error('Informe a categoria da classificação digital.', 'Erro');
         return;
       }
-  
+
       const previsao = this.previsoesDesembolso.controls[0]?.value ?? {};
-  
+
       const planejamentoItem = {
         NuPlanejamentoItem: this.form.value.nuPlanejamentoOrcamentario ?? 0,
         NuPlanejamento: this.form.value.nuAno ?? 0,
@@ -803,14 +809,14 @@ console.log(response.data)
         NuStatusPlanejamentoItem: this.form.value.nuPlanejamentoStatus ?? 0,
         NuTipoDemanda: this.form.value.nuDemandaTipo ?? 0,
         NuVigencia: this.form.value.nuVigencia ?? 0,
-  
+
         DeObjeto: this.form.value.deObjeto ?? '',
         DeObjetivoPDTIC: this.form.value.nuObjetivoEstrategicoPdti?.toString() ?? '',
         DeObjetivoPEI: this.form.value.nuObjetivoEstrategicoPei?.toString() ?? '',
         DeJustificativa: this.form.value.deJustificativa ?? '',
         NuPreComprometimento: previsao.nuPreComprometimento ?? 0,
         NuReserva: this.form.value.nuReserva ?? 0,
-  
+
         VrPlanejamentoItem: this.form.value.vrTotalOrcamentoPlanejamento ?? 0.0,
         VrJaneiro: previsao.vrJaneiro ?? 0.0,
         VrFevereiro: previsao.vrFevereiro ?? 0.0,
@@ -824,7 +830,7 @@ console.log(response.data)
         VrOutubro: previsao.vrOutubro ?? 0.0,
         VrNovembro: previsao.vrNovembro ?? 0.0,
         VrDezembro: previsao.vrDezembro ?? 0.0,
-  
+
         NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
         DhCadastro: this.form.value.dhCadastro ?? new Date().toISOString(),
         DhExclusao: '',
@@ -832,14 +838,14 @@ console.log(response.data)
         NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
         DhAlteracao: new Date().toISOString()
       };
-  
+
       console.log('Dados enviados:', planejamentoItem);
-  
+
       await this.apiService.post<any>(
         `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-planejamento-item`,
         planejamentoItem
       );
-  
+
       this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();

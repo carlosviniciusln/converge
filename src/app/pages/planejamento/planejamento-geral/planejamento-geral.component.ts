@@ -86,7 +86,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     ud: null,
     nuOrc: 0,
     contrato: null,
-    NuPlanejamentoStatus: null,
+    Status: null,
     NuPlanejamentoTipo: null,
     tipo: null,
     IsDigital: null,
@@ -209,6 +209,7 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   async updateRelatorio(e, op: number): Promise<void> {
     this.loading = true;
+    console.log(op, "TESTE")
     if(e.value == null){
         this.filtroRegistros = {
           pageNumber: 1,
@@ -255,8 +256,8 @@ export class PlanejamentoGeralComponent implements OnInit {
           break;
         }
         case 7: {
-          this.filtroRegistros.NuPlanejamentoStatus = e.value;
-          if (e.value == null || this.selectStatusPlanejamento.length > 1) {
+          this.filtroRegistros.Status = e.value;
+          if (e.value == null || this.selectedStatusPlanejamento.length > 1) {
               await this.obterPlanejamentosOrc();
           }
           break;

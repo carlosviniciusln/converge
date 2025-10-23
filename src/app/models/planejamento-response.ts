@@ -8,6 +8,7 @@ export interface PlanejamentoOrcamentarioResponse {
     nuAno: number; // ano Exercicio
     nuFilial: number; // [GEPAC, GEQTI, GECMI, GEPTI, ...]
     deObjeto: string;
+    deUnidadeDemandante: string;
     deJustificativa: string; // Justificativa Orcamento
     deObservacao: string; // Observação Orcamento
     nuPlanejamentoStatus: number; // [Em Avaliação, Em Revisão, Validado]
