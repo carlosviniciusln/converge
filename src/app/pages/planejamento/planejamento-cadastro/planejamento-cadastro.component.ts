@@ -33,6 +33,7 @@ import { ActionPolicies, ModuleEnum, PageAction, PerfisEnum, TokenStorageService
 import { Gcpvw008Mensalizacao } from 'src/app/models/Gcptb001ContratoResponse';
 import Swal from 'sweetalert2';
 import { IUser } from 'src/app/models/DTOs/IUser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-planejamento-cadastro',
@@ -111,6 +112,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   submitted = false;
 
   constructor(
+    private http: HttpClient,
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
@@ -1005,6 +1007,9 @@ public parseDecimal(value: any): number {
     try {
       this.submitted = true;
 
+      // var codigoContrato = this.form.controls['coContrato'].value
+      // this.form.controls['nuContrato'].setValue(codigoContrato);
+
       var obj = this.form.value;
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
       
@@ -1054,7 +1059,7 @@ public parseDecimal(value: any): number {
 
   for(var p in previsoes){
 
-    console.log(p, "prev")
+    //console.log(p, "prev")
     var item: PlanejamentoOrcamentarioItemRequest = {
       NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
       NuPlanejamento: this.nuPlanejamentoOrcamento,
@@ -1087,20 +1092,30 @@ public parseDecimal(value: any): number {
       VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
       VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
 
-      NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
-      DhCadastro: this.form.value.dhCadastro ?? new Date().toISOString(),
-      DhExclusao: undefined,
-      NuUsuarioExclusao: 0,
-      NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
-      DhAlteracao: new Date()
+      
+       DhExclusao: undefined,
+       NuUsuarioExclusao: null,
+       NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
+       DhAlteracao: new Date()
     };
 
     lista.push(item);
   }
   console.log(lista, "lista")
+  
+  
+
+// const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+//   await this.http.post<any>(
+//     `${Endpoints.URL_ORCAMENTO_EDITA}`,
+//     lista,
+//     { headers }
+//   );
+  
 
       await this.apiService.post<any>(
-        `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
+        `${Endpoints.URL_ORCAMENTO_EDITA}`,
         lista
       );
       
@@ -1110,6 +1125,77 @@ public parseDecimal(value: any): number {
       this.activeModal.dismiss();
     } catch (error) {
       console.error('Erro ao alterar planejamento:', error);
+      this.toastr.error('Erro ao salvar alterações.', 'Erro');
+      this.atualizarPagina.emit(false);
+    }
+  }
+
+  public async ExcluirItens(): Promise<void> {
+    try {
+      this.submitted = true;
+
+      // var codigoContrato = this.form.controls['coContrato'].value
+      // this.form.controls['nuContrato'].setValue(codigoContrato);
+
+      var obj = this.form.value;
+      var lista: PlanejamentoOrcamentarioItemRequest[] = [];
+      
+     
+        const previsoes = obj.previsoesDesembolso;
+
+        for(var p in previsoes){
+          var item: PlanejamentoOrcamentarioItemRequest = {
+            NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
+            NuPlanejamento: this.nuPlanejamentoOrcamento,
+            NuContrato: obj.nuContrato,
+            NuFilial: obj.nuFilial,
+            NuRubrica: previsoes[p].nuRubrica,
+            NuStatusPlanejamentoItem: 10, //excluido
+            NuTipoDemanda: obj.nuDemandaTipo,
+            NuVigencia: obj.nuAno,
+
+            DeObjeto: obj.deObjeto,
+            DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
+            DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
+            DeJustificativa: obj.deJustificativa,
+
+            NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
+            NuReserva: Number(previsoes[p].nuReserva),
+
+            VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
+            VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
+            VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
+            VrMarco: this.parseDecimal(previsoes[p].vrMarco),
+            VrAbril: this.parseDecimal(previsoes[p].vrAbril),
+            VrMaio: this.parseDecimal(previsoes[p].vrMaio),
+            VrJunho: this.parseDecimal(previsoes[p].vrJunho),
+            VrJulho: this.parseDecimal(previsoes[p].vrJulho),
+            VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
+            VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
+            VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
+            VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
+            VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
+
+            
+            DhExclusao: new Date(),
+            NuUsuarioExclusao: this.token.getUser()?.nuUsuario ?? 0,
+            NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
+            DhAlteracao: new Date()
+          };
+
+          lista.push(item);
+        }
+
+      await this.apiService.post<any>(
+        `${Endpoints.URL_ORCAMENTO_EDITA}`,
+        lista
+      );
+      
+      this.toastr.success('Exclusão efetuada com sucesso.', 'Sucesso');
+      this.atualizarPagina.emit(true);
+      this.activeModal.dismiss();
+    } catch (error) {
+      console.error('Erro ao excluir planejamento:', error);
       this.toastr.error('Erro ao salvar alterações.', 'Erro');
       this.atualizarPagina.emit(false);
     }
@@ -1200,6 +1286,7 @@ public parseDecimal(value: any): number {
   }
 
   async Excluir(planejamentoOrcamentario: PlanejamentoOrcamentarioResponse) {
+    console.log(this.nuPlanejamentoOrcamento,"this.nuPlanejamentoOrcamento", planejamentoOrcamentario)
     const alert = await Swal.fire({
       title: '',
       text: `Deseja realmente excluir Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario}?`,
@@ -1218,15 +1305,16 @@ public parseDecimal(value: any): number {
     if (alert) {
       this.loading = true;
       try {
-        const response = await this.apiService.delete<ApiResponse<boolean>>(
-          `${Endpoints.URL_ORCAMENTO}/` +
-          planejamentoOrcamentario.nuPlanejamentoOrcamentario
-        );
+        // const response = await this.apiService.delete<ApiResponse<boolean>>(
+        //   `${Endpoints.URL_ORCAMENTO}/` +
+        //   planejamentoOrcamentario.nuPlanejamentoOrcamentario
+        // );
 
-        this.toastr.success(
-          `Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario} excluído com sucesso.`,
-          'Sucesso'
-        );
+        // this.toastr.success(
+        //   `Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario} excluído com sucesso.`,
+        //   'Sucesso'
+        // );
+        this.ExcluirItens();
         setTimeout(() => {
           location.reload();
        }, 2000);
