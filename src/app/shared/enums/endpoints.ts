@@ -57,5 +57,7 @@ export enum Endpoints {
   URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL1= 'v1/PlanejamentoOrcamentario/limite-nivel-1',
   URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL2 = 'v1/PlanejamentoOrcamentario/limite-nivel-2',
   URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL3 = 'v1/PlanejamentoOrcamentario/limite-nivel-3',
-  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL4 = 'v1/PlanejamentoOrcamentario/limite-nivel-4'
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL4 = 'v1/PlanejamentoOrcamentario/limite-nivel-4',
+
+  URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS = 'v1/PlanejamentoOrcamentario/alterar-status-planejamento-item'
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ApiService } from 'src/app/services/api.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
 import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
@@ -16,8 +17,10 @@ import { Filial } from 'src/app/models/filial';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { ContratoResponse } from 'src/app/models/contrato-response';
 import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejamento-cadastro.component';
+import { ConfirmacaoModalComponent } from 'src/app/components/modal-confirmacao/confirmacao-modal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
+import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -38,6 +41,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   listaObjetoPlanejamento: PlanejamentoObjetoResponse[];
   listaTiposPlanejamento: PlanejamentoTipoResponse[];
   listaTiposDemanda: DemandaTipoResponse[];
+  
 
   listaOpcoesIsDigital: { value: number; label: string }[] = [
     { value: 1, label: 'Digital' },
@@ -52,6 +56,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectFiliais: Select2Data;
   selectNuOrcs: Select2Data;
   selectStatusPlanejamento: Select2Data;
+  selectStatusPlanejamentoCompleto: Select2Data;
   selectTiposPlanejamento: Select2Data;
   selectTiposDemanda: Select2Data;
   selectOpcoesIsDigital: Select2Data;
@@ -70,6 +75,9 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectedOpcaoIsDigital: string = null;
   selectedObjeto: string = null;
 
+  selecionarTodos: boolean = false;
+  statusSelecionados: number[] = [];
+
   dadosDashboard: PlanejamentoOrcamentarioModel[] = [];
   quantidadeTotal: number = 0;
   loading: boolean = true;
@@ -78,6 +86,7 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   permissions: ActionPolicies;
 
+  public listaStatusPlanejamentoColapse: PlanejamentoStatusResponse[] = [];
   public labelTeste : string;
   public filtroRegistros: any = {
     pageNumber: 1,
@@ -124,7 +133,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     };
     await this.obterPlanejamentosOrc();
     await this.obterdadosDashboard();
-    console.log("nuPlanejamentoExercicio", this.nuPlanejamentoExercicio)
+    await this.obterStatusPlanejamento();
   }
 
   obterPermissoes() {
@@ -191,6 +200,96 @@ export class PlanejamentoGeralComponent implements OnInit {
     //   this.loading = false;
     // } catch (error) { }
   }
+
+  
+  async obterStatusPlanejamento(): Promise<void> {
+    const response = await this.apiService.get<ApiResponse<PlanejamentoStatusResponse[]>>(
+      `${Endpoints.URL_ORCAMENTO}/status-planejamento`
+    );
+    this.listaStatusPlanejamento = response.data;
+    this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.map(status => ({
+      label: status.noPlanejamentoStatus,
+      value: status.nuPlanejamentoStatus
+    }));
+  }
+
+
+  async onSalvarMudancasStatus(): Promise<void> {
+    try {
+      const modalRef = this.modalService.open(ConfirmacaoModalComponent, {
+        backdrop: 'static',
+        keyboard: false,
+        centered: true,
+        size: 'md'
+      });
+  
+      modalRef.componentInstance.title = 'Confirmar alterações';
+      modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
+      modalRef.componentInstance.confirmLabel = 'Sim, salvar';
+      modalRef.componentInstance.cancelLabel = 'Não, voltar';
+      modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
+      modalRef.componentInstance.iconClass = 'text-warning';
+  
+      const confirmed = await modalRef.result;
+  
+      if (confirmed) {
+        const idSelecionado = this.statusSelecionados[0];
+        const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
+        if (!novoStatusObj) return;
+  
+        const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
+        if (itensSelecionados.length === 0) {
+          this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
+          return;
+        }
+
+        const statusNovo: AlterarStatusPlanejamento = {
+          nuPlanejamento: Number(this.nuPlanejamentoExercicio), 
+          status: novoStatusObj.nuPlanejamentoStatus,
+          nuPlanejamentoItem: itensSelecionados.map(item => ({
+            NuTipoDemanda: item.nU_TIPO_DEMANDA,
+            NuContrato: item.nU_CONTRATO
+          }))          
+        };
+        
+        await this.apiService.post(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
+        this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
+  
+        await this.obterPlanejamentosOrc();
+        this.selecionarTodos = false;
+        this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
+      }
+    } catch {
+      this.toastr.error('Ocorreu um erro ao salvar', 'Error');
+    }
+  }
+  
+  atualizarStatusSelecionados() {
+    if (!this.statusSelecionados || this.statusSelecionados.length === 0) return;
+
+    const idSelecionado = this.statusSelecionados[0];
+    const novoStatus = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
+    if (!novoStatus) return;
+
+    const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
+    if (itensSelecionados.length === 0) return;
+
+    itensSelecionados.forEach(p => {
+      p.nO_STATUS = novoStatus.noPlanejamentoStatus;
+    });
+  }
+  
+  selecionarTodosItens() {
+    this.planejamentos.forEach(p => {
+      p.sT_SELECIONADO = this.selecionarTodos;
+    });
+  }
+
+
+  onToggleItemSelecionado(): void {
+    this.atualizarStatusSelecionados();
+  }
+
 
   public downloadPlanejamentoDesembolso() {
     return this.apiService.downloadfile(
@@ -281,21 +380,21 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
     this.loading = false;
   }
-
+  
   public async obterPlanejamentosOrc(): Promise<void> {
     this.loading = true;
     try {
       const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
-        (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
-        this.planejamentos = response?.data?.contratos;
-        this.selectContratos = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
-        this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
-        this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: g, value: g }));
-        this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: g, value: g }));
-        this.selectStatusPlanejamento = response?.data?.listaStatus.map(g => ({ label: g, value: g }));
-        this.selectNuOrcs = response?.data?.listaNuOrc.map(g => ({ label: g, value: g }));
-        this.selectOpcoesIsDigital = this.listaOpcoesIsDigital.map(g => ({ label: g.label, value: g.value }));
-        this.quantidadeTotal = response.data.totalRecords;
+      (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
+      this.planejamentos = response?.data?.contratos.map(p => ({...p,sT_SELECIONADO: false }));
+      this.selectContratos = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
+      this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
+      this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: g, value: g }));
+      this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: g, value: g }));
+      this.selectStatusPlanejamento = response?.data?.listaStatus.map(g => ({ label: g, value: g }));
+      this.selectNuOrcs = response?.data?.listaNuOrc.map(g => ({ label: g, value: g }));
+      this.selectOpcoesIsDigital = this.listaOpcoesIsDigital.map(g => ({ label: g.label, value: g.value }));
+      this.quantidadeTotal = response.data.totalRecords;
       this.loading = false;
     } catch (error) {
       this.loading = false;

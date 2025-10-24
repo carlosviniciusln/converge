@@ -87,14 +87,24 @@
                             placeholder="Digital"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown  [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
-                            [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)"
-                            [showClear]="true" placeholder="Status"></p-dropdown>
+                          <p-dropdown [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento" 
+                          [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)"
+                          [showClear]="true" placeholder="Status"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
                           <p-dropdown class="objet-dropdown" [options]="selectObjeto" [(ngModel)]="selectedObjeto" [filter]="true"
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)" [showClear]="true"
                             placeholder="Objeto"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1 me-3" style="margin-left:auto; margin-right: 9.5rem;">
+                          <button
+                            type="button"
+                            class="btn-sm btn-add btn-save-status"
+                            (click)="onSalvarMudancasStatus()"
+                            title="Salvar alterações de status"
+                          >
+                            Salvar status
+                          </button>
                         </div>
                     </div>
                   </ng-template>
@@ -122,7 +132,23 @@
                         <div class="p-d-flex p-jc-between text-center">Tipo</div>
                       </th>
                       <th>
-                        <div class="p-d-flex p-jc-between text-center">Status</div>
+                        <div class="p-d-flex p-jc-center p-ai-center" style="gap: 0.75rem;">
+                          <p-checkbox
+                            [(ngModel)]="selecionarTodos"
+                            (onChange)="selecionarTodosItens()"
+                            [binary]="true">
+                          </p-checkbox>
+
+                          <p-dropdown
+                            [options]="selectStatusPlanejamentoCompleto" 
+                            [(ngModel)]="statusSelecionados[0]" 
+                            placeholder="Status"
+                            (onChange)="atualizarStatusSelecionados()"
+                            styleClass="p-dropdown-sm"
+                            optionLabel="label"
+                            optionValue="value">
+                          </p-dropdown>
+                        </div>
                       </th>
                       <th>
                         <div class="p-d-flex p-jc-between text-center">Valor</div>
@@ -168,10 +194,28 @@
                         <span class="p-column-title">Tipo</span>
                         {{ planejamento.dE_DEMANDA }}
                       </td>
-                      <td style="text-align: center">
-                        <span class="p-column-title">Status</span>
-                        {{ planejamento.nO_STATUS }}
+                      
+                      <td
+                        class="col-status"
+                        style="text-align: center"
+                        (click)="$event.stopPropagation()"
+                        (dblclick)="$event.stopPropagation()"
+                        (keydown.enter)="$event.stopPropagation()"
+                        (keydown.space)="$event.stopPropagation()"
+                        >
+                      <p-checkbox
+                        [(ngModel)]="planejamento.sT_SELECIONADO"
+                        [binary]="true"
+                        (onChange)="onToggleItemSelecionado()"
+                        (click)="$event.stopPropagation()"
+                      >
+                      </p-checkbox>
+
+                      <span class="p-column-title">Status</span>
+                      {{ planejamento.nO_STATUS }}
                       </td>
+
+
                       <td style="text-align: right">
                         <span class="p-column-title">Valor</span>
                         {{ planejamento.vR_PLANEJAMENTO | currency : "BRL" }}
