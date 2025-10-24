@@ -33,6 +33,7 @@ import { ActionPolicies, ModuleEnum, PageAction, PerfisEnum, TokenStorageService
 import { Gcpvw008Mensalizacao } from 'src/app/models/Gcptb001ContratoResponse';
 import Swal from 'sweetalert2';
 import { IUser } from 'src/app/models/DTOs/IUser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-planejamento-cadastro',
@@ -111,6 +112,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   submitted = false;
 
   constructor(
+    private http: HttpClient,
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
@@ -145,6 +147,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
     console.log(this.nuPlanejamento, "orc");
     console.log(this.nuPlanejamentoOrcamento, "novo orc");
+    if(this.nuPlanejamentoOrcamento == null){
+      this.nuPlanejamentoOrcamento =  this.nuPlanejamento?.nU_PLANEJAMENTO;
+    }
 
     const nU_ORC = this.nuPlanejamento?.nU_ORC;
     if (nU_ORC != null) {
@@ -160,8 +165,16 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
     this.currentProfile  = this.token.obterUsuarioEstruturado() as IUser;
 
-    if(this.nuPlanejamento.cO_FILIAL == this.currentProfile.coUnidade)
-      this.isPerfilPrivilegiado = true;
+/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
+/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
+/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
+    // if(this.planejamento.cO_FILIAL == this.currentProfile.coUnidade)
+    //   this.isPerfilPrivilegiado = true;
+    if(this.token.getUser()?.nuUsuario == 194340) this.isPerfilPrivilegiado = true;
+/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
+/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
+/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
+
   }
 
   definirPageAction() {
@@ -226,8 +239,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
         [Validators.required]
       ),
       nuClassificacaoPlanejamento: new FormControl(
-        { value: 1, disabled: !this.isEditable },
-        [Validators.required]
+        { value: 1, disabled: !this.isEditable }
+        
       ),
       nuPlanejamentoTipo: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -249,6 +262,35 @@ export class PlanejamentoCadastroComponent implements OnInit {
       ),
     });
   }
+  
+formularioLivre() {
+  if (!this.form) return;
+
+  // Habilita todos os controles do nível principal
+  Object.keys(this.form.controls).forEach((key) => {
+    const control = this.form.get(key);
+    if (control?.disabled && key !='vrTotalOrcamentoPlanejamento') {
+      control.enable();
+    }
+  });
+
+  // Habilita todos os controles dentro do FormArray previsoesDesembolso
+  const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
+  if (previsoesArray) {
+    previsoesArray.controls.forEach((grupo) => {
+      if (grupo instanceof FormGroup) {
+        Object.keys(grupo.controls).forEach((childKey) => {
+          const childControl = grupo.get(childKey);
+          if (childControl?.disabled && childKey != "vrTotalRubrica") {            
+            childControl.enable();            
+          }
+        });
+      }
+    });
+  }  
+  this.onPlanejadoParaChange();
+}
+
 
   get f() {
     return this.form.controls;
@@ -537,6 +579,9 @@ ajustarCentavos(index: number, campo: string): void {
                  nuRubrica: new FormControl(
                    { value: x.nuRubrica, disabled: !this.isEditable },
                    [Validators.required]
+                 ),
+                 nuPlanejamentoItem: new FormControl(
+                   { value: x.nuPlanejamentoItem, disabled: true }
                  ),
                 vrJaneiro: new FormControl(
                   { value: x.vrJaneiro, disabled: !this.isEditable },
@@ -893,7 +938,7 @@ public parseDecimal(value: any): number {
     console.log(p, "prev")
     var item: PlanejamentoOrcamentarioItemRequest = {
       NuPlanejamentoItem: 0,
-      NuPlanejamento: obj.nuPlanejamentoOrcamentario,
+      NuPlanejamento: this.nuPlanejamentoOrcamento,
       NuContrato: obj.nuContrato,
       NuFilial: obj.nuFilial,
       NuRubrica: previsoes[p].nuRubrica,
@@ -923,12 +968,12 @@ public parseDecimal(value: any): number {
       VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
       VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
 
-      NuUsuario: null,
-      DhCadastro: obj.dhCadastro ? new Date(obj.dhCadastro) : undefined,
+      NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
+      DhCadastro: this.form.value.dhCadastro ?? new Date().toISOString(),
       DhExclusao: undefined,
-      NuUsuarioExclusao: undefined,
-      NuUsuarioAlteracao: undefined,
-      DhAlteracao: undefined
+      NuUsuarioExclusao: 0,
+      NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
+      DhAlteracao: new Date()
     };
 
     lista.push(item);
@@ -962,14 +1007,40 @@ public parseDecimal(value: any): number {
     try {
       this.submitted = true;
 
+      // var codigoContrato = this.form.controls['coContrato'].value
+      // this.form.controls['nuContrato'].setValue(codigoContrato);
+
+      var obj = this.form.value;
+      var lista: PlanejamentoOrcamentarioItemRequest[] = [];
+      
       if (this.form.invalid) {
-        const invalids = [];
+        const itemErro = [];
         const controls = this.form.controls;
+        //console.log(this.form.controls, this.form.value)
         for (const name in controls) {
-          if (controls[name].invalid) invalids.push(name);
+          //console.log(controls[name].invalid, name);
+          if (controls[name].invalid) itemErro.push(name);
         }
-        console.log('Campos inválidos:', invalids);
+        if (itemErro.find(item => item === 'previsoesDesembolso')) {
+          this.toastr.error('Informe a previsão de desembolso completo.', 'Erro');
+          return;
+        }
+        if(this.form.controls['deObjeto'].value == '' || this.form.controls['deObjeto'].value == null){
+          console.log('erro objeto')
+          this.toastr.error('Informe o objeto.', 'Erro');
+        }
+        if(this.form.controls['deJustificativa'].value == '' || this.form.controls['deJustificativa'].value == null){
+          this.toastr.error('Informe a justificativa.', 'Erro');
+        }
+        console.log(itemErro);
         return;
+      } else if (this.form.controls['nuClassificacaoPlanejamento'].value == 1 && (this.form.controls['icDigital'].value == 1 || this.form.controls['icDigital'].value == 2)) {
+        this.toastr.error('Informe a categoria da classificação digital.', 'Erro');
+        return;
+      } else if(this.form.controls['deObjeto'].value == null){
+        this.toastr.error('Informe o objeto.', 'Erro');
+      } else if(this.form.controls['nuClassificacaoPlanejamento'].value == null){
+        //this.toastr.error('Informe a Classificação completa.', 'Erro');
       }
 
       if (
@@ -980,59 +1051,151 @@ public parseDecimal(value: any): number {
         return;
       }
 
-      const previsao = this.previsoesDesembolso.controls[0]?.value ?? {};
+      //var obj = this.form.value;
+      //var lista: PlanejamentoOrcamentarioItemRequest[] = [];
+  const previsoes = obj.previsoesDesembolso;
 
-      const planejamentoItem = {
-        NuPlanejamentoItem: this.form.value.nuPlanejamentoOrcamentario ?? 0,
-        NuPlanejamento: this.form.value.nuAno ?? 0,
-        NuContrato: this.form.value.nuContrato ?? 0,
-        NuFilial: this.form.value.nuFilial ?? 0,
-        NuRubrica: previsao.nuRubrica ?? 0,
-        NuStatusPlanejamentoItem: this.form.value.nuPlanejamentoStatus ?? 0,
-        NuTipoDemanda: this.form.value.nuDemandaTipo ?? 0,
-        NuVigencia: this.form.value.nuVigencia ?? 0,
+  console.log(previsoes, "previsoes")
 
-        DeObjeto: this.form.value.deObjeto ?? '',
-        DeObjetivoPDTIC: this.form.value.nuObjetivoEstrategicoPdti?.toString() ?? '',
-        DeObjetivoPEI: this.form.value.nuObjetivoEstrategicoPei?.toString() ?? '',
-        DeJustificativa: this.form.value.deJustificativa ?? '',
-        NuPreComprometimento: previsao.nuPreComprometimento ?? 0,
-        NuReserva: this.form.value.nuReserva ?? 0,
+  for(var p in previsoes){
 
-        VrPlanejamentoItem: this.form.value.vrTotalOrcamentoPlanejamento ?? 0.0,
-        VrJaneiro: previsao.vrJaneiro ?? 0.0,
-        VrFevereiro: previsao.vrFevereiro ?? 0.0,
-        VrMarco: previsao.vrMarco ?? 0.0,
-        VrAbril: previsao.vrAbril ?? 0.0,
-        VrMaio: previsao.vrMaio ?? 0.0,
-        VrJunho: previsao.vrJunho ?? 0.0,
-        VrJulho: previsao.vrJulho ?? 0.0,
-        VrAgosto: previsao.vrAgosto ?? 0.0,
-        VrSetembro: previsao.vrSetembro ?? 0.0,
-        VrOutubro: previsao.vrOutubro ?? 0.0,
-        VrNovembro: previsao.vrNovembro ?? 0.0,
-        VrDezembro: previsao.vrDezembro ?? 0.0,
+    //console.log(p, "prev")
+    var item: PlanejamentoOrcamentarioItemRequest = {
+      NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
+      NuPlanejamento: this.nuPlanejamentoOrcamento,
+      NuContrato: obj.nuContrato,
+      NuFilial: obj.nuFilial,
+      NuRubrica: previsoes[p].nuRubrica,
+      NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus,
+      NuTipoDemanda: obj.nuDemandaTipo,
+      NuVigencia: obj.nuAno,
 
-        NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
-        DhCadastro: this.form.value.dhCadastro ?? new Date().toISOString(),
-        DhExclusao: '',
-        NuUsuarioExclusao: 0,
-        NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
-        DhAlteracao: new Date().toISOString()
-      };
+      DeObjeto: obj.deObjeto,
+      DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
+      DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
+      DeJustificativa: obj.deJustificativa,
 
-      console.log('Dados enviados:', planejamentoItem);
+      NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
+      NuReserva: Number(previsoes[p].nuReserva),
+
+      VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
+      VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
+      VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
+      VrMarco: this.parseDecimal(previsoes[p].vrMarco),
+      VrAbril: this.parseDecimal(previsoes[p].vrAbril),
+      VrMaio: this.parseDecimal(previsoes[p].vrMaio),
+      VrJunho: this.parseDecimal(previsoes[p].vrJunho),
+      VrJulho: this.parseDecimal(previsoes[p].vrJulho),
+      VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
+      VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
+      VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
+      VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
+      VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
+
+      
+       DhExclusao: undefined,
+       NuUsuarioExclusao: null,
+       NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
+       DhAlteracao: new Date()
+    };
+
+    lista.push(item);
+  }
+  console.log(lista, "lista")
+  
+  
+
+// const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+//   await this.http.post<any>(
+//     `${Endpoints.URL_ORCAMENTO_EDITA}`,
+//     lista,
+//     { headers }
+//   );
+  
 
       await this.apiService.post<any>(
-        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-planejamento-item`,
-        planejamentoItem
+        `${Endpoints.URL_ORCAMENTO_EDITA}`,
+        lista
       );
+      
 
       this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
     } catch (error) {
       console.error('Erro ao alterar planejamento:', error);
+      this.toastr.error('Erro ao salvar alterações.', 'Erro');
+      this.atualizarPagina.emit(false);
+    }
+  }
+
+  public async ExcluirItens(): Promise<void> {
+    try {
+      this.submitted = true;
+
+      // var codigoContrato = this.form.controls['coContrato'].value
+      // this.form.controls['nuContrato'].setValue(codigoContrato);
+
+      var obj = this.form.value;
+      var lista: PlanejamentoOrcamentarioItemRequest[] = [];
+      
+     
+        const previsoes = obj.previsoesDesembolso;
+
+        for(var p in previsoes){
+          var item: PlanejamentoOrcamentarioItemRequest = {
+            NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
+            NuPlanejamento: this.nuPlanejamentoOrcamento,
+            NuContrato: obj.nuContrato,
+            NuFilial: obj.nuFilial,
+            NuRubrica: previsoes[p].nuRubrica,
+            NuStatusPlanejamentoItem: 10, //excluido
+            NuTipoDemanda: obj.nuDemandaTipo,
+            NuVigencia: obj.nuAno,
+
+            DeObjeto: obj.deObjeto,
+            DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
+            DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
+            DeJustificativa: obj.deJustificativa,
+
+            NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
+            NuReserva: Number(previsoes[p].nuReserva),
+
+            VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
+            VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
+            VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
+            VrMarco: this.parseDecimal(previsoes[p].vrMarco),
+            VrAbril: this.parseDecimal(previsoes[p].vrAbril),
+            VrMaio: this.parseDecimal(previsoes[p].vrMaio),
+            VrJunho: this.parseDecimal(previsoes[p].vrJunho),
+            VrJulho: this.parseDecimal(previsoes[p].vrJulho),
+            VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
+            VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
+            VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
+            VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
+            VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
+
+            
+            DhExclusao: new Date(),
+            NuUsuarioExclusao: this.token.getUser()?.nuUsuario ?? 0,
+            NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
+            DhAlteracao: new Date()
+          };
+
+          lista.push(item);
+        }
+
+      await this.apiService.post<any>(
+        `${Endpoints.URL_ORCAMENTO_EDITA}`,
+        lista
+      );
+      
+      this.toastr.success('Exclusão efetuada com sucesso.', 'Sucesso');
+      this.atualizarPagina.emit(true);
+      this.activeModal.dismiss();
+    } catch (error) {
+      console.error('Erro ao excluir planejamento:', error);
       this.toastr.error('Erro ao salvar alterações.', 'Erro');
       this.atualizarPagina.emit(false);
     }
@@ -1123,6 +1286,7 @@ public parseDecimal(value: any): number {
   }
 
   async Excluir(planejamentoOrcamentario: PlanejamentoOrcamentarioResponse) {
+    console.log(this.nuPlanejamentoOrcamento,"this.nuPlanejamentoOrcamento", planejamentoOrcamentario)
     const alert = await Swal.fire({
       title: '',
       text: `Deseja realmente excluir Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario}?`,
@@ -1141,15 +1305,16 @@ public parseDecimal(value: any): number {
     if (alert) {
       this.loading = true;
       try {
-        const response = await this.apiService.delete<ApiResponse<boolean>>(
-          `${Endpoints.URL_ORCAMENTO}/` +
-          planejamentoOrcamentario.nuPlanejamentoOrcamentario
-        );
+        // const response = await this.apiService.delete<ApiResponse<boolean>>(
+        //   `${Endpoints.URL_ORCAMENTO}/` +
+        //   planejamentoOrcamentario.nuPlanejamentoOrcamentario
+        // );
 
-        this.toastr.success(
-          `Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario} excluído com sucesso.`,
-          'Sucesso'
-        );
+        // this.toastr.success(
+        //   `Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario} excluído com sucesso.`,
+        //   'Sucesso'
+        // );
+        this.ExcluirItens();
         setTimeout(() => {
           location.reload();
        }, 2000);
@@ -1161,7 +1326,7 @@ public parseDecimal(value: any): number {
   }
 
   openModalPlanejamento(tipoModal: string, isEditable: boolean, nuPlanejamento?: number) {
-    this.activeModal.dismiss('Cross click');
+    /*this.activeModal.dismiss('Cross click');
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -1169,7 +1334,7 @@ public parseDecimal(value: any): number {
       backdrop: 'static',
       keyboard: false,
     });
-
+    
     modalRef.componentInstance.nuPlanejamento = nuPlanejamento;
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.tipoModal = tipoModal;
@@ -1177,6 +1342,10 @@ public parseDecimal(value: any): number {
       // if (data) {
       //   this.obterPlanejamentos();
       // }
-    });
+    });*/
+    if(tipoModal == 'editar'){ 
+      this.isEditable = isEditable;
+      this.formularioLivre();
+    }
   }
 }
