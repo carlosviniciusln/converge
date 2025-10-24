@@ -192,6 +192,7 @@ export interface PlanejamentoTipoResponse {
 export interface PrevisaoDesembolsoResponse {
     nuPrevisaoDesembolso: string;
     nuPlanejamentoOrcamentario: number;
+    nuPlanejamentoItem: number;
     nuRubrica: string;
     vrJaneiro: number;
     vrFevereiro: number;
