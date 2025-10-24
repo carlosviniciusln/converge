@@ -56,6 +56,7 @@ export interface ContratoPlanejamentosOrcamentario {
   cO_EXERCICIO: number,
   nU_CONTRATO: number,
   cO_CONTRATO: string,
+  cO_FILIAL: string;
   nO_OBJETO: string,
   nU_STATUS_PLANEJAMENTO: number,
   nU_TIPO_DEMANDA: number,
