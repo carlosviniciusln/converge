@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { IUser } from '../models/DTOs/IUser';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -243,6 +244,16 @@ export class TokenStorageService {
     }
     return {};
   }
+
+
+public obterUsuarioEstruturado(): IUser | {} {
+  const user = window.localStorage.getItem(USER_KEY);
+  if (user) {
+    return JSON.parse(user) as IUser;
+  }
+  return {};
+}
+
 
   public isAuthenticated(): boolean {
     const token = this.getToken();

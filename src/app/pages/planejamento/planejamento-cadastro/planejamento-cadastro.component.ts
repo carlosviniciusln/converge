@@ -29,9 +29,10 @@ import { PlanejamentoOrcamentarioItemRequest } from 'src/app/models/planejamento
 import { Orcamento } from 'src/app/models/orcamento';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Select2Data, Select2Option } from 'ng-select2-component';
-import { ActionPolicies, ModuleEnum, PageAction, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ActionPolicies, ModuleEnum, PageAction, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { Gcpvw008Mensalizacao } from 'src/app/models/Gcptb001ContratoResponse';
 import Swal from 'sweetalert2';
+import { IUser } from 'src/app/models/DTOs/IUser';
 
 @Component({
   selector: 'app-planejamento-cadastro',
@@ -101,6 +102,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public actionButtonLabel: string;
   public currentPageAction: PageAction;
 
+  public currentProfile: IUser;
+  public isPerfilPrivilegiado = false;
+
   selectContratos: Select2Data;
   selectedContrato: string = null;
 
@@ -114,11 +118,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
     public token: TokenStorageService,
     private modalService: NgbModal
   ) {
-    this.obterPermissoes();
+
   }
 
   ngOnInit(): void {
     this.loading = true;
+    this.obterPermissoes();
     this.definirPageAction();
 
     this.formulario();
@@ -134,13 +139,13 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.obterObjetivosEstrategicosPdti();
     this.obterObjetivosEstrategicosPei();
 
-    // if(this.planejamentoEditar == null){      
+    // if(this.planejamentoEditar == null){
     //   this.planejamentoEditar = this.planejamento;
     // }
 
     console.log(this.nuPlanejamento, "orc");
     console.log(this.nuPlanejamentoOrcamento, "novo orc");
-    
+
     const nU_ORC = this.nuPlanejamento?.nU_ORC;
     if (nU_ORC != null) {
       this.obterPlanejamento();
@@ -153,6 +158,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
+    this.currentProfile  = this.token.obterUsuarioEstruturado() as IUser;
+
+    if(this.nuPlanejamento.cO_FILIAL == this.currentProfile.coUnidade)
+      this.isPerfilPrivilegiado = true;
   }
 
   definirPageAction() {
@@ -249,7 +258,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     return this.form.get('previsoesDesembolso') as FormArray;
   }
 
-  
+
 
 currencyOptions = {
   prefix: 'R$ ',
@@ -317,7 +326,7 @@ currencyOptions = {
     }
   }
 
-  
+
 onValorRubricaChange(i: number) {
   const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
 
@@ -408,7 +417,6 @@ ajustarCentavos(index: number, campo: string): void {
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioConsultaResponse>
       >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/contrato?nuContrato=${nuContrato}`);
-console.log(response.data)
       if (response.succeeded && response.data) {
         this.form.patchValue({
           nuContrato: response.data.contrato,
@@ -435,8 +443,6 @@ console.log(response.data)
        >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL+`&nuPlanejamento=`+this.nuPlanejamento.nU_PLANEJAMENTO);
        //console.log(response.data[0]);
        this.planejamento = response.data[0];
-       //console.log(this.planejamento,"this.planejamento")
-       //console.log(this.nuPlanejamento, "this.nuPlanejamento")
       this.form.controls['nuPlanejamentoOrcamentario'].setValue(
         this.nuPlanejamento.nU_PLANEJAMENTO
       );
@@ -444,7 +450,7 @@ console.log(response.data)
         this.nuPlanejamento.coPlanejamentoOrcamentario
       );
       //this.form.controls['nuAno'].setValue("10");//this.planejamento.coExercicio);
-      
+
     const anoSelecionado = this.listaExercicios.find(ano => ano.nuAnoOrcamento.toString() === this.planejamento.coExercicio.toString());
     if (anoSelecionado) {
       this.form.controls['nuAno'].setValue(anoSelecionado.nuOrcamento);
@@ -468,10 +474,16 @@ console.log(response.data)
       this.onPlanejadoParaChange();
       this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
       if (this.planejamento.cO_CONTRATO)
-        this.form.controls['coContrato'].setValue(this.planejamento.cO_CONTRATO);
+        this.form.controls['coContrato'].setValue(
+          this.nuPlanejamento.cO_CONTRATO
+        );
+       this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
+         this.planejamento.nuObjetivoPdtic
 
-      this.form.controls['nuObjetivoEstrategicoPdti'].setValue(this.planejamento.nuObjetivoPdtic);
-      this.form.controls['nuObjetivoEstrategicoPei'].setValue(this.planejamento.nuObjetivoPei);
+       );
+       this.form.controls['nuObjetivoEstrategicoPei'].setValue(
+         this.planejamento.nuObjetivoPei
+       );
       if (this.nuPlanejamento.dE_DEMANDA == 'Digital') {
         this.form.controls['icDigital'].setValue(1);
       } else if (this.nuPlanejamento.dE_DEMANDA == 'Digital - TD') {
@@ -501,14 +513,14 @@ console.log(response.data)
           ApiResponse<PrevisaoDesembolsoResponse[]>
         >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaPorRubrica?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL+`&nuPlanejamento=`+this.nuPlanejamento.nU_PLANEJAMENTO);
          if(responseVlr.data){
-        //   this.planejamento.gcptb027PrevisoesDesembolso = responseVlr.data;        
+        //   this.planejamento.gcptb027PrevisoesDesembolso = responseVlr.data;
         //this.previsoesDesembolso.push(previsaoDesembolso);
         //console.log(responseVlr.data, "arrya");
-        //this.planejamento.gcptb027PrevisoesDesembolso =responseVlr.data[0];        
+        //this.planejamento.gcptb027PrevisoesDesembolso =responseVlr.data[0];
           this.planejamento.gcptb027PrevisoesDesembolso = responseVlr.data;
       }
 
-         
+
 
           console.log(this.planejamento.gcptb027PrevisoesDesembolso, "planejamento.gcptb027PrevisoesDesembolso")
 
@@ -605,7 +617,7 @@ console.log(response.data)
               console.log("this.planejamento.gcptb027PrevisoesDesembolso", this.planejamento.gcptb027PrevisoesDesembolso)
               console.log("previsaoDesembolso", previsaoDesembolso)
               this.previsoesDesembolso.push(previsaoDesembolso);
-              
+
               const totalDesembolso = this.planejamento.gcptb027PrevisoesDesembolso
               .reduce((soma, item) => soma + item["vrPlanejamentoTotal"], 0);
 
@@ -775,7 +787,7 @@ console.log(response.data)
     }
   }
 
-  
+
 /* nova conversao  - inicio */
 public parseDecimal(value: any): number {
   if (!value) return undefined;
@@ -870,16 +882,16 @@ public parseDecimal(value: any): number {
 
       var obj = this.form.value;
 
-      
+
   var lista: PlanejamentoOrcamentarioItemRequest[] = [];
   const previsoes = obj.previsoesDesembolso;
-  
+
   console.log(previsoes, "previsoes")
-  
+
   for(var p in previsoes){
 
     console.log(p, "prev")
-    var item: PlanejamentoOrcamentarioItemRequest = {    
+    var item: PlanejamentoOrcamentarioItemRequest = {
       NuPlanejamentoItem: 0,
       NuPlanejamento: obj.nuPlanejamentoOrcamentario,
       NuContrato: obj.nuContrato,
@@ -932,7 +944,7 @@ public parseDecimal(value: any): number {
         lista
       );
 
-      
+
       // await this.apiService.post<any>(
       //   `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
       //   this.form.value
@@ -949,7 +961,7 @@ public parseDecimal(value: any): number {
   public async Alterar(): Promise<void> {
     try {
       this.submitted = true;
-  
+
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
@@ -959,7 +971,7 @@ public parseDecimal(value: any): number {
         console.log('Campos inválidos:', invalids);
         return;
       }
-  
+
       if (
         this.form.value.nuClassificacaoPlanejamento === 1 &&
         (this.form.value.icDigital === 1 || this.form.value.icDigital === 2)
@@ -967,9 +979,9 @@ public parseDecimal(value: any): number {
         this.toastr.error('Informe a categoria da classificação digital.', 'Erro');
         return;
       }
-  
+
       const previsao = this.previsoesDesembolso.controls[0]?.value ?? {};
-  
+
       const planejamentoItem = {
         NuPlanejamentoItem: this.form.value.nuPlanejamentoOrcamentario ?? 0,
         NuPlanejamento: this.form.value.nuAno ?? 0,
@@ -979,14 +991,14 @@ public parseDecimal(value: any): number {
         NuStatusPlanejamentoItem: this.form.value.nuPlanejamentoStatus ?? 0,
         NuTipoDemanda: this.form.value.nuDemandaTipo ?? 0,
         NuVigencia: this.form.value.nuVigencia ?? 0,
-  
+
         DeObjeto: this.form.value.deObjeto ?? '',
         DeObjetivoPDTIC: this.form.value.nuObjetivoEstrategicoPdti?.toString() ?? '',
         DeObjetivoPEI: this.form.value.nuObjetivoEstrategicoPei?.toString() ?? '',
         DeJustificativa: this.form.value.deJustificativa ?? '',
         NuPreComprometimento: previsao.nuPreComprometimento ?? 0,
         NuReserva: this.form.value.nuReserva ?? 0,
-  
+
         VrPlanejamentoItem: this.form.value.vrTotalOrcamentoPlanejamento ?? 0.0,
         VrJaneiro: previsao.vrJaneiro ?? 0.0,
         VrFevereiro: previsao.vrFevereiro ?? 0.0,
@@ -1000,7 +1012,7 @@ public parseDecimal(value: any): number {
         VrOutubro: previsao.vrOutubro ?? 0.0,
         VrNovembro: previsao.vrNovembro ?? 0.0,
         VrDezembro: previsao.vrDezembro ?? 0.0,
-  
+
         NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
         DhCadastro: this.form.value.dhCadastro ?? new Date().toISOString(),
         DhExclusao: '',
@@ -1008,14 +1020,14 @@ public parseDecimal(value: any): number {
         NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
         DhAlteracao: new Date().toISOString()
       };
-  
+
       console.log('Dados enviados:', planejamentoItem);
-  
+
       await this.apiService.post<any>(
         `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-planejamento-item`,
         planejamentoItem
       );
-  
+
       this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
