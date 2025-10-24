@@ -1,0 +1,17 @@
+<div class="modal-header d-flex flex-column align-items-center text-center alert-class">
+  <i [class]="icon + ' ' + iconClass" aria-hidden="true" style="font-size: 6rem; color: #ff6f61; margin-bottom: .5rem;"></i>
+  <h5 class="modal-title mb-0 text-style" >{{ title }}</h5>
+</div>
+
+<div class="modal-body text-center">
+  <p class="mb-0 message-style">{{ message }}</p>
+</div>
+
+<div class="modal-footer d-flex justify-content-center class-div-button">
+  <button type="button" class="btn btn-sm btn-danger mt-2" (click)="onCancel()">
+    <i class="pi pi-times" style="margin-right: .5rem;"></i>{{ cancelLabel }}
+  </button>
+  <button type="button" class="btn btn-sm btn-add mt-2" (click)="onConfirm()">
+    <i class="pi pi-check" style="margin-right: .5rem;"></i>{{ confirmLabel }}
+  </button>
+</div>
