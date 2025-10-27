@@ -96,7 +96,7 @@
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)" [showClear]="true"
                             placeholder="Objeto"></p-dropdown>
                         </div>
-                        <div class="pl-1 pr-1 me-3" style="margin-left:auto; margin-right: 9.5rem;">
+                        <div class="pl-1 pr-1 me-3" style="margin-left:auto; margin-right: 9.5rem;" *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
                           <button
                             type="button"
                             class="btn-sm btn-add btn-save-status"
@@ -132,23 +132,31 @@
                         <div class="p-d-flex p-jc-between text-center">Tipo</div>
                       </th>
                       <th>
-                        <div class="p-d-flex p-jc-center p-ai-center" style="gap: 0.75rem;">
-                          <p-checkbox
-                            [(ngModel)]="selecionarTodos"
-                            (onChange)="selecionarTodosItens()"
-                            [binary]="true">
-                          </p-checkbox>
-
-                          <p-dropdown
-                            [options]="selectStatusPlanejamentoCompleto" 
-                            [(ngModel)]="statusSelecionados[0]" 
-                            placeholder="Status"
-                            (onChange)="atualizarStatusSelecionados()"
-                            styleClass="p-dropdown-sm"
-                            optionLabel="label"
-                            optionValue="value">
-                          </p-dropdown>
+                        <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
+                        <div *ngIf="!(selectStatusPlanejamentoCompleto?.length > 0)" class="p-d-flex p-jc-between text-center">
+                          Status
                         </div>
+                      
+                        <!-- Exibe checkbox + dropdown SOMENTE quando houver opções -->
+                        <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
+                          <div class="p-d-flex p-jc-center p-ai-center" style="gap: 0.75rem;">
+                            <p-checkbox
+                              [(ngModel)]="selecionarTodos"
+                              (onChange)="selecionarTodosItens()"
+                              [binary]="true">
+                            </p-checkbox>
+                      
+                            <p-dropdown
+                              [options]="selectStatusPlanejamentoCompleto"
+                              [(ngModel)]="statusSelecionados[0]"
+                              placeholder="Status"
+                              (onChange)="atualizarStatusSelecionados()"
+                              styleClass="p-dropdown-sm"
+                              optionLabel="label"
+                              optionValue="value">
+                            </p-dropdown>
+                          </div>
+                        </ng-container>
                       </th>
                       <th>
                         <div class="p-d-flex p-jc-between text-center">Valor</div>
@@ -194,25 +202,22 @@
                         <span class="p-column-title">Tipo</span>
                         {{ planejamento.dE_DEMANDA }}
                       </td>
-                      
                       <td
                         class="col-status"
                         style="text-align: center"
                         (click)="$event.stopPropagation()"
                         (dblclick)="$event.stopPropagation()"
                         (keydown.enter)="$event.stopPropagation()"
-                        (keydown.space)="$event.stopPropagation()"
-                        >
-                      <p-checkbox
-                        [(ngModel)]="planejamento.sT_SELECIONADO"
-                        [binary]="true"
-                        (onChange)="onToggleItemSelecionado()"
-                        (click)="$event.stopPropagation()"
-                      >
-                      </p-checkbox>
-
-                      <span class="p-column-title">Status</span>
-                      {{ planejamento.nO_STATUS }}
+                        (keydown.space)="$event.stopPropagation()">
+                        <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
+                          <p-checkbox
+                            [(ngModel)]="planejamento.sT_SELECIONADO"
+                            [binary]="true"
+                            (onChange)="onToggleItemSelecionado()"
+                            (click)="$event.stopPropagation()">
+                          </p-checkbox>
+                        </ng-container>
+                        {{ planejamento.nO_STATUS }}
                       </td>
 
 
