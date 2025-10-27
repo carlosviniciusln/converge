@@ -165,16 +165,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
     this.currentProfile  = this.token.obterUsuarioEstruturado() as IUser;
 
-/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
-/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
-/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
-    // if(this.planejamento.cO_FILIAL == this.currentProfile.coUnidade)
-    //   this.isPerfilPrivilegiado = true;
-    if(this.token.getUser()?.nuUsuario == 194340) this.isPerfilPrivilegiado = true;
-/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
-/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
-/********************************* NÃO SUBIR ISSO AQUI *********************************************************************************************** */
-
+    if(this.nuPlanejamento.cO_FILIAL == this.currentProfile.coUnidade
+      || this.currentProfile.noPerfil == PerfisEnum.Orcamento
+      || this.currentProfile.noPerfil == PerfisEnum.Administrador)
+      this.isPerfilPrivilegiado = true;
   }
 
   definirPageAction() {
@@ -240,7 +234,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       ),
       nuClassificacaoPlanejamento: new FormControl(
         { value: 1, disabled: !this.isEditable }
-        
+
       ),
       nuPlanejamentoTipo: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -262,7 +256,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       ),
     });
   }
-  
+
 formularioLivre() {
   if (!this.form) return;
 
@@ -281,13 +275,13 @@ formularioLivre() {
       if (grupo instanceof FormGroup) {
         Object.keys(grupo.controls).forEach((childKey) => {
           const childControl = grupo.get(childKey);
-          if (childControl?.disabled && childKey != "vrTotalRubrica") {            
-            childControl.enable();            
+          if (childControl?.disabled && childKey != "vrTotalRubrica") {
+            childControl.enable();
           }
         });
       }
     });
-  }  
+  }
   this.onPlanejadoParaChange();
 }
 
@@ -1012,7 +1006,7 @@ public parseDecimal(value: any): number {
 
       var obj = this.form.value;
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
-      
+
       if (this.form.invalid) {
         const itemErro = [];
         const controls = this.form.controls;
@@ -1092,7 +1086,7 @@ public parseDecimal(value: any): number {
       VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
       VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
 
-      
+
        DhExclusao: undefined,
        NuUsuarioExclusao: null,
        NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
@@ -1102,8 +1096,8 @@ public parseDecimal(value: any): number {
     lista.push(item);
   }
   console.log(lista, "lista")
-  
-  
+
+
 
 // const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -1112,13 +1106,13 @@ public parseDecimal(value: any): number {
 //     lista,
 //     { headers }
 //   );
-  
+
 
       await this.apiService.post<any>(
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
         lista
       );
-      
+
 
       this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
@@ -1139,8 +1133,8 @@ public parseDecimal(value: any): number {
 
       var obj = this.form.value;
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
-      
-     
+
+
         const previsoes = obj.previsoesDesembolso;
 
         for(var p in previsoes){
@@ -1176,7 +1170,7 @@ public parseDecimal(value: any): number {
             VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
             VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
 
-            
+
             DhExclusao: new Date(),
             NuUsuarioExclusao: this.token.getUser()?.nuUsuario ?? 0,
             NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
@@ -1190,7 +1184,7 @@ public parseDecimal(value: any): number {
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
         lista
       );
-      
+
       this.toastr.success('Exclusão efetuada com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
@@ -1334,7 +1328,7 @@ public parseDecimal(value: any): number {
       backdrop: 'static',
       keyboard: false,
     });
-    
+
     modalRef.componentInstance.nuPlanejamento = nuPlanejamento;
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.tipoModal = tipoModal;
@@ -1343,7 +1337,7 @@ public parseDecimal(value: any): number {
       //   this.obterPlanejamentos();
       // }
     });*/
-    if(tipoModal == 'editar'){ 
+    if(tipoModal == 'editar'){
       this.isEditable = isEditable;
       this.formularioLivre();
     }

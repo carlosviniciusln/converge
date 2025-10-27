@@ -141,7 +141,7 @@
             <label for="deJustificativa">Justificativa para Or&ccedil;amento:</label>
             <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text"
               class="form-control"
-              [ngClass]="{ 'is-invalid': submitted && f.deJustificativa.invalid }" 
+              [ngClass]="{ 'is-invalid': submitted && f.deJustificativa.invalid }"
                />
           </div>
           <div class="col-md-3 pr-0">
@@ -330,15 +330,15 @@
           <div class="col-md-9"></div>
           <div class="col-md-3">
             <div class="col-md-12 pr-0 text-right" style="padding-top: 26px; padding-left: 0px;">
-              
+
 
               <div *ngIf="!isEditable">
                 <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" style="margin-right: 5px">
                   {{ actionButtonLabel }}
                 </button>
 
-                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado && permissions?.Alterar && currentPageAction != 'Cadastrar' && currentPageAction != 'Alterar'?? false" (click)="
-                openModalPlanejamento(
+                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="
+                 openModalPlanejamento(
                   'editar',
                   true,
                   planejamento.nuPlanejamentoOrcamentario
@@ -347,7 +347,7 @@
                   <i class="tim-icons icon-pencil"></i>
                   <span> Editar</span>
                 </button>
-                <button class="btn-sm btn-danger" *ngIf=" isPerfilPrivilegiado && permissions?.Alterar && currentPageAction != 'Cadastrar'?? false" (click)="Excluir(planejamento)" style="margin-right: 5px">
+                <button class="btn-sm btn-danger" *ngIf=" isPerfilPrivilegiado" (click)="Excluir(planejamento)" style="margin-right: 5px">
                   <i class="tim-icons icon-trash-simple"></i>
                   <span> Excluir</span>
                 </button>
@@ -357,15 +357,15 @@
                 <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" style="margin-right: 5px">
                   {{ actionButtonLabel }}
                 </button>
-                
-                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado && permissions?.Alterar && currentPageAction != 'Cadastrar' && currentPageAction != 'Alterar'?? false" (click)="Alterar()" style="margin-right: 5px">
+
+                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="Alterar()" style="margin-right: 5px">
                   <i class="tim-icons icon-pencil"></i>
                   <span> Salvar</span>
                 </button>
               </div>
-                
 
-          
+
+
             </div>
           </div>
 
