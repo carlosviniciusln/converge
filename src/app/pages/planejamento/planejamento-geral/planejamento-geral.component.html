@@ -43,24 +43,8 @@
                 <p-table id="table-contrato" #dt [value]="planejamentos" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
                   [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0">
                   <ng-template pTemplate="caption">
+                    <div style="display: flex; justify-content: space-between;">
                       <div class="c-menu">
-                        <div class="pl-1 pr-1" *ngIf="statusExercio != 'Encerrado' && statusExercio != 'Cancelado'">
-                          <div class="text-right">
-                            <button type="button" class="btn-sm btn-add" (click)="openModalPlanejamento('adicionar', true, null, this.nuPlanejamentoExercicio)" style="width: 131px;">
-                              Novo Registro
-                            </button>
-                          </div>
-                        </div>
-                        <!-- <div class="pl-1 pr-1">
-                          <p-dropdown  [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
-                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
-                            placeholder="Planejamento" *ngIf="!loading"></p-dropdown>
-                        </div>
-                        <div class="pl-1 pr-1">
-                          <p-dropdown  [options]="selectAnos" [(ngModel)]="selectedAno" [filter]="true" optionLabel="label"
-                            optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
-                            placeholder="Exercício"></p-dropdown>
-                        </div> -->
                         <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectNuOrcs" [(ngModel)]="selectedNuOrc" [filter]="true" optionLabel="label"
                             optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
@@ -87,7 +71,7 @@
                             placeholder="Digital"></p-dropdown>
                         </div>
                         <div class="pl-1 pr-1">
-                          <p-dropdown [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento" 
+                          <p-dropdown [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
                           [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)"
                           [showClear]="true" placeholder="Status"></p-dropdown>
                         </div>
@@ -96,15 +80,16 @@
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)" [showClear]="true"
                             placeholder="Objeto"></p-dropdown>
                         </div>
-                        <div class="pl-1 pr-1 me-3" style="margin-left:auto; margin-right: 9.5rem;" *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
-                          <button
-                            type="button"
-                            class="btn-sm btn-add btn-save-status"
-                            (click)="onSalvarMudancasStatus()"
-                            title="Salvar alterações de status"
-                          >
-                            Salvar status
-                          </button>
+                    </div>
+
+
+                        <div style="margin-right: 45px;" class=" c-acoes-button pl-1 pr-1" *ngIf="statusExercio != 'Encerrado' && statusExercio != 'Cancelado'">
+                          <p-splitButton
+                             label="Ações"
+                              icon="pi pi-plus"
+                             (onClick)="save('info')"
+                             [model]="items">
+                          </p-splitButton>
                         </div>
                     </div>
                   </ng-template>
@@ -133,19 +118,19 @@
                       </th>
                       <th>
                         <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
-                        <div *ngIf="!(selectStatusPlanejamentoCompleto?.length > 0)" class="p-d-flex p-jc-between text-center">
+                        <div class="p-d-flex p-jc-between text-center">
                           Status
                         </div>
-                      
+
                         <!-- Exibe checkbox + dropdown SOMENTE quando houver opções -->
-                        <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
+                        <!-- <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
                           <div class="p-d-flex p-jc-center p-ai-center" style="gap: 0.75rem;">
                             <p-checkbox
                               [(ngModel)]="selecionarTodos"
                               (onChange)="selecionarTodosItens()"
                               [binary]="true">
                             </p-checkbox>
-                      
+
                             <p-dropdown
                               [options]="selectStatusPlanejamentoCompleto"
                               [(ngModel)]="statusSelecionados[0]"
@@ -156,7 +141,7 @@
                               optionValue="value">
                             </p-dropdown>
                           </div>
-                        </ng-container>
+                        </ng-container> -->
                       </th>
                       <th>
                         <div class="p-d-flex p-jc-between text-center">Valor</div>

@@ -21,6 +21,7 @@ import { ConfirmacaoModalComponent } from 'src/app/components/modal-confirmacao/
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
+import { MenuItem, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -41,7 +42,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   listaObjetoPlanejamento: PlanejamentoObjetoResponse[];
   listaTiposPlanejamento: PlanejamentoTipoResponse[];
   listaTiposDemanda: DemandaTipoResponse[];
-  
+
 
   listaOpcoesIsDigital: { value: number; label: string }[] = [
     { value: 1, label: 'Digital' },
@@ -103,15 +104,42 @@ export class PlanejamentoGeralComponent implements OnInit {
     nuPlanejamento: 0
   };
 
+   items: MenuItem[];
+
   constructor(
     private apiService: ApiService,
     private modalService: NgbModal,
     private route : ActivatedRoute,
     public token: TokenStorageService,
+    private messageService: MessageService,
     private toastr: ToastrService
   ) {
     this.obterPermissoes();
+
+     this.items = [
+            {
+                label: 'Update',
+                command: () => {
+
+                }
+            },
+            {
+                label: 'Delete',
+                command: () => {
+
+                }
+            },
+            { label: 'Angular Website', url: 'http://angular.io' },
+            { separator: true },
+            { label: 'Upload', routerLink: ['/fileupload'] }
+        ];
   }
+
+
+   save(severity: string) {
+        this.messageService.add({ severity: severity, summary: 'Success', detail: 'Data Saved' });
+    }
+
 
   async ngOnInit(): Promise<void> {
 
@@ -119,8 +147,8 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.anoExercicio =params['cO_EXERCICIO'];
       this.ordemTipoExercicio = params['tipo'];
-      this.statusExercio = params['statusPlanejamento'];      
-      
+      this.statusExercio = params['statusPlanejamento'];
+
       const valor = Number(params['nuPlanejamento']);
       this.nuPlanejamentoExercicio = isNaN(valor) ? 0 : valor;
 
@@ -168,6 +196,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     });
   }
 
+  // QUAL É A NECESSIDADE DESSE METODO
   public async obterPlanejamentos(): Promise<void> {
     // try {
     //   const response = await this.apiService.get<
@@ -201,7 +230,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     // } catch (error) { }
   }
 
-  
+
   async obterStatusPlanejamento(): Promise<void> {
     const response = await this.apiService.get<ApiResponse<PlanejamentoStatusResponse[]>>(
       `${Endpoints.URL_ORCAMENTO}/status-planejamento`
@@ -222,21 +251,21 @@ export class PlanejamentoGeralComponent implements OnInit {
         centered: true,
         size: 'md'
       });
-  
+
       modalRef.componentInstance.title = 'Confirmar alterações';
       modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
       modalRef.componentInstance.confirmLabel = 'Sim, salvar';
       modalRef.componentInstance.cancelLabel = 'Não, voltar';
       modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
       modalRef.componentInstance.iconClass = 'text-warning';
-  
+
       const confirmed = await modalRef.result;
-  
+
       if (confirmed) {
         const idSelecionado = this.statusSelecionados[0];
         const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
         if (!novoStatusObj) return;
-  
+
         const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
         if (itensSelecionados.length === 0) {
           this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
@@ -244,17 +273,17 @@ export class PlanejamentoGeralComponent implements OnInit {
         }
 
         const statusNovo: AlterarStatusPlanejamento = {
-          nuPlanejamento: Number(this.nuPlanejamentoExercicio), 
+          nuPlanejamento: Number(this.nuPlanejamentoExercicio),
           status: novoStatusObj.nuPlanejamentoStatus,
           nuPlanejamentoItem: itensSelecionados.map(item => ({
             NuTipoDemanda: item.nU_TIPO_DEMANDA,
             NuContrato: item.nU_CONTRATO
-          }))          
+          }))
         };
-        
+
         await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
         this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
-  
+
         await this.obterPlanejamentosOrc();
         this.selecionarTodos = false;
         this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
@@ -263,7 +292,7 @@ export class PlanejamentoGeralComponent implements OnInit {
       this.toastr.error('Ocorreu um erro ao salvar', 'Error');
     }
   }
-  
+
   atualizarStatusSelecionados() {
     if (!this.statusSelecionados || this.statusSelecionados.length === 0) return;
 
@@ -278,7 +307,7 @@ export class PlanejamentoGeralComponent implements OnInit {
       p.nO_STATUS = novoStatus.noPlanejamentoStatus;
     });
   }
-  
+
   selecionarTodosItens() {
     this.planejamentos.forEach(p => {
       p.sT_SELECIONADO = this.selecionarTodos;
@@ -380,7 +409,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
     this.loading = false;
   }
-  
+
   public async obterPlanejamentosOrc(): Promise<void> {
     this.loading = true;
     try {
