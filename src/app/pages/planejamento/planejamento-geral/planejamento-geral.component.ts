@@ -252,7 +252,7 @@ export class PlanejamentoGeralComponent implements OnInit {
           }))          
         };
         
-        await this.apiService.post(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
+        await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
         this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
   
         await this.obterPlanejamentosOrc();

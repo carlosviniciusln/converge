@@ -140,7 +140,9 @@
           <div class="col-md-9 pr-0">
             <label for="deJustificativa">Justificativa para Or&ccedil;amento:</label>
             <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text"
-              class="form-control" />
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f.deJustificativa.invalid }"
+               />
           </div>
           <div class="col-md-3 pr-0">
             <div *ngIf="this.form.controls['icDigital'].value == 1 || this.form.controls['icDigital'].value == 2">
@@ -205,6 +207,11 @@
                 {{ a.coRubrica +' | ' +a.deRubrica }}
               </option>
             </select>
+          </div>
+          <div class="col-md-3 pr-0" style="display:none;">
+            <label for="nuPlanejamentoItem">Nº Planejamento Item:</label>
+            <input formControlName="nuPlanejamentoItem" id="nuPlanejamentoItem" type="number"
+              class="form-control" />
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
@@ -323,23 +330,42 @@
           <div class="col-md-9"></div>
           <div class="col-md-3">
             <div class="col-md-12 pr-0 text-right" style="padding-top: 26px; padding-left: 0px;">
-              <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" style="margin-right: 5px">
-                {{ actionButtonLabel }}
-              </button>
-              <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="
-               openModalPlanejamento(
-                'editar',
-                true,
-                planejamento.nuPlanejamentoOrcamentario
-              )
-            " style="margin-right: 5px">
-                <i class="tim-icons icon-pencil"></i>
-                <span> Editar</span>
-              </button>
-              <button class="btn-sm btn-danger" *ngIf=" isPerfilPrivilegiado" (click)="Excluir(planejamento)" style="margin-right: 5px">
-                <i class="tim-icons icon-trash-simple"></i>
-                <span> Excluir</span>
-              </button>
+
+
+              <div *ngIf="!isEditable">
+                <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" style="margin-right: 5px">
+                  {{ actionButtonLabel }}
+                </button>
+
+                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="
+                 openModalPlanejamento(
+                  'editar',
+                  true,
+                  planejamento.nuPlanejamentoOrcamentario
+                )
+              " style="margin-right: 5px">
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Editar</span>
+                </button>
+                <button class="btn-sm btn-danger" *ngIf=" isPerfilPrivilegiado" (click)="Excluir(planejamento)" style="margin-right: 5px">
+                  <i class="tim-icons icon-trash-simple"></i>
+                  <span> Excluir</span>
+                </button>
+
+              </div>
+              <div *ngIf="isEditable">
+                <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" style="margin-right: 5px">
+                  {{ actionButtonLabel }}
+                </button>
+
+                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="Alterar()" style="margin-right: 5px">
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Salvar</span>
+                </button>
+              </div>
+
+
+
             </div>
           </div>
 
