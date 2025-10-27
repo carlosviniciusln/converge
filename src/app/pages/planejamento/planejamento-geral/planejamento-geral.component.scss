@@ -1,3 +1,30 @@
+:host ::ng-deep .c-dropdown-status{
+  color: red;
+  display: flex;
+  align-items: center;
+}
+
+
+:host ::ng-deep .c-dropdown-status .p-dropdown {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .c-dropdown-status .p-dropdown:hover,
+:host ::ng-deep .c-dropdown-status .p-dropdown:focus,
+:host ::ng-deep .c-dropdown-status .p-dropdown.p-focus {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+:host ::ng-deep .c-dropdown-status .p-dropdown .p-dropdown-label.p-placeholder {
+  font-size: 1rem !important;
+  color: #495057 !important;
+  font-weight: 600 !important;
+}
+
+
 :host ::ng-deep .c-p{
   font-size: 16px;
   font-weight: 500;
