@@ -69,6 +69,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public listaDigital: any[] = [{ id: 1, tipo: 'Digital' }, { id: 2, tipo: 'Digital - TD' }, { id: 3, tipo: 'Não Digital' }]
   public digitalOpSelec: string;
   totalRubrica: number;
+    public selectTab: number = 0;
   loading: boolean = true;
   permissions: ActionPolicies;
 
@@ -159,6 +160,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.editarTextos();
     }
     this.loading = false;
+  }
+
+    onTabChange(event) {
+    this.selectTab = event.index;
   }
 
   obterPermissoes() {
