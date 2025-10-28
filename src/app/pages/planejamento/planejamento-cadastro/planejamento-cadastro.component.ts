@@ -159,13 +159,18 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.editarTextos();
     }
     this.loading = false;
+
+    ///efetua as validações de perfil
+    if(this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade
+      || this.currentProfile.noPerfil == PerfisEnum.Orcamento
+      || this.currentProfile.noPerfil == PerfisEnum.Administrador)
+      this.isPerfilPrivilegiado = true;
   }
 
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
     this.currentProfile  = this.token.obterUsuarioEstruturado() as IUser;
-
-    if(this.nuPlanejamento.cO_FILIAL == this.currentProfile.coUnidade
+    if(this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade
       || this.currentProfile.noPerfil == PerfisEnum.Orcamento
       || this.currentProfile.noPerfil == PerfisEnum.Administrador)
       this.isPerfilPrivilegiado = true;
@@ -479,6 +484,7 @@ ajustarCentavos(index: number, campo: string): void {
        >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL+`&nuPlanejamento=`+this.nuPlanejamento.nU_PLANEJAMENTO);
        //console.log(response.data[0]);
        this.planejamento = response.data[0];
+       if(this.planejamento){
       this.form.controls['nuPlanejamentoOrcamentario'].setValue(
         this.nuPlanejamento.nU_PLANEJAMENTO
       );
@@ -665,6 +671,9 @@ ajustarCentavos(index: number, campo: string): void {
             });
           }
           }
+        } else {          
+          this.toastr.error('Não retornou dados para este detalhamento. Tente novamente mais tarde.', 'Erro');
+        }
 
       //this.buildClassificacaoPlanejamento(this.nuPlanejamento.gcptb024ClassificacaoPlanejamento)
       //this.somaValorTotalPlanejamentoOrcamentario();
