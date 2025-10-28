@@ -484,6 +484,7 @@ ajustarCentavos(index: number, campo: string): void {
        >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL+`&nuPlanejamento=`+this.nuPlanejamento.nU_PLANEJAMENTO);
        //console.log(response.data[0]);
        this.planejamento = response.data[0];
+       if(this.planejamento){
       this.form.controls['nuPlanejamentoOrcamentario'].setValue(
         this.nuPlanejamento.nU_PLANEJAMENTO
       );
@@ -670,6 +671,9 @@ ajustarCentavos(index: number, campo: string): void {
             });
           }
           }
+        } else {          
+          this.toastr.error('Não retornou dados para este detalhamento. Tente novamente mais tarde.', 'Erro');
+        }
 
       //this.buildClassificacaoPlanejamento(this.nuPlanejamento.gcptb024ClassificacaoPlanejamento)
       //this.somaValorTotalPlanejamentoOrcamentario();
