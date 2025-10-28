@@ -159,13 +159,18 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.editarTextos();
     }
     this.loading = false;
+
+    ///efetua as validações de perfil
+    if(this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade
+      || this.currentProfile.noPerfil == PerfisEnum.Orcamento
+      || this.currentProfile.noPerfil == PerfisEnum.Administrador)
+      this.isPerfilPrivilegiado = true;
   }
 
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
     this.currentProfile  = this.token.obterUsuarioEstruturado() as IUser;
-
-    if(this.nuPlanejamento.cO_FILIAL == this.currentProfile.coUnidade
+    if(this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade
       || this.currentProfile.noPerfil == PerfisEnum.Orcamento
       || this.currentProfile.noPerfil == PerfisEnum.Administrador)
       this.isPerfilPrivilegiado = true;
