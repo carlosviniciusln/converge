@@ -185,6 +185,10 @@ export class ModalLimitesComponent implements OnInit {
       this.formCadastro.markAllAsTouched();
       const nuRubricaNum = Number(this.nuRubrica);
       this.formCadastro.controls['nuRubrica'].setValue(nuRubricaNum);
+      //remover o R$
+      const valorAtual = this.formCadastro.controls['vrLimite'].value;
+      const valorSemPrefixo = valorAtual.replace('R$ ', '');
+      this.formCadastro.controls['vrLimite'].setValue(valorSemPrefixo);
       const formData = this.toFormData(this.formCadastro);
 
       if (this.formCadastro.invalid) {
@@ -198,15 +202,10 @@ export class ModalLimitesComponent implements OnInit {
         return;
       }
 
-      let validaJaCadastrado = true;
+      let validaJaCadastrado = false;
 
       if (validaJaCadastrado) {
-        //vermelha
         this.toastr.error('Por favor, nesse caso o valor deverá ser alterado.', 'Registro já Cadastro');
-        
-        //laranja
-        this.toastr.warning('Por favor, nesse caso o valor deverá ser alterado.', 'Registro já Cadastro');
-        return;
       }
       else {
         if (nuRubricaNum > 0) {
