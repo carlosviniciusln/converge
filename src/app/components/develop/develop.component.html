@@ -1,5 +1,42 @@
 <div class="content">
-    <p>develop works!</p>
+  <mat-tab-group>
+    <mat-tab label="Histórico">
+      <h4
+        style="padding: 24px 0px 24px 24px"
+        class="modal-title"
+        id="modal-basic-title"
+      >
+        <span>Histórico Planejamento Orçamentario {{ numeroContrato }}</span>
+      </h4>
 
+      <div class="historico-container">
+        <p-timeline [value]="events" align="top" styleClass="customized-timeline">
+
+          <ng-template pTemplate="marker" let-event>
+            <span
+              class="custom-marker p-p-2 p-shadow-2"
+            >
+              <i [class]="event.icon"></i>
+            </span>
+          </ng-template>
+
+          <ng-template pTemplate="content" let-event>
+
+            <p-card
+              [header]="event.operacao"
+              styleClass="p-card-content"
+            >
+              <div class="card-content">
+                <span>{{ event.nome }}</span>
+                <br />
+                <small>{{ event.date | date }}</small>
+              </div>
+            </p-card>
+
+          </ng-template>
+
+        </p-timeline>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>
-
