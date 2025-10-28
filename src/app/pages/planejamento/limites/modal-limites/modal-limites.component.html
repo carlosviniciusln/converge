@@ -88,12 +88,14 @@
               type="text"
               class="form-control"
               mask="separator.2"
-              [allowNegativeNumbers]="true"
               [thousandSeparator]="'.'"
               [decimalMarker]="','"
               prefix="R$ "
-              [dropSpecialCharacters]="true"
+              [dropSpecialCharacters]="false"
+              placeholder="R$ 0,00"
+              (blur)="ajustarCentavos()"
             />
+
           </div>
         </div>
       </div>
