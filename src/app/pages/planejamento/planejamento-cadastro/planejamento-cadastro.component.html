@@ -308,7 +308,7 @@
                         readonly
                       />
                     </div>
-                    <div class="col-md-9 pr-0 text-right"></div>                    
+                    <div class="col-md-9 pr-0 text-right"></div>
                   </div>
 
             </div>
@@ -358,7 +358,7 @@
                   {{ actionButtonLabel }}
                 </button>
 
-                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="Alterar()" style="margin-right: 5px">
+                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado && !isCadastro" (click)="Alterar()" style="margin-right: 5px">
                   <i class="tim-icons icon-pencil"></i>
                   <span> Salvar</span>
                 </button>
