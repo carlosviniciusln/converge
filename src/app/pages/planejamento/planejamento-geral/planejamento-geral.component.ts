@@ -148,7 +148,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
   }
 
-  openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: any, nuPlanejamentoOrcamento?:number) {
+  openModalPlanejamento(tipoModal: string, isEditable: boolean, isCadastro : boolean, planejamento?: any, nuPlanejamentoOrcamento?:number) {
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -160,45 +160,13 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
+    modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
         this.obterPlanejamentosOrc();
       }
     });
-  }
-
-  public async obterPlanejamentos(): Promise<void> {
-    // try {
-    //   const response = await this.apiService.get<
-    //     ApiResponsePaginado<PlanejamentoOrcamentarioResponse>
-    //   >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}?NuPlanejamento=${this.nuPlanejamentoExercicio}`, this.filtroRegistros);
-
-    //   this.planejamentos = response.data.results;
-    //   this.quantidadeTotal = response.data.totalRecords;
-
-    //   this.planejamentos.forEach((element) => {
-    //     var vrTotalOrcamentoPlanejamento = 0;
-    //     element.gcptb027PrevisoesDesembolso.forEach((subelement) => {
-    //       vrTotalOrcamentoPlanejamento +=
-    //         subelement.vrJaneiro +
-    //         subelement.vrFevereiro +
-    //         subelement.vrMarco +
-    //         subelement.vrAbril +
-    //         subelement.vrMaio +
-    //         subelement.vrJunho +
-    //         subelement.vrJulho +
-    //         subelement.vrAgosto +
-    //         subelement.vrSetembro +
-    //         subelement.vrOutubro +
-    //         subelement.vrNovembro +
-    //         subelement.vrDezembro;
-    //     });
-    //     element.vrTotalOrcamentoPlanejamento = vrTotalOrcamentoPlanejamento;
-    //   });
-
-    //   this.loading = false;
-    // } catch (error) { }
   }
 
 
