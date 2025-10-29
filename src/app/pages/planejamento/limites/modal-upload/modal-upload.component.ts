@@ -99,12 +99,12 @@ export class ModalUploadComponent implements OnInit {
     try {
 
       const alert = await Swal.fire({
-            title: 'Upload de arquivo',
+            title: '',
             text: 'Tem certeza que deseja realizar o upload? As informações anteriores serão apagadas.',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Sim!',
-            cancelButtonText: 'Não!',
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
           }).then((result) => {
             if (result.value) {
               return true;

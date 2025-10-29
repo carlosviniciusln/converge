@@ -10,7 +10,7 @@
       <div class="col-12">
         <div class="d-flex flex-nowrap align-items-center overflow-auto gap-2 pb-2">
           <!-- Botões -->
-          <button style=" margin-left: 5px" type="button" class="btn btn-sm btn-default" (click)="openModalPlanejamento()" *ngIf="isPerfilAdminOrcamento">Novo Registro</button>
+          <button style=" margin-left: 5px" type="button" class="btn btn-sm btn-default" (click)="openModalPlanejamento('cadastro')" *ngIf="isPerfilAdminOrcamento">Novo Registro</button>
           <button style=" margin-left: 5px" type="button" class="btn btn-sm btn-default" (click)="openModalUpload()" *ngIf="isPerfilAdminOrcamento">
             Upload <i class="pi pi-upload" aria-hidden="true" style="color:white"></i>
           </button>
@@ -142,13 +142,13 @@
                                                                               </tr>
                                                                           </ng-template>
                                                                           <ng-template pTemplate="body" let-ud let-expanded="expanded">
-                                                                              <tr>
+                                                                              <tr (click)="openModalPlanejamento('alteracao', ud)" style="text-decoration: underline; cursor: pointer;">
                                                                                   <td style="background-color: #b4dec9; color: black; text-align: right;"><span style="margin-right: 10%;">{{ud.cO_EXERCICIO}}</span></td>
                                                                                   <td style="background-color: #b4dec9; color: black">{{ud.dE_PLANEJAMENTO_TIPO}}</td>
                                                                                   <td style="background-color: #b4dec9; color: black">{{ud.sG_FILIAL}}</td>
                                                                                   <td style="background-color: #b4dec9; color: black">{{ud.cO_RUBRICA}}</td>
                                                                                   <td style="background-color: #b4dec9; color: black">{{ud.dE_RUBRICA}}</td>
-                                                                                  <td style="color:blue; background-color: #b4dec9; text-decoration: underline; cursor: pointer;text-align: right;">{{ud.vR_LIMITE | currency:'BRL'}}</td>
+                                                                                  <td style="background-color: #b4dec9; color: black; text-align: right;">{{ud.vR_LIMITE | currency:'BRL'}}</td>
                                                                                   <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vR_PLANEJAMENTO | currency:'BRL'}}</td>
                                                                                   <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="ud.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
                                                                               </tr>

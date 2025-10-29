@@ -24,6 +24,7 @@ import {
 import { Endpoints } from 'src/app/shared/enums/endpoints';
 import {
   ExercicioModel,
+  LimitesModel,
   listaErroUploadModel,
   StatusPlanejamentoModel,
 } from 'src/app/models/limites-model';
@@ -37,6 +38,7 @@ import { Select2Data } from 'ng-select2-component';
 export class ModalLimitesComponent implements OnInit {
   @Input() public limiteRubrica: LimitesRubricaResponse;
   @Input() public isEditable: boolean;
+  @Input() public registro: LimitesModel;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   @Input() public nuPlanejamento: number;
   @Input() public tipoModal: string;
@@ -98,14 +100,14 @@ export class ModalLimitesComponent implements OnInit {
     this.obterOrcamentos();
     this.obterRubricas();
     this.obterFiliais();
+    this.editarTextos();
   }
 
   definirPageAction() {
-    if (this.nuPlanejamento) {
+    if (this.isEditable)
       this.currentPageAction = PageAction.Alterar;
-    } else {
+    else
       this.currentPageAction = PageAction.Cadastrar;
-    }
   }
 
   editarTextos() {
@@ -116,12 +118,14 @@ export class ModalLimitesComponent implements OnInit {
   }
 
   formulario() {
+    console.log(this.registro)
     this.formCadastro = this.formBuilder.group({
-      nuPlanejamento: ['', Validators.required],
-      nuRubrica: ['', Validators.required],
-      nuUnidadeDemandante: ['', Validators.required],
-      vrLimite: ['', Validators.required]
+      nuPlanejamento: [2, Validators.required],
+      nuRubrica: [1, Validators.required],
+      nuUnidadeDemandante: ['GEAUS', Validators.required],
+      vrLimite: [this.registro?.vR_LIMITE, Validators.required]
     });
+    this.descricaoRubrica = this.registro?.dE_RUBRICA;
   }
 
   public async obterRubricas(): Promise<void> {

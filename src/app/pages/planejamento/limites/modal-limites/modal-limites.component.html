@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" id="modal-basic-title">
-    <b>Cadastro</b><br /><small>Cadastro de limites de rubrica</small>
+    <b>{{ titulo }}</b
+    ><br /><small>{{ subTitulo }}</small>
   </h4>
   <button
     type="button"
@@ -110,7 +111,7 @@
               type="submit"
               (click)="onSubmit()"
             >
-              Salvar
+              {{actionButtonLabel}}
             </button>
           </div>
         </div>
