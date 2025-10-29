@@ -41,7 +41,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   listaObjetoPlanejamento: PlanejamentoObjetoResponse[];
   listaTiposPlanejamento: PlanejamentoTipoResponse[];
   listaTiposDemanda: DemandaTipoResponse[];
-  
+
 
   listaOpcoesIsDigital: { value: number; label: string }[] = [
     { value: 1, label: 'Digital' },
@@ -119,8 +119,8 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.anoExercicio =params['cO_EXERCICIO'];
       this.ordemTipoExercicio = params['tipo'];
-      this.statusExercio = params['statusPlanejamento'];      
-      
+      this.statusExercio = params['statusPlanejamento'];
+
       const valor = Number(params['nuPlanejamento']);
       this.nuPlanejamentoExercicio = isNaN(valor) ? 0 : valor;
 
@@ -148,7 +148,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
   }
 
-  openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: any, nuPlanejamentoOrcamento?:number) {
+  openModalPlanejamento(tipoModal: string, isEditable: boolean, isCadastro : boolean, planejamento?: any, nuPlanejamentoOrcamento?:number) {
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -160,6 +160,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
+    modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
@@ -168,40 +169,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     });
   }
 
-  public async obterPlanejamentos(): Promise<void> {
-    // try {
-    //   const response = await this.apiService.get<
-    //     ApiResponsePaginado<PlanejamentoOrcamentarioResponse>
-    //   >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}?NuPlanejamento=${this.nuPlanejamentoExercicio}`, this.filtroRegistros);
 
-    //   this.planejamentos = response.data.results;
-    //   this.quantidadeTotal = response.data.totalRecords;
-
-    //   this.planejamentos.forEach((element) => {
-    //     var vrTotalOrcamentoPlanejamento = 0;
-    //     element.gcptb027PrevisoesDesembolso.forEach((subelement) => {
-    //       vrTotalOrcamentoPlanejamento +=
-    //         subelement.vrJaneiro +
-    //         subelement.vrFevereiro +
-    //         subelement.vrMarco +
-    //         subelement.vrAbril +
-    //         subelement.vrMaio +
-    //         subelement.vrJunho +
-    //         subelement.vrJulho +
-    //         subelement.vrAgosto +
-    //         subelement.vrSetembro +
-    //         subelement.vrOutubro +
-    //         subelement.vrNovembro +
-    //         subelement.vrDezembro;
-    //     });
-    //     element.vrTotalOrcamentoPlanejamento = vrTotalOrcamentoPlanejamento;
-    //   });
-
-    //   this.loading = false;
-    // } catch (error) { }
-  }
-
-  
   async obterStatusPlanejamento(): Promise<void> {
     const response = await this.apiService.get<ApiResponse<PlanejamentoStatusResponse[]>>(
       `${Endpoints.URL_ORCAMENTO}/status-planejamento`
@@ -214,56 +182,63 @@ export class PlanejamentoGeralComponent implements OnInit {
   }
 
 
-  async onSalvarMudancasStatus(): Promise<void> {
-    try {
-      const modalRef = this.modalService.open(ConfirmacaoModalComponent, {
-        backdrop: 'static',
-        keyboard: false,
-        centered: true,
-        size: 'md'
-      });
-  
-      modalRef.componentInstance.title = 'Confirmar alterações';
-      modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
-      modalRef.componentInstance.confirmLabel = 'Sim, salvar';
-      modalRef.componentInstance.cancelLabel = 'Não, voltar';
-      modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
-      modalRef.componentInstance.iconClass = 'text-warning';
-  
-      const confirmed = await modalRef.result;
-  
-      if (confirmed) {
-        const idSelecionado = this.statusSelecionados[0];
-        const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
-        if (!novoStatusObj) return;
-  
-        const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
-        if (itensSelecionados.length === 0) {
-          this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
-          return;
-        }
+public async onSalvarMudancasStatus(): Promise<void> {
+  let confirmed = false;
 
-        const statusNovo: AlterarStatusPlanejamento = {
-          nuPlanejamento: Number(this.nuPlanejamentoExercicio), 
-          status: novoStatusObj.nuPlanejamentoStatus,
-          nuPlanejamentoItem: itensSelecionados.map(item => ({
-            NuTipoDemanda: item.nU_TIPO_DEMANDA,
-            NuContrato: item.nU_CONTRATO
-          }))          
-        };
-        
-        await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
-        this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
-  
-        await this.obterPlanejamentosOrc();
-        this.selecionarTodos = false;
-        this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
-      }
+  try {
+    const modalRef = this.modalService.open(ConfirmacaoModalComponent, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: 'md'
+    });
+
+    modalRef.componentInstance.title = 'Confirmar alterações';
+    modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
+    modalRef.componentInstance.confirmLabel = 'Sim, salvar';
+    modalRef.componentInstance.cancelLabel = 'Não, voltar';
+    modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
+    modalRef.componentInstance.iconClass = 'text-warning';
+
+    try {
+      confirmed = await modalRef.result;
     } catch {
-      this.toastr.error('Ocorreu um erro ao salvar', 'Error');
+      confirmed = false;
     }
+
+    if (!confirmed) return;
+
+    const idSelecionado = this.statusSelecionados[0];
+    const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
+    if (!novoStatusObj) return;
+
+    const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
+    if (itensSelecionados.length === 0) {
+      this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
+      return;
+    }
+
+    const statusNovo: AlterarStatusPlanejamento = {
+      nuPlanejamento: Number(this.nuPlanejamentoExercicio),
+      status: novoStatusObj.nuPlanejamentoStatus,
+      nuPlanejamentoItem: itensSelecionados.map(item => ({
+        NuTipoDemanda: item.nU_TIPO_DEMANDA,
+        NuContrato: item.nU_CONTRATO
+      }))
+    };
+
+    await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
+    this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
+
+    await this.obterPlanejamentosOrc();
+    this.selecionarTodos = false;
+    this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
+
+  } catch (error) {
+    this.toastr.error('Ocorreu um erro ao salvar', "Error");
   }
-  
+}
+
   atualizarStatusSelecionados() {
     if (!this.statusSelecionados || this.statusSelecionados.length === 0) return;
 
@@ -278,7 +253,7 @@ export class PlanejamentoGeralComponent implements OnInit {
       p.nO_STATUS = novoStatus.noPlanejamentoStatus;
     });
   }
-  
+
   selecionarTodosItens() {
     this.planejamentos.forEach(p => {
       p.sT_SELECIONADO = this.selecionarTodos;
@@ -380,7 +355,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
     this.loading = false;
   }
-  
+
   public async obterPlanejamentosOrc(): Promise<void> {
     this.loading = true;
     try {

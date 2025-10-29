@@ -45,6 +45,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   @Input() public nuPlanejamentoOrcamento: any;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
+  @Input() public isCadastro: boolean;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   gcpvw008Mensalizacao: Gcpvw008Mensalizacao[] = [];
   gcpvw008MensalizacaoAnoExercicio: Gcpvw008Mensalizacao[] = [];
@@ -65,7 +66,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
   public planejamento: PlanejamentoOrcamentarioResponse;
   public planejamentoEditar: PlanejamentoOrcamentarioResponse;
-  //public planejamentoVlr: PlanejamentoItemResponse[]= [];
   public listaDigital: any[] = [{ id: 1, tipo: 'Digital' }, { id: 2, tipo: 'Digital - TD' }, { id: 3, tipo: 'Não Digital' }]
   public digitalOpSelec: string;
   totalRubrica: number;
@@ -141,17 +141,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.obterObjetivosEstrategicosPdti();
     this.obterObjetivosEstrategicosPei();
 
-    // if(this.planejamentoEditar == null){
-    //   this.planejamentoEditar = this.planejamento;
-    // }
-
-    console.log(this.nuPlanejamento, "orc");
-    console.log(this.nuPlanejamentoOrcamento, "novo orc");
     if(this.nuPlanejamentoOrcamento == null){
       this.nuPlanejamentoOrcamento =  this.nuPlanejamento?.nU_PLANEJAMENTO;
     }
 
     const nU_ORC = this.nuPlanejamento?.nU_ORC;
+
     if (nU_ORC != null) {
       this.obterPlanejamento();
     } else {
@@ -159,13 +154,18 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.editarTextos();
     }
     this.loading = false;
+
+    ///efetua as validações de perfil
+    if(this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade
+      || this.currentProfile.noPerfil == PerfisEnum.Orcamento
+      || this.currentProfile.noPerfil == PerfisEnum.Administrador)
+      this.isPerfilPrivilegiado = true;
   }
 
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
     this.currentProfile  = this.token.obterUsuarioEstruturado() as IUser;
-
-    if(this.nuPlanejamento.cO_FILIAL == this.currentProfile.coUnidade
+    if(this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade
       || this.currentProfile.noPerfil == PerfisEnum.Orcamento
       || this.currentProfile.noPerfil == PerfisEnum.Administrador)
       this.isPerfilPrivilegiado = true;
@@ -479,6 +479,7 @@ ajustarCentavos(index: number, campo: string): void {
        >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL+`&nuPlanejamento=`+this.nuPlanejamento.nU_PLANEJAMENTO);
        //console.log(response.data[0]);
        this.planejamento = response.data[0];
+       if(this.planejamento){
       this.form.controls['nuPlanejamentoOrcamentario'].setValue(
         this.nuPlanejamento.nU_PLANEJAMENTO
       );
@@ -665,10 +666,9 @@ ajustarCentavos(index: number, campo: string): void {
             });
           }
           }
-
-      //this.buildClassificacaoPlanejamento(this.nuPlanejamento.gcptb024ClassificacaoPlanejamento)
-      //this.somaValorTotalPlanejamentoOrcamentario();
-      //this.obterMensalizacaoContrato(this.nuPlanejamento.nU_CONTRATO)
+        } else {
+          this.toastr.error('Não retornou dados para este detalhamento. Tente novamente mais tarde.', 'Erro');
+        }
     } catch (error) {
       console.error(error);
     }
