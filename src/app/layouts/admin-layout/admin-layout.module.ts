@@ -90,6 +90,10 @@ import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/pl
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
 import { SharedLibraryModule } from 'src/app/shared/shared-library/shared-library.module';
 import { DetalheFinanceiroComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
+import { MatListModule } from '@angular/material/list';
+import { TimelineModule } from 'primeng/timeline';
+import { CardModule } from 'primeng/card';
+import { PaginatorModule } from 'primeng/paginator';
 
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
@@ -133,7 +137,14 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     MatTabsModule,
     CurrencyMaskModule,
     FileUploadModule,
-    SharedLibraryModule
+    SharedLibraryModule,
+        MatListModule,
+        TimelineModule,
+        CardModule,
+        TableModule,
+        DropdownModule,
+        FormsModule,
+        PaginatorModule
   ],
   declarations: [
     DashboardComponent,

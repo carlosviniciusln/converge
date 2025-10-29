@@ -21,7 +21,6 @@ import { ConfirmacaoModalComponent } from 'src/app/components/modal-confirmacao/
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
-import { MenuItem, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -104,42 +103,15 @@ export class PlanejamentoGeralComponent implements OnInit {
     nuPlanejamento: 0
   };
 
-   items: MenuItem[];
-
   constructor(
     private apiService: ApiService,
     private modalService: NgbModal,
     private route : ActivatedRoute,
     public token: TokenStorageService,
-    private messageService: MessageService,
     private toastr: ToastrService
   ) {
     this.obterPermissoes();
-
-     this.items = [
-            {
-                label: 'Update',
-                command: () => {
-
-                }
-            },
-            {
-                label: 'Delete',
-                command: () => {
-
-                }
-            },
-            { label: 'Angular Website', url: 'http://angular.io' },
-            { separator: true },
-            { label: 'Upload', routerLink: ['/fileupload'] }
-        ];
   }
-
-
-   save(severity: string) {
-        this.messageService.add({ severity: severity, summary: 'Success', detail: 'Data Saved' });
-    }
-
 
   async ngOnInit(): Promise<void> {
 
@@ -176,7 +148,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
   }
 
-  openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: any, nuPlanejamentoOrcamento?:number) {
+  openModalPlanejamento(tipoModal: string, isEditable: boolean, isCadastro : boolean, planejamento?: any, nuPlanejamentoOrcamento?:number) {
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -188,46 +160,13 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
+    modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
         this.obterPlanejamentosOrc();
       }
     });
-  }
-
-  // QUAL É A NECESSIDADE DESSE METODO
-  public async obterPlanejamentos(): Promise<void> {
-    // try {
-    //   const response = await this.apiService.get<
-    //     ApiResponsePaginado<PlanejamentoOrcamentarioResponse>
-    //   >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}?NuPlanejamento=${this.nuPlanejamentoExercicio}`, this.filtroRegistros);
-
-    //   this.planejamentos = response.data.results;
-    //   this.quantidadeTotal = response.data.totalRecords;
-
-    //   this.planejamentos.forEach((element) => {
-    //     var vrTotalOrcamentoPlanejamento = 0;
-    //     element.gcptb027PrevisoesDesembolso.forEach((subelement) => {
-    //       vrTotalOrcamentoPlanejamento +=
-    //         subelement.vrJaneiro +
-    //         subelement.vrFevereiro +
-    //         subelement.vrMarco +
-    //         subelement.vrAbril +
-    //         subelement.vrMaio +
-    //         subelement.vrJunho +
-    //         subelement.vrJulho +
-    //         subelement.vrAgosto +
-    //         subelement.vrSetembro +
-    //         subelement.vrOutubro +
-    //         subelement.vrNovembro +
-    //         subelement.vrDezembro;
-    //     });
-    //     element.vrTotalOrcamentoPlanejamento = vrTotalOrcamentoPlanejamento;
-    //   });
-
-    //   this.loading = false;
-    // } catch (error) { }
   }
 
 
@@ -243,55 +182,62 @@ export class PlanejamentoGeralComponent implements OnInit {
   }
 
 
-  async onSalvarMudancasStatus(): Promise<void> {
+public async onSalvarMudancasStatus(): Promise<void> {
+  let confirmed = false;
+
+  try {
+    const modalRef = this.modalService.open(ConfirmacaoModalComponent, {
+      backdrop: 'static',
+      keyboard: false,
+      centered: true,
+      size: 'md'
+    });
+
+    modalRef.componentInstance.title = 'Confirmar alterações';
+    modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
+    modalRef.componentInstance.confirmLabel = 'Sim, salvar';
+    modalRef.componentInstance.cancelLabel = 'Não, voltar';
+    modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
+    modalRef.componentInstance.iconClass = 'text-warning';
+
     try {
-      const modalRef = this.modalService.open(ConfirmacaoModalComponent, {
-        backdrop: 'static',
-        keyboard: false,
-        centered: true,
-        size: 'md'
-      });
-
-      modalRef.componentInstance.title = 'Confirmar alterações';
-      modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
-      modalRef.componentInstance.confirmLabel = 'Sim, salvar';
-      modalRef.componentInstance.cancelLabel = 'Não, voltar';
-      modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
-      modalRef.componentInstance.iconClass = 'text-warning';
-
-      const confirmed = await modalRef.result;
-
-      if (confirmed) {
-        const idSelecionado = this.statusSelecionados[0];
-        const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
-        if (!novoStatusObj) return;
-
-        const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
-        if (itensSelecionados.length === 0) {
-          this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
-          return;
-        }
-
-        const statusNovo: AlterarStatusPlanejamento = {
-          nuPlanejamento: Number(this.nuPlanejamentoExercicio),
-          status: novoStatusObj.nuPlanejamentoStatus,
-          nuPlanejamentoItem: itensSelecionados.map(item => ({
-            NuTipoDemanda: item.nU_TIPO_DEMANDA,
-            NuContrato: item.nU_CONTRATO
-          }))
-        };
-
-        await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
-        this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
-
-        await this.obterPlanejamentosOrc();
-        this.selecionarTodos = false;
-        this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
-      }
+      confirmed = await modalRef.result;
     } catch {
-      this.toastr.error('Ocorreu um erro ao salvar', 'Error');
+      confirmed = false;
     }
+
+    if (!confirmed) return;
+
+    const idSelecionado = this.statusSelecionados[0];
+    const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
+    if (!novoStatusObj) return;
+
+    const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
+    if (itensSelecionados.length === 0) {
+      this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
+      return;
+    }
+
+    const statusNovo: AlterarStatusPlanejamento = {
+      nuPlanejamento: Number(this.nuPlanejamentoExercicio),
+      status: novoStatusObj.nuPlanejamentoStatus,
+      nuPlanejamentoItem: itensSelecionados.map(item => ({
+        NuTipoDemanda: item.nU_TIPO_DEMANDA,
+        NuContrato: item.nU_CONTRATO
+      }))
+    };
+
+    await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
+    this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
+
+    await this.obterPlanejamentosOrc();
+    this.selecionarTodos = false;
+    this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
+
+  } catch (error) {
+    this.toastr.error('Ocorreu um erro ao salvar', "Error");
   }
+}
 
   atualizarStatusSelecionados() {
     if (!this.statusSelecionados || this.statusSelecionados.length === 0) return;

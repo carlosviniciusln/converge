@@ -13,6 +13,9 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule} from '@angular/material/list';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
+import { TableModule } from "primeng/table";
+import { DropdownModule } from "primeng/dropdown";
+import { PaginatorModule } from "primeng/paginator";
 
 @NgModule({
   imports: [
@@ -25,7 +28,11 @@ import { CardModule } from 'primeng/card';
     DialogModule,
     MatListModule,
     TimelineModule,
-    CardModule
+    CardModule,
+    TableModule,
+    DropdownModule,
+    FormsModule,
+    PaginatorModule
 ],
   declarations: [
     NavbarComponent,
