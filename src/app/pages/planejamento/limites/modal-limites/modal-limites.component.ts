@@ -24,6 +24,7 @@ import {
 import { Endpoints } from 'src/app/shared/enums/endpoints';
 import {
   ExercicioModel,
+  LimitesModel,
   listaErroUploadModel,
   StatusPlanejamentoModel,
 } from 'src/app/models/limites-model';
@@ -37,6 +38,7 @@ import { Select2Data } from 'ng-select2-component';
 export class ModalLimitesComponent implements OnInit {
   @Input() public limiteRubrica: LimitesRubricaResponse;
   @Input() public isEditable: boolean;
+  @Input() public registro: LimitesModel;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   @Input() public nuPlanejamento: number;
   @Input() public tipoModal: string;
@@ -65,32 +67,32 @@ export class ModalLimitesComponent implements OnInit {
     subTitle: string;
     actionButtonLabel: string;
   }[] = [
-    {
-      type: PageAction.Consultar,
-      title: 'Consulta',
-      subTitle: 'Consulta limites rubrica',
-      actionButtonLabel: 'Fechar',
-    },
-    {
-      type: PageAction.Alterar,
-      title: 'Edição',
-      subTitle: 'Edição de limites rubrica',
-      actionButtonLabel: 'Alterar',
-    },
-    {
-      type: PageAction.Cadastrar,
-      title: 'Cadastro',
-      subTitle: 'Cadastro de limites rubrica',
-      actionButtonLabel: 'Cadastrar',
-    },
-  ];
+      {
+        type: PageAction.Consultar,
+        title: 'Consulta',
+        subTitle: 'Consulta limites rubrica',
+        actionButtonLabel: 'Fechar',
+      },
+      {
+        type: PageAction.Alterar,
+        title: 'Edição',
+        subTitle: 'Edição de limites rubrica',
+        actionButtonLabel: 'Alterar',
+      },
+      {
+        type: PageAction.Cadastrar,
+        title: 'Cadastro',
+        subTitle: 'Cadastro de limites rubrica',
+        actionButtonLabel: 'Cadastrar',
+      },
+    ];
 
   constructor(
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.definirPageAction();
@@ -98,14 +100,14 @@ export class ModalLimitesComponent implements OnInit {
     this.obterOrcamentos();
     this.obterRubricas();
     this.obterFiliais();
+    this.editarTextos();
   }
 
   definirPageAction() {
-    if (this.nuPlanejamento) {
+    if (this.isEditable)
       this.currentPageAction = PageAction.Alterar;
-    } else {
+    else
       this.currentPageAction = PageAction.Cadastrar;
-    }
   }
 
   editarTextos() {
@@ -116,12 +118,14 @@ export class ModalLimitesComponent implements OnInit {
   }
 
   formulario() {
+    console.log(this.registro)
     this.formCadastro = this.formBuilder.group({
-      nuPlanejamento: ['', Validators.required],
-      nuRubrica: ['', Validators.required],
-      nuUnidadeDemandante: ['', Validators.required],
-      vrLimite: ['', Validators.required]
+      nuPlanejamento: [2, Validators.required],
+      nuRubrica: [1, Validators.required],
+      nuUnidadeDemandante: ['GEAUS', Validators.required],
+      vrLimite: [this.registro?.vR_LIMITE, Validators.required]
     });
+    this.descricaoRubrica = this.registro?.dE_RUBRICA;
   }
 
   public async obterRubricas(): Promise<void> {
@@ -130,7 +134,7 @@ export class ModalLimitesComponent implements OnInit {
         `${Endpoints.URL_RUBRICA}/ativas`
       );
 
-      this.selectRubrica = response?.data?.map(c => ({ label: c.coRubrica, value: c.nuRubrica + '-' +c.deRubrica }));
+      this.selectRubrica = response?.data?.map(c => ({ label: c.coRubrica, value: c.nuRubrica + '-' + c.deRubrica }));
     } catch (error) {
     }
   }
@@ -152,10 +156,10 @@ export class ModalLimitesComponent implements OnInit {
         `${Endpoints.URL_CONTRATOS}/exercicios-ativos`
       );
       this.listaExercicios = response.data;
-    } catch (error) {}
+    } catch (error) { }
   }
 
-  public fillRubrica(e: any){
+  public fillRubrica(e: any) {
     this.descricaoRubrica = e.value.split('-')[1]
     this.nuRubrica = e.value.split('-')[0]
   }
@@ -185,6 +189,10 @@ export class ModalLimitesComponent implements OnInit {
       this.formCadastro.markAllAsTouched();
       const nuRubricaNum = Number(this.nuRubrica);
       this.formCadastro.controls['nuRubrica'].setValue(nuRubricaNum);
+      //remover o R$
+      const valorAtual = this.formCadastro.controls['vrLimite'].value;
+      const valorSemPrefixo = valorAtual.replace('R$ ', '');
+      this.formCadastro.controls['vrLimite'].setValue(valorSemPrefixo);
       const formData = this.toFormData(this.formCadastro);
 
       if (this.formCadastro.invalid) {
@@ -198,23 +206,30 @@ export class ModalLimitesComponent implements OnInit {
         return;
       }
 
-      if(nuRubricaNum > 0){
-        let response = await this.apiService.postFormData<any>(
-          `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-limite`,
-          formData
-        );
-      if (response.data.succeeded) {
-        this.toastr.success(response.data.data, 'Sucesso');
-        this.atualizarPagina.emit(true);
-        this.activeModal.dismiss();
-        setTimeout(() => {
-          window.location.reload()
-        }, 3000);
-      } else {
-        this.toastr.error('Ocorreu um erro ao cadastrar novo limite', 'Tente novamente');
-        this.atualizarPagina.emit(false);
+      let validaJaCadastrado = false;
+
+      if (validaJaCadastrado) {
+        this.toastr.error('Por favor, nesse caso o valor deverá ser alterado.', 'Registro já Cadastro');
       }
-    }
+      else {
+        if (nuRubricaNum > 0) {
+          let response = await this.apiService.postFormData<any>(
+            `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-limite`,
+            formData
+          );
+          if (response.data.succeeded) {
+            this.toastr.success(response.data.data, 'Sucesso');
+            this.atualizarPagina.emit(true);
+            this.activeModal.dismiss();
+            setTimeout(() => {
+              window.location.reload()
+            }, 3000);
+          } else {
+            this.toastr.error('Ocorreu um erro ao cadastrar novo limite', 'Tente novamente');
+            this.atualizarPagina.emit(false);
+          }
+        }
+      }
     } catch (error) {
       console.log(error)
       this.atualizarPagina.emit(false);
@@ -274,6 +289,27 @@ export class ModalLimitesComponent implements OnInit {
       this.activeModal.dismiss();
     } catch (error) {
       this.atualizarPagina.emit(false);
+    }
+  }
+
+  ajustarCentavos(): void {
+    const valor = this.formCadastro.get('vrLimite')?.value;
+
+    if (!valor || typeof valor !== 'string') return;
+
+    // Remove prefixo e separadores para verificar se é inteiro
+    const valorLimpo = valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.');
+    const numero = parseFloat(valorLimpo);
+
+    if (!isNaN(numero)) {
+      const partes = valorLimpo.split('.');
+      const temCentavos = partes.length > 1 && partes[1].length > 0;
+
+      if (!temCentavos) {
+        // Apenas atualiza o valor do FormControl com número formatado
+        // sem interferir na máscara
+        this.formCadastro.get('vrLimite')?.setValue(numero.toFixed(2).replace('.', ','), { emitEvent: true });
+      }
     }
   }
 }
