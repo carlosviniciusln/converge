@@ -29,3 +29,18 @@ label {
 .p-datatable-customers{
     font-size: 11px !important;
 }
+
+select.cl-select-pdtic {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+  
+  select.cl-select-pdtic option {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+  
