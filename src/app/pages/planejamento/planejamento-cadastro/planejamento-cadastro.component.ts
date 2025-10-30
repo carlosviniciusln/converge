@@ -1,3 +1,4 @@
+import { Gcptb060PlanejamentoItemHistoricoDTO } from './../../../models/DTOs/Gcptb060PlanejamentoItemHistoricoDTO';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
@@ -40,6 +41,7 @@ import { Gcpvw008Mensalizacao } from 'src/app/models/Gcptb001ContratoResponse';
 import Swal from 'sweetalert2';
 import { IUser } from 'src/app/models/DTOs/IUser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Gcptb060PlanejamentoItemHistoricoResponse } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoResponse';
 
 @Component({
   selector: 'app-planejamento-cadastro',
@@ -124,13 +126,18 @@ export class PlanejamentoCadastroComponent implements OnInit {
    * INICIO ATRIBUTOS HISTORICO
    */
 
-  events: any[] = [];
+    public filtroRegistros: any = {
+    pageNumber: 1,
+    pageSize: 12
+  };
+
+  ListaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoDTO[] = [];
   totalRegistros: number = 10;
   numeroContrato = 'SIGVC-2025';
   dialogVisible = false;
   selectedDiff: any = null;
   filtrosSelecionado: string | null = null;
-  eventosFiltrados = [...this.events];
+  eventosFiltrados = [...this.ListaPlanejamentoItemHistorico];
 
   /**
    * FIM HISTORICO
@@ -190,41 +197,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
      */
 
 
-
-
-
-    this.events = [
-      {
-        operacao: 'INCLUSAO',
-        descricao: 'Contrato incluído no sistema.',
-        data: new Date('2025-10-20T10:00:00'),
-        usuario: 'danilo.reis',
-        icon: 'pi pi-plus',
-      },
-      {
-        operacao: 'ALTERACAO',
-        descricao: 'Contrato alterado.',
-        data: new Date('2025-10-22T15:30:00'),
-        usuario: 'maria.silva',
-        icon: 'pi pi-pencil',
-        diff: {
-          campos: [
-            { campo: 'valor', antes: '1000', depois: '1200' },
-            { campo: 'dataFim', antes: '2025-10-01', depois: '2025-12-31' },
-          ],
-        },
-      },
-      {
-        operacao: 'EXCLUSAO',
-        descricao: 'Contrato removido definitivamente.',
-        data: new Date('2025-10-25T09:00:00'),
-        usuario: 'joao.santos',
-
-        icon: 'pi pi-trash',
-      },
-    ];
-
-      this.filtrarEventos();
+     this.obterPlanejamentoItemHistorico();
+    //  this.filtrarEventos();
 
     /*
      * FIM HISTORICO
@@ -238,21 +212,20 @@ export class PlanejamentoCadastroComponent implements OnInit {
    */
 
   verDetalhes(event: any) {
-    this.selectedDiff = event.diff;
+    console.log(event, "Chegou aqui")
+    this.selectedDiff = event;
     this.dialogVisible = true;
   }
-
-  buscarHistorico(event: any) {}
 
   onTabChange(event) {
     this.selectTab = event.index;
   }
 
-  filtrarEventos() {
-    this.eventosFiltrados = this.filtrosSelecionado
-      ? this.events.filter((e) => e.operacao === this.filtrosSelecionado)
-      : [...this.events];
-  }
+  // filtrarEventos() {
+  //   this.eventosFiltrados = this.filtrosSelecionado
+  //     ? this.ListaPlanejamentoItemHistorico.filter((e) => e.TpOperacao === this.filtrosSelecionado)
+  //     : [...this.ListaPlanejamentoItemHistorico];
+  // }
 
   filtros = [
     {
@@ -929,6 +902,33 @@ export class PlanejamentoCadastroComponent implements OnInit {
     } catch (error) {
       console.error(error);
     }
+  }
+
+    public async obterPlanejamentoItemHistorico(): Promise<void> {
+
+
+    try {
+
+
+    // const queryParams = new URLSearchParams({
+    //   paginaAtual: this.filtroRegistros.paginaAtual,
+    //   tamanhoPagina: this.filtroRegistros.tamanhoPagina,
+    //   nuPlanejamento: this.filtroRegistros.nuPlanejamento,
+    //   nuPlanejamentoItem: this.filtroRegistros.nuPlanejamentoItem || ''
+    // });
+
+    console.log(this.nuPlanejamento, "Nuplanejamento AQUI")
+
+    const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
+      `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item?NuPlanejamento=${this.nuPlanejamento.nU_PLANEJAMENTO}`,
+    );
+
+      this.ListaPlanejamentoItemHistorico = response.data.listaHistorico;
+      console.log(this.ListaPlanejamentoItemHistorico, "DADOS HISTORICO");
+    } catch (error) {
+      console.error(error);
+    }
+
   }
 
   public async obterObjetivosEstrategicosPdti(): Promise<void> {
