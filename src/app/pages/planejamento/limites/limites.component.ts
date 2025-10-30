@@ -184,7 +184,6 @@ async detalharPorRubricaTipo(registro: LimitesModel, limite: any) {
 }
 
 async detalharPorUd(registro: LimitesModel, detalhe: any) {
-  console.log(this.ultimoDetalheLimite )
   try {
       if (!detalhe.terceiroNivel) {
           detalhe.terceiroNivel = [];
@@ -202,15 +201,27 @@ async detalharPorUd(registro: LimitesModel, detalhe: any) {
   }
 }
 
-openModalPlanejamento() {
-  const modalRef = this.modalService.open(ModalLimitesComponent, {
+openModalPlanejamento(acao: string, registro?: LimitesModel) {
+  if(acao == 'cadastro'){
+    const modalRef = this.modalService.open(ModalLimitesComponent, {
     ariaLabelledBy: 'modal-basic-title',
     size: 'md',
     windowClass: 'custom-class',
     backdrop: 'static',
     keyboard: false,
   });
-  //modalRef.componentInstance.anoSelecionado = anoSelecionado;
+    modalRef.componentInstance.isEditable = false;
+  }else if(acao == 'alteracao'){
+    const modalRef = this.modalService.open(ModalLimitesComponent, {
+    ariaLabelledBy: 'modal-basic-title',
+    size: 'md',
+    windowClass: 'custom-class',
+    backdrop: 'static',
+    keyboard: false,
+  });
+    modalRef.componentInstance.isEditable = true;
+    modalRef.componentInstance.registro = registro;
+  }
 }
 
 openModalUpload() {
