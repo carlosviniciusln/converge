@@ -1,11 +1,18 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">
-    <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
-  </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+
+  <button style="z-index: 10;" type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">×</span>
   </button>
 </div>
+
+<mat-tab-group>
+
+  <mat-tab label="Consulta">
+
+  <h4 style="padding: 10px 0px 0px 24px;" class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
+  </h4>
+
 <div class="modal-body">
   <form [formGroup]="form">
     <div class="row">
@@ -204,7 +211,7 @@
         let i = index
       ">
       <div class="row" [formGroupName]="i">
-        <div class="row">
+        <div style="padding: 10px 0px 0px 14px;" class="row">
           <div class="col-md-4 pr-0">
             <label for="nuRubrica">Rubrica {{ i + 1 }} :</label>
             <select class="form-control" id="nuRubrica" formControlName="nuRubrica" [ngClass]="{
@@ -465,3 +472,108 @@
     </div>
   </form>
 </div>
+
+
+</mat-tab>
+
+    <mat-tab label="Histórico">
+
+      <p-card>
+
+      <h4 class="modal-title" style="padding: 0px 0px 24px 12px ;">
+        <span>Histórico Planejamento Orçamentário {{ numeroContrato }}</span>
+      </h4>
+      <mat-divider></mat-divider>
+        <div class="historico-container">
+          <!-- <p-dropdown
+          [options]="filtros"
+          [(ngModel)]="filtrosSelecionado"
+          placeholder="Operação "
+          (onChange)="filtrarEventos()"
+          >
+          </p-dropdown> -->
+          <p-timeline
+            [value]="ListaPlanejamentoItemHistorico"
+            align="alternate"
+            class="c-p-timeline"
+          >
+
+            <ng-template pTemplate="marker" let-event>
+              <span
+                class="custom-marker p-p-2 p-shadow-2"
+                [ngStyle]="{
+                  'background-color':
+                    event.tpOperacao === 'INCLUSAO'
+                      ? '#4CAF50'
+                      : event.tpOperacao === 'ALTERACAO'
+                      ? '#2196F3'
+                      : '#F44336'
+                }"
+              >
+                <i [ngClass]="event.tpOperacao === 'INCLUSAO' ? 'pi pi-plus' : event.tpOperacao === 'ALTERACAO' ? 'pi pi-pencil' : 'pi pi-trash'" style="color: white"></i>
+              </span>
+            </ng-template>
+
+
+            <ng-template pTemplate="content" let-event>
+              <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
+                <div class="card-content">
+
+                  <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
+                  <small class="text-gray-500">
+                    {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
+                  </small>
+
+                  <div *ngIf="event.listaDiffs" class="mt-2">
+
+                    <button
+                      class="btn-sm btn-default"
+                      type="submit"
+                      (click)="verDetalhes(event.listaDiffs)"
+                    >
+                      Ver detalhes
+                    </button>
+                  </div>
+                </div>
+              </p-card>
+            </ng-template>
+          </p-timeline>
+
+
+
+          <!-- <p-paginator
+            [rows]="10"
+            [totalRecords]="totalRegistros"
+            (onPageChange)="buscarHistorico($event)"
+          ></p-paginator> -->
+        </div>
+      </p-card>
+
+      <!-- Modal Detalhes -->
+      <p-dialog
+        header="Detalhes da Alteração"
+        [(visible)]="dialogVisible"
+        [modal]="true"
+        [style]="{ width: '500px' }"
+        [closable]="true"
+      >
+        <p-table [value]="selectedDiff">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Campo</th>
+              <th>Antes</th>
+              <th>Depois</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-campo>
+            <tr>
+              <td>{{ campo.campo }}</td>
+              <td>{{ campo.antes }}</td>
+              <td>{{ campo.depois }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-dialog>
+  </mat-tab>
+
+</mat-tab-group>
