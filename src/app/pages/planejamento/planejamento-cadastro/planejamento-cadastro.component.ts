@@ -189,8 +189,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.subTitulo =
       this.currentPageAction == PageAction.Cadastrar
         ? element.subTitle
-        : `${element.subTitle} ${this.planejamento?.coPlanejamentoOrcamentario}`;
+        : `${element.subTitle} ${this.planejamento?.coContrato}`;
     this.actionButtonLabel = element.actionButtonLabel;
+    //console.log(this.subTitulo)
+    //console.log(this.planejamento, "this.planejamento", this.nuPlanejamento,  "this.nuPlanejamento")
   }
 
   formulario() {
@@ -423,18 +425,18 @@ ajustarCentavos(index: number, campo: string): void {
 
   if (!valor || typeof valor !== 'string') return;
 
-  // Remove prefixo e separadores para verificar se é inteiro
+  // Remove prefixo e separadores para verificar se é número
   const valorLimpo = valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.');
   const numero = parseFloat(valorLimpo);
 
   if (!isNaN(numero)) {
     const partes = valorLimpo.split('.');
-    const temCentavos = partes.length > 1 && partes[1].length > 0;
+    const temCentavos = partes.length > 1;
 
-    if (!temCentavos) {
-      // Apenas atualiza o valor do FormControl com número formatado
-      // sem interferir na máscara
-      grupo.get(campo)?.setValue(numero.toFixed(2).replace('.', ','), { emitEvent: true });
+    if (!temCentavos || partes[1].length < 2) {
+      // Garante que o número tenha sempre duas casas decimais
+      const valorFormatado = numero.toFixed(2).replace('.', ',');
+      grupo.get(campo)?.setValue(valorFormatado, { emitEvent: true });
     }
   }
 }
@@ -1283,7 +1285,7 @@ public parseDecimal(value: any): number {
     console.log(this.nuPlanejamentoOrcamento,"this.nuPlanejamentoOrcamento", planejamentoOrcamentario)
     const alert = await Swal.fire({
       title: '',
-      text: `Deseja realmente excluir Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario}?`,
+      text: `Deseja realmente excluir Planejamento Orçamentário do Contrato: ${planejamentoOrcamentario.coContrato}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim, deletar!',

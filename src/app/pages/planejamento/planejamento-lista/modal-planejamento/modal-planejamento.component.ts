@@ -66,7 +66,7 @@ export class ModalPlanejamentoComponent implements OnInit {
       this.currentProfile = this.token.getUserPerfil();
         this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
 
-        if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT'){
+        if(this.currentProfile === 'Administrador' || this.currentProfile === 'Orçamento'){
           this.isPerfilPrivilegiado = true;
         }
         this.anoAtual = new Date().getFullYear();

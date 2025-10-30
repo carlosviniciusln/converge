@@ -12,11 +12,11 @@
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-3 pr-0">
-            <label for="noCriador">Criado por:</label>
+            <label for="noCriador">Criado Por:</label>
             <input formControlName="noCriador" id="noCriador" readonly type="text" class="form-control" />
           </div>
           <div class="col-md-3 pr-0">
-            <label for="dhCadastro">Data de cria&ccedil;&atilde;o:</label>
+            <label for="dhCadastro">Data de Cria&ccedil;&atilde;o:</label>
             <input readonly formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
           </div>
           <div class="col-md-3 pr-0">
@@ -92,14 +92,23 @@
                 'is-invalid': submitted && f.nuPlanejamentoStatus.invalid
               }">
               <option value="" disabled selected>Selecione Status</option>
-              <option *ngFor="let a of listaStatusPlanejamento" [ngValue]="a.nuPlanejamentoStatus">
-                {{ a.noPlanejamentoStatus }}
-              </option>
+              <ng-container *ngIf="isCadastro">
+                <ng-container *ngFor="let a of listaStatusPlanejamento">
+                  <option *ngIf="a.nuPlanejamentoStatus == 5" [ngValue]="a.nuPlanejamentoStatus">
+                    {{ a.noPlanejamentoStatus }}
+                  </option>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="!isCadastro">
+                <option *ngFor="let a of listaStatusPlanejamento" [ngValue]="a.nuPlanejamentoStatus">
+                  {{ a.noPlanejamentoStatus }}
+                </option>
+              </ng-container>
             </select>
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuObjetivoEstrategicoPdti">Objetivo Estratégico PDTIC:</label>
-            <select class="form-control" id="nuObjetivoEstrategicoPdti" formControlName="nuObjetivoEstrategicoPdti"
+            <select class="form-control cl-select-pdtic" id="nuObjetivoEstrategicoPdti" formControlName="nuObjetivoEstrategicoPdti"
               [ngClass]="{
                 'is-invalid': submitted && f.nuObjetivoEstrategicoPdti.invalid
               }">
@@ -309,6 +318,12 @@
                       />
                     </div>
                     <div class="col-md-9 pr-0 text-right"></div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-12">
+                      <br/>
+                    </div>
                   </div>
 
             </div>
