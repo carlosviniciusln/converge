@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title" id="modal-basic-title">
-    <b>Cadastro</b><br /><small>Cadastro de limites de rubrica</small>
+    <b>{{ titulo }}</b
+    ><br /><small>{{ subTitulo }}</small>
   </h4>
   <button
     type="button"
@@ -88,12 +89,14 @@
               type="text"
               class="form-control"
               mask="separator.2"
-              [allowNegativeNumbers]="true"
               [thousandSeparator]="'.'"
               [decimalMarker]="','"
               prefix="R$ "
-              [dropSpecialCharacters]="true"
+              [dropSpecialCharacters]="false"
+              placeholder="R$ 0,00"
+              (blur)="ajustarCentavos()"
             />
+
           </div>
         </div>
       </div>
@@ -108,7 +111,7 @@
               type="submit"
               (click)="onSubmit()"
             >
-              Salvar
+              {{actionButtonLabel}}
             </button>
           </div>
         </div>

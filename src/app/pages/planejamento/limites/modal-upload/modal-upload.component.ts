@@ -9,6 +9,7 @@ import { LimitesRubricaResponse, LimitesRubricasUpdate } from 'src/app/models/li
 import { ApiService } from 'src/app/services/api.service';
 import { PageAction } from 'src/app/services/token-storage.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modal-upload',
@@ -96,6 +97,27 @@ export class ModalUploadComponent implements OnInit {
 
   public async Cadastrar(): Promise<void> {
     try {
+
+      const alert = await Swal.fire({
+            title: '',
+            text: 'Tem certeza que deseja realizar o upload? As informações anteriores serão apagadas.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+          }).then((result) => {
+            if (result.value) {
+              return true;
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+              return false;
+            }
+          });
+      
+          if(!alert){
+            return;
+          }
+
+          
       this.submitted = true;
       this.form.markAllAsTouched();
       const formData = this.toFormData(this.form);

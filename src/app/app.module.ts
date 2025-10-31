@@ -56,6 +56,9 @@ import { LimitesComponent } from './pages/planejamento/limites/limites.component
 import { ModalLimitesComponent } from "./pages/planejamento/limites/modal-limites/modal-limites.component";
 import { ModalUploadComponent } from './pages/planejamento/limites/modal-upload/modal-upload.component';
 import { CheckboxModule } from 'primeng/checkbox';
+import { MessageService } from "primeng/api";
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { CargaGerais } from "src/assets/mock/Gcptb051CargaPlanejamentoItem";
 
 registerLocaleData(ptBr);
 
@@ -79,6 +82,7 @@ const maskConfig: Partial<IConfig> = {
     RouterModule,
     AppRoutingModule,
     HttpClientModule,
+    SplitButtonModule,
     AdminLayoutModule,
     ReactiveFormsModule,
     FormsModule,
@@ -129,6 +133,8 @@ const maskConfig: Partial<IConfig> = {
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService,
+    MessageService,
+    CargaGerais
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

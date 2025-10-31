@@ -54,7 +54,8 @@
     </mat-tab-group>
     <div class="row">
       <div class="col-2" style="margin-top: 30px; align-items: center;">
-        <button class="btn-sm btn-default" style="margin-left: 20px; margin-bottom: 20px;" (click)="novoExercicio()" *ngIf="perfil == 'Administrador'">
+        <button class="btn-sm btn-default" style="margin-left: 20px; margin-bottom: 20px;" 
+        (click)="novoExercicio()" *ngIf="perfil == 'Administrador' || perfil == 'Orçamento'">
           Novo Exercício
         </button>
       </div>
