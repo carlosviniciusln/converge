@@ -42,9 +42,26 @@ export class LimitesComponent implements OnInit {
   listaLimitesCompleta: Partial<LimitesModel>[] = [];
   ultimoDetalheLimite: LimitesModel;
   selectedUnidadeDemandante: number;
-  public selectFilial: Select2Data;
+  selectedExercicio: number;
+  selectedTipo: any;
+  selectedRubrica: any;
   public selectRubrica: Select2Data;
   public listaExercicios: Select2Data;
+  public selectFilial: Select2Data;
+
+  public readonly selectTipo: {
+      label: string;
+      value: string;
+    }[] = [
+        {
+          label: 'CAPEX',
+          value: 'CAPEX',
+        },
+        {
+          label: 'OPEX',
+          value: 'OPEX',
+        },
+      ];
   constructor(private apiService: ApiService,
     private modalService: NgbModal,
     private token: TokenStorageService) { }
@@ -154,10 +171,15 @@ export class LimitesComponent implements OnInit {
         ApiResponse<LimitesModel[]>
       >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/Obter-relatorio-limites`);
       const nuFilial = this.selectedUnidadeDemandante;
+      const nuExercicio = this.selectedExercicio;
+      const nuRubrica = this.selectedRubrica?.label;
+      const tipoProg = this.selectedTipo;
       const agrupado = response.data.reduce((acc, item) => {
-
         if (!item.dE_PLANEJAMENTO_TIPO) return acc;
         if (nuFilial && item.nU_FILIAL !== nuFilial) return acc;
+        if (nuExercicio && item.nU_EXERCICIO_ORCAMENTO !== nuExercicio) return acc;
+        if (nuRubrica && item.cO_RUBRICA !== nuRubrica) return acc;
+        if (tipoProg && item.nO_RUBRICA_TIPO !== tipoProg) return acc;
 
         const tipo = `${item.dE_PLANEJAMENTO_TIPO}_${item.cO_EXERCICIO}`;
 
@@ -201,10 +223,12 @@ export class LimitesComponent implements OnInit {
     try {
       registro.expanded = !registro.expanded;
       if (registro.expanded && !registro.detalhes) {
-
         const filtrado = this.listaLimitesCompleta.filter(
           item => item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO && item.dE_PLANEJAMENTO_TIPO
             && (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante)
+            && (!this.selectedExercicio || item.nU_EXERCICIO_ORCAMENTO === this.selectedExercicio)
+            && (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica?.label)
+            && (!this.selectedTipo || item.nO_RUBRICA_TIPO === this.selectedTipo)
         );
 
         const agrupado = filtrado.reduce((acc, item) => {
@@ -256,6 +280,9 @@ export class LimitesComponent implements OnInit {
             item.nO_RUBRICA_TIPO === limite.nO_RUBRICA_TIPO &&
             item.dE_PLANEJAMENTO_TIPO
             && (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante)
+            && (!this.selectedExercicio || item.nU_EXERCICIO_ORCAMENTO === this.selectedExercicio)
+            && (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica?.label)
+            && (!this.selectedTipo?.label || item.nO_RUBRICA_TIPO === this.selectedTipo)
         );
 
         const agrupado = filtrado.reduce((acc, item) => {
@@ -308,8 +335,11 @@ export class LimitesComponent implements OnInit {
             item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO &&
             item.nO_RUBRICA_TIPO === this.ultimoDetalheLimite.nO_RUBRICA_TIPO &&
             item.nU_RUBRICA === detalhe.nU_RUBRICA &&
-            item.dE_PLANEJAMENTO_TIPO &&
-            (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante)
+            item.dE_PLANEJAMENTO_TIPO
+            && (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante)
+            && (!this.selectedExercicio || item.nU_EXERCICIO_ORCAMENTO === this.selectedExercicio)
+            && (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica?.label)
+            && (!this.selectedTipo?.label || item.nO_RUBRICA_TIPO === this.selectedTipo)
 
         );
         const agrupado = filtrado.reduce((acc, item) => {
@@ -420,15 +450,21 @@ export class LimitesComponent implements OnInit {
     } catch (error) { }
   }
 
-  onFilialChange(): void {
-    this.obterValores();
-    this.listaLimites.forEach(item => {
+  onFiltroChange(): void {
+    if(this.selectedExercicio == null && this.selectedRubrica == null && this.selectedTipo == null && this.selectedUnidadeDemandante == null){
+      setTimeout(() => {
+        window.location.reload()
+      }, 1);
+    }else{
+      this.obterValores();
+      this.listaLimitesCompleta.forEach(item => {
       item.expanded = false;
       item.detalhes = undefined;
       item.segundoNivel = undefined;
       item.terceiroNivel = undefined;
     });
+    }
+    
   }
-
 
 }

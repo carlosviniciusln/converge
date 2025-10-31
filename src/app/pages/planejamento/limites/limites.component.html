@@ -20,16 +20,16 @@
 
           <!-- Filtros -->
           <div style="min-width: 70px; margin-left: 5px">
-            <p-dropdown [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Exercício" styleClass="w-100"[options]="listaExercicios" ></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedExercicio" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Exercício" styleClass="w-100"[options]="listaExercicios" (onChange)="onFiltroChange()"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Tipo" styleClass="w-100"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedTipo" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Tipo" styleClass="w-100" [options]="selectTipo" (onChange)="onFiltroChange()"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [filter]="true" optionLabel="label" optionValu="value" [showClear]="true" placeholder="Rubrica" styleClass="w-100" [options]="selectRubrica"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedRubrica" [filter]="true" optionLabel="label" optionValu="value" [showClear]="true" placeholder="Rubrica" styleClass="w-100" [options]="selectRubrica" (onChange)="onFiltroChange()"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [(ngModel)]="selectedUnidadeDemandante" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Unidade Demandante" styleClass="w-100" [options]="selectFilial" (onChange)="onFilialChange()"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedUnidadeDemandante" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Unidade Demandante" styleClass="w-100" [options]="selectFilial" (onChange)="onFiltroChange()"></p-dropdown>
           </div>
 
           <!-- //[(ngModel)]="selectedTipoContrato" (onChange)=""-->

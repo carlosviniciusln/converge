@@ -113,7 +113,7 @@ export class ModalLimitesComponent implements OnInit {
     if (this.isEditable)
       this.currentPageAction = PageAction.Alterar;
     else {
-      this.currentPageAction = PageAction.Cadastrar;    
+      this.currentPageAction = PageAction.Cadastrar;
       this.obterOrcamentos();
       this.obterRubricas();
       this.obterFiliais();
@@ -128,24 +128,25 @@ export class ModalLimitesComponent implements OnInit {
   }
 
   formulario() {
-    if(!this.registro){
+    if (!this.registro) {
       this.formCadastro = this.formBuilder.group({
-      nuPlanejamento: ['', Validators.required],
-      nuRubrica: ['', Validators.required],
-      nuUnidadeDemandante: ['', Validators.required],
-      vrLimite: [0, Validators.required]
-    });
-    this.isDisabled=false;
-    }else{
+        nuPlanejamento: ['', Validators.required],
+        nuRubrica: ['', Validators.required],
+        nuUnidadeDemandante: ['', Validators.required],
+        vrLimite: [0, Validators.required]
+      });
+      this.isDisabled = false;
+    } else {
       this.descricaoRubrica = this.registro?.dE_RUBRICA;
       this.exercicio = this.registro?.cO_EXERCICIO;
       this.rubrica = this.registro?.cO_RUBRICA;
       this.unidadeDemandante = this.registro?.sG_FILIAL;
       this.formCadastro = this.formBuilder.group({
-      nuPlanejamento: [this.planejamentoEdit, Validators.required],
-      nuRubrica: [this.registro.nU_RUBRICA, Validators.required],
-      nuUnidadeDemandante: [this.nuFilialEdit, Validators.required],
-      vrLimite: [this.registro.vR_LIMITE, Validators.required]});
+        nuPlanejamento: [this.planejamentoEdit, Validators.required],
+        nuRubrica: [this.registro.nU_RUBRICA, Validators.required],
+        nuUnidadeDemandante: [this.nuFilialEdit, Validators.required],
+        vrLimite: [this.registro.vR_LIMITE, Validators.required]
+      });
     }
   }
 
@@ -292,9 +293,9 @@ export class ModalLimitesComponent implements OnInit {
         return;
       }
 
-let valor = this.formCadastro.controls['vrLimite'].value;
-valor = valor.replace(',', '.'); // substitui vírgula por ponto
-valor = parseFloat(valor);
+      let valor = this.formCadastro.controls['vrLimite'].value;
+      valor = valor.replace(',', '.');
+      valor = parseFloat(valor);
 
       const updateRequest: LimitesRubricasUpdateV2 = {
         nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
@@ -312,8 +313,8 @@ valor = parseFloat(valor);
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
       setTimeout(() => {
-              window.location.reload()
-            }, 3000);
+        window.location.reload()
+      }, 3000);
     } catch (error) {
       this.atualizarPagina.emit(false);
     }
