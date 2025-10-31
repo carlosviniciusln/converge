@@ -1007,9 +1007,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   public async Cadastrar(): Promise<void> {
     try {
-      this.submitted = true;
+
       var codigoContrato = this.form.controls['coContrato'].value;
       this.form.controls['nuContrato'].setValue(codigoContrato);
+      //console.log(codigoContrato, this.form.controls['nuContrato'], "valores");
+
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
@@ -1174,7 +1176,23 @@ export class PlanejamentoCadastroComponent implements OnInit {
         );
         return;
       }
-
+      //regra: maquina de status
+      if(this.currentProfile.noPerfil == PerfisEnum.TorresGEGAT || this.currentProfile.noPerfil == PerfisEnum.GestorOperacional /* || this.currentProfile.noPerfil == PerfisEnum.UnidadeDemandante*/){
+        if(this.nuPlanejamento == 5 && this.form.value.nuPlanejamentoStatus !=7){//Criado para Revisado
+          this.toastr.error(
+            'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+            'Erro'
+          );
+          return;
+        }
+        if(this.nuPlanejamento == 3 && this.form.value.nuPlanejamentoStatus !=9){ //Revisado e de Avaliado
+          this.toastr.error(
+            'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+            'Erro'
+          );
+          return;
+        }
+      }
       const previsoes = obj.previsoesDesembolso;
 
 
