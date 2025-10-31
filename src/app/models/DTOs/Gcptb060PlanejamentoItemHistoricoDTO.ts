@@ -2,15 +2,15 @@ import { Gcptb060DiffRegistros } from "./Gcptb060DiffRegistros"
 
 export interface Gcptb060PlanejamentoItemHistoricoDTO{
 
-        NuPlanejamento : number;
-        NuHistorico : number;
-        DhLog : Date;
-        NuPlanejamentoItem : number;
-        DeRegistroAntigo : string;
-        DeRegistroNovo : string;
-        DeObservacao : string;
-        NuUsuarioAlteracao : number;
-        NoUsuarioAlteracao : string;
-        TpOperacao : string;
-        ListaDiffs : Gcptb060DiffRegistros[];
+        nuPlanejamento? : number;
+        nuHistorico? : number;
+        dhLog? : Date;
+        nUPlanejamentoItem? : number;
+        deRegistroAntigo? : string;
+        deRegistroNovo? : string;
+        deObservacao? : string;
+        nUUsuarioAlteracao? : number;
+        nOUsuarioAlteracao? : string;
+        tpOperacao? : string;
+        listaDiffs? : Gcptb060DiffRegistros[];
 }
