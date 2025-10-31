@@ -326,7 +326,7 @@
                     </div>
                     <div class="col-md-9 pr-0 text-right"></div>
                   </div>
-                  
+
                   <div class="row">
                     <div class="col-md-12">
                       <br/>
@@ -476,23 +476,34 @@
 
 </mat-tab>
 
-    <mat-tab label="Histórico">
+    <mat-tab label="Histórico" >
+
+
 
       <p-card>
 
       <h4 class="modal-title" style="padding: 0px 0px 24px 12px ;">
-        <span>Histórico Planejamento Orçamentário {{ numeroContrato }}</span>
+        <b>Histórico</b> <br/> <small>Histórico Planejamento Orçamentário {{ this.planejamento?.coContrato }}</small>
       </h4>
+
       <mat-divider></mat-divider>
+
         <div class="historico-container">
-          <!-- <p-dropdown
+
+          <div style="padding-bottom: 24px;">
+
+          <p-dropdown
           [options]="filtros"
           [(ngModel)]="filtrosSelecionado"
           placeholder="Operação "
-          (onChange)="filtrarEventos()"
+          (onChange)="filtrarEventos($event, 1)"
           >
-          </p-dropdown> -->
+          </p-dropdown>
+
+          </div>
+
           <p-timeline
+            *ngIf="ListaPlanejamentoItemHistorico.length > 0"
             [value]="ListaPlanejamentoItemHistorico"
             align="alternate"
             class="c-p-timeline"
@@ -541,11 +552,10 @@
 
 
 
-          <!-- <p-paginator
-            [rows]="10"
-            [totalRecords]="totalRegistros"
-            (onPageChange)="buscarHistorico($event)"
-          ></p-paginator> -->
+          <p-paginator
+            [rows]="100"
+            [totalRecords]="ListaPlanejamentoItemHistorico.length"
+          ></p-paginator>
         </div>
       </p-card>
 

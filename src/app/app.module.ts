@@ -58,6 +58,7 @@ import { ModalUploadComponent } from './pages/planejamento/limites/modal-upload/
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from "primeng/api";
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { CargaGerais } from "src/assets/mock/Gcptb051CargaPlanejamentoItem";
 
 registerLocaleData(ptBr);
 
@@ -132,7 +133,8 @@ const maskConfig: Partial<IConfig> = {
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService,
-    MessageService
+    MessageService,
+    CargaGerais
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

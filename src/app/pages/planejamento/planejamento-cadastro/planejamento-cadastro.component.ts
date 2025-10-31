@@ -128,8 +128,13 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
     public filtroRegistros: any = {
     pageNumber: 1,
-    pageSize: 12
+    pageSize: 10,
+    NuContrato: null,
+    NuTipoDemanda : null,
+    NuPlanejamento : null,
+    TpOperacao : null
   };
+
 
   ListaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoDTO[] = [];
   totalRegistros: number = 10;
@@ -198,7 +203,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
 
      this.obterPlanejamentoItemHistorico();
-    //  this.filtrarEventos();
 
     /*
      * FIM HISTORICO
@@ -221,9 +225,32 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.selectTab = event.index;
   }
 
+
+
+  async filtrarEventos(e, op: number): Promise<void> {
+    console.log(e, "E")
+    this.loading = true;
+      switch (op) {
+        case 1: {
+          this.filtroRegistros.TpOperacao = e.value;
+          if (e.value == null || this.filtros.length > 1) {
+            console.log(this.filtroRegistros.TpOperacao, "OPERACAO")
+              await this.obterPlanejamentoItemHistorico();
+          }
+          break;
+        }
+        default: {
+          this.obterPlanejamentoItemHistorico();
+          break;
+        }
+      }
+        this.loading = false;
+    }
+
+
   // filtrarEventos() {
   //   this.eventosFiltrados = this.filtrosSelecionado
-  //     ? this.ListaPlanejamentoItemHistorico.filter((e) => e.TpOperacao === this.filtrosSelecionado)
+  //     ? this.ListaPlanejamentoItemHistorico.filter((e) => e.tpOperacao === this.filtrosSelecionado)
   //     : [...this.ListaPlanejamentoItemHistorico];
   // }
 
@@ -281,8 +308,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         ? element.subTitle
         : `${element.subTitle} ${this.planejamento?.coContrato}`;
     this.actionButtonLabel = element.actionButtonLabel;
-    //console.log(this.subTitulo)
-    //console.log(this.planejamento, "this.planejamento", this.nuPlanejamento,  "this.nuPlanejamento")
+
   }
 
   formulario() {
@@ -573,7 +599,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
        const response = await this.apiService.get<
          ApiResponse<PlanejamentoOrcamentarioResponse>
        >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=`+this.nuPlanejamento.nU_CONTRATO+`&nuTipoDemanda=`+this.nuPlanejamento.nU_TIPO_DEMANDA+`&nuFilial=`+this.nuPlanejamento.nU_FILIAL+`&nuPlanejamento=`+this.nuPlanejamento.nU_PLANEJAMENTO);
-       //console.log(response.data[0]);
+
        this.planejamento = response.data[0];
        if(this.planejamento){
       this.form.controls['nuPlanejamentoOrcamentario'].setValue(
@@ -602,7 +628,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.form.controls['nuPlanejamentoStatus'].setValue(
         this.planejamento.nuStatusPlanejamentoItem
       );
-      //console.log("this.planejamento.nuDemandaTipo", this.planejamento.nuDemandaTipo, this.planejamento.nU_TIPO_DEMANDA);
+
 
       this.form.controls['nuDemandaTipo'].setValue(
         this.planejamento.nuTipoDemanda
@@ -656,17 +682,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
             this.nuPlanejamento.nU_PLANEJAMENTO
         );
         if (responseVlr.data) {
-          //   this.planejamento.gcptb027PrevisoesDesembolso = responseVlr.data;
-          //this.previsoesDesembolso.push(previsaoDesembolso);
-          //console.log(responseVlr.data, "arrya");
-          //this.planejamento.gcptb027PrevisoesDesembolso =responseVlr.data[0];
+
           this.planejamento.gcptb027PrevisoesDesembolso = responseVlr.data;
         }
 
-        console.log(
-          this.planejamento.gcptb027PrevisoesDesembolso,
-          'planejamento.gcptb027PrevisoesDesembolso'
-        );
+
 
         if (this.planejamento.gcptb027PrevisoesDesembolso != undefined) {
           this.previsoesDesembolso.clear();
@@ -762,11 +782,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
                 [Validators.required]
               ),
             });
-            console.log(
-              'this.planejamento.gcptb027PrevisoesDesembolso',
-              this.planejamento.gcptb027PrevisoesDesembolso
-            );
-            console.log('previsaoDesembolso', previsaoDesembolso);
+
+
             this.previsoesDesembolso.push(previsaoDesembolso);
 
             const totalDesembolso =
@@ -775,7 +792,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
                 0
               );
 
-              console.log("total", totalDesembolso)
               this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(totalDesembolso);
             });
           }
@@ -914,11 +930,21 @@ export class PlanejamentoCadastroComponent implements OnInit {
     //   nuPlanejamentoItem: this.filtroRegistros.nuPlanejamentoItem || ''
     // });
 
-    console.log(this.nuPlanejamento, "Nuplanejamento AQUI")
 
-    const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
-      `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item?NuPlanejamento=${this.nuPlanejamento.nU_PLANEJAMENTO}`,
-    );
+
+  //   const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
+  //   `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item?NuPlanejamento=${this.nuPlanejamento.nU_PLANEJAMENTO}&NuContrato=${this.nuPlanejamento.nU_CONTRATO}&NuTipoDemanda=${this.nuPlanejamento.nU_TIPO_DEMANDA}`
+  // );
+
+      this.filtroRegistros.NuContrato = this.nuPlanejamento.nU_CONTRATO;
+      this.filtroRegistros.NuPlanejamento = this.nuPlanejamento.nU_PLANEJAMENTO;
+      this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento.nU_TIPO_DEMANDA;
+      console.log(this.filtroRegistros, "OBTER HISTORICO")
+     const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
+    `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item`, this.filtroRegistros)
+
+
+    console.log(response, "OBTER HISTORICO");
 
       this.ListaPlanejamentoItemHistorico = response.data.listaHistorico;
       console.log(this.ListaPlanejamentoItemHistorico, "DADOS HISTORICO");
@@ -978,52 +1004,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
     return Number(value);
   }
 
-  // public async mapFormToRequestList(formValue: any): PlanejamentoOrcamentarioItemRequest[] {
-  //   const lista: PlanejamentoOrcamentarioItemRequest[] = [];
-
-  //   const previsoes = formValue.previsoesDesembolso || [];
-
-  //   previsoes.map((prev: any) => ({
-  //     NuPlanejamentoItem: formValue.NuPlanejamentoItemformValue.NuPlanejamentoItem == null ? 0 : formValue.NuPlanejamentoItem,
-  //     NuPlanejamento: formValue.nuPlanejamentoOrcamentario,
-  //     NuContrato: formValue.nuContrato,
-  //     NuFilial: formValue.nuFilial,
-  //     NuRubrica: prev.nuRubrica,
-  //     NuStatusPlanejamentoItem: formValue.nuPlanejamentoStatus,
-  //     NuTipoDemanda: formValue.nuDemandaTipo,
-  //     NuVigencia: formValue.nuAno,
-
-  //     DeObjeto: formValue.deObjeto,
-  //     DeObjetivoPDTIC: formValue.nuObjetivoEstrategicoPdti?.toString(),
-  //     DeObjetivoPEI: formValue.nuObjetivoEstrategicoPei?.toString(),
-  //     DeJustificativa: formValue.deJustificativa,
-
-  //     NuPreComprometimento: Number(prev.nuPreComprometimento),
-  //     NuReserva: Number(prev.nuReserva),
-
-  //     VrPlanejamentoItem: this.parseDecimal(prev.vrTotalRubrica),
-  //     VrJaneiro: this.parseDecimal(prev.vrJaneiro),
-  //     VrFevereiro: this.parseDecimal(prev.vrFevereiro),
-  //     VrMarco: this.parseDecimal(prev.vrMarco),
-  //     VrAbril: this.parseDecimal(prev.vrAbril),
-  //     VrMaio: this.parseDecimal(prev.vrMaio),
-  //     VrJunho: this.parseDecimal(prev.vrJunho),
-  //     VrJulho: this.parseDecimal(prev.vrJulho),
-  //     VrAgosto: this.parseDecimal(prev.vrAgosto),
-  //     VrSetembro: this.parseDecimal(prev.vrSetembro),
-  //     VrOutubro: this.parseDecimal(prev.vrOutubro),
-  //     VrNovembro: this.parseDecimal(prev.vrNovembro),
-  //     VrDezembro: this.parseDecimal(prev.vrDezembro),
-
-  //     NuUsuario: null,
-  //     DhCadastro: formValue.dhCadastro ? new Date(formValue.dhCadastro) : undefined,
-  //     DhExclusao: undefined,
-  //     NuUsuarioExclusao: undefined,
-  //     NuUsuarioAlteracao: undefined,
-  //     DhAlteracao: undefined
-  //   }));
-  // }
-  /* nova conversao  - final */
 
   public async Cadastrar(): Promise<void> {
     try {
@@ -1037,13 +1017,13 @@ export class PlanejamentoCadastroComponent implements OnInit {
           if (controls[name].invalid) invalids.push(name);
         }
         if (this.form.controls['deObjeto'].value == '') {
-          console.log('erro objeto');
+
           this.toastr.error('Informe o objeto.', 'Erro');
         }
         if (this.form.controls['deJustificativa'].value == '') {
           this.toastr.error('Informe a justificativa.', 'Erro');
         }
-        console.log(invalids);
+
         return;
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == 1 &&
@@ -1059,17 +1039,17 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.toastr.error('Informe o objeto.', 'Erro');
       }
 
-      console.log('this.form.value', this.form.value);
+
 
       var obj = this.form.value;
 
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
       const previsoes = obj.previsoesDesembolso;
 
-      console.log(previsoes, 'previsoes');
+
 
       for (var p in previsoes) {
-        console.log(p, 'prev');
+
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: 0,
           NuPlanejamento: this.nuPlanejamentoOrcamento,
@@ -1113,20 +1093,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
         lista.push(item);
       }
 
-      //const requestList = this.mapToPlanejamentoOrcamentarioItemRequestList(lista);
-
-      console.log('lista', lista);
-      console.log('lista', lista[0]);
 
       await this.apiService.post<any>(
         `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
         lista
       );
 
-      // await this.apiService.post<any>(
-      //   `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
-      //   this.form.value
-      // );
 
       this.toastr.success('Cadastro efetuado com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
@@ -1140,8 +1112,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
     try {
       this.submitted = true;
 
-      // var codigoContrato = this.form.controls['coContrato'].value
-      // this.form.controls['nuContrato'].setValue(codigoContrato);
 
       var obj = this.form.value;
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
@@ -1149,9 +1119,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
       if (this.form.invalid) {
         const itemErro = [];
         const controls = this.form.controls;
-        //console.log(this.form.controls, this.form.value)
+
         for (const name in controls) {
-          //console.log(controls[name].invalid, name);
+
           if (controls[name].invalid) itemErro.push(name);
         }
         if (itemErro.find((item) => item === 'previsoesDesembolso')) {
@@ -1165,7 +1135,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           this.form.controls['deObjeto'].value == '' ||
           this.form.controls['deObjeto'].value == null
         ) {
-          console.log('erro objeto');
+
           this.toastr.error('Informe o objeto.', 'Erro');
         }
         if (
@@ -1174,7 +1144,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         ) {
           this.toastr.error('Informe a justificativa.', 'Erro');
         }
-        console.log(itemErro);
+
         return;
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == 1 &&
@@ -1191,7 +1161,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == null
       ) {
-        //this.toastr.error('Informe a Classificação completa.', 'Erro');
+
       }
 
       if (
@@ -1205,14 +1175,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
         return;
       }
 
-      //var obj = this.form.value;
-      //var lista: PlanejamentoOrcamentarioItemRequest[] = [];
       const previsoes = obj.previsoesDesembolso;
 
-      console.log(previsoes, 'previsoes');
 
       for (var p in previsoes) {
-        //console.log(p, "prev")
+
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
           NuPlanejamento: this.nuPlanejamentoOrcamento,
@@ -1253,15 +1220,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
         lista.push(item);
       }
-      console.log(lista, 'lista');
 
-      // const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-      //   await this.http.post<any>(
-      //     `${Endpoints.URL_ORCAMENTO_EDITA}`,
-      //     lista,
-      //     { headers }
-      //   );
 
       await this.apiService.post<any>(
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
@@ -1282,8 +1242,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     try {
       this.submitted = true;
 
-      // var codigoContrato = this.form.controls['coContrato'].value
-      // this.form.controls['nuContrato'].setValue(codigoContrato);
+
 
       var obj = this.form.value;
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
@@ -1462,11 +1421,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
 
   async Excluir(planejamentoOrcamentario: PlanejamentoOrcamentarioResponse) {
-    console.log(
-      this.nuPlanejamentoOrcamento,
-      'this.nuPlanejamentoOrcamento',
-      planejamentoOrcamentario
-    );
     const alert = await Swal.fire({
       title: '',
       text: `Deseja realmente excluir Planejamento Orçamentário do Contrato: ${planejamentoOrcamentario.coContrato}?`,
