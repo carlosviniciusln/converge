@@ -32,6 +32,7 @@ import { DevelopComponent } from 'src/app/components/develop/develop.component';
 import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
 
 export const AdminLayoutRoutes: Routes = [
+  { path: 'develop', component: DevelopComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'contrato', component: ContratoComponent },
   { path: 'contrato/atas', component: ContratoComponent },

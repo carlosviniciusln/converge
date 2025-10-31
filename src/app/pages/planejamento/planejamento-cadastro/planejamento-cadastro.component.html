@@ -1,22 +1,29 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">
-    <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
-  </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+
+  <button style="z-index: 10;" type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">×</span>
   </button>
 </div>
+
+<mat-tab-group>
+
+  <mat-tab label="Consulta">
+
+  <h4 style="padding: 10px 0px 0px 24px;" class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
+  </h4>
+
 <div class="modal-body">
   <form [formGroup]="form">
     <div class="row">
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-3 pr-0">
-            <label for="noCriador">Criado por:</label>
+            <label for="noCriador">Criado Por:</label>
             <input formControlName="noCriador" id="noCriador" readonly type="text" class="form-control" />
           </div>
           <div class="col-md-3 pr-0">
-            <label for="dhCadastro">Data de cria&ccedil;&atilde;o:</label>
+            <label for="dhCadastro">Data de Cria&ccedil;&atilde;o:</label>
             <input readonly formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
           </div>
           <div class="col-md-3 pr-0">
@@ -92,14 +99,25 @@
                 'is-invalid': submitted && f.nuPlanejamentoStatus.invalid
               }">
               <option value="" disabled selected>Selecione Status</option>
-              <option *ngFor="let a of listaStatusPlanejamento" [ngValue]="a.nuPlanejamentoStatus">
-                {{ a.noPlanejamentoStatus }}
-              </option>
+              <ng-container *ngIf="isCadastro">
+                <ng-container *ngFor="let a of listaStatusPlanejamento">
+                  <option *ngIf="a.nuPlanejamentoStatus == 5" [ngValue]="a.nuPlanejamentoStatus">
+                    {{ a.noPlanejamentoStatus }}
+                  </option>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="!isCadastro">
+                <ng-container *ngFor="let a of listaStatusPlanejamento">
+                  <option *ngIf="a.nuPlanejamentoStatus != 4 && a.nuPlanejamentoStatus != 6 && a.nuPlanejamentoStatus != 10" [ngValue]="a.nuPlanejamentoStatus">
+                    {{ a.noPlanejamentoStatus }}
+                  </option>
+                </ng-container>
+              </ng-container>
             </select>
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuObjetivoEstrategicoPdti">Objetivo Estratégico PDTIC:</label>
-            <select class="form-control" id="nuObjetivoEstrategicoPdti" formControlName="nuObjetivoEstrategicoPdti"
+            <select class="form-control cl-select-pdtic" id="nuObjetivoEstrategicoPdti" formControlName="nuObjetivoEstrategicoPdti"
               [ngClass]="{
                 'is-invalid': submitted && f.nuObjetivoEstrategicoPdti.invalid
               }">
@@ -195,7 +213,7 @@
         let i = index
       ">
       <div class="row" [formGroupName]="i">
-        <div class="row">
+        <div style="padding: 10px 0px 0px 14px;" class="row">
           <div class="col-md-4 pr-0">
             <label for="nuRubrica">Rubrica {{ i + 1 }} :</label>
             <select class="form-control" id="nuRubrica" formControlName="nuRubrica" [ngClass]="{
@@ -309,6 +327,12 @@
                       />
                     </div>
                     <div class="col-md-9 pr-0 text-right"></div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <br/>
+                    </div>
                   </div>
 
             </div>
@@ -450,3 +474,118 @@
     </div>
   </form>
 </div>
+
+
+</mat-tab>
+
+    <mat-tab label="Histórico" >
+
+
+
+      <p-card>
+
+      <h4 class="modal-title" style="padding: 0px 0px 24px 12px ;">
+        <b>Histórico</b> <br/> <small>Histórico Planejamento Orçamentário {{ this.planejamento?.coContrato }}</small>
+      </h4>
+
+      <mat-divider></mat-divider>
+
+        <div class="historico-container">
+
+          <div style="padding-bottom: 24px;">
+
+          <p-dropdown
+          [options]="filtros"
+          [(ngModel)]="filtrosSelecionado"
+          placeholder="Operação "
+          (onChange)="filtrarEventos($event, 1)"
+          >
+          </p-dropdown>
+
+          </div>
+
+          <p-timeline
+            *ngIf="ListaPlanejamentoItemHistorico.length > 0"
+            [value]="ListaPlanejamentoItemHistorico"
+            align="alternate"
+            class="c-p-timeline"
+          >
+
+            <ng-template pTemplate="marker" let-event>
+              <span
+                class="custom-marker p-p-2 p-shadow-2"
+                [ngStyle]="{
+                  'background-color':
+                    event.tpOperacao === 'INCLUSAO'
+                      ? '#4CAF50'
+                      : event.tpOperacao === 'ALTERACAO'
+                      ? '#2196F3'
+                      : '#F44336'
+                }"
+              >
+                <i [ngClass]="event.tpOperacao === 'INCLUSAO' ? 'pi pi-plus' : event.tpOperacao === 'ALTERACAO' ? 'pi pi-pencil' : 'pi pi-trash'" style="color: white"></i>
+              </span>
+            </ng-template>
+
+
+            <ng-template pTemplate="content" let-event>
+              <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
+                <div class="card-content">
+
+                  <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
+                  <small class="text-gray-500">
+                    {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
+                  </small>
+
+                  <div *ngIf="event.listaDiffs" class="mt-2">
+
+                    <button
+                      class="btn-sm btn-default"
+                      type="submit"
+                      (click)="verDetalhes(event.listaDiffs)"
+                    >
+                      Ver detalhes
+                    </button>
+                  </div>
+                </div>
+              </p-card>
+            </ng-template>
+          </p-timeline>
+
+
+
+          <p-paginator
+            [rows]="100"
+            [totalRecords]="ListaPlanejamentoItemHistorico.length"
+          ></p-paginator>
+        </div>
+      </p-card>
+
+      <!-- Modal Detalhes -->
+      <p-dialog
+        header="Detalhes da Alteração"
+        [(visible)]="dialogVisible"
+        [modal]="true"
+        [style]="{ width: '500px' }"
+        [closable]="true"
+      >
+        <p-table [value]="selectedDiff">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Campo</th>
+              <th>Antes</th>
+              <th>Depois</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-campo>
+            <tr>
+              <td>{{ campo.campo }}</td>
+              <td>{{ campo.antes }}</td>
+              <td>{{ campo.depois }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-dialog>
+  </mat-tab>
+
+</mat-tab-group>

@@ -1,0 +1,89 @@
+.historico-container {
+ padding: 1rem;
+}
+
+:host ::ng-deep .historico-container > p-timeline > div {
+  .p-timeline-event > div{
+      color: red;
+      padding: 12px !important;
+  }
+}
+
+.customized-timeline .p-timeline-event-marker {
+ background-color: var(--surface-card);
+ border: 2px solid var(--primary-color);
+}
+
+.custom-marker {
+ border-radius: 50%;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ width: 2.5rem;
+ height: 2.5rem;
+ background-color: white;
+ border: 2px solid hashtag#d1d5db;
+}
+
+.custom-marker i {
+ font-size: 1.2rem;
+ color: var(--primary-color);
+}
+
+.p-card-content {
+ background-color: hashtag#f9fafb;
+ border-left: 5px solid var(--primary-color);
+}
+
+.card-content {
+ display: flex;
+ flex-direction: column;
+ gap: 0.3rem;
+}
+
+
+.customized-timeline {
+ .custom-marker {
+ border-radius: 50%;
+ width: 2rem;
+ height: 2rem;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ }
+
+ .p-card {
+ width: 100%;
+ border-radius: 10px;
+ }
+
+ .card-content {
+ padding: 0.5rem 1rem;
+ }
+
+ small {
+ color: #777;
+ }
+
+
+::ng-deep  .c-p-timeline {
+color: red !important;
+}
+
+// ::ng-deep .c-p-timeline .p-timeline.p-timeline-vertical .p-timeline-event-opposite,
+// ::ng-deep .c-p-timeline .p-timeline.p-timeline-vertical .p-timeline-event-content {
+//   // Estiliza os lados do evento
+//   color: #333;
+//   font-size: 14px;
+//   padding-bottom: 12px;
+// }
+
+
+
+// ::ng-deep .c-p-timeline .p-timeline-event-marker {
+//   // Estiliza o marcador (ícone ou ponto)
+//   background-color: #007ad9;
+//   border-color: #007ad9;
+// }
+
+}
