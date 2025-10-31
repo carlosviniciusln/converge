@@ -476,14 +476,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
   onValorRubricaChange(i: number) {
     const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
 
-    const limparValor = (valor: string): number => {
-      if (!valor) return 0;
-      return (
-        parseFloat(
-          valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.')
-        ) || 0
-      );
-    };
+  const limparValor = (valor: string): number => {
+    if (!valor) return 0;
+    return parseFloat(
+      valor?.toString().replace('R$ ', '').replace(/\./g, '').replace(',', '.')
+    ) || 0;
+  };
 
     const total =
       limparValor(prevDes.get('vrJaneiro')?.value) +

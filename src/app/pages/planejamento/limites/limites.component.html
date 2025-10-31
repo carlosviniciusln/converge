@@ -1,7 +1,7 @@
 <div class="content">
   <div class="row">
     <div class="col-12">
-        <p-table #dt [autoLayout]="true" [value]="listaLimites" dataKey="nU_PLANEJAMENTO" [rows]="10" [paginator]="true" [globalFilterFields]="['ano', 'contrato', 'gn', 'vrDiferenca', 'vrExecutado','pcEp']" currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+        <p-table #dt [autoLayout]="true" [value]="listaLimites" dataKey="nU_PLANEJAMENTO" [rows]="10" [paginator]="false" [globalFilterFields]="['ano', 'contrato', 'gn', 'vrDiferenca', 'vrExecutado','pcEp']" currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
             [showCurrentPageReport]="true">
            <ng-template pTemplate="caption">
   <div class="col-md-7 table-header-title">Limites</div>
@@ -20,17 +20,19 @@
 
           <!-- Filtros -->
           <div style="min-width: 70px; margin-left: 5px">
-            <p-dropdown [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Exercício" styleClass="w-100"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedExercicio" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Exercício" styleClass="w-100"[options]="listaExercicios" (onChange)="onFiltroChange()"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Tipo" styleClass="w-100"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedTipo" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Tipo" styleClass="w-100" [options]="selectTipo" (onChange)="onFiltroChange()"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Rubrica" styleClass="w-100"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedRubrica" [filter]="true" optionLabel="label" optionValu="value" [showClear]="true" placeholder="Rubrica" styleClass="w-100" [options]="selectRubrica" (onChange)="onFiltroChange()"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Unidade Demandante" styleClass="w-100"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedUnidadeDemandante" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Unidade Demandante" styleClass="w-100" [options]="selectFilial" (onChange)="onFiltroChange()"></p-dropdown>
           </div>
+
+          <!-- //[(ngModel)]="selectedTipoContrato" (onChange)=""-->
 
           <!-- Campo de pesquisa -->
           <div style="min-width: 270px; margin-left: 5px">
@@ -142,7 +144,7 @@
                                                                               </tr>
                                                                           </ng-template>
                                                                           <ng-template pTemplate="body" let-ud let-expanded="expanded">
-                                                                              <tr (click)="openModalPlanejamento('alteracao', ud)" style="text-decoration: underline; cursor: pointer;">
+                                                                              <tr (click)="openModalPlanejamento('alteracao', ud, registro)" style="text-decoration: underline; cursor: pointer;">
                                                                                   <td style="background-color: #b4dec9; color: black; text-align: right;"><span style="margin-right: 10%;">{{ud.cO_EXERCICIO}}</span></td>
                                                                                   <td style="background-color: #b4dec9; color: black">{{ud.dE_PLANEJAMENTO_TIPO}}</td>
                                                                                   <td style="background-color: #b4dec9; color: black">{{ud.sG_FILIAL}}</td>
