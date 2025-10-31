@@ -369,7 +369,7 @@ onValorRubricaChange(i: number) {
   const limparValor = (valor: string): number => {
     if (!valor) return 0;
     return parseFloat(
-      valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.')
+      valor?.toString().replace('R$ ', '').replace(/\./g, '').replace(',', '.')
     ) || 0;
   };
 

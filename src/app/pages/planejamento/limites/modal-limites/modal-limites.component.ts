@@ -14,6 +14,7 @@ import { Filial } from 'src/app/models/filial';
 import {
   LimitesRubricaResponse,
   LimitesRubricasUpdate,
+  LimitesRubricasUpdateV2,
 } from 'src/app/models/limites-rubrica-response';
 import { PlanejamentoTipoResponse } from 'src/app/models/planejamento-response';
 import {
@@ -36,9 +37,14 @@ import { Select2Data } from 'ng-select2-component';
   styleUrls: ['./modal-limites.component.scss'],
 })
 export class ModalLimitesComponent implements OnInit {
-  @Input() public limiteRubrica: LimitesRubricaResponse;
   @Input() public isEditable: boolean;
   @Input() public registro: LimitesModel;
+  @Input() public planejamentoEdit: number;
+  @Input() public nuFilialEdit: number;
+
+
+
+
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   @Input() public nuPlanejamento: number;
   @Input() public tipoModal: string;
@@ -61,6 +67,9 @@ export class ModalLimitesComponent implements OnInit {
   public selectFilial: Select2Data;
   public descricaoRubrica: string = '';
   public nuRubrica: number = 0;
+  public exercicio: number;
+  public rubrica: string;
+  public unidadeDemandante: string;
   private readonly actionList: {
     type: PageAction;
     title: string;
@@ -97,17 +106,18 @@ export class ModalLimitesComponent implements OnInit {
   ngOnInit(): void {
     this.definirPageAction();
     this.formulario();
-    this.obterOrcamentos();
-    this.obterRubricas();
-    this.obterFiliais();
     this.editarTextos();
   }
 
   definirPageAction() {
     if (this.isEditable)
       this.currentPageAction = PageAction.Alterar;
-    else
-      this.currentPageAction = PageAction.Cadastrar;
+    else {
+      this.currentPageAction = PageAction.Cadastrar;    
+      this.obterOrcamentos();
+      this.obterRubricas();
+      this.obterFiliais();
+    }
   }
 
   editarTextos() {
@@ -118,14 +128,25 @@ export class ModalLimitesComponent implements OnInit {
   }
 
   formulario() {
-    console.log(this.registro)
-    this.formCadastro = this.formBuilder.group({
-      nuPlanejamento: [2, Validators.required],
-      nuRubrica: [1, Validators.required],
-      nuUnidadeDemandante: ['GEAUS', Validators.required],
-      vrLimite: [this.registro?.vR_LIMITE, Validators.required]
+    if(!this.registro){
+      this.formCadastro = this.formBuilder.group({
+      nuPlanejamento: ['', Validators.required],
+      nuRubrica: ['', Validators.required],
+      nuUnidadeDemandante: ['', Validators.required],
+      vrLimite: [0, Validators.required]
     });
-    this.descricaoRubrica = this.registro?.dE_RUBRICA;
+    this.isDisabled=false;
+    }else{
+      this.descricaoRubrica = this.registro?.dE_RUBRICA;
+      this.exercicio = this.registro?.cO_EXERCICIO;
+      this.rubrica = this.registro?.cO_RUBRICA;
+      this.unidadeDemandante = this.registro?.sG_FILIAL;
+      this.formCadastro = this.formBuilder.group({
+      nuPlanejamento: [this.planejamentoEdit, Validators.required],
+      nuRubrica: [this.registro.nU_RUBRICA, Validators.required],
+      nuUnidadeDemandante: [this.nuFilialEdit, Validators.required],
+      vrLimite: [this.registro.vR_LIMITE, Validators.required]});
+    }
   }
 
   public async obterRubricas(): Promise<void> {
@@ -225,7 +246,7 @@ export class ModalLimitesComponent implements OnInit {
               window.location.reload()
             }, 3000);
           } else {
-            this.toastr.error('Ocorreu um erro ao cadastrar novo limite', 'Tente novamente');
+            this.toastr.error(response.data, 'Registro já Cadastro');
             this.atualizarPagina.emit(false);
           }
         }
@@ -271,22 +292,28 @@ export class ModalLimitesComponent implements OnInit {
         return;
       }
 
-      const updateRequest: LimitesRubricasUpdate = {
-        nuAnoOrcamentario: this.limiteRubrica.nuAnoOrcamentario,
-        nuRubrica: this.limiteRubrica.nuRubrica,
-        nuFilial: this.limiteRubrica.nuFilial,
-        nuPlanejamentoTipo: this.limiteRubrica.nuPlanejamentoTipo,
-        vrLimiteRubrica: this.formCadastro.controls['vrLimiteRubrica'].value,
+let valor = this.formCadastro.controls['vrLimite'].value;
+valor = valor.replace(',', '.'); // substitui vírgula por ponto
+valor = parseFloat(valor);
+
+      const updateRequest: LimitesRubricasUpdateV2 = {
+        nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
+        nuFilial: this.formCadastro.controls['nuUnidadeDemandante'].value,
+        nuRubrica: this.formCadastro.controls['nuRubrica'].value,
+        novoLimite: valor,
       };
 
       await this.apiService.put<LimitesRubricasUpdate>(
-        `${Endpoints.URL_ORCAMENTO}/limite-orcamentario`,
+        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/Atualizar-limite`,
         updateRequest
       );
 
       this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
+      setTimeout(() => {
+              window.location.reload()
+            }, 3000);
     } catch (error) {
       this.atualizarPagina.emit(false);
     }
