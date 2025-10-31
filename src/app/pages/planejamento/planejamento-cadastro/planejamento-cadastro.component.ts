@@ -934,9 +934,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
   //   `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item?NuPlanejamento=${this.nuPlanejamento.nU_PLANEJAMENTO}&NuContrato=${this.nuPlanejamento.nU_CONTRATO}&NuTipoDemanda=${this.nuPlanejamento.nU_TIPO_DEMANDA}`
   // );
 
-      this.filtroRegistros.NuContrato = this.nuPlanejamento.nU_CONTRATO;
-      this.filtroRegistros.NuPlanejamento = this.nuPlanejamento.nU_PLANEJAMENTO;
-      this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento.nU_TIPO_DEMANDA;
+      this.filtroRegistros.NuContrato = this.nuPlanejamento?.nU_CONTRATO;
+      this.filtroRegistros.NuPlanejamento = this.nuPlanejamento?.nU_PLANEJAMENTO;
+      this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento?.nU_TIPO_DEMANDA;
       console.log(this.filtroRegistros, "OBTER HISTORICO")
      const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
     `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item`, this.filtroRegistros)
@@ -1006,10 +1006,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public async Cadastrar(): Promise<void> {
     try {
 
-      var codigoContrato = this.form.controls['coContrato'].value;
-      this.form.controls['nuContrato'].setValue(codigoContrato);
-      //console.log(codigoContrato, this.form.controls['nuContrato'], "valores");
-
+      this.submitted = true;
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
@@ -1039,6 +1036,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.toastr.error('Informe o objeto.', 'Erro');
       }
 
+      var codigoContrato = this.form.controls['coContrato'].value;
+      this.form.controls['nuContrato'].setValue(codigoContrato);
+      //console.log(codigoContrato, this.form.controls['nuContrato'], "valores");
 
 
       var obj = this.form.value;
