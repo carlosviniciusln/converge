@@ -1027,9 +1027,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   public async Cadastrar(): Promise<void> {
     try {
-      this.submitted = true;
+      
       var codigoContrato = this.form.controls['coContrato'].value;
       this.form.controls['nuContrato'].setValue(codigoContrato);
+      //console.log(codigoContrato, this.form.controls['nuContrato'], "valores");
+
       if (this.form.invalid) {
         const invalids = [];
         const controls = this.form.controls;
@@ -1114,9 +1116,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
       }
 
       //const requestList = this.mapToPlanejamentoOrcamentarioItemRequestList(lista);
-
-      console.log('lista', lista);
-      console.log('lista', lista[0]);
+      //this.submitted = true;
+      // console.log('lista', lista);
+      // console.log('lista', lista[0]);
 
       await this.apiService.post<any>(
         `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
@@ -1204,12 +1206,28 @@ export class PlanejamentoCadastroComponent implements OnInit {
         );
         return;
       }
-
+      //regra: maquina de status
+      if(this.currentProfile.noPerfil == PerfisEnum.TorresGEGAT || this.currentProfile.noPerfil == PerfisEnum.GestorOperacional /* || this.currentProfile.noPerfil == PerfisEnum.UnidadeDemandante*/){
+        if(this.nuPlanejamento == 5 && this.form.value.nuPlanejamentoStatus !=7){//Criado para Revisado
+          this.toastr.error(
+            'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+            'Erro'
+          );
+          return;
+        }
+        if(this.nuPlanejamento == 3 && this.form.value.nuPlanejamentoStatus !=9){ //Revisado e de Avaliado 
+          this.toastr.error(
+            'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+            'Erro'
+          );
+          return;
+        }
+      }
       //var obj = this.form.value;
       //var lista: PlanejamentoOrcamentarioItemRequest[] = [];
       const previsoes = obj.previsoesDesembolso;
 
-      console.log(previsoes, 'previsoes');
+      //console.log(previsoes, 'previsoes');
 
       for (var p in previsoes) {
         //console.log(p, "prev")
@@ -1253,7 +1271,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
         lista.push(item);
       }
-      console.log(lista, 'lista');
+      //console.log(lista, 'lista');
 
       // const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -1262,6 +1280,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
       //     lista,
       //     { headers }
       //   );
+      // console.log("2025")
+      // console.log(this.nuPlanejamentoOrcamento)
+      // console.log(this.nuPlanejamento)
+      // console.log(lista);
 
       await this.apiService.post<any>(
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
