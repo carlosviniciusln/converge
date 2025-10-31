@@ -107,9 +107,11 @@
                 </ng-container>
               </ng-container>
               <ng-container *ngIf="!isCadastro">
-                <option *ngFor="let a of listaStatusPlanejamento" [ngValue]="a.nuPlanejamentoStatus">
-                  {{ a.noPlanejamentoStatus }}
-                </option>
+                <ng-container *ngFor="let a of listaStatusPlanejamento">
+                  <option *ngIf="a.nuPlanejamentoStatus != 4 && a.nuPlanejamentoStatus != 6 && a.nuPlanejamentoStatus != 10" [ngValue]="a.nuPlanejamentoStatus">
+                    {{ a.noPlanejamentoStatus }}
+                  </option>
+                </ng-container>
               </ng-container>
             </select>
           </div>
