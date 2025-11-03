@@ -504,14 +504,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
       ) || 0
     );
   };
-  apenasValor = (valor: string): number => {
-    if (!valor) return 0;
-    return (
-      parseFloat(
-        valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.')
-      ) || 0
-    );
-  };
   somaValorTotalPlanejamentoOrcamentario() {
     let vrTotalOrcamentoPlanejamentoTemp = 0;
     const previsoesDesembolso = this.form.get(
