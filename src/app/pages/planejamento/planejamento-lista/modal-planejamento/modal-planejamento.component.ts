@@ -119,12 +119,12 @@ export class ModalPlanejamentoComponent implements OnInit {
             this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
             break;
           case "Encerrado":
-            this.labelButtonsLeft.label = 'Nova Reprogramação';
-            this.labelButtonsLeft.value = 'nova';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento';
-            this.labelButtonsRight.label = 'Reabrir Programação';
-            this.labelButtonsRight.value = 'reabrir';
-            this.labelButtonsRight.message = 'Tem certeza que deseja reabrir o planejamento';
+            this.labelButtonsRight.label = 'Nova Reprogramação';
+            this.labelButtonsRight.value = 'nova';
+            this.labelButtonsRight.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento';
+            this.labelButtonsLeft.label = 'Reabrir Programação';
+            this.labelButtonsLeft.value = 'reabrir';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja reabrir o planejamento';
             break;
           default:
             this.labelButtonsLeft = null;
@@ -151,12 +151,12 @@ export class ModalPlanejamentoComponent implements OnInit {
             this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
             break
           case "Encerrado":
-            this.labelButtonsLeft.label = 'Nova Reprogramação';
-            this.labelButtonsLeft.value = 'nova';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento';
-            this.labelButtonsRight.label = 'Reabrir Reprogramação';
-            this.labelButtonsRight.message = 'Tem certeza que deseja reabrir o planejamento';
-            this.labelButtonsRight.value = 'reabrir';
+            this.labelButtonsRight.label = 'Nova Reprogramação';
+            this.labelButtonsRight.value = 'nova';
+            this.labelButtonsRight.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento';
+            this.labelButtonsLeft.label = 'Reabrir Reprogramação';
+            this.labelButtonsLeft.message = 'Tem certeza que deseja reabrir o planejamento';
+            this.labelButtonsLeft.value = 'reabrir';
             break
           case "Cancelado":
             this.labelButtonsLeft.label = 'Nova Reprogramação';
