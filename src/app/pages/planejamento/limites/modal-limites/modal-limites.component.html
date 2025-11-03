@@ -13,7 +13,102 @@
   </button>
 </div>
 <div class="modal-body">
+  <ng-container *ngIf="isDisabled; else elseblock">
   <form [formGroup]="formCadastro">
+
+    <div class="row" style="margin-top: -6px">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12 pr-0">
+            <label for="nuPlanejamento">Exercício:</label>
+            <input
+              class="form-control"
+              style="font-size: 10pt"
+              type="text"
+              value="{{ exercicio }}"
+              readonly
+            />
+          </div>
+          <br />
+          <br />
+          <br />
+          <input formControlName="nuPlanejamento" type="text" hidden />
+          <input formControlName="nuRubrica" type="text" hidden />
+          <input formControlName="nuUnidadeDemandante" type="text" hidden />
+        </div>
+        <div class="row">
+          <div class="col-md-5 pr-0">
+            <label for="nuRubrica">Rubrica:</label>
+            <input
+              class="form-control"
+              style="font-size: 10pt"
+              type="text"
+              value="{{ rubrica }}"
+              readonly
+            />
+          </div>
+          <div class="col-md-7 pr-0">
+            <label>Descrição da Rubrica:</label>
+            <input
+              class="form-control"
+              style="font-size: 10pt"
+              type="text"
+              value="{{ descricaoRubrica }}"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5 pr-0">
+            <label for="nuUnidadeDemandante">Unidade Demandante:</label>
+            <input
+              class="form-control"
+              style="font-size: 10pt"
+              type="text"
+              value="{{ unidadeDemandante }}"
+              readonly
+            />
+          </div>
+          <div class="col-md-7 pr-0">
+            <label for="vrLimite">Valor Limite:</label>
+            <input
+              formControlName="vrLimite"
+              type="text"
+              class="form-control"
+              mask="separator.2"
+              [thousandSeparator]="'.'"
+              [decimalMarker]="','"
+              prefix="R$ "
+              [dropSpecialCharacters]="false"
+              placeholder="R$ 0,00"
+              (blur)="ajustarCentavos()"
+            />
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-8 pr-0 text-right"></div>
+          <div class="col-md-4 pr-0 text-right">
+            <button
+              class="btn-sm btn-default"
+              type="submit"
+              (click)="onSubmit()"
+            >
+              {{actionButtonLabel}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+     </form>
+</ng-container>
+
+<ng-template #elseblock>
+    <form [formGroup]="formCadastro">
     <div class="row" style="margin-top: -6px">
       <div class="col-md-12">
         <div class="row">
@@ -117,5 +212,10 @@
         </div>
       </div>
     </div>
-  </form>
+    </form>
+</ng-template>
+
+
+
+ 
 </div>

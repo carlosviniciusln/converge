@@ -234,7 +234,7 @@
           <div class="col-md-3 pr-0">
             <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
             <input formControlName="nuPreComprometimento" id="nuPreComprometimento" type="number"
-              class="form-control" />
+              class="form-control" min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"/>
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuReserva">Nº da reserva :</label>
