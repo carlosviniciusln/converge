@@ -234,12 +234,11 @@
           <div class="col-md-3 pr-0">
             <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
             <input formControlName="nuPreComprometimento" id="nuPreComprometimento" type="number"
-              class="form-control" min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"/>
+              class="form-control" min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" (input)="onPreComprometimentoInput($event)"/>
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuReserva">Nº da reserva :</label>
-            <input type="text" class="form-control" id="nuReserva" formControlName="nuReserva"/>
-
+            <input type="text" class="form-control" id="nuReserva" formControlName="nuReserva" (input)="onReservaInput($event)"/>
           </div>
           <div class="col-md-1 pr-0" style="margin-top: 25px;">
             <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary"
