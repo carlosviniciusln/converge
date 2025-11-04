@@ -42,7 +42,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   listaTiposPlanejamento: PlanejamentoTipoResponse[];
   listaTiposDemanda: DemandaTipoResponse[];
 
-
+// DEFINIR MELHOR COMO VAI FUNCIONAR (TB51 ARMAZENA STRINGS, TROCAR PARA ENUM NO BACKEND)
   listaOpcoesIsDigital: { value: number; label: string }[] = [
     { value: 1, label: 'Digital' },
     { value: 2, label: 'Digital - TD' },
