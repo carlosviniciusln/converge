@@ -6,6 +6,7 @@ export enum Endpoints {
   URL_LOGIN = 'v1/auth',
 
   URL_CONTRATOS = 'v1/contrato',
+  URL_CONTRATOS_ATIVOS = 'v1/contrato/ativo',
   URL_CONTRATOS_VIGENCIAS = 'v1/contrato/vigencias',
   URL_CONTRATOS_EVOLUCAO_FINANCEIRA = 'v1/contrato/evolucao-financeira',
   URL_CONTRATOS_EVOLUCAO_FINANCEIRA_AQUISICAO = 'v1/contrato/evolucao-financeira-aquisicao',

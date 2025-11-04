@@ -286,7 +286,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.subTitulo =
       this.currentPageAction == PageAction.Cadastrar
         ? element.subTitle
-        : `${element.subTitle} ${this.planejamento?.coContrato}`;
+        : `${element.subTitle} ${this.nuPlanejamento?.nU_ORC}`;
     this.actionButtonLabel = element.actionButtonLabel;
 
   }
@@ -486,7 +486,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     if (!valor) return 0;
     return (
       parseFloat(
-        valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.')
+        (valor+"").replace('R$ ', '').replace(/\./g, '').replace(',', '.')
       ) || 0
     );
   };
@@ -775,12 +775,13 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.editarTextos();
   }
 
+  //alterar para ativos - ### inviabiliza visualizar os não ativos #### pediu ta feito
   public async obterContratos(): Promise<void> {
     try {
       if (this.tipoModal !== 'adicionar') {
         const response = await this.apiService.get<
           ApiResponse<ContratoResponse[]>
-        >(`${Endpoints.URL_CONTRATOS}`);
+        >(`${Endpoints.URL_CONTRATOS_ATIVOS}`); //somente ativos
         this.listaContratos = response.data;
         this.selectContratos = this.listaContratos
           .sort((a, b) => a.coContrato.localeCompare(b.coContrato))
@@ -908,12 +909,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.filtroRegistros.NuContrato = this.nuPlanejamento?.nU_CONTRATO;
       this.filtroRegistros.NuPlanejamento = this.nuPlanejamento?.nU_PLANEJAMENTO;
       this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento?.nU_TIPO_DEMANDA;
-      console.log(this.filtroRegistros, "OBTER HISTORICO")
+      //console.log(this.filtroRegistros, "OBTER HISTORICO")
       const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
         `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item`, this.filtroRegistros)
 
 
-      console.log(response, "OBTER HISTORICO");
+      //console.log(response, "OBTER HISTORICO");
 
       this.ListaPlanejamentoItemHistorico = response.data.listaHistorico;
       console.log(this.ListaPlanejamentoItemHistorico, "DADOS HISTORICO");
@@ -1413,9 +1414,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
 
   async Excluir(planejamentoOrcamentario: PlanejamentoOrcamentarioResponse) {
+    console.log('excluir', planejamentoOrcamentario)
     const alert = await Swal.fire({
       title: '',
-      text: `Deseja realmente excluir Planejamento Orçamentário do Contrato: ${planejamentoOrcamentario.coContrato}?`,
+      text: `Deseja realmente excluir Planejamento Orçamentário Cód: ${this.nuPlanejamento?.nU_ORC}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim, deletar!',
