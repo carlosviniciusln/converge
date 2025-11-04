@@ -12,7 +12,8 @@ import { Router } from '@angular/router';
  interface DomainDTO {
   value: string,
   label: string,
-  message: string
+  message: string,
+  position: string
 }
 @Component({
   selector: 'app-modal-planejamento',
@@ -27,9 +28,9 @@ export class ModalPlanejamentoComponent implements OnInit {
   public form: FormGroup;
 
   permissions: ActionPolicies;
-  labelButtonsLeft : DomainDTO = {label: null, value: null, message: null};
-  labelButtonsRight : DomainDTO = {label: null, value: null, message: null};
-  labelButtons : DomainDTO = {label: null, value: null, message: null};
+  labelButtonsLeft : DomainDTO = {label: null, value: null, message: null, position: null};
+  labelButtonsRight : DomainDTO = {label: null, value: null, message: null,  position: null};
+  labelButtons : DomainDTO = {label: null, value: null, message: null, position: null};
   listaPlanejamentos: ResumoPlanejamentoModel[] = [];
   ultimoPlanejamento: ResumoPlanejamentoModel;
   retornoAno: boolean = false;
@@ -97,85 +98,137 @@ export class ModalPlanejamentoComponent implements OnInit {
 
   //TODO: MELHORIA: REFATOR EM JSON OU CRIAR METODOS PARA CADA CENARIO
 
-  validarBotoes(ultimoPlanejamento : ResumoPlanejamentoModel): void {
-    const tipo = ultimoPlanejamento?.tipo.replace(/^\d+\s*-\s*/, "");
-    switch(tipo){
-      case "Programação" :
-        switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
+  validarBotoes(ultimoPlanejamento: ResumoPlanejamentoModel): void {
+    const tipo = ultimoPlanejamento?.tipo.replace(/^\d+\s*-\s*/, "").trim();
+  
+    switch (tipo) {
+      case "Programação":
+        switch (ultimoPlanejamento.statuS_PLANEJAMENTO) {
           case "Aberta":
-            this.labelButtonsLeft.label = 'Encerrar Programação';
-            this.labelButtonsLeft.value = 'encerrar';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
-            this.labelButtonsRight.label = 'Cancelar Programação';
-            this.labelButtonsRight.value = 'cancelar';
-            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
+            this.labelButtonsLeft = {
+              label: 'Encerrar Programação',
+              value: 'encerrar',
+              message: 'Tem certeza que deseja encerrar o planejamento',
+              position: 'left'
+            };
+            this.labelButtonsRight = {
+              label: 'Cancelar Programação',
+              value: 'cancelar',
+              message: 'Tem certeza que deseja cancelar o planejamento',
+              position: 'right'
+            };
             break;
+  
           case "Em Avaliação":
-            this.labelButtonsLeft.label = 'Encerrar Programação';
-            this.labelButtonsLeft.value = 'encerrar';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
-            this.labelButtonsRight.label = 'Cancelar Programação';
-            this.labelButtonsRight.value = 'cancelar';
-            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
+            this.labelButtonsLeft = {
+              label: 'Encerrar Programação',
+              value: 'encerrar',
+              message: 'Tem certeza que deseja encerrar o planejamento',
+              position: 'left'
+            };
+            this.labelButtonsRight = {
+              label: 'Cancelar Programação',
+              value: 'cancelar',
+              message: 'Tem certeza que deseja cancelar o planejamento',
+              position: 'right'
+            };
             break;
+  
           case "Encerrado":
-            this.labelButtonsRight.label = 'Nova Reprogramação';
-            this.labelButtonsRight.value = 'nova';
-            this.labelButtonsRight.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento';
-            this.labelButtonsLeft.label = 'Reabrir Programação';
-            this.labelButtonsLeft.value = 'reabrir';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja reabrir o planejamento';
+            this.labelButtonsLeft = {
+              label: 'Nova Reprogramação',
+              value: 'nova',
+              message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
+              position: 'left'
+            };
+            this.labelButtonsRight = {
+              label: 'Reabrir Programação',
+              value: 'reabrir',
+              message: 'Tem certeza que deseja reabrir o planejamento',
+              position: 'left' 
+            };
             break;
+  
           default:
             this.labelButtonsLeft = null;
             this.labelButtonsRight = null;
             break;
         }
-      break;
+        break;
+  
       case "Reprogramação":
-        switch(ultimoPlanejamento.statuS_PLANEJAMENTO){
+        switch (ultimoPlanejamento.statuS_PLANEJAMENTO) {
           case "Aberta":
-            this.labelButtonsLeft.label = 'Encerrar Programação';
-            this.labelButtonsLeft.value = 'encerrar';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
-            this.labelButtonsRight.label = 'Cancelar Programação';
-            this.labelButtonsRight.value = 'cancelar';
-            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
+            this.labelButtonsLeft = {
+              label: 'Encerrar Programação',
+              value: 'encerrar',
+              message: 'Tem certeza que deseja encerrar o planejamento',
+              position: 'left'
+            };
+            this.labelButtonsRight = {
+              label: 'Cancelar Programação',
+              value: 'cancelar',
+              message: 'Tem certeza que deseja cancelar o planejamento',
+              position: 'right'
+            };
             break;
+  
           case "Em Avaliação":
-            this.labelButtonsLeft.label = 'Encerrar Programação';
-            this.labelButtonsLeft.value = 'encerrar';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja encerrar o planejamento';
-            this.labelButtonsRight.label = 'Cancelar Programação';
-            this.labelButtonsRight.value = 'cancelar';
-            this.labelButtonsRight.message = 'Tem certeza que deseja cancelar o planejamento';
-            break
+            this.labelButtonsLeft = {
+              label: 'Encerrar Programação',
+              value: 'encerrar',
+              message: 'Tem certeza que deseja encerrar o planejamento',
+              position: 'left'
+            };
+            this.labelButtonsRight = {
+              label: 'Cancelar Programação',
+              value: 'cancelar',
+              message: 'Tem certeza que deseja cancelar o planejamento',
+              position: 'right'
+            };
+            break;
+  
           case "Encerrado":
-            this.labelButtonsRight.label = 'Nova Reprogramação';
-            this.labelButtonsRight.value = 'nova';
-            this.labelButtonsRight.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento';
-            this.labelButtonsLeft.label = 'Reabrir Reprogramação';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja reabrir o planejamento';
-            this.labelButtonsLeft.value = 'reabrir';
-            break
+            this.labelButtonsLeft = {
+              label: 'Nova Reprogramação',
+              value: 'nova',
+              message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
+              position: 'left'
+            };
+            this.labelButtonsRight = {
+              label: 'Reabrir Reprogramação',
+              value: 'reabrir',
+              message: 'Tem certeza que deseja reabrir o planejamento',
+              position: 'left'
+            };
+            break;
+  
           case "Cancelado":
-            this.labelButtonsLeft.label = 'Nova Reprogramação';
-            this.labelButtonsLeft.value = 'nova';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento'
+            this.labelButtonsLeft = {
+              label: 'Nova Reprogramação',
+              value: 'nova',
+              message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
+              position: 'left'
+            };
             this.labelButtonsRight = null;
-            break
+            break;
+  
           default:
-            this.labelButtonsLeft.label = 'Nova Reprogramação';
-            this.labelButtonsLeft.value = 'nova';
-            this.labelButtonsLeft.message = 'Tem certeza que deseja gerar uma nova reprogramação do planejamento'
+            this.labelButtonsLeft = {
+              label: 'Nova Reprogramação',
+              value: 'nova',
+              message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
+              position: 'left'
+            };
             this.labelButtonsRight = null;
             break;
         }
-      break;
+        break;
+  
       default:
+      
         break;
     }
-
   }
 
   atualizarPlanejamento(botaoClicado) {
