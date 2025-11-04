@@ -486,7 +486,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     if (!valor) return 0;
     return (
       parseFloat(
-        valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.')
+        (valor+"").replace('R$ ', '').replace(/\./g, '').replace(',', '.')
       ) || 0
     );
   };
