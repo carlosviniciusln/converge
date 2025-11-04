@@ -933,7 +933,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     // Limita o texto de cada objetivo a 70 caracteres
     this.listaObjetivosEstrategicosPdti = response.data.map(obj => ({
       ...obj,
-      deObjetivoEstrategico: obj.deObjetivoEstrategico?.slice(0, 70) + 
+      deObjetivoEstrategico: obj.deObjetivoEstrategico?.slice(0, 70) +
         (obj.deObjetivoEstrategico?.length > 70 ? '...' : '')
     }));
   } catch (error) {
@@ -1023,9 +1023,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
       const previsoes = obj.previsoesDesembolso;
 
+      if(previsoes.length > 0){
 
-
-      for (var p in previsoes) {
+        for (var p in previsoes) {
 
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: 0,
@@ -1070,16 +1070,18 @@ export class PlanejamentoCadastroComponent implements OnInit {
         lista.push(item);
       }
 
+        const response = await this.apiService.post<any>(
+          `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
+          lista
+        );
 
-      await this.apiService.post<any>(
-        `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
-        lista
-      );
-
-
-      this.toastr.success('Cadastro efetuado com sucesso.', 'Sucesso');
-      this.atualizarPagina.emit(true);
-      this.activeModal.dismiss();
+        this.atualizarPagina.emit(true);
+        this.activeModal.dismiss();
+      }
+      else
+      {
+          this.toastr.warning('Previsão de desembolso obrigatório', 'Aviso');
+      }
     } catch (error) {
       this.atualizarPagina.emit(false);
     }
