@@ -1527,7 +1527,7 @@ async cadastrarItem(lista: any): Promise<void> {
         // Aqui você pode exibir um toast, atualizar a UI, etc.
         await Swal.fire({
           title: 'Sucesso!',
-          text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} excluído com sucesso.`,
+          text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} cadastrado com sucesso.`,
           icon: 'success',
           confirmButtonText: 'OK',
         });
