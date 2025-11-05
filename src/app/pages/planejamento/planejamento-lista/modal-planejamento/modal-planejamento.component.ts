@@ -100,7 +100,7 @@ export class ModalPlanejamentoComponent implements OnInit {
 
   validarBotoes(ultimoPlanejamento: ResumoPlanejamentoModel): void {
     const tipo = ultimoPlanejamento?.tipo.replace(/^\d+\s*-\s*/, "").trim();
-  
+
     switch (tipo) {
       case "Programação":
         switch (ultimoPlanejamento.statuS_PLANEJAMENTO) {
@@ -118,7 +118,22 @@ export class ModalPlanejamentoComponent implements OnInit {
               position: 'right'
             };
             break;
-  
+
+          case "Criado":
+            this.labelButtonsLeft = {
+              label: 'Encerrar Programação',
+              value: 'encerrar',
+              message: 'Tem certeza que deseja encerrar o planejamento',
+              position: 'left'
+            };
+            this.labelButtonsRight = {
+              label: 'Cancelar Programação',
+              value: 'cancelar',
+              message: 'Tem certeza que deseja cancelar o planejamento',
+              position: 'right'
+            };
+            break;
+
           case "Em Avaliação":
             this.labelButtonsLeft = {
               label: 'Encerrar Programação',
@@ -133,7 +148,7 @@ export class ModalPlanejamentoComponent implements OnInit {
               position: 'right'
             };
             break;
-  
+
           case "Encerrado":
             this.labelButtonsLeft = {
               label: 'Nova Reprogramação',
@@ -145,49 +160,64 @@ export class ModalPlanejamentoComponent implements OnInit {
               label: 'Reabrir Programação',
               value: 'reabrir',
               message: 'Tem certeza que deseja reabrir o planejamento',
-              position: 'left' 
+              position: 'left'
             };
             break;
-  
+
           default:
             this.labelButtonsLeft = null;
             this.labelButtonsRight = null;
             break;
         }
         break;
-  
+
       case "Reprogramação":
         switch (ultimoPlanejamento.statuS_PLANEJAMENTO) {
           case "Aberta":
             this.labelButtonsLeft = {
-              label: 'Encerrar Programação',
+              label: 'Encerrar Reprogramação',
               value: 'encerrar',
               message: 'Tem certeza que deseja encerrar o planejamento',
               position: 'left'
             };
             this.labelButtonsRight = {
-              label: 'Cancelar Programação',
+              label: 'Cancelar Reprogramação',
               value: 'cancelar',
               message: 'Tem certeza que deseja cancelar o planejamento',
               position: 'right'
             };
             break;
-  
+
+          case "Criado":
+            this.labelButtonsLeft = {
+              label: 'Encerrar Reprogramação',
+              value: 'encerrar',
+              message: 'Tem certeza que deseja encerrar o planejamento',
+              position: 'left'
+            };
+            this.labelButtonsRight = {
+              label: 'Cancelar Reprogramação',
+              value: 'cancelar',
+              message: 'Tem certeza que deseja cancelar o planejamento',
+              position: 'right'
+            };
+            break;
+
           case "Em Avaliação":
             this.labelButtonsLeft = {
-              label: 'Encerrar Programação',
+              label: 'Encerrar Reprogramação',
               value: 'encerrar',
               message: 'Tem certeza que deseja encerrar o planejamento',
               position: 'left'
             };
             this.labelButtonsRight = {
-              label: 'Cancelar Programação',
+              label: 'Cancelar Reprogramação',
               value: 'cancelar',
               message: 'Tem certeza que deseja cancelar o planejamento',
               position: 'right'
             };
             break;
-  
+
           case "Encerrado":
             this.labelButtonsLeft = {
               label: 'Nova Reprogramação',
@@ -202,7 +232,7 @@ export class ModalPlanejamentoComponent implements OnInit {
               position: 'left'
             };
             break;
-  
+
           case "Cancelado":
             this.labelButtonsLeft = {
               label: 'Nova Reprogramação',
@@ -212,7 +242,6 @@ export class ModalPlanejamentoComponent implements OnInit {
             };
             this.labelButtonsRight = null;
             break;
-  
           default:
             this.labelButtonsLeft = {
               label: 'Nova Reprogramação',
@@ -224,9 +253,9 @@ export class ModalPlanejamentoComponent implements OnInit {
             break;
         }
         break;
-  
+
       default:
-      
+
         break;
     }
   }
