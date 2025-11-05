@@ -100,7 +100,8 @@ export class PlanejamentoGeralComponent implements OnInit {
     tipo: null,
     IsDigital: null,
     objeto: '',
-    nuPlanejamento: 0
+    nuPlanejamento: 0,
+    tipoPlanejamento: ''
   };
 
   constructor(
@@ -129,8 +130,10 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.filtroRegistros = {
       pageNumber: 1,
       pageSize: 12,
-      nuPlanejamento: this.nuPlanejamentoExercicio
+      nuPlanejamento: this.nuPlanejamentoExercicio,
+      tipoPlanejamento: this.ordemTipoExercicio
     };
+    alert(this.ordemTipoExercicio)
     await this.obterPlanejamentosOrc();
     await this.obterdadosDashboard();
     await this.obterStatusPlanejamento();
