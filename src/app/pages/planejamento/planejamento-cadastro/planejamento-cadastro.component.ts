@@ -5,6 +5,7 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  RequiredValidator,
   Validators,
 } from '@angular/forms';
 import { ApiService } from 'src/app/services/api.service';
@@ -371,7 +372,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         if (grupo instanceof FormGroup) {
           Object.keys(grupo.controls).forEach((childKey) => {
             const childControl = grupo.get(childKey);
-            if (childControl?.disabled && childKey != 'vrTotalRubrica' && childKey != 'nuReserva') {
+            if (childControl?.disabled && childKey != 'vrTotalRubrica') {
               childControl.enable();
             }
           });
@@ -414,9 +415,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.planejamento?.nuPlanejamentoOrcamentario ?? 0,
         [Validators.required]
       ),
-      nuRubrica: new FormControl(0, [Validators.required]),
-      nuPreComprometimento: new FormControl(this.planejamento?.nuPreComprometimento ?? 0, [Validators.required]),
-      nuReserva: new FormControl(0, [Validators.required]),
+      nuRubrica: new FormControl([Validators.required]),
+      nuPreComprometimento: new FormControl(),
+      nuReserva: new FormControl(),
       vrJaneiro: new FormControl(0, [Validators.required]),
       vrFevereiro: new FormControl(0, [Validators.required]),
       vrMarco: new FormControl(0, [Validators.required]),
@@ -909,15 +910,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.filtroRegistros.NuContrato = this.nuPlanejamento?.nU_CONTRATO;
       this.filtroRegistros.NuPlanejamento = this.nuPlanejamento?.nU_PLANEJAMENTO;
       this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento?.nU_TIPO_DEMANDA;
-      //console.log(this.filtroRegistros, "OBTER HISTORICO")
       const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
         `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item`, this.filtroRegistros)
 
-
-      //console.log(response, "OBTER HISTORICO");
-
       this.ListaPlanejamentoItemHistorico = response.data.listaHistorico;
-      console.log(this.ListaPlanejamentoItemHistorico, "DADOS HISTORICO");
     } catch (error) {
       console.error(error);
     }
@@ -1105,7 +1101,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         }
         if (itemErro.find((item) => item === 'previsoesDesembolso')) {
           this.toastr.error(
-            'Informe a previsão de desembolso completo.',
+            'Informe a previsão de desembolso por completo.',
             'Erro'
           );
           return;
@@ -1116,12 +1112,14 @@ export class PlanejamentoCadastroComponent implements OnInit {
         ) {
 
           this.toastr.error('Informe o objeto.', 'Erro');
+          return;
         }
         if (
           this.form.controls['deJustificativa'].value == '' ||
           this.form.controls['deJustificativa'].value == null
         ) {
           this.toastr.error('Informe a justificativa.', 'Erro');
+          return;
         }
 
         return;
@@ -1137,6 +1135,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         return;
       } else if (this.form.controls['deObjeto'].value == null) {
         this.toastr.error('Informe o objeto.', 'Erro');
+        return;
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == null
       ) {
@@ -1489,8 +1488,10 @@ onPreComprometimentoInput(event: Event): void {
 
   if (value && value.trim() !== '') {
     reservaInput.readOnly = true; // ou reservaInput.disabled = true;
+    this.form?.controls['nuReserva']?.removeValidators;
   } else {
     reservaInput.readOnly = false;
+    this.form?.controls['nuReserva']?.addValidators(Validators.required);
   }
 }
 
@@ -1500,9 +1501,13 @@ onReservaInput(event: Event): void {
 
   if (value && value.trim() !== '') {
     preComprometimentoInput.readOnly = true; // ou reservaInput.disabled = true;
+    this.form?.controls['nuPreComprometimento']?.removeValidators;
   } else {
     preComprometimentoInput.readOnly = false;
+    this.form?.controls['nuPreComprometimento']?.addValidators(Validators.required);
   }
+
+
 }
 
 }

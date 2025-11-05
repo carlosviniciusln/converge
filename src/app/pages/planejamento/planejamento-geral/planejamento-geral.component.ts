@@ -115,8 +115,6 @@ export class PlanejamentoGeralComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-
-    // queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
     this.route.queryParams.subscribe(params => {
       this.anoExercicio =params['cO_EXERCICIO'];
       this.ordemTipoExercicio = params['tipo'];
