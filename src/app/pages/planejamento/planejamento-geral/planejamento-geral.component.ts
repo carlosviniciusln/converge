@@ -133,7 +133,6 @@ export class PlanejamentoGeralComponent implements OnInit {
       nuPlanejamento: this.nuPlanejamentoExercicio,
       tipoPlanejamento: this.ordemTipoExercicio
     };
-    alert(this.ordemTipoExercicio)
     await this.obterPlanejamentosOrc();
     await this.obterdadosDashboard();
     await this.obterStatusPlanejamento();
