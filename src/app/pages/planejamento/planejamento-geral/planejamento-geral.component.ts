@@ -196,8 +196,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
     modalRef.componentInstance.title = 'Confirmar alterações';
     modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
-    modalRef.componentInstance.confirmLabel = 'Sim, salvar';
-    modalRef.componentInstance.cancelLabel = 'Não, voltar';
+    modalRef.componentInstance.confirmLabel = 'Sim, alterar!';
+    modalRef.componentInstance.cancelLabel = 'Não, cancelar!';
     modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
     modalRef.componentInstance.iconClass = 'text-warning';
 
