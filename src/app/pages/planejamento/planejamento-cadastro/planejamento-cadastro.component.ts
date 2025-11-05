@@ -1066,10 +1066,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
         lista.push(item);
       }
 
-        const response = await this.apiService.post<any>(
-          `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
-          lista
-        );
+        // const response = await this.apiService.post<any>(
+        //   `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
+        //   lista
+        // );
+
+        this.cadastrarItem(lista)
 
         this.atualizarPagina.emit(true);
         this.activeModal.dismiss();
@@ -1509,5 +1511,52 @@ onReservaInput(event: Event): void {
 
 
 }
+
+
+async cadastrarItem(lista: any): Promise<void> {
+  try {
+    const response = await this.apiService.post<any>(
+      `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
+      lista
+    );
+
+    if (response?.succeeded && response.data?.succeeded) {
+      const resultado = response.data.resultados?.[0];
+      if (resultado?.succeeded) {
+        console.log('Item cadastrado com sucesso:', resultado.nuPlanejamentoItem);
+        // Aqui você pode exibir um toast, atualizar a UI, etc.
+        await Swal.fire({
+          title: 'Sucesso!',
+          text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} excluído com sucesso.`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+      } else {
+        console.warn('Falha ao cadastrar item:', resultado?.message);        
+        await Swal.fire({
+          title: 'Erro!',
+          text: 'Falha ao cadastrar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+
+      }
+    } else {
+      console.error('Erro na resposta da API:', response.errors);
+      await Swal.fire({
+        title: 'Erro!',
+        text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    // Tratar erro de rede ou exceção
+  }
+}
+
+
 
 }
