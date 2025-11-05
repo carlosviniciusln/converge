@@ -242,7 +242,7 @@
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuReserva">Nº da reserva :</label>
-            <input type="text" class="form-control" id="nuReserva" formControlName="nuReserva" (input)="onReservaInput($event)"/>
+            <input type="text" class="form-control" id="nuReserva" formControlName="nuReserva" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" (input)="onReservaInput($event)"/>
           </div>
           <div class="col-md-1 pr-0" style="margin-top: 25px;">
             <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary"

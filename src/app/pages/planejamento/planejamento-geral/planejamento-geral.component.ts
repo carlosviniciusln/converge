@@ -269,7 +269,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
   public downloadPlanejamentoDesembolso() {
     return this.apiService.downloadfile(
-      `${Endpoints.URL_ORCAMENTO}/excel`,
+      `${Endpoints.URL_ORCAMENTO}/detalhamento-excel`,
       this.filtroRegistros
     );
   }
