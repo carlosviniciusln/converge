@@ -8,15 +8,15 @@ export interface PlanejamentoOrcamentarioItemRequest {
     NuStatusPlanejamentoItem?: number;
     NuTipoDemanda?: number;
     NuVigencia?: number;
-  
+    DeObservacao?: string;
     DeObjeto?: string;
     DeObjetivoPDTIC?: string;
     DeObjetivoPEI?: string;
     DeJustificativa?: string;
-  
+
     NuPreComprometimento?: number;
     NuReserva?: number;
-  
+
     VrPlanejamentoItem?: number;
     VrJaneiro?: number;
     VrFevereiro?: number;
@@ -30,7 +30,7 @@ export interface PlanejamentoOrcamentarioItemRequest {
     VrOutubro?: number;
     VrNovembro?: number;
     VrDezembro?: number;
-  
+
     NuUsuario?: number;
     DhCadastro?: Date;
     DhExclusao?: Date;
@@ -38,4 +38,3 @@ export interface PlanejamentoOrcamentarioItemRequest {
     NuUsuarioAlteracao?: number;
     DhAlteracao?: Date;
   }
-  
