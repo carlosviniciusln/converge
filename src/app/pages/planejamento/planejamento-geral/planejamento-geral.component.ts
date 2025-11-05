@@ -100,7 +100,8 @@ export class PlanejamentoGeralComponent implements OnInit {
     tipo: null,
     IsDigital: null,
     objeto: '',
-    nuPlanejamento: 0
+    nuPlanejamento: 0,
+    tipoPlanejamento: ''
   };
 
   constructor(
@@ -114,8 +115,6 @@ export class PlanejamentoGeralComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-
-    // queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
     this.route.queryParams.subscribe(params => {
       this.anoExercicio =params['cO_EXERCICIO'];
       this.ordemTipoExercicio = params['tipo'];
@@ -129,7 +128,8 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.filtroRegistros = {
       pageNumber: 1,
       pageSize: 12,
-      nuPlanejamento: this.nuPlanejamentoExercicio
+      nuPlanejamento: this.nuPlanejamentoExercicio,
+      tipoPlanejamento: this.ordemTipoExercicio
     };
     await this.obterPlanejamentosOrc();
     await this.obterdadosDashboard();
@@ -196,8 +196,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
     modalRef.componentInstance.title = 'Confirmar alterações';
     modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
-    modalRef.componentInstance.confirmLabel = 'Sim, salvar';
-    modalRef.componentInstance.cancelLabel = 'Não, voltar';
+    modalRef.componentInstance.confirmLabel = 'Sim, alterar!';
+    modalRef.componentInstance.cancelLabel = 'Não, cancelar!';
     modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
     modalRef.componentInstance.iconClass = 'text-warning';
 
@@ -269,7 +269,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
   public downloadPlanejamentoDesembolso() {
     return this.apiService.downloadfile(
-      `${Endpoints.URL_ORCAMENTO}/excel`,
+      `${Endpoints.URL_ORCAMENTO}/detalhamento-excel`,
       this.filtroRegistros
     );
   }
