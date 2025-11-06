@@ -158,6 +158,7 @@ export class PlanejamentoGeralComponent implements OnInit {
       keyboard: false,
     });
 
+   
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
@@ -168,6 +169,9 @@ export class PlanejamentoGeralComponent implements OnInit {
         this.obterPlanejamentosOrc();
       }
     });
+
+    modalRef.componentInstance.ano = this.anoExercicio;
+    modalRef.componentInstance.tipo = this.ordemTipoExercicio;
   }
 
 

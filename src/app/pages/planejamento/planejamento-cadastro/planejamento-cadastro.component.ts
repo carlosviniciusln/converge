@@ -52,6 +52,8 @@ import { Gcptb060PlanejamentoItemHistoricoResponse } from 'src/app/models/respon
 export class PlanejamentoCadastroComponent implements OnInit {
   @Input() public nuPlanejamento: any;
   @Input() public nuPlanejamentoOrcamento: any;
+  @Input() public ano: any;
+  @Input() public tipo: any;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
   @Input() public isCadastro: boolean;
