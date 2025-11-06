@@ -1190,7 +1190,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
           DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
           DeJustificativa: obj.deJustificativa,
-
+          DeObservacao: obj.deObservacao,
           NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
           NuReserva: Number(previsoes[p].nuReserva),
 
@@ -1234,49 +1234,47 @@ export class PlanejamentoCadastroComponent implements OnInit {
     }
   }
 
-  public async ExcluirItens(): Promise<void> {
+public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Promise<void> {
     try {
+
       this.submitted = true;
 
-
-
-      var obj = this.form.value;
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
 
-      const previsoes = obj.previsoesDesembolso;
+      const previsoes = planejamento.gcptb027PrevisoesDesembolso;
 
       for (var p in previsoes) {
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
-          NuPlanejamento: this.nuPlanejamentoOrcamento,
-          NuContrato: obj.nuContrato,
-          NuFilial: obj.nuFilial,
-          NuRubrica: previsoes[p].nuRubrica,
+          // NuPlanejamento: this.nuPlanejamentoOrcamento,
+          // NuContrato: planejamento.nuContrato,
+          // NuFilial: planejamento.nuFilial,
+          // NuRubrica: previsoes[p].nuRubrica,
           NuStatusPlanejamentoItem: 10, //excluido
-          NuTipoDemanda: obj.nuDemandaTipo,
-          NuVigencia: obj.nuAno,
+          // NuTipoDemanda: planejamento.nuDemandaTipo,
+          // NuVigencia: planejamento.nuAno,
 
-          DeObjeto: obj.deObjeto,
-          DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
-          DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
-          DeJustificativa: obj.deJustificativa,
+          // DeObjeto: planejamento.deObjeto,
+          // DeObjetivoPDTIC: planejamento.nuObjetivoEstrategicoPdti?.toString(),
+          // DeObjetivoPEI: planejamento.nuObjetivoEstrategicoPei?.toString(),
+          // DeJustificativa: planejamento.deJustificativa,
 
-          NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
-          NuReserva: Number(previsoes[p].nuReserva),
+          // NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
+          // NuReserva: Number(previsoes[p].nuReserva),
 
-          VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
-          VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
-          VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
-          VrMarco: this.parseDecimal(previsoes[p].vrMarco),
-          VrAbril: this.parseDecimal(previsoes[p].vrAbril),
-          VrMaio: this.parseDecimal(previsoes[p].vrMaio),
-          VrJunho: this.parseDecimal(previsoes[p].vrJunho),
-          VrJulho: this.parseDecimal(previsoes[p].vrJulho),
-          VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
-          VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
-          VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
-          VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
-          VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
+          // VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
+          // VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
+          // VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
+          // VrMarco: this.parseDecimal(previsoes[p].vrMarco),
+          // VrAbril: this.parseDecimal(previsoes[p].vrAbril),
+          // VrMaio: this.parseDecimal(previsoes[p].vrMaio),
+          // VrJunho: this.parseDecimal(previsoes[p].vrJunho),
+          // VrJulho: this.parseDecimal(previsoes[p].vrJulho),
+          // VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
+          // VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
+          // VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
+          // VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
+          // VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
 
           DhExclusao: new Date(),
           NuUsuarioExclusao: this.token.getUser()?.nuUsuario ?? 0,
@@ -1301,6 +1299,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.atualizarPagina.emit(false);
     }
   }
+
 
   onReset(): void {
     this.submitted = false;
@@ -1417,7 +1416,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
 
   async Excluir(planejamentoOrcamentario: PlanejamentoOrcamentarioResponse) {
-    console.log('excluir', planejamentoOrcamentario)
+
     const alert = await Swal.fire({
       title: '',
       text: `Deseja realmente excluir Planejamento Orçamentário Cód: ${this.nuPlanejamento?.nU_ORC}?`,
@@ -1445,7 +1444,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         //   `Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario} excluído com sucesso.`,
         //   'Sucesso'
         // );
-        this.ExcluirItens();
+        this.ExcluirItens(planejamentoOrcamentario);
         setTimeout(() => {
           location.reload();
         }, 2000);
@@ -1532,7 +1531,7 @@ async cadastrarItem(lista: any): Promise<void> {
           confirmButtonText: 'OK',
         });
       } else {
-        console.warn('Falha ao cadastrar item:', resultado?.message);        
+        console.warn('Falha ao cadastrar item:', resultado?.message);
         await Swal.fire({
           title: 'Erro!',
           text: 'Falha ao cadastrar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
