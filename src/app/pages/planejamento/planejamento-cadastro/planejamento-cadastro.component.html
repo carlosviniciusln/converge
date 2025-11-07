@@ -97,24 +97,29 @@
           </div>
           <div class="col-md-2 pr-0">
             <label for="nuPlanejamentoStatus">Status:</label>
-            <select class="form-control" id="nuPlanejamentoStatus" formControlName="nuPlanejamentoStatus" [ngClass]="{
-                'is-invalid': submitted && f.nuPlanejamentoStatus?.invalid
-              }">
+            <select
+              class="form-control"
+              id="nuPlanejamentoStatus"
+              formControlName="nuPlanejamentoStatus"
+              [ngClass]="{ 'is-invalid': submitted && f.nuPlanejamentoStatus.invalid }"
+            >
               <option value="" disabled selected>Selecione Status</option>
-              <ng-container *ngIf="isCadastro">
+          
+              <ng-container *ngIf="isCadastro; else edicao">
                 <ng-container *ngFor="let a of listaStatusPlanejamento">
-                  <option *ngIf="a?.nuPlanejamentoStatus == 5" [ngValue]="a?.nuPlanejamentoStatus">
+                  <option *ngIf="a.nuPlanejamentoStatus == 5" [ngValue]="a.nuPlanejamentoStatus">
                     {{ a.noPlanejamentoStatus }}
                   </option>
                 </ng-container>
               </ng-container>
-              <ng-container *ngIf="!isCadastro">
-                <ng-container *ngFor="let a of listaStatusPlanejamento">
-                  <option *ngIf="a?.nuPlanejamentoStatus != 4 && a?.nuPlanejamentoStatus != 6 && a?.nuPlanejamentoStatus != 10" [ngValue]="a?.nuPlanejamentoStatus">
+          
+              <ng-template #edicao>
+                <ng-container *ngFor="let a of visibleStatusList">
+                  <option [ngValue]="a.nuPlanejamentoStatus">
                     {{ a.noPlanejamentoStatus }}
                   </option>
                 </ng-container>
-              </ng-container>
+              </ng-template>
             </select>
           </div>
           <div class="col-md-3 pr-0">
