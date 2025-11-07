@@ -84,6 +84,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public selectTab: number = 0;
   loading: boolean = true;
   permissions: ActionPolicies;
+  private readonly STATUS_ORDER = ['Criado','Revisado','Avaliado','Ajustado','Validado'];
+  private readonly ALLOWED_ORCAMENTO = new Set(['Criado','Revisado','Avaliado','Ajustado','Validado']);
+  private readonly ALLOWED_DEFAULT = new Set(['Criado','Revisado','Ajustado']);
+  private readonly EXCLUDED_NON_ADMIN = new Set<number>([4,6,10]);
+
 
   private readonly actionList: {
     type: PageAction;
@@ -883,11 +888,103 @@ export class PlanejamentoCadastroComponent implements OnInit {
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoStatusResponse[]>
       >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
-
+      
       this.listaStatusPlanejamento = response.data;
+      this.buildStatusRank_();
     } catch (error) {
       console.error(error);
+    } finally {
+      const c = this.form?.get('nuPlanejamentoStatus')?.value;
+      if (c != null && c !== '') {
+        this.originalStatusId = this.originalStatusId ?? c;
+        this.setupNoRegressionGuard_();
+      }
     }
+  }
+  // TODO: Em outra oportunidade mover essa validacao para o Backend.
+  private originalStatusId: number | null = null;
+  private _noRegressionSub?: any;
+  private statusRank = new Map<number, number>();
+  
+  public isAdmin_(): boolean {
+    return this.currentProfile?.noPerfil === PerfisEnum.Administrador;
+  }
+  private isOrcamento_(): boolean {
+    return this.currentProfile?.noPerfil === PerfisEnum.Orcamento;
+  }
+  
+  private buildStatusRank_(): void {
+    this.statusRank.clear();
+    if (!this.listaStatusPlanejamento?.length) return;
+    const mapByName = new Map<string, number>();
+    this.listaStatusPlanejamento.forEach(s => mapByName.set((s.noPlanejamentoStatus || '').trim(), s.nuPlanejamentoStatus));
+    this.STATUS_ORDER.forEach((name, idx) => {
+      const id = mapByName.get(name);
+      if (id != null) this.statusRank.set(id, idx);
+    });
+  }
+  
+  private getCurrentStatusId_(): number | null {
+    const v = this.form?.get('nuPlanejamentoStatus')?.value;
+    return (v == null || v === '') ? this.originalStatusId : v;
+  }
+  
+  private getNameById_(id: number): string {
+    return (this.listaStatusPlanejamento?.find(s => s.nuPlanejamentoStatus === id)?.noPlanejamentoStatus || '').trim();
+  }
+  
+  private rank_(id: number): number {
+    const r = this.statusRank.get(id);
+    return r == null ? Number.POSITIVE_INFINITY : r;
+  }
+  
+  private setupNoRegressionGuard_(): void {
+    const ctrl = this.form?.get('nuPlanejamentoStatus');
+    if (!ctrl) return;
+    if (this.isAdmin_() || this.isOrcamento_()) {
+      this._noRegressionSub?.unsubscribe?.();
+      return;
+    }
+    this._noRegressionSub?.unsubscribe?.();
+    const current = ctrl.value;
+    if (current == null || current === '') return;
+    this.originalStatusId = this.originalStatusId ?? current;
+    this._noRegressionSub = ctrl.valueChanges.subscribe((novoId: number) => {
+      if (this.originalStatusId == null) {
+        this.originalStatusId = novoId;
+        return;
+      }
+      const rankNovo  = this.rank_(novoId);
+      const rankAtual = this.rank_(this.originalStatusId);
+      if (rankNovo < rankAtual) {
+        this.toastr.error('Não é permitido regredir o status.', 'Regra de negócio');
+        ctrl.setValue(this.originalStatusId, { emitEvent: false });
+        return;
+      }
+      if (rankNovo > rankAtual) this.originalStatusId = novoId;
+    });
+  }
+  
+  public get visibleStatusList(): PlanejamentoStatusResponse[] {
+    const isAdmin = this.isAdmin_();
+    const isOrc = this.isOrcamento_();
+    const currentId = this.getCurrentStatusId_();
+    const currentRank = currentId == null ? -1 : this.rank_(currentId);
+    if (!this.listaStatusPlanejamento?.length) return [];
+  
+    if (isAdmin) return this.listaStatusPlanejamento;
+  
+    if (isOrc) {
+      return this.listaStatusPlanejamento.filter(s => this.ALLOWED_ORCAMENTO.has((s.noPlanejamentoStatus || '').trim()));
+    }
+  
+    return this.listaStatusPlanejamento.filter(s => {
+      if (this.EXCLUDED_NON_ADMIN.has(s.nuPlanejamentoStatus)) return false;
+      const nome = (s.noPlanejamentoStatus || '').trim();
+      if (!this.ALLOWED_DEFAULT.has(nome)) return false;
+      const targetRank = this.rank_(s.nuPlanejamentoStatus);
+      return currentRank === -1 || targetRank >= currentRank;
+    });
   }
 
   public async obterPlanejamentoItemHistorico(): Promise<void> {
