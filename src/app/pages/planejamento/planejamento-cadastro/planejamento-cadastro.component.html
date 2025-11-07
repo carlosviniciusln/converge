@@ -29,14 +29,14 @@
           <div class="col-md-3 pr-0">
             <label for="coContrato">N&#186; Contrato:</label>
             <select *ngIf="tipoModal === 'adicionar'" class="form-control" id="nuContrato" formControlName="nuContrato"
-              [ngClass]="{ 'is-invalid': submitted && f.nuContrato.invalid }" (change)="onContratoChange($event)">
+              [ngClass]="{ 'is-invalid': submitted && f.nuContrato?.invalid }" (change)="onContratoChange($event)">
               <option value={{null}} selected>Selecione o Contrato</option>
               <option *ngFor="let a of listaContratos" [value]="a.contrato">
                 {{ a.contrato }}
               </option>
             </select>
             <select *ngIf="tipoModal !== 'adicionar'" class="form-control" id="nuContrato" formControlName="nuContrato"
-              [ngClass]="{ 'is-invalid': submitted && f.nuContrato.invalid }">
+              [ngClass]="{ 'is-invalid': submitted && f.nuContrato?.invalid }">
               <option value={{null}} selected>Selecione o Contrato</option>
               <option *ngFor="let a of listaContratos" [ngValue]="a.nuContrato">
                 {{ a.coContrato }}
@@ -68,12 +68,12 @@
                 {{ a.dePlanejamentoTipo }}
               </option>
             </select> -->
-            <input type="text" formControlName="nuAno" class="form-control" id="nuAno" value="{{tipo}}" placeholder="{{tipo}}" readonly />
+            <input type="text" formControlName="nuPlanejamentoTipo" class="form-control" id="nuAno" value="{{tipo}}" placeholder="{{tipo}}" readonly />
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuDemandaTipo">Planejado Para:</label>
             <select class="form-control" id="nuDemandaTipo" formControlName="nuDemandaTipo"
-              [ngClass]="{ 'is-invalid': submitted && f.nuDemandaTipo.invalid }" (change)="onPlanejadoParaChange()">
+              [ngClass]="{ 'is-invalid': submitted && f.nuDemandaTipo?.invalid }" (change)="onPlanejadoParaChange()">
               <option value="" disabled selected>
                 Selecione o Planejamento
               </option>
@@ -98,19 +98,19 @@
           <div class="col-md-2 pr-0">
             <label for="nuPlanejamentoStatus">Status:</label>
             <select class="form-control" id="nuPlanejamentoStatus" formControlName="nuPlanejamentoStatus" [ngClass]="{
-                'is-invalid': submitted && f.nuPlanejamentoStatus.invalid
+                'is-invalid': submitted && f.nuPlanejamentoStatus?.invalid
               }">
               <option value="" disabled selected>Selecione Status</option>
               <ng-container *ngIf="isCadastro">
                 <ng-container *ngFor="let a of listaStatusPlanejamento">
-                  <option *ngIf="a.nuPlanejamentoStatus == 5" [ngValue]="a.nuPlanejamentoStatus">
+                  <option *ngIf="a?.nuPlanejamentoStatus == 5" [ngValue]="a?.nuPlanejamentoStatus">
                     {{ a.noPlanejamentoStatus }}
                   </option>
                 </ng-container>
               </ng-container>
               <ng-container *ngIf="!isCadastro">
                 <ng-container *ngFor="let a of listaStatusPlanejamento">
-                  <option *ngIf="a.nuPlanejamentoStatus != 4 && a.nuPlanejamentoStatus != 6 && a.nuPlanejamentoStatus != 10" [ngValue]="a.nuPlanejamentoStatus">
+                  <option *ngIf="a?.nuPlanejamentoStatus != 4 && a?.nuPlanejamentoStatus != 6 && a?.nuPlanejamentoStatus != 10" [ngValue]="a?.nuPlanejamentoStatus">
                     {{ a.noPlanejamentoStatus }}
                   </option>
                 </ng-container>
@@ -121,13 +121,13 @@
             <label for="nuObjetivoEstrategicoPdti">Objetivo Estratégico PDTIC:</label>
             <select class="form-control cl-select-pdtic" id="nuObjetivoEstrategicoPdti" formControlName="nuObjetivoEstrategicoPdti"
               [ngClass]="{
-                'is-invalid': submitted && f.nuObjetivoEstrategicoPdti.invalid
+                'is-invalid': submitted && f.nuObjetivoEstrategicoPdti?.invalid
               }">
               <option value="" disabled selected>
                 Selecione Objetivo Estratégico
               </option>
-              <option *ngFor="let a of listaObjetivosEstrategicosPdti" [ngValue]="a.nuObjetivoEstrategico">
-                {{ a.coObjetivoEstrategico }} - {{ a.deObjetivoEstrategico }}
+              <option *ngFor="let a of listaObjetivosEstrategicosPdti" [ngValue]="a?.nuObjetivoEstrategico">
+                {{ a?.coObjetivoEstrategico }} - {{ a?.deObjetivoEstrategico }}
               </option>
             </select>
           </div>
@@ -135,12 +135,12 @@
             <label for="nuObjetivoEstrategico">Objetivo Estratégico PEI:</label>
             <select class="form-control" id="nuObjetivoEstrategicoPei" formControlName="nuObjetivoEstrategicoPei"
               [ngClass]="{
-                'is-invalid': submitted && f.nuObjetivoEstrategicoPei.invalid
+                'is-invalid': submitted && f.nuObjetivoEstrategicoPei?.invalid
               }">
               <option value="" disabled selected>
                 Selecione Objetivo Estratégico PEI
               </option>
-              <option *ngFor="let a of listaObjetivosEstrategicosPei" [ngValue]="a.nuObjetivoEstrategico">
+              <option *ngFor="let a of listaObjetivosEstrategicosPei" [ngValue]="a?.nuObjetivoEstrategico">
                 {{ a.coObjetivoEstrategico }} - {{ a.deObjetivoEstrategico }}
               </option>
             </select>
@@ -148,7 +148,7 @@
           <div class="col-md-3 pr-0">
             <label for="icDigital">Classifica&ccedil;&atilde;o Digital</label>
             <select class="form-control" id="icDigital" formControlName="icDigital"
-              [ngClass]="{ 'is-invalid': submitted && f.icDigital.invalid }" (change)="onIsDigitalChange($event)">
+              [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" (change)="onIsDigitalChange($event)">
               <option value="" disabled selected>
                 Selecione a Classifica&ccedil;&atilde;o
               </option>
@@ -161,7 +161,7 @@
             <label for="deJustificativa">Justificativa para Or&ccedil;amento:</label>
             <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text"
               class="form-control"
-              [ngClass]="{ 'is-invalid': submitted && f.deJustificativa.invalid }"
+              [ngClass]="{ 'is-invalid': submitted && f.deJustificativa?.invalid }"
                />
           </div>
           <div class="col-md-3 pr-0">
@@ -170,11 +170,11 @@
               <select class="form-control" id="nuClassificacaoPlanejamento"
                 formControlName="nuClassificacaoPlanejamento" [ngClass]="{
                   'is-invalid':
-                    submitted && f.nuClassificacaoPlanejamento.invalid
+                    submitted && f.nuClassificacaoPlanejamento?.invalid
                 }"
                 [attr.required]="this.form.controls['icDigital'].value == 1 || this.form.controls['icDigital'].value == 2">
                 <option value="" disabled selected>Selecione a Categoria</option>
-                <option *ngFor="let a of listaClassificacoesPlanejamentoDigitalFiltrada" [ngValue]="a.nuClassificacao">
+                <option *ngFor="let a of listaClassificacoesPlanejamentoDigitalFiltrada" [ngValue]="a?.nuClassificacao">
                   {{ a.noClassificacao }}
                 </option>
               </select>
@@ -183,7 +183,7 @@
           <div class="col-md-3 pr-0">
             <label for="nuFilial">Unidade Demandante:</label>
             <select class="form-control" id="nuFilial" formControlName="nuFilial"
-              [ngClass]="{ 'is-invalid': submitted && f.nuFilial.invalid }">
+              [ngClass]="{ 'is-invalid': submitted && f.nuFilial?.invalid }">
               <option value="" disabled selected>
                 Selecione Ger&ecirc;ncia Nacional
               </option>
@@ -196,155 +196,165 @@
       </div>
     </div>
     <br />
-    <div class="row">
-      <div class="col-md-6">
-        <h4 class="modal-title" id="modal-basic-title">
-          <b>Previs&otilde;es de Desembolso</b>
-        </h4>
+   <div class="row">
+  <div class="col-md-6">
+    <h4 class="modal-title" id="modal-basic-title">
+      <b>Previsões de Desembolso</b>
+    </h4>
+  </div>
+  <div class="col-md-6 text-right">
+    <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary"
+      (click)="adicionarPrevisaoDesembolso(false)">
+      <i class="tim-icons icon-simple-add"></i>
+    </button>
+  </div>
+</div>
+<br />
+<div formArrayName="previsoesDesembolso" *ngFor="
+    let previsaoDesembolso of previsoesDesembolso.controls;
+    let i = index
+  ">
+  <div class="row" [formGroupName]="i">
+    <div style="padding: 10px 0px 0px 14px;" class="row">
+
+      <!-- Campo Rubrica sempre visível -->
+      <div class="col-md-4 pr-0">
+        <label for="nuRubrica">Rubrica {{ i + 1 }} :</label>
+        <select class="form-control" id="nuRubrica" formControlName="nuRubrica"
+          [ngClass]="{'is-invalid': submitted && previsaoDesembolso?.get('nuRubrica')?.invalid}">
+          <option value="" disabled selected>Selecione Rubrica</option>
+          <option *ngFor="let a of listaRubricas" [ngValue]="a.nuRubrica">
+            {{ a.coRubrica +' | ' +a.deRubrica }}
+          </option>
+        </select>
       </div>
-      <div class="col-md-6 text-right">
-        <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary"
-          (click)="adicionarPrevisaoDesembolso(false)">
-          <i class="tim-icons icon-simple-add"></i>
-        </button>
-      </div>
-    </div>
-    <br />
-    <div formArrayName="previsoesDesembolso" *ngFor="
-        let previsaoDesembolso of previsoesDesembolso.controls;
-        let i = index
-      ">
-      <div class="row" [formGroupName]="i">
-        <div style="padding: 10px 0px 0px 14px;" class="row">
-          <div class="col-md-4 pr-0">
-            <label for="nuRubrica">Rubrica {{ i + 1 }} :</label>
-            <select class="form-control" id="nuRubrica" formControlName="nuRubrica" [ngClass]="{
-                'is-invalid':
-                  submitted && previsaoDesembolso.get('nuRubrica').invalid
-              }">
-              <option value=" " disabled selected>Selecione Rubrica</option>
-              <option *ngFor="let a of listaRubricas" [ngValue]="a.nuRubrica">
-                {{ a.coRubrica +' | ' +a.deRubrica }}
-              </option>
-            </select>
-          </div>
-          <div class="col-md-3 pr-0" style="display:none;">
-            <label for="nuPlanejamentoItem">Nº Planejamento Item:</label>
-            <input formControlName="nuPlanejamentoItem" id="nuPlanejamentoItem" type="number"
-              class="form-control" />
-          </div>
-          <div class="col-md-3 pr-0">
-            <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
-            <input formControlName="nuPreComprometimento" id="nuPreComprometimento" type="number"
-            [ngClass]="{
-                'is-invalid':
-                  submitted && previsaoDesembolso.get('nuPreComprometimento').invalid
-              }"
-              class="form-control blockCampo" min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" (input)="onPreComprometimentoInput($event)"/>
-          </div>
-          <div class="col-md-3 pr-0">
-            <label for="nuReserva">Nº da reserva :</label>
-            <input type="text" class="form-control blockCampo" id="nuReserva" formControlName="nuReserva" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" (input)="onReservaInput($event)"/>
-          </div>
-          <div class="col-md-1 pr-0" style="margin-top: 25px;">
-            <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary"
-              (click)="excluirPrevisaoDesembolso(i)">
-              <i class="tim-icons icon-trash-simple"></i>
-            </button>
-          </div>
-          <div class="col-md-12">
-            <div class="div-vr-meses">
-              <div class="row">
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrJaneiro">Janeiro:</label>
 
-<input type="text" class="form-control" id="vrJaneiro" formControlName="vrJaneiro" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJaneiro')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrFevereiro">Fevereiro:</label>
-                  <input type="text" class="form-control" id="vrFevereiro" formControlName="vrFevereiro" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrFevereiro')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrMarco">Mar&ccedil;o:</label>
-                  <input type="text" class="form-control" id="vrMarco" formControlName="vrMarco" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrMarco')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrAbril">Abril:</label>
-                 <input type="text" class="form-control" id="vrAbril" formControlName="vrAbril" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrAbril')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrMaio">Maio:</label>
-                  <input type="text" class="form-control" id="vrMaio" formControlName="vrMaio" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrMaio')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrJunho">Junho:</label>
-                  <input type="text" class="form-control" id="vrJunho" formControlName="vrJunho" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJunho')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
+      <ng-container>
+        <div class="col-md-3 pr-0" style="display:none;">
+          <label for="nuPlanejamentoItem">Nº Planejamento Item:</label>
+          <input formControlName="nuPlanejamentoItem" id="nuPlanejamentoItem" type="number" class="form-control" />
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
+          <input formControlName="nuPreComprometimento" id="nuPreComprometimento" type="number"
+            class="form-control blockCampo" min="1" step="1"
+            oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"
+            (input)="onPreComprometimentoInput($event)" />
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <label for="nuReserva">Nº da reserva :</label>
+          <input type="text" class="form-control blockCampo" id="nuReserva" formControlName="nuReserva"
+            oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)" (input)="onReservaInput($event)" />
+        </div>
+
+        <div class="col-md-1 pr-0" style="margin-top: 25px;">
+          <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary" (click)="excluirPrevisaoDesembolso(i)">
+            <i class="tim-icons icon-trash-simple"></i>
+          </button>
+        </div>  
+
+        <!-- Campos dos meses -->
+        <div class="col-md-12">
+          <div class="div-vr-meses">
+            <div class="row">
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrJaneiro">Janeiro:</label>
+                <input type="text" class="form-control" id="vrJaneiro" formControlName="vrJaneiro" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJaneiro')" (keyup)="onValorRubricaChange(i)" />
               </div>
-              <div class="row">
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrJulho">Julho:</label>
-                  <input type="text" class="form-control" id="vrJulho" formControlName="vrJulho" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJulho')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrAgosto">Agosto:</label>
-                  <input type="text" class="form-control" id="vrAgosto" formControlName="vrAgosto" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrAgosto')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrSetembro">Setembro:</label>
-                  <input type="text" class="form-control" id="vrSetembro" formControlName="vrSetembro" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrSetembro')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrOutubro">Outubro:</label>
-                  <input type="text" class="form-control" id="vrOutubro" formControlName="vrOutubro" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrOutubro')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrNovembro">Novembro:</label>
-                  <input type="text" class="form-control" id="vrNovembro" formControlName="vrNovembro" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrNovembro')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrDezembro">Dezembro:</label>
-                 <input type="text" class="form-control" id="vrDezembro" formControlName="vrDezembro" mask="separator.2" [thousandSeparator]="'.'"
-  [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ " placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrDezembro')" (keyup)="onValorRubricaChange(i)"/>
-                </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrFevereiro">Fevereiro:</label>
+                <input type="text" class="form-control" id="vrFevereiro" formControlName="vrFevereiro" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrFevereiro')" (keyup)="onValorRubricaChange(i)" />
               </div>
-                  <div class="row">
-                    <div class="col-md-3 pl-[-1] pr-[-1]">
-                      <label for="vrTotalRubrica"><b>Total da Rubrica {{ i + 1 }}:</b></label>
-                      <input
-                        currencyMask
-                        id="vrTotalRubrica"
-                        formControlName="vrTotalRubrica"
-                        placeholder="R$ 0,00"
-                        [options]="{ allowNegative: false }"
-                        readonly
-                      />
-                    </div>
-                    <div class="col-md-9 pr-0 text-right"></div>
-                  </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrMarco">Março:</label>
+                <input type="text" class="form-control" id="vrMarco" formControlName="vrMarco" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrMarco')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrAbril">Abril:</label>
+                <input type="text" class="form-control" id="vrAbril" formControlName="vrAbril" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrAbril')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrMaio">Maio:</label>
+                <input type="text" class="form-control" id="vrMaio" formControlName="vrMaio" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrMaio')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrJunho">Junho:</label>
+                <input type="text" class="form-control" id="vrJunho" formControlName="vrJunho" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJunho')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+            </div>
 
-                  <div class="row">
-                    <div class="col-md-12">
-                      <br/>
-                    </div>
-                  </div>
+            <div class="row">
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrJulho">Julho:</label>
+                <input type="text" class="form-control" id="vrJulho" formControlName="vrJulho" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJulho')" (keyup)="onValorRubricaChange(i)" />
+              </div>
 
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrAgosto">Agosto:</label>
+                <input type="text" class="form-control" id="vrAgosto" formControlName="vrAgosto" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrAgosto')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrSetembro">Setembro:</label>
+                <input type="text" class="form-control" id="vrSetembro" formControlName="vrSetembro" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrSetembro')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrOutubro">Outubro:</label>
+                <input type="text" class="form-control" id="vrOutubro" formControlName="vrOutubro" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrOutubro')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrNovembro">Novembro:</label>
+                <input type="text" class="form-control" id="vrNovembro" formControlName="vrNovembro" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrNovembro')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrDezembro">Dezembro:</label>
+                <input type="text" class="form-control" id="vrDezembro" formControlName="vrDezembro" mask="separator.2"
+                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
+                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrDezembro')" (keyup)="onValorRubricaChange(i)" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3 pl-[-1] pr-[-1]">
+                <label for="vrTotalRubrica"><b>Total da Rubrica {{ i + 1 }}:</b></label>
+                <input currencyMask id="vrTotalRubrica" formControlName="vrTotalRubrica"
+                  placeholder="R$ 0,00" [options]="{ allowNegative: false }" class="form-control" readonly />
+              </div>
+              <div class="col-md-9 pr-0 text-right"></div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12"><br /></div>
             </div>
           </div>
         </div>
-      </div>
+      </ng-container> 
     </div>
+  </div>
+</div>
+    
     <div class="row" style="margin-top: 30px;">
       <div class="col-md-12">
         <div class="row">
@@ -354,7 +364,7 @@
             <label for="vrTotalOrcamentoPlanejamento"><b>Total da Contratação:</b></label>
             <input currencyMask id="vrTotalOrcamentoPlanejamento" formControlName="vrTotalOrcamentoPlanejamento"
               placeholder="R$ 0,00" [options]="{ allowNegative: false }"
-              style="float: inline-end;margin-right: 10px;" />
+              style="float: inline-end;margin-right: 10px;" class="form-control"/>
           </div>
           <div class="col-md-9"></div>
           <div class="col-md-3">
@@ -392,9 +402,6 @@
                   <span> Salvar</span>
                 </button>
               </div>
-
-
-
             </div>
           </div>
 
@@ -471,7 +478,7 @@
               <b>Observa&ccedil;&otilde;es</b>
             </h4>
             <textarea formControlName="deObservacao" id="deObservacao"
-              [ngClass]="{ 'is-invalid': submitted && f.deObservacao.invalid }" placeholder="Digite..."
+              [ngClass]="{ 'is-invalid': submitted && f.deObservacao?.invalid }" placeholder="Digite..."
               class="form-control border border-light rounded" rows="4"></textarea>
           </div>
         </div>
