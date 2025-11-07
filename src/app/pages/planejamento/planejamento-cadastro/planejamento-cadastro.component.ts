@@ -888,7 +888,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoStatusResponse[]>
       >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
-      
+
       this.listaStatusPlanejamento = response.data;
       this.buildStatusRank_();
     } catch (error) {
@@ -905,14 +905,14 @@ export class PlanejamentoCadastroComponent implements OnInit {
   private originalStatusId: number | null = null;
   private _noRegressionSub?: any;
   private statusRank = new Map<number, number>();
-  
+
   public isAdmin_(): boolean {
     return this.currentProfile?.noPerfil === PerfisEnum.Administrador;
   }
   private isOrcamento_(): boolean {
     return this.currentProfile?.noPerfil === PerfisEnum.Orcamento;
   }
-  
+
   private buildStatusRank_(): void {
     this.statusRank.clear();
     if (!this.listaStatusPlanejamento?.length) return;
@@ -923,21 +923,21 @@ export class PlanejamentoCadastroComponent implements OnInit {
       if (id != null) this.statusRank.set(id, idx);
     });
   }
-  
+
   private getCurrentStatusId_(): number | null {
     const v = this.form?.get('nuPlanejamentoStatus')?.value;
     return (v == null || v === '') ? this.originalStatusId : v;
   }
-  
+
   private getNameById_(id: number): string {
     return (this.listaStatusPlanejamento?.find(s => s.nuPlanejamentoStatus === id)?.noPlanejamentoStatus || '').trim();
   }
-  
+
   private rank_(id: number): number {
     const r = this.statusRank.get(id);
     return r == null ? Number.POSITIVE_INFINITY : r;
   }
-  
+
   private setupNoRegressionGuard_(): void {
     const ctrl = this.form?.get('nuPlanejamentoStatus');
     if (!ctrl) return;
@@ -964,20 +964,20 @@ export class PlanejamentoCadastroComponent implements OnInit {
       if (rankNovo > rankAtual) this.originalStatusId = novoId;
     });
   }
-  
+
   public get visibleStatusList(): PlanejamentoStatusResponse[] {
     const isAdmin = this.isAdmin_();
     const isOrc = this.isOrcamento_();
     const currentId = this.getCurrentStatusId_();
     const currentRank = currentId == null ? -1 : this.rank_(currentId);
     if (!this.listaStatusPlanejamento?.length) return [];
-  
+
     if (isAdmin) return this.listaStatusPlanejamento;
-  
+
     if (isOrc) {
       return this.listaStatusPlanejamento.filter(s => this.ALLOWED_ORCAMENTO.has((s.noPlanejamentoStatus || '').trim()));
     }
-  
+
     return this.listaStatusPlanejamento.filter(s => {
       if (this.EXCLUDED_NON_ADMIN.has(s.nuPlanejamentoStatus)) return false;
       const nome = (s.noPlanejamentoStatus || '').trim();
@@ -1314,12 +1314,41 @@ export class PlanejamentoCadastroComponent implements OnInit {
         lista.push(item);
       }
 
-      await this.apiService.post<any>(
+     const response = await this.apiService.post<ApiResponse<any>>(
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
         lista
       );
 
-      this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
+     if (response?.succeeded && response.data?.succeeded) {
+      const resultado = response.data.resultados?.[0];
+      if (resultado?.succeeded) {
+        await Swal.fire({
+          title: 'Sucesso!',
+          text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} alterado com sucesso.`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+      } else {
+        console.warn('Falha ao alterar item:', resultado?.message);
+        await Swal.fire({
+          title: 'Erro!',
+          text: 'Falha ao alterar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+
+      }
+    } else {
+      console.error('Erro na resposta da API:', response.errors);
+      await Swal.fire({
+        title: 'Erro!',
+        text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
+
+
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
     } catch (error) {
@@ -1341,36 +1370,7 @@ public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Prom
       for (var p in previsoes) {
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
-          // NuPlanejamento: this.nuPlanejamentoOrcamento,
-          // NuContrato: planejamento.nuContrato,
-          // NuFilial: planejamento.nuFilial,
-          // NuRubrica: previsoes[p].nuRubrica,
           NuStatusPlanejamentoItem: 10, //excluido
-          // NuTipoDemanda: planejamento.nuDemandaTipo,
-          // NuVigencia: planejamento.nuAno,
-
-          // DeObjeto: planejamento.deObjeto,
-          // DeObjetivoPDTIC: planejamento.nuObjetivoEstrategicoPdti?.toString(),
-          // DeObjetivoPEI: planejamento.nuObjetivoEstrategicoPei?.toString(),
-          // DeJustificativa: planejamento.deJustificativa,
-
-          // NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
-          // NuReserva: Number(previsoes[p].nuReserva),
-
-          // VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
-          // VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
-          // VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
-          // VrMarco: this.parseDecimal(previsoes[p].vrMarco),
-          // VrAbril: this.parseDecimal(previsoes[p].vrAbril),
-          // VrMaio: this.parseDecimal(previsoes[p].vrMaio),
-          // VrJunho: this.parseDecimal(previsoes[p].vrJunho),
-          // VrJulho: this.parseDecimal(previsoes[p].vrJulho),
-          // VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
-          // VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
-          // VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
-          // VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
-          // VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
-
           DhExclusao: new Date(),
           NuUsuarioExclusao: this.token.getUser()?.nuUsuario ?? 0,
           NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
@@ -1527,15 +1527,6 @@ public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Prom
     if (alert) {
       this.loading = true;
       try {
-        // const response = await this.apiService.delete<ApiResponse<boolean>>(
-        //   `${Endpoints.URL_ORCAMENTO}/` +
-        //   planejamentoOrcamentario.nuPlanejamentoOrcamentario
-        // );
-
-        // this.toastr.success(
-        //   `Planejamento Orçamentário cód: ${planejamentoOrcamentario.coPlanejamentoOrcamentario} excluído com sucesso.`,
-        //   'Sucesso'
-        // );
         this.ExcluirItens(planejamentoOrcamentario);
         setTimeout(() => {
           location.reload();
