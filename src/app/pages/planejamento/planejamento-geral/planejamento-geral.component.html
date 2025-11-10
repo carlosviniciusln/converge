@@ -69,7 +69,7 @@
                   <div class="pl-1 pr-1" *ngIf="statusExercio != 'Encerrado' && statusExercio != 'Cancelado'">
                     <div class="text-right">
                       <button type="button" class="btn-sm btn-add"
-                        (click)="openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio)"
+                        (click)="openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio)"
                         style="width: 131px;">
                         Novo Registro
                       </button>
