@@ -53,6 +53,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   @Input() public nuPlanejamento: any;
   @Input() public nuPlanejamentoOrcamento: any;
   @Input() public ano: any;
+  @Input() public nuAno: number | null;
   @Input() public tipo: any;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
@@ -83,6 +84,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   totalRubrica: number;
   public selectTab: number = 0;
   loading: boolean = true;
+  isReadonly = true;
   permissions: ActionPolicies;
   private readonly STATUS_ORDER = ['Criado','Revisado','Avaliado','Ajustado','Validado'];
   private readonly ALLOWED_ORCAMENTO = new Set(['Criado','Revisado','Avaliado','Ajustado','Validado']);
@@ -594,7 +596,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
             this.planejamento.coExercicio.toString()
         );
         if (anoSelecionado) {
-          this.form.controls['nuAno'].setValue(this.ano);
+          this.listaExercicios = [anoSelecionado];
+          this.form.controls['nuAno'].setValue(anoSelecionado.nuOrcamento);
           this.form.controls['nuPlanejamentoTipo'].setValue(this.tipo);
         }
 
@@ -737,7 +740,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
                 ),
                 nuReserva: new FormControl(
                   { value: x.nuReserva, disabled: !this.isEditable },
-                  [Validators.required]
+                  // [Validators.required]
                 ),
                 vrTotalRubrica: new FormControl(
                   {
@@ -841,8 +844,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
       );
 
       this.listaExercicios = response.data.filter(
-        (f) => f.nuAnoOrcamento >= new Date().getFullYear()
+        (f) => f.nuAnoOrcamento >= new Date().getFullYear() && f.nuAnoOrcamento == this.ano
       );
+      if(this.isCadastro){
+         this.form.controls['nuAno'].setValue(this.listaExercicios[0].nuOrcamento);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -1072,8 +1078,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   public async Cadastrar(): Promise<void> {
 
-    const nuAno = this.listaExercicios.filter(x => x.nuAnoOrcamento == this.ano)[0].nuOrcamento
-    this.form.controls['nuAno'].setValue(nuAno)
+    // const nuAno = this.listaExercicios.filter(x => x.nuAnoOrcamento == this.ano)[0].nuOrcamento
+    // this.form.controls['nuAno'].setValue(nuAno)
     try {
 
       this.submitted = true;
@@ -1185,7 +1191,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public async Alterar(): Promise<void> {
     try {
       this.submitted = true;
-
+      this.isReadonly = false;
 
       var obj = this.form.value;
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
@@ -1198,6 +1204,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
           if (controls[name].invalid) itemErro.push(name);
         }
+        this.isReadonly = true;
         if (itemErro.find((item) => item === 'previsoesDesembolso')) {
           this.toastr.error(
             'Informe a previsão de desembolso por completo.',
@@ -1307,6 +1314,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
           DhExclusao: undefined,
           NuUsuarioExclusao: null,
+          NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
           NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
           DhAlteracao: new Date(),
         };
@@ -1324,7 +1332,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       if (resultado?.succeeded) {
         await Swal.fire({
           title: 'Sucesso!',
-          text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} alterado com sucesso.`,
+          text: `Item do Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} alterado com sucesso.`,
           icon: 'success',
           confirmButtonText: 'OK',
         });

@@ -68,7 +68,7 @@
                 {{ a.dePlanejamentoTipo }}
               </option>
             </select> -->
-            <input type="text" formControlName="nuPlanejamentoTipo" class="form-control" id="nuAno" value="{{tipo}}" placeholder="{{tipo}}" readonly />
+            <input type="text" formControlName="nuPlanejamentoTipo" class="form-control" id="nuPlanejamentoTipo" value="{{tipo}}" placeholder="{{tipo}}" [readonly]="isReadonly" />
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuDemandaTipo">Planejado Para:</label>
@@ -84,7 +84,7 @@
           </div>
           <div class="col-md-1 pr-0">
             <label for="nuAno">Exerc&iacute;cio:</label>
-            <!-- <select class="form-control" id="nuAno" formControlName="nuAno"
+            <select class="form-control" id="nuAno" formControlName="nuAno" [disabled]="isReadonly"
               [ngClass]="{ 'is-invalid': submitted && f.nuAno.invalid }">
               <option value="" disabled selected>
                 Selecione ano de exerc&iacute;cio
@@ -92,8 +92,8 @@
               <option *ngFor="let a of listaExercicios" [ngValue]="a.nuOrcamento">
                 {{ a.nuAnoOrcamento }}
               </option>
-            </select> -->
-            <input type="text" formControlName="nuAno" class="form-control" id="nuAno" value="{{ano}}" placeholder="{{ano}}" readonly />
+            </select>
+            <!-- <input type="text" formControlName="nuAno" class="form-control" id="nuAno" value="{{ano}}" placeholder="{{ano}}" [readonly]="isReadonly" /> -->
           </div>
           <div class="col-md-2 pr-0">
             <label for="nuPlanejamentoStatus">Status:</label>
