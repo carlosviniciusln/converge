@@ -84,14 +84,22 @@
               <p>Planejamento</p>
             </a>
           </li>
+
           <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/planejamento-orcamentario">
-              <p>Planejamento Orçamentário</p>
+            <a class="nav-link" href="#/planejamento/limites">
+              <p>Limites</p>
             </a>
           </li>
-          <li *ngIf="permissionsLimites?.Consultar ?? false" routerlinkactive="active" class="nav-item">
+
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento-orcamentario">
+              <p>Planejamento novo</p>
+            </a>
+          </li>
+
+            <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/orcamento/limites">
-              <p>Limites</p>
+              <p>Limites novo</p>
             </a>
           </li>
           <li routerlinkactive="active" class="nav-item">

@@ -16,3 +16,13 @@
     padding: 0.5rem;
     font-weight: 600;
 }
+.btn-danger {
+    background: #414141 !important;
+    background-image: linear-gradient(to bottom left, #414141, #414141, #414141) ;
+    background-size: 210% 210%;
+    background-position: top right;
+    background-color: #414141  !important;
+    transition: all 0.15s ease;
+    box-shadow: none;
+    color: #ffffff;
+}

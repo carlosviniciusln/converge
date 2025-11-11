@@ -22,5 +22,6 @@ export class ConfirmacaoModalComponent {
 
   onCancel(): void {
     this.activeModal.dismiss('cancel');
+    window.location.reload();
   }
 }

@@ -69,14 +69,13 @@
                   <div class="pl-1 pr-1" *ngIf="statusExercio != 'Encerrado' && statusExercio != 'Cancelado'">
                     <div class="text-right">
                       <button type="button" class="btn-sm btn-add"
-                        (click)="openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio)"
+                        (click)="openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio)"
                         style="width: 131px;">
                         Novo Registro
                       </button>
                     </div>
                   </div>
-                  <button type="button" class="btn-sm btn-secondary" (click)="downloadPlanejamentoDesembolso()"
-                    *ngIf="permissions?.Exportar ?? false">
+                  <button type="button" class="btn-sm btn-secondary" (click)="downloadPlanejamentoDesembolso()">
                     <i class="tim-icons icon-cloud-download-93"></i>
                   </button>
                   <!-- <div class="pl-1 pr-1">
@@ -109,11 +108,11 @@
                       optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 5)" [showClear]="true"
                       placeholder="Tipo"></p-dropdown>
                   </div>
-                  <div class="pl-1 pr-1">
+                  <!-- <div class="pl-1 pr-1">
                     <p-dropdown [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
                       optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 6)" [showClear]="true"
                       placeholder="Digital"></p-dropdown>
-                  </div>
+                  </div> -->
                   <div class="pl-1 pr-1">
                     <p-dropdown [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
                       [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)"
@@ -165,13 +164,12 @@
                     <!-- Exibe checkbox + dropdown SOMENTE quando houver opções -->
                     <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
                       <div class="c-dropdown-status">
+                        <p-checkbox [(ngModel)]="selecionarTodos" (onChange)="selecionarTodosItens()" [binary]="true">
+                        </p-checkbox>
                         <p-dropdown [options]="selectStatusPlanejamentoCompleto" [(ngModel)]="statusSelecionados[0]"
                           placeholder="Status" (onChange)="atualizarStatusSelecionados()" optionLabel="label"
                           optionValue="value">
                         </p-dropdown>
-
-                        <p-checkbox [(ngModel)]="selecionarTodos" (onChange)="selecionarTodosItens()" [binary]="true">
-                        </p-checkbox>
                       </div>
                     </ng-container>
                   </th>

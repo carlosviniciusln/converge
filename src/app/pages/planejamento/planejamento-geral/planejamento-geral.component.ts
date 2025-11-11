@@ -42,7 +42,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   listaTiposPlanejamento: PlanejamentoTipoResponse[];
   listaTiposDemanda: DemandaTipoResponse[];
 
-
+// DEFINIR MELHOR COMO VAI FUNCIONAR (TB51 ARMAZENA STRINGS, TROCAR PARA ENUM NO BACKEND)
   listaOpcoesIsDigital: { value: number; label: string }[] = [
     { value: 1, label: 'Digital' },
     { value: 2, label: 'Digital - TD' },
@@ -100,7 +100,8 @@ export class PlanejamentoGeralComponent implements OnInit {
     tipo: null,
     IsDigital: null,
     objeto: '',
-    nuPlanejamento: 0
+    nuPlanejamento: 0,
+    tipoPlanejamento: ''
   };
 
   constructor(
@@ -114,8 +115,6 @@ export class PlanejamentoGeralComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-
-    // queryParams: { cO_EXERCICIO: item.cO_EXERCICIO, tipo: item.tipo, statusPlanejamento: item.statuS_PLANEJAMENTO}
     this.route.queryParams.subscribe(params => {
       this.anoExercicio =params['cO_EXERCICIO'];
       this.ordemTipoExercicio = params['tipo'];
@@ -129,7 +128,8 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.filtroRegistros = {
       pageNumber: 1,
       pageSize: 12,
-      nuPlanejamento: this.nuPlanejamentoExercicio
+      nuPlanejamento: this.nuPlanejamentoExercicio,
+      tipoPlanejamento: this.ordemTipoExercicio
     };
     await this.obterPlanejamentosOrc();
     await this.obterdadosDashboard();
@@ -148,7 +148,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     }
   }
 
-  openModalPlanejamento(tipoModal: string, isEditable: boolean, isCadastro : boolean, planejamento?: any, nuPlanejamentoOrcamento?:number) {
+  openModalPlanejamento(tipoModal: string, isEditable: boolean, isCadastro : boolean, planejamento?: any, nuPlanejamentoOrcamento?:number, nuAno?:number) {
 
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
@@ -158,16 +158,21 @@ export class PlanejamentoGeralComponent implements OnInit {
       keyboard: false,
     });
 
+   
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
+    modalRef.componentInstance.nuAno = (planejamento?.nU_EXERCICIO_ORCAMENTO != null? planejamento?.nU_EXERCICIO_ORCAMENTO : nuAno);
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
         this.obterPlanejamentosOrc();
       }
     });
+
+    modalRef.componentInstance.ano = this.anoExercicio;
+    modalRef.componentInstance.tipo = this.ordemTipoExercicio;
   }
 
 
@@ -196,8 +201,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
     modalRef.componentInstance.title = 'Confirmar alterações';
     modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
-    modalRef.componentInstance.confirmLabel = 'Sim, salvar';
-    modalRef.componentInstance.cancelLabel = 'Não, voltar';
+    modalRef.componentInstance.confirmLabel = 'Sim, alterar!';
+    modalRef.componentInstance.cancelLabel = 'Não, cancelar!';
     modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
     modalRef.componentInstance.iconClass = 'text-warning';
 
@@ -269,7 +274,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
   public downloadPlanejamentoDesembolso() {
     return this.apiService.downloadfile(
-      `${Endpoints.URL_ORCAMENTO}/excel`,
+      `${Endpoints.URL_ORCAMENTO}/detalhamento-excel`,
       this.filtroRegistros
     );
   }
