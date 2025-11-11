@@ -501,6 +501,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       ) || 0
     );
   };
+
   somaValorTotalPlanejamentoOrcamentario() {
     let vrTotalOrcamentoPlanejamentoTemp = 0;
     const previsoesDesembolso = this.form.get(
@@ -744,7 +745,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
                 ),
                 vrTotalRubrica: new FormControl(
                   {
-                    value:
+                    value: (
                       x.vrJaneiro +
                       x.vrFevereiro +
                       x.vrMarco +
@@ -756,7 +757,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
                       x.vrSetembro +
                       x.vrOutubro +
                       x.vrNovembro +
-                      x.vrDezembro,
+                      x.vrDezembro
+                    ) / 100,
                     disabled: true,
                   },
                   [Validators.required]
@@ -766,11 +768,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
               this.previsoesDesembolso.push(previsaoDesembolso);
 
-              const totalDesembolso =
-                this.planejamento.gcptb027PrevisoesDesembolso.reduce(
-                  (soma, item) => soma + item['vrPlanejamentoTotal'],
+              
+                const totalDesembolso = this.planejamento.gcptb027PrevisoesDesembolso.reduce(
+                  (soma, item) => soma + item['vrPlanejamentoTotal'] / 100, 
                   0
                 );
+
 
               this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(totalDesembolso);
             });
