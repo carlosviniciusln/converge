@@ -202,8 +202,12 @@
                   [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"
                   placeholder="Valor apurado"
                 /> -->
-                <input formControlName="vrApurado" type="text" class="form-control col-12" mask="separator.2" [allowNegativeNumbers]="true"
-                    [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"/>
+                <input formControlName="vrApurado"
+                    type="text"
+                    class="form-control col-12"
+                    inputmode="numeric"
+                    (input)="formatarValor($event, 'vrApurado')"
+                    placeholder="R$ 0,00"/>
               </td>
               <td>
                 <button type="button" class="btn-sm btn-secondary" (click)="removerFaturamento(i)">
@@ -245,13 +249,12 @@
                   class="form-control col-9"
                 />
 
-                <input
-                  formControlName="vrRetencao"
-                  type="text"
-                  mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-                  [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"
-                  class="form-control col-2"
-                />
+                <input formControlName="vrRetencao"
+                    inputmode="numeric"
+                     class="form-control col-2"
+                    (input)="formatarValor($event, 'vrRetencao')"
+                    placeholder="R$ 0,00" />
+
             </div>
           </div>
 
@@ -270,8 +273,12 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
                   }"
                 />
 
-                <input formControlName="vrMulta" type="text" class="form-control col-2" mask="separator.2" [allowNegativeNumbers]="true"
-                    [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true"/>
+                <input formControlName="vrMulta"
+                      type="text"
+                      class="form-control col-2"
+                      inputmode="numeric"
+                      (input)="formatarValor($event, 'vrMulta')"
+                      placeholder="R$ 0,00" />
             </div>
           </div>
 
