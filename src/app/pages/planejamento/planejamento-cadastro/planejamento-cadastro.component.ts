@@ -1574,33 +1574,26 @@ public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Prom
     }
   }
 
-onPreComprometimentoInput(event: Event): void {
-  const value = (event.target as HTMLInputElement).value;
-  const reservaInput = document.getElementById('nuReserva') as HTMLInputElement;
-
-  if (value && value.trim() !== '') {
-    reservaInput.readOnly = true; // ou reservaInput.disabled = true;
-    this.form?.controls['nuReserva']?.removeValidators;
-  } else {
-    reservaInput.readOnly = false;
-    this.form?.controls['nuReserva']?.addValidators(Validators.required);
+  onPreComprometimentoInput(event: Event, index: number): void {
+    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
+    const value = (event.target as HTMLInputElement).value;
+    if (value && value.trim() !== '') {
+      grupo.get('nuReserva')?.disable();
+    } else {
+      grupo.get('nuReserva')?.enable();
+    }
   }
-}
-
-onReservaInput(event: Event): void {
-  const value = (event.target as HTMLInputElement).value;
-  const preComprometimentoInput = document.getElementById('nuPreComprometimento') as HTMLInputElement;
-
-  if (value && value.trim() !== '') {
-    preComprometimentoInput.readOnly = true; // ou reservaInput.disabled = true;
-    this.form?.controls['nuPreComprometimento']?.removeValidators;
-  } else {
-    preComprometimentoInput.readOnly = false;
-    this.form?.controls['nuPreComprometimento']?.addValidators(Validators.required);
+ 
+  onReservaInput(event: Event, index: number): void {
+    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
+    const value = (event.target as HTMLInputElement).value;
+    if (value && value.trim() !== '') {
+      grupo.get('nuPreComprometimento')?.setValue('');
+      grupo.get('nuPreComprometimento')?.disable();
+    } else {
+      grupo.get('nuPreComprometimento')?.enable();
+    }
   }
-
-
-}
 
 
 async cadastrarItem(lista: any): Promise<void> {

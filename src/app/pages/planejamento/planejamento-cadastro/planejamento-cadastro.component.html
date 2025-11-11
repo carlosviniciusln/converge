@@ -242,16 +242,21 @@
 
         <div class="col-md-3 pr-0">
           <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
-          <input formControlName="nuPreComprometimento" id="nuPreComprometimento" type="number"
-            class="form-control blockCampo" min="1" step="1"
-            oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"
-            (input)="onPreComprometimentoInput($event)" />
+          <input formControlName="nuPreComprometimento"
+                 type="number"
+                 class="form-control blockCampo"
+                 min="1" step="1"
+                 oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"
+                 (input)="onPreComprometimentoInput($event, i)" />
         </div>
 
         <div class="col-md-3 pr-0">
           <label for="nuReserva">Nº da reserva :</label>
-          <input type="text" class="form-control blockCampo" id="nuReserva" formControlName="nuReserva"
-            oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)" (input)="onReservaInput($event)" />
+          <input type="text"
+                 class="form-control blockCampo"
+                 formControlName="nuReserva"
+                 oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"
+                 (input)="onReservaInput($event, i)" />
         </div>
 
         <div class="col-md-1 pr-0" style="margin-top: 25px;">
@@ -266,79 +271,78 @@
             <div class="row">
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrJaneiro">Janeiro:</label>
-                <input type="text" class="form-control" id="vrJaneiro" formControlName="vrJaneiro" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJaneiro')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrJaneiro" formControlName="vrJaneiro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrFevereiro">Fevereiro:</label>
-                <input type="text" class="form-control" id="vrFevereiro" formControlName="vrFevereiro" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrFevereiro')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrFevereiro" formControlName="vrFevereiro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrMarco">Março:</label>
-                <input type="text" class="form-control" id="vrMarco" formControlName="vrMarco" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrMarco')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrMarco" formControlName="vrMarco"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrAbril">Abril:</label>
-                <input type="text" class="form-control" id="vrAbril" formControlName="vrAbril" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrAbril')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrAbril" formControlName="vrAbril"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrMaio">Maio:</label>
-                <input type="text" class="form-control" id="vrMaio" formControlName="vrMaio" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrMaio')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrMaio" formControlName="vrMaio"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrJunho">Junho:</label>
-                <input type="text" class="form-control" id="vrJunho" formControlName="vrJunho" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJunho')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrJunho" formControlName="vrJunho"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
             </div>
-
+        
             <div class="row">
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrJulho">Julho:</label>
-                <input type="text" class="form-control" id="vrJulho" formControlName="vrJulho" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrJulho')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrJulho" formControlName="vrJulho"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
-
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrAgosto">Agosto:</label>
-                <input type="text" class="form-control" id="vrAgosto" formControlName="vrAgosto" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrAgosto')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrAgosto" formControlName="vrAgosto"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrSetembro">Setembro:</label>
-                <input type="text" class="form-control" id="vrSetembro" formControlName="vrSetembro" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrSetembro')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrSetembro" formControlName="vrSetembro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrOutubro">Outubro:</label>
-                <input type="text" class="form-control" id="vrOutubro" formControlName="vrOutubro" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrOutubro')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrOutubro" formControlName="vrOutubro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrNovembro">Novembro:</label>
-                <input type="text" class="form-control" id="vrNovembro" formControlName="vrNovembro" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrNovembro')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrNovembro" formControlName="vrNovembro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrDezembro">Dezembro:</label>
-                <input type="text" class="form-control" id="vrDezembro" formControlName="vrDezembro" mask="separator.2"
-                  [thousandSeparator]="'.'" [decimalMarker]="','" [dropSpecialCharacters]="false" prefix="R$ "
-                  placeholder="R$ 0,00" (blur)="ajustarCentavos(i, 'vrDezembro')" (keyup)="onValorRubricaChange(i)" />
+                <input currencyMask id="vrDezembro" formControlName="vrDezembro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
             </div>
             <div class="row">
