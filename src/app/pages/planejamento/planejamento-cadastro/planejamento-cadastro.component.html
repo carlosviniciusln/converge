@@ -104,7 +104,7 @@
               [ngClass]="{ 'is-invalid': submitted && f.nuPlanejamentoStatus.invalid }"
             >
               <option value="" disabled selected>Selecione Status</option>
-          
+
               <ng-container *ngIf="isCadastro; else edicao">
                 <ng-container *ngFor="let a of listaStatusPlanejamento">
                   <option *ngIf="a.nuPlanejamentoStatus == 5" [ngValue]="a.nuPlanejamentoStatus">
@@ -112,7 +112,7 @@
                   </option>
                 </ng-container>
               </ng-container>
-          
+
               <ng-template #edicao>
                 <ng-container *ngFor="let a of visibleStatusList">
                   <option [ngValue]="a.nuPlanejamentoStatus">
@@ -169,7 +169,7 @@
               [ngClass]="{ 'is-invalid': submitted && f.deJustificativa?.invalid }"
                />
           </div>
-          <div class="col-md-3 pr-0">
+          <!-- <div class="col-md-3 pr-0">
             <div *ngIf="this.form.controls['icDigital'].value == 1 || this.form.controls['icDigital'].value == 2">
               <label for="nuClassificacaoPlanejamento">Categorias:</label>
               <select class="form-control" id="nuClassificacaoPlanejamento"
@@ -184,7 +184,7 @@
                 </option>
               </select>
             </div>
-          </div>
+          </div> -->
           <div class="col-md-3 pr-0">
             <label for="nuFilial">Unidade Demandante:</label>
             <select class="form-control" id="nuFilial" formControlName="nuFilial"
@@ -263,7 +263,7 @@
           <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary" (click)="excluirPrevisaoDesembolso(i)">
             <i class="tim-icons icon-trash-simple"></i>
           </button>
-        </div>  
+        </div>
 
         <!-- Campos dos meses -->
         <div class="col-md-12">
@@ -306,7 +306,7 @@
                   placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
               </div>
             </div>
-        
+
             <div class="row">
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrJulho">Julho:</label>
@@ -359,11 +359,11 @@
             </div>
           </div>
         </div>
-      </ng-container> 
+      </ng-container>
     </div>
   </div>
 </div>
-    
+
     <div class="row" style="margin-top: 30px;">
       <div class="col-md-12">
         <div class="row">
