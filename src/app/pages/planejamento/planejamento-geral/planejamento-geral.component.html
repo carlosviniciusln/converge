@@ -63,7 +63,9 @@
         <div class="row">
           <div class="col-12">
             <p-table id="table-contrato" #dt [value]="planejamentos" dataKey="id" styleClass="p-datatable-customers"
-              [rowHover]="true" [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0">
+              [rowHover]="true" [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0"
+              [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50, planejamentos.length]"
+              currentPageReportTemplate="{currentPage} de {totalPages}">
               <ng-template pTemplate="caption">
                 <div class="c-menu">
                   <div class="pl-1 pr-1" *ngIf="statusExercio != 'Encerrado' && statusExercio != 'Cancelado'">
@@ -220,8 +222,8 @@
                   </td>
                   <td class="col-status" style="text-align: center" (click)="$event.stopPropagation()"
                     (dblclick)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()"
-                    (keydown.space)="$event.stopPropagation()">
-                    <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
+                    (keydown.space)="$event.stopPropagation()">                    
+                    <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && (perfilOrcamento || (perfilOperacional && planejamento.cO_FILIAL == perfilUnidade) || (perfilTorre && planejamento.cO_FILIAL == perfilUnidade))">
                       <p-checkbox [(ngModel)]="planejamento.sT_SELECIONADO" [binary]="true"
                         (onChange)="onToggleItemSelecionado()" (click)="$event.stopPropagation()">
                       </p-checkbox>
@@ -252,10 +254,10 @@
                 <p>{{ quantidadeTotal }} registro(s) encontrado(s)</p>
               </span>
 
-              <ngb-pagination *ngIf="quantidadeTotal > planejamentos.length" [collectionSize]="quantidadeTotal"
+              <!-- <ngb-pagination *ngIf="quantidadeTotal > planejamentos.length" [collectionSize]="quantidadeTotal"
                 [pageSize]="filtroRegistros.pageSize" [(page)]="filtroRegistros.pageNumber"
                 (pageChange)="loadPage($event)" [maxSize]="4" [boundaryLinks]="true">
-              </ngb-pagination>
+              </ngb-pagination> -->
             </div>
           </div>
         </div>
