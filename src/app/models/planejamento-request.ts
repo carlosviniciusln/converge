@@ -9,6 +9,7 @@ export interface PlanejamentoOrcamentarioItemRequest {
     NuTipoDemanda?: number;
     NuVigencia?: number;
     DeObservacao?: string;
+    DeDigital?: string;
     DeObjeto?: string;
     DeObjetivoPDTIC?: string;
     DeObjetivoPEI?: string;
