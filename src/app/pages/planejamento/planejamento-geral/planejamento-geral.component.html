@@ -223,7 +223,7 @@
                   <td class="col-status" style="text-align: center" (click)="$event.stopPropagation()"
                     (dblclick)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()"
                     (keydown.space)="$event.stopPropagation()">                    
-                    <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && (perfilOrcamento || (perfilOperacional && planejamento.cO_FILIAL == perfilUnidade) || (perfilTorre && planejamento.cO_FILIAL == perfilUnidade))">
+                    <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && (perfilOrcamento || perfilAdm || (perfilOperacional && planejamento.cO_FILIAL == perfilUnidade) || (perfilTorre && planejamento.cO_FILIAL == perfilUnidade))">
                       <p-checkbox [(ngModel)]="planejamento.sT_SELECIONADO" [binary]="true"
                         (onChange)="onToggleItemSelecionado()" (click)="$event.stopPropagation()">
                       </p-checkbox>
