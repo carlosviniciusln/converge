@@ -21,6 +21,7 @@ import { ConfirmacaoModalComponent } from 'src/app/components/modal-confirmacao/
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
+import { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -154,11 +155,14 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
   }
 
-  async loadPage(page: number) {
-    if (page !== this.previousPage) {
-      this.previousPage = page;
+  async loadPage(event: TableLazyLoadEvent) {
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
+
+    if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;
-      await this.obterPlanejamentosOrc();
+      this.filtroRegistros.pageSize = pageSize;
+     await this.obterPlanejamentosOrc();
     }
   }
 
@@ -248,12 +252,18 @@ public async onSalvarMudancasStatus(): Promise<void> {
       }))
     };
 
-    await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
-    this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
+    const response : any = await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
 
-    await this.obterPlanejamentosOrc();
-    this.selecionarTodos = false;
-    this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
+    if(response.length > 0){
+      this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
+      await this.obterPlanejamentosOrc();
+      this.selecionarTodos = false;
+      this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
+      this.statusSelecionados[0] = null;
+    }
+    else{
+      this.toastr.error('Ocorreu um erro ao salvar', "Error");
+    };
 
   } catch (error) {
     this.toastr.error('Ocorreu um erro ao salvar', "Error");
