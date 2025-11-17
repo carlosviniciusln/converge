@@ -1648,6 +1648,23 @@ export class PlanejamentoCadastroComponent implements OnInit {
     if (tipoModal == 'editar') {
       this.isEditable = isEditable;
       this.formularioLivre();
+        
+      const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
+      if (previsoesArray) {
+        previsoesArray.controls.forEach((grupo) => {
+          if (grupo instanceof FormGroup) {
+            const preComp = grupo.get('nuPreComprometimento');
+            const reserva = grupo.get('nuReserva');
+  
+            if (preComp?.value && !reserva?.value) {
+              reserva?.disable();
+            } else if (reserva?.value && !preComp?.value) {
+              preComp?.disable();
+            }
+          }
+        });
+      }
+      
     }
   }
 
