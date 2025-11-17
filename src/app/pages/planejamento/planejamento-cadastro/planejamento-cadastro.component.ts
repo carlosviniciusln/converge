@@ -526,7 +526,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     if (!valor) return 0;
     return (
       parseFloat(
-        (valor + '').replace('R$ ', '').replace(/\./g, '').replace(',', '.')
+        (valor + '').replace('R$ ', '').replace(',', '.')
       ) || 0
     );
   };
@@ -574,7 +574,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   onContratoChange(event: any) {
     //Limpa formulário antes de preencher os campos.
-    this.formulario();
+    //this.formulario();
     const nuContrato = event.target.value;
     if (nuContrato) {
       this.obterDadosContrato(nuContrato);
@@ -595,7 +595,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           nuFilial: response.data.nU_FILIAL,
           coFilial: response.data.cO_FILIAL,
           deObjeto: response.data.objeto,
-          nuPlanejamentoStatus: response.data.status,
+          //nuPlanejamentoStatus: response.data.status,
           nuObjetivoEstrategicoPdti: response.data.objetivO_PDTIC,
           nuObjetivoEstrategicoPei: response.data.objetivO_PEI,
           nuPlanejamentoTipo: this.tipo,
@@ -913,6 +913,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           this.listaExercicios[0].nuOrcamento
         );
       }
+      this.form.controls['nuAno'].disable();
     } catch (error) {
       console.error(error);
     }
@@ -1366,6 +1367,18 @@ export class PlanejamentoCadastroComponent implements OnInit {
           );
           return;
         }
+      }
+      
+      if (
+        this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 4 && //cancelado
+        this.form.value.nuPlanejamentoStatus != 4
+      ) {
+        //Revisado e de Avaliado
+        this.toastr.error(
+          'O status "Cancelado" não pode sofre alteração de status.',
+          'Erro'
+        );
+        return;
       }
 
       const previsoes = obj.previsoesDesembolso;
