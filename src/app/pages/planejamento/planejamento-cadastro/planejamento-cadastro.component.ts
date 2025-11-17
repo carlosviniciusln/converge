@@ -1053,21 +1053,22 @@ export class PlanejamentoCadastroComponent implements OnInit {
     const currentRank = currentId == null ? -1 : this.rank_(currentId);
     if (!this.listaStatusPlanejamento?.length) return [];
 
-    if (isAdmin) return this.listaStatusPlanejamento;
+    //if (isAdmin) 
+      return this.listaStatusPlanejamento;
 
-    if (isOrc) {
-      return this.listaStatusPlanejamento.filter((s) =>
-        this.ALLOWED_ORCAMENTO.has((s.noPlanejamentoStatus || '').trim())
-      );
-    }
+    // if (isOrc) {
+    //   return this.listaStatusPlanejamento.filter((s) =>
+    //     this.ALLOWED_ORCAMENTO.has((s.noPlanejamentoStatus || '').trim())
+    //   );
+    // }
 
-    return this.listaStatusPlanejamento.filter((s) => {
-      if (this.EXCLUDED_NON_ADMIN.has(s.nuPlanejamentoStatus)) return false;
-      const nome = (s.noPlanejamentoStatus || '').trim();
-      if (!this.ALLOWED_DEFAULT.has(nome)) return false;
-      const targetRank = this.rank_(s.nuPlanejamentoStatus);
-      return currentRank === -1 || targetRank >= currentRank;
-    });
+    // return this.listaStatusPlanejamento.filter((s) => {
+    //   if (this.EXCLUDED_NON_ADMIN.has(s.nuPlanejamentoStatus)) return false;
+    //   const nome = (s.noPlanejamentoStatus || '').trim();
+    //   if (!this.ALLOWED_DEFAULT.has(nome)) return false;
+    //   const targetRank = this.rank_(s.nuPlanejamentoStatus);
+    //   return currentRank === -1 || targetRank >= currentRank;
+    // });
   }
 
   public async obterPlanejamentoItemHistorico(): Promise<void> {
@@ -1322,7 +1323,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           PerfisEnum.GestorOperacional /* || this.currentProfile.noPerfil == PerfisEnum.UnidadeDemandante*/
       ) {
         if (
-          this.nuPlanejamento == 5 &&
+          this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 5 &&
           this.form.value.nuPlanejamentoStatus != 7
         ) {
           //Criado para Revisado
@@ -1333,7 +1334,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           return;
         }
         if (
-          this.nuPlanejamento == 3 &&
+          this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 3 &&
           this.form.value.nuPlanejamentoStatus != 9
         ) {
           //Revisado e de Avaliado
