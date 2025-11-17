@@ -17,12 +17,14 @@ export interface LimitesModel {
   dE_PLANEJAMENTO_TIPO?:string;
   vR_LIMITE?:number;
   vR_DIFERENCA?:number;
+  nU_LIMITE_PLANEJAMENTO?:number;
   expanded?:boolean;
   segundoExpanded?:boolean;
   terceiroExpanded?:boolean;
   detalhes?:Partial<LimitesModel>[];
   segundoNivel?:Partial<LimitesModel>[];
   terceiroNivel?:Partial<LimitesModel>[];
+  dE_ORDEM_PROG?: string;
 }
 
 

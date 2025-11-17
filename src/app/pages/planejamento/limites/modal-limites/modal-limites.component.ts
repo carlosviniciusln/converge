@@ -133,7 +133,8 @@ export class ModalLimitesComponent implements OnInit {
         nuPlanejamento: ['', Validators.required],
         nuRubrica: ['', Validators.required],
         nuUnidadeDemandante: ['', Validators.required],
-        vrLimite: [0, Validators.required]
+        vrLimite: [0, Validators.required],
+        nuLimitePlanejamento: [0, Validators.required]
       });
       this.isDisabled = false;
     } else {
@@ -145,7 +146,8 @@ export class ModalLimitesComponent implements OnInit {
         nuPlanejamento: [this.planejamentoEdit, Validators.required],
         nuRubrica: [this.registro.nU_RUBRICA, Validators.required],
         nuUnidadeDemandante: [this.nuFilialEdit, Validators.required],
-        vrLimite: [this.registro.vR_LIMITE, Validators.required]
+        vrLimite: [this.registro.vR_LIMITE, Validators.required],
+        nuLimitePlanejamento: [this.registro.nU_LIMITE_PLANEJAMENTO, Validators.required]
       });
     }
   }
@@ -293,15 +295,23 @@ export class ModalLimitesComponent implements OnInit {
         return;
       }
 
-      let valor = this.formCadastro.controls['vrLimite'].value;
-      valor = valor.replace(',', '.');
-      valor = parseFloat(valor);
+      //remover o R$
+      const valorAtual = this.formCadastro.controls['vrLimite'].value;
+      const valorSemPrefixo = valorAtual.replace('R$ ', '');
+      this.formCadastro.controls['vrLimite'].setValue(valorSemPrefixo);
+
+      if (Number.isNaN(valorSemPrefixo)) {
+          this.toastr.error('valor informado em formato inválido. Informe novamente o novo limite', 'Erro');
+          this.formCadastro.controls['vrLimite'].setValue('');
+          return;
+      }
 
       const updateRequest: LimitesRubricasUpdateV2 = {
         nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
         nuFilial: this.formCadastro.controls['nuUnidadeDemandante'].value,
         nuRubrica: this.formCadastro.controls['nuRubrica'].value,
-        novoLimite: valor,
+        novoLimite: Number(this.formCadastro.controls['vrLimite'].value?.replace(',', '.')),
+        nuLimitePlanejamento: this.formCadastro.controls['nuLimitePlanejamento'].value        
       };
 
       await this.apiService.put<LimitesRubricasUpdate>(
