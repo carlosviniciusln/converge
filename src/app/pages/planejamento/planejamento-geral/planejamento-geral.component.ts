@@ -97,7 +97,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   public labelTeste : string;
   public filtroRegistros: any = {
     pageNumber: 1,
-    pageSize: 1000,
+    pageSize: 10,
     NuAno: null,
     ud: null,
     nuOrc: 0,
@@ -134,7 +134,7 @@ export class PlanejamentoGeralComponent implements OnInit {
 
     this.filtroRegistros = {
       pageNumber: 1,
-      pageSize: 1000,
+      pageSize: 10,
       nuPlanejamento: this.nuPlanejamentoExercicio,
       tipoPlanejamento: this.ordemTipoExercicio
     };
@@ -323,7 +323,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
     if(e.value == null){
         this.filtroRegistros = {
           pageNumber: 1,
-          pageSize: 1000,
+          pageSize: 10,
           nuPlanejamento: this.nuPlanejamentoExercicio
         };
         this.obterPlanejamentosOrc();
