@@ -122,47 +122,56 @@ export class LimitesComponent implements OnInit {
   }
 
   //FILTRO
-  filterItem(value: string) {
-    if (!value) {
-      this.listaLimites = this.listaLimitesCompleta;
-      return;
-    }
+filterItem(value: string) {
+  const termo = value.trim().toLowerCase().replace(/[.,]/g, ''); // remove pontos e vírgulas
 
-    const lowerCaseValue = value.toLowerCase();
-
-    const matchAndClean = (item: LimitesModel): LimitesModel | null => {
-      // Verifica se o item principal corresponde
-      const matchPrincipal =
-        item.cO_EXERCICIO.toString().includes(lowerCaseValue) ||
-        (item.dE_PLANEJAMENTO_TIPO && item.dE_PLANEJAMENTO_TIPO.toLowerCase().includes(lowerCaseValue)) ||
-        (item.nO_RUBRICA_TIPO && item.nO_RUBRICA_TIPO.toLowerCase().includes(lowerCaseValue)) ||
-        (item.dE_RUBRICA && item.dE_RUBRICA.toLowerCase().includes(lowerCaseValue)) ||
-        (item.nO_STATUS && item.nO_STATUS.toLowerCase().includes(lowerCaseValue)) ||
-        (item.sG_FILIAL && item.sG_FILIAL.toLowerCase().includes(lowerCaseValue));
-
-      // Filtra os subníveis
-      const detalhesFiltrados = item.detalhes?.map(matchAndClean).filter(Boolean) ?? [];
-      const segundoNivelFiltrado = item.segundoNivel?.map(matchAndClean).filter(Boolean) ?? [];
-      const terceiroNivelFiltrado = item.terceiroNivel?.map(matchAndClean).filter(Boolean) ?? [];
-
-      // Se o item principal ou algum subnível corresponde, retorna o item com subníveis filtrados
-      if (matchPrincipal || detalhesFiltrados.length || segundoNivelFiltrado.length || terceiroNivelFiltrado.length) {
-        return {
-          ...item,
-          detalhes: detalhesFiltrados,
-          segundoNivel: segundoNivelFiltrado,
-          terceiroNivel: terceiroNivelFiltrado
-        };
-      }
-
-      return null;
-    };
-
-    this.listaLimites = this.listaLimitesCompleta
-      .map(matchAndClean)
-      .filter(Boolean) as LimitesModel[];
+  if (!termo) {
+    this.listaLimites = this.listaLimitesCompleta.map(item => ({ ...item }));
+    return;
   }
 
+  const normaliza = (val: any) => val?.toString().toLowerCase().replace(/[.,]/g, '') ?? '';
+
+  const matchAndClean = (item: LimitesModel): LimitesModel | null => {
+    const matchPrincipal =
+      normaliza(item.cO_EXERCICIO).includes(termo) ||
+      normaliza(item.nU_PLANEJAMENTO).includes(termo) ||
+      normaliza(item.vR_LIMITE).includes(termo) ||
+      normaliza(item.vR_PLANEJAMENTO).includes(termo) ||
+      normaliza(item.dE_PLANEJAMENTO_TIPO).includes(termo) ||
+      normaliza(item.nO_RUBRICA_TIPO).includes(termo) ||
+      normaliza(item.dE_RUBRICA).includes(termo) ||
+      normaliza(item.nO_STATUS).includes(termo) ||
+      normaliza(item.sG_FILIAL).includes(termo);
+
+    const detalhesFiltrados = item.detalhes?.map(matchAndClean).filter(Boolean) ?? [];
+    const segundoNivelFiltrado = item.segundoNivel?.map(matchAndClean).filter(Boolean) ?? [];
+    const terceiroNivelFiltrado = item.terceiroNivel?.map(matchAndClean).filter(Boolean) ?? [];
+
+    if (matchPrincipal) {
+      return {
+        ...item,
+        detalhes: item.detalhes ?? [],
+        segundoNivel: item.segundoNivel ?? [],
+        terceiroNivel: item.terceiroNivel ?? []
+      };
+    }
+    if (detalhesFiltrados.length || segundoNivelFiltrado.length || terceiroNivelFiltrado.length) {
+      return {
+        ...item,
+        detalhes: detalhesFiltrados,
+        segundoNivel: segundoNivelFiltrado,
+        terceiroNivel: terceiroNivelFiltrado
+      };
+    }
+
+    return null;
+  };
+
+  this.listaLimites = this.listaLimitesCompleta
+    .map(matchAndClean)
+    .filter(Boolean) as LimitesModel[];
+}
   //requisições
   public async obterValores() {
     try {
