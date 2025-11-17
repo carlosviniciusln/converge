@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ApiService } from 'src/app/services/api.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { ToastrService } from 'ngx-toastr';
 import {
   DemandaTipoResponse,
@@ -21,6 +21,7 @@ import { ConfirmacaoModalComponent } from 'src/app/components/modal-confirmacao/
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
+import { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -50,6 +51,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   ];
 
   currentUser: any;
+  currentProfile: PerfisEnum;
 
   selectAnos: Select2Data;
   selectContratos: Select2Data;
@@ -81,6 +83,11 @@ export class PlanejamentoGeralComponent implements OnInit {
   dadosDashboard: PlanejamentoOrcamentarioModel[] = [];
   quantidadeTotal: number = 0;
   loading: boolean = true;
+  perfilOrcamento: boolean = false;
+  perfilAdm: boolean = false;
+  perfilOperacional: boolean = false;
+  perfilTorre: boolean = false;
+  perfilUnidade: string = '';
   previousPage: any;
   ultimaAtualizacaoOrcamento : string = '09/06/2025 18:29';
 
@@ -90,7 +97,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   public labelTeste : string;
   public filtroRegistros: any = {
     pageNumber: 1,
-    pageSize: 12,
+    pageSize: 10,
     NuAno: null,
     ud: null,
     nuOrc: 0,
@@ -127,24 +134,35 @@ export class PlanejamentoGeralComponent implements OnInit {
 
     this.filtroRegistros = {
       pageNumber: 1,
-      pageSize: 12,
+      pageSize: 10,
       nuPlanejamento: this.nuPlanejamentoExercicio,
       tipoPlanejamento: this.ordemTipoExercicio
     };
     await this.obterPlanejamentosOrc();
     await this.obterdadosDashboard();
     await this.obterStatusPlanejamento();
+    this.currentProfile = this.token.getUserPerfil();
+    if(this.currentProfile == 'Administrador') this.perfilAdm = true;
+    if(this.currentProfile == 'Orçamento') this.perfilOrcamento = true;
+    if(this.currentProfile == 'Gestor Operacional') this.perfilOperacional = true;
+    if(this.currentProfile == 'Torres GEGAT') this.perfilTorre = true;
+
+    this.currentUser = this.token.getUser();
+    this.perfilUnidade = this.currentUser?.coUnidade;
   }
 
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
   }
 
-  async loadPage(page: number) {
-    if (page !== this.previousPage) {
-      this.previousPage = page;
+  async loadPage(event: TableLazyLoadEvent) {
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
+
+    if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;
-      await this.obterPlanejamentosOrc();
+      this.filtroRegistros.pageSize = pageSize;
+     await this.obterPlanejamentosOrc();
     }
   }
 
@@ -218,7 +236,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
     const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
     if (!novoStatusObj) return;
 
-    const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
+    const itensSelecionados = this.perfilOrcamento || this.perfilAdm ? this.planejamentos.filter(p => p.sT_SELECIONADO)
+    : this.planejamentos.filter(p => p.sT_SELECIONADO && this.perfilUnidade == p.cO_FILIAL);
     if (itensSelecionados.length === 0) {
       this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
       return;
@@ -233,12 +252,18 @@ public async onSalvarMudancasStatus(): Promise<void> {
       }))
     };
 
-    await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
-    this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
+    const response : any = await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
 
-    await this.obterPlanejamentosOrc();
-    this.selecionarTodos = false;
-    this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
+    if(response.length > 0){
+      this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
+      await this.obterPlanejamentosOrc();
+      this.selecionarTodos = false;
+      this.planejamentos.forEach(p => p.sT_SELECIONADO = false);
+      this.statusSelecionados[0] = null;
+    }
+    else{
+      this.toastr.error('Ocorreu um erro ao salvar', "Error");
+    };
 
   } catch (error) {
     this.toastr.error('Ocorreu um erro ao salvar', "Error");
@@ -252,7 +277,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
     const novoStatus = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
     if (!novoStatus) return;
 
-    const itensSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO);
+    const itensSelecionados = this.perfilOrcamento || this.perfilAdm ? this.planejamentos.filter(p => p.sT_SELECIONADO)
+    : this.planejamentos.filter(p => p.sT_SELECIONADO && this.perfilUnidade == p.cO_FILIAL);
     if (itensSelecionados.length === 0) return;
 
     itensSelecionados.forEach(p => {
@@ -297,7 +323,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
     if(e.value == null){
         this.filtroRegistros = {
           pageNumber: 1,
-          pageSize: 12,
+          pageSize: 10,
           nuPlanejamento: this.nuPlanejamentoExercicio
         };
         this.obterPlanejamentosOrc();

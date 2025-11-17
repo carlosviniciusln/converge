@@ -42,7 +42,7 @@ export class LimitesComponent implements OnInit {
   listaLimitesCompleta: Partial<LimitesModel>[] = [];
   ultimoDetalheLimite: LimitesModel;
   selectedUnidadeDemandante: number;
-  selectedExercicio: number;
+  selectedExercicio: string;
   selectedTipo: any;
   selectedRubrica: any;
   public selectRubrica: Select2Data;
@@ -95,7 +95,7 @@ export class LimitesComponent implements OnInit {
     const dadosFiltrados = this.listaLimitesCompleta.map(item => {
       return {
         'Ano': item.cO_EXERCICIO,
-        'Tipo': item.dE_PLANEJAMENTO_TIPO,
+        'Tipo': item.dE_ORDEM_PROG,
         'Unidade Demandante': item.sG_FILIAL,
         'Cod. Rubrica': item.cO_RUBRICA,
         'Desc. Rubrica': item.dE_RUBRICA,
@@ -122,47 +122,58 @@ export class LimitesComponent implements OnInit {
   }
 
   //FILTRO
-  filterItem(value: string) {
-    if (!value) {
-      this.listaLimites = this.listaLimitesCompleta;
-      return;
-    }
+filterItem(value: string) {
+  const termo = value.trim().toLowerCase().replace(/[.,]/g, ''); // remove pontos e vírgulas
 
-    const lowerCaseValue = value.toLowerCase();
-
-    const matchAndClean = (item: LimitesModel): LimitesModel | null => {
-      // Verifica se o item principal corresponde
-      const matchPrincipal =
-        item.cO_EXERCICIO.toString().includes(lowerCaseValue) ||
-        (item.dE_PLANEJAMENTO_TIPO && item.dE_PLANEJAMENTO_TIPO.toLowerCase().includes(lowerCaseValue)) ||
-        (item.nO_RUBRICA_TIPO && item.nO_RUBRICA_TIPO.toLowerCase().includes(lowerCaseValue)) ||
-        (item.dE_RUBRICA && item.dE_RUBRICA.toLowerCase().includes(lowerCaseValue)) ||
-        (item.nO_STATUS && item.nO_STATUS.toLowerCase().includes(lowerCaseValue)) ||
-        (item.sG_FILIAL && item.sG_FILIAL.toLowerCase().includes(lowerCaseValue));
-
-      // Filtra os subníveis
-      const detalhesFiltrados = item.detalhes?.map(matchAndClean).filter(Boolean) ?? [];
-      const segundoNivelFiltrado = item.segundoNivel?.map(matchAndClean).filter(Boolean) ?? [];
-      const terceiroNivelFiltrado = item.terceiroNivel?.map(matchAndClean).filter(Boolean) ?? [];
-
-      // Se o item principal ou algum subnível corresponde, retorna o item com subníveis filtrados
-      if (matchPrincipal || detalhesFiltrados.length || segundoNivelFiltrado.length || terceiroNivelFiltrado.length) {
-        return {
-          ...item,
-          detalhes: detalhesFiltrados,
-          segundoNivel: segundoNivelFiltrado,
-          terceiroNivel: terceiroNivelFiltrado
-        };
-      }
-
-      return null;
-    };
-
-    this.listaLimites = this.listaLimitesCompleta
-      .map(matchAndClean)
-      .filter(Boolean) as LimitesModel[];
+  if (!termo) {
+    this.listaLimites = this.listaLimitesCompleta.map(item => ({ ...item }));
+    return;
   }
 
+  const normaliza = (val: any) => val?.toString().toLowerCase().replace(/[.,]/g, '') ?? '';
+
+  const matchAndClean = (item: LimitesModel): LimitesModel | null => {
+    const matchPrincipal =
+    normaliza(item.dE_ORDEM_PROG).includes(termo) ||
+      normaliza(item.cO_EXERCICIO).includes(termo) ||
+      normaliza(item.nU_PLANEJAMENTO).includes(termo) ||
+      normaliza(item.vR_LIMITE).includes(termo) ||
+      normaliza(item.vR_PLANEJAMENTO).includes(termo) ||
+      normaliza(item.dE_PLANEJAMENTO_TIPO).includes(termo) ||
+      normaliza(item.nO_RUBRICA_TIPO).includes(termo) ||
+      normaliza(item.dE_RUBRICA).includes(termo) ||
+      normaliza(item.nO_STATUS).includes(termo) ||
+      normaliza(item.sG_FILIAL).includes(termo);
+      
+
+    const detalhesFiltrados = item.detalhes?.map(matchAndClean).filter(Boolean) ?? [];
+    const segundoNivelFiltrado = item.segundoNivel?.map(matchAndClean).filter(Boolean) ?? [];
+    const terceiroNivelFiltrado = item.terceiroNivel?.map(matchAndClean).filter(Boolean) ?? [];
+
+    if (matchPrincipal) {
+      return {
+        ...item,
+        detalhes: item.detalhes ?? [],
+        segundoNivel: item.segundoNivel ?? [],
+        terceiroNivel: item.terceiroNivel ?? []
+      };
+    }
+    if (detalhesFiltrados.length || segundoNivelFiltrado.length || terceiroNivelFiltrado.length) {
+      return {
+        ...item,
+        detalhes: detalhesFiltrados,
+        segundoNivel: segundoNivelFiltrado,
+        terceiroNivel: terceiroNivelFiltrado
+      };
+    }
+
+    return null;
+  };
+
+  this.listaLimites = this.listaLimitesCompleta
+    .map(matchAndClean)
+    .filter(Boolean) as LimitesModel[];
+}
   //requisições
   public async obterValores() {
     try {
@@ -174,20 +185,23 @@ export class LimitesComponent implements OnInit {
       const nuExercicio = this.selectedExercicio;
       const nuRubrica = this.selectedRubrica?.label;
       const tipoProg = this.selectedTipo;
-      const agrupado = response.data.reduce((acc, item) => {
-        if (!item.dE_PLANEJAMENTO_TIPO) return acc;
-        if (nuFilial && item.nU_FILIAL !== nuFilial) return acc;
-        if (nuExercicio && item.nU_EXERCICIO_ORCAMENTO !== nuExercicio) return acc;
-        if (nuRubrica && item.cO_RUBRICA !== nuRubrica) return acc;
-        if (tipoProg && item.nO_RUBRICA_TIPO !== tipoProg) return acc;
 
-        const tipo = `${item.dE_PLANEJAMENTO_TIPO}_${item.cO_EXERCICIO}`;
+      const agrupado = response.data.reduce((acc, item) => {
+        const passaFiltro =
+          (!nuFilial || item.nU_FILIAL === nuFilial) &&
+          (!nuExercicio || item.dE_ORDEM_PROG === nuExercicio) &&
+          (!nuRubrica || item.cO_RUBRICA === nuRubrica) &&
+          (!tipoProg || item.nO_RUBRICA_TIPO === tipoProg);
+
+        if (!passaFiltro) return acc;
+
+        const tipo = `${item.dE_ORDEM_PROG}`;
 
         if (!acc[tipo]) {
           acc[tipo] = {
-            nU_PLANEJAMENTO: item.nU_PLANEJAMENTO,
             cO_EXERCICIO: item.cO_EXERCICIO,
-            dE_PLANEJAMENTO_TIPO: tipo.split('_')[0],
+            nU_PLANEJAMENTO: item.nU_PLANEJAMENTO,
+            dE_ORDEM_PROG: item.dE_ORDEM_PROG,
             vR_LIMITE: 0,
             vR_PLANEJAMENTO: 0,
             vR_DIFERENCA: 0
@@ -210,7 +224,6 @@ export class LimitesComponent implements OnInit {
         return b.nU_PLANEJAMENTO - a.nU_PLANEJAMENTO;
       });
 
-
       this.listaLimites = Object.values(listaAgrupadaOrdenada);
       this.listaLimitesCompleta = Object.values(response.data)
       this.loading = false;
@@ -223,25 +236,29 @@ export class LimitesComponent implements OnInit {
     try {
       registro.expanded = !registro.expanded;
       if (registro.expanded && !registro.detalhes) {
-        const filtrado = this.listaLimitesCompleta.filter(
-          item => item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO && item.dE_PLANEJAMENTO_TIPO
-            && (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante)
-            && (!this.selectedExercicio || item.nU_EXERCICIO_ORCAMENTO === this.selectedExercicio)
-            && (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica?.label)
-            && (!this.selectedTipo || item.nO_RUBRICA_TIPO === this.selectedTipo)
-        );
+        const filtrado = this.listaLimitesCompleta.filter(item => {
+          return (
+            item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO &&
+            item.dE_ORDEM_PROG &&
+            (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante) &&
+            (!this.selectedExercicio || item.dE_ORDEM_PROG === this.selectedExercicio) &&
+            (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica.label) &&
+            (!this.selectedTipo || item.nO_RUBRICA_TIPO === this.selectedTipo)
+          );
+        });
 
         const agrupado = filtrado.reduce((acc, item) => {
-          const chave = `${item.cO_EXERCICIO}_${item.dE_PLANEJAMENTO_TIPO}_${item.nO_RUBRICA_TIPO}`;
+          const chave = `${item.dE_ORDEM_PROG}_${item.nO_RUBRICA_TIPO}`;
 
           if (!acc[chave]) {
             acc[chave] = {
+              nU_LIMITE_PLANEJAMENTO: item.nU_LIMITE_PLANEJAMENTO,
               cO_EXERCICIO: item.cO_EXERCICIO,
-              dE_PLANEJAMENTO_TIPO: item.dE_PLANEJAMENTO_TIPO,
               nO_RUBRICA_TIPO: item.nO_RUBRICA_TIPO,
               vR_LIMITE: 0,
               vR_PLANEJAMENTO: 0,
-              vR_DIFERENCA: 0
+              vR_DIFERENCA: 0,
+              dE_ORDEM_PROG: item.dE_ORDEM_PROG,
             };
           }
 
@@ -255,7 +272,7 @@ export class LimitesComponent implements OnInit {
         const listaDetalhada = Object.values(agrupado).sort((a, b) =>
           b.cO_EXERCICIO !== a.cO_EXERCICIO
             ? b.cO_EXERCICIO - a.cO_EXERCICIO
-            : a.dE_PLANEJAMENTO_TIPO.localeCompare(b.dE_PLANEJAMENTO_TIPO)
+            : a.dE_ORDEM_PROG.localeCompare(b.dE_ORDEM_PROG)
         );
 
         registro.detalhes = listaDetalhada;
@@ -273,31 +290,32 @@ export class LimitesComponent implements OnInit {
       }
       limite.expanded = !limite.expanded;
       if (limite.expanded && !limite.segundoNivel.data) {
-
-        const filtrado = this.listaLimitesCompleta.filter(
-          item =>
+        const filtrado = this.listaLimitesCompleta.filter(item => {
+          return (
             item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO &&
             item.nO_RUBRICA_TIPO === limite.nO_RUBRICA_TIPO &&
-            item.dE_PLANEJAMENTO_TIPO
-            && (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante)
-            && (!this.selectedExercicio || item.nU_EXERCICIO_ORCAMENTO === this.selectedExercicio)
-            && (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica?.label)
-            && (!this.selectedTipo?.label || item.nO_RUBRICA_TIPO === this.selectedTipo)
-        );
+            item.dE_ORDEM_PROG &&
+            (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante) &&
+            (!this.selectedExercicio || item.dE_ORDEM_PROG === this.selectedExercicio) &&
+            (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica.label) &&
+            (!this.selectedTipo?.label || item.nO_RUBRICA_TIPO === this.selectedTipo.label)
+          );
+        });
 
         const agrupado = filtrado.reduce((acc, item) => {
-          const chave = `${item.cO_EXERCICIO}_${item.dE_PLANEJAMENTO_TIPO}_${item.nU_RUBRICA}_${item.cO_RUBRICA}`;
+          const chave = `${item.dE_ORDEM_PROG}_${item.nU_RUBRICA}_${item.cO_RUBRICA}`;
 
           if (!acc[chave]) {
             acc[chave] = {
+              nU_LIMITE_PLANEJAMENTO: item.nU_LIMITE_PLANEJAMENTO,
               cO_EXERCICIO: item.cO_EXERCICIO,
-              dE_PLANEJAMENTO_TIPO: item.dE_PLANEJAMENTO_TIPO,
               nU_RUBRICA: item.nU_RUBRICA,
               cO_RUBRICA: item.cO_RUBRICA,
               dE_RUBRICA: item.dE_RUBRICA,
               vR_LIMITE: 0,
               vR_PLANEJAMENTO: 0,
-              vR_DIFERENCA: 0
+              vR_DIFERENCA: 0,
+              dE_ORDEM_PROG: item.dE_ORDEM_PROG
             };
           }
 
@@ -311,7 +329,7 @@ export class LimitesComponent implements OnInit {
         const listaDetalhada2 = Object.values(agrupado).sort((a, b) =>
           b.cO_EXERCICIO !== a.cO_EXERCICIO
             ? b.cO_EXERCICIO - a.cO_EXERCICIO
-            : a.dE_PLANEJAMENTO_TIPO.localeCompare(b.dE_PLANEJAMENTO_TIPO)
+            : a.dE_ORDEM_PROG.localeCompare(b.dE_ORDEM_PROG)
         );
 
         registro.segundoNivel = listaDetalhada2;
@@ -330,32 +348,34 @@ export class LimitesComponent implements OnInit {
       detalhe.expanded = !detalhe.expanded;
       if (detalhe.expanded && !detalhe.terceiroNivel.data) {
 
-        const filtrado = this.listaLimitesCompleta.filter(
-          item =>
+        const filtrado = this.listaLimitesCompleta.filter(item => {
+          return (
             item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO &&
             item.nO_RUBRICA_TIPO === this.ultimoDetalheLimite.nO_RUBRICA_TIPO &&
             item.nU_RUBRICA === detalhe.nU_RUBRICA &&
-            item.dE_PLANEJAMENTO_TIPO
-            && (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante)
-            && (!this.selectedExercicio || item.nU_EXERCICIO_ORCAMENTO === this.selectedExercicio)
-            && (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica?.label)
-            && (!this.selectedTipo?.label || item.nO_RUBRICA_TIPO === this.selectedTipo)
+            item.dE_ORDEM_PROG &&
+            (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante) &&
+            (!this.selectedExercicio || item.dE_ORDEM_PROG === this.selectedExercicio) &&
+            (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica.label) &&
+            (!this.selectedTipo?.label || item.nO_RUBRICA_TIPO === this.selectedTipo.label)
+          );
+        });
 
-        );
         const agrupado = filtrado.reduce((acc, item) => {
-          const chave = `${item.cO_EXERCICIO}_${item.dE_PLANEJAMENTO_TIPO}_${item.nU_RUBRICA}_${item.cO_RUBRICA}_${item.sG_FILIAL}`;
+          const chave = `${item.dE_ORDEM_PROG}_${item.nU_RUBRICA}_${item.cO_RUBRICA}_${item.sG_FILIAL}`;
 
           if (!acc[chave]) {
             acc[chave] = {
+              nU_LIMITE_PLANEJAMENTO: item.nU_LIMITE_PLANEJAMENTO,
               cO_EXERCICIO: item.cO_EXERCICIO,
-              dE_PLANEJAMENTO_TIPO: item.dE_PLANEJAMENTO_TIPO,
               nU_RUBRICA: item.nU_RUBRICA,
               cO_RUBRICA: item.cO_RUBRICA,
               sG_FILIAL: item.sG_FILIAL,
               dE_RUBRICA: item.dE_RUBRICA,
               vR_LIMITE: 0,
               vR_PLANEJAMENTO: 0,
-              vR_DIFERENCA: 0
+              vR_DIFERENCA: 0,
+              dE_ORDEM_PROG: item.dE_ORDEM_PROG
             };
           }
 
@@ -369,7 +389,7 @@ export class LimitesComponent implements OnInit {
         const listaDetalhada3 = Object.values(agrupado).sort((a, b) =>
           b.cO_EXERCICIO !== a.cO_EXERCICIO
             ? b.cO_EXERCICIO - a.cO_EXERCICIO
-            : a.dE_PLANEJAMENTO_TIPO.localeCompare(b.dE_PLANEJAMENTO_TIPO)
+            : a.dE_ORDEM_PROG.localeCompare(b.dE_ORDEM_PROG)
         );
         registro.terceiroNivel = listaDetalhada3;
       }
@@ -397,10 +417,7 @@ export class LimitesComponent implements OnInit {
         backdrop: 'static',
         keyboard: false,
       });
-      const filialselecionada =
-        this.selectFilial.find(
-          (item): item is Select2Option => 'value' in item && item.label === ud.sG_FILIAL
-        );
+      const filialselecionada = this.selectFilial.find((item): item is Select2Option => 'value' in item && item.label === ud.sG_FILIAL);
       modalRef.componentInstance.isEditable = true;
       modalRef.componentInstance.registro = ud;
       modalRef.componentInstance.planejamentoEdit = registro.nU_PLANEJAMENTO;
@@ -446,23 +463,23 @@ export class LimitesComponent implements OnInit {
       const response = await this.apiService.get<ApiResponse<ExercicioModel[]>>(
         `${Endpoints.URL_CONTRATOS}/exercicios-ativos`
       );
-      this.listaExercicios = response.data?.map(c => ({ label: c.dE_EXERCICIO, value: c.nU_EXERCICIO_ORCAMENTO }));
+      this.listaExercicios = response.data?.map(c => ({ label: c.dE_EXERCICIO, value: c.dE_EXERCICIO }));
     } catch (error) { }
   }
 
   onFiltroChange(): void {
-    if(this.selectedExercicio == null && this.selectedRubrica == null && this.selectedTipo == null && this.selectedUnidadeDemandante == null){
+    if (this.selectedExercicio == null && this.selectedRubrica == null && this.selectedTipo == null && this.selectedUnidadeDemandante == null) {
       setTimeout(() => {
         window.location.reload()
       }, 1);
-    }else{
+    } else {
       this.obterValores();
       this.listaLimitesCompleta.forEach(item => {
-      item.expanded = false;
-      item.detalhes = undefined;
-      item.segundoNivel = undefined;
-      item.terceiroNivel = undefined;
-    });
+        item.expanded = false;
+        item.detalhes = undefined;
+        item.segundoNivel = undefined;
+        item.terceiroNivel = undefined;
+      });
     }
     
   }

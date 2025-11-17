@@ -261,4 +261,15 @@ calcularTotal(values: any[]) {
       this.toastr.error('Erro ao salvar ateste', 'Erro');
     }
   }
+
+  formatarValor(event: any, campo: string) {
+    let valor = event.target.value.replace(/\D/g, '');
+    if (valor.length > 0) {
+      const numero = (parseInt(valor) / 100).toFixed(2);
+      event.target.value = `R$ ${numero.replace('.', ',')}`;
+      this.form.get(campo)?.setValue(event.target.value);
+    } else {
+      this.form.get(campo)?.setValue('');
+    }
+  }
 }

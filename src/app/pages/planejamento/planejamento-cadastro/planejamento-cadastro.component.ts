@@ -79,18 +79,42 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
   public planejamento: PlanejamentoOrcamentarioResponse;
   public planejamentoEditar: PlanejamentoOrcamentarioResponse;
-  public listaDigital: any[] = [{ id: 1, tipo: 'Digital' }, { id: 2, tipo: 'Digital - TD' }, { id: 3, tipo: 'Não Digital' }]
+  public listaDigital: any[] = [
+    { id: 1, tipo: 'Digital' },
+    { id: 2, tipo: 'Digital - TD' },
+    { id: 3, tipo: 'Não Digital' },
+  ];
+  public listaDigitalBanco: any[] = [
+    { id: 1, code: 'DIGITAL', tipo: 'Digital' },
+    { id: 2, code: 'DIGITAL - TD', tipo: 'Digital - TD' },
+    { id: 3, code: 'NÃO DIGITAL', tipo: 'Não Digital' },
+  ];
   public digitalOpSelec: string;
   totalRubrica: number;
   public selectTab: number = 0;
   loading: boolean = true;
   isReadonly = true;
   permissions: ActionPolicies;
-  private readonly STATUS_ORDER = ['Criado','Revisado','Avaliado','Ajustado','Validado'];
-  private readonly ALLOWED_ORCAMENTO = new Set(['Criado','Revisado','Avaliado','Ajustado','Validado']);
-  private readonly ALLOWED_DEFAULT = new Set(['Criado','Revisado','Ajustado']);
-  private readonly EXCLUDED_NON_ADMIN = new Set<number>([4,6,10]);
-
+  private readonly STATUS_ORDER = [
+    'Criado',
+    'Revisado',
+    'Avaliado',
+    'Ajustado',
+    'Validado',
+  ];
+  private readonly ALLOWED_ORCAMENTO = new Set([
+    'Criado',
+    'Revisado',
+    'Avaliado',
+    'Ajustado',
+    'Validado',
+  ]);
+  private readonly ALLOWED_DEFAULT = new Set([
+    'Criado',
+    'Revisado',
+    'Ajustado',
+  ]);
+  private readonly EXCLUDED_NON_ADMIN = new Set<number>([4, 6, 10]);
 
   private readonly actionList: {
     type: PageAction;
@@ -98,25 +122,25 @@ export class PlanejamentoCadastroComponent implements OnInit {
     subTitle: string;
     actionButtonLabel: string;
   }[] = [
-      {
-        type: PageAction.Consultar,
-        title: 'Consulta',
-        subTitle: 'Consulta Planejamento Orçamentário',
-        actionButtonLabel: 'Fechar',
-      },
-      {
-        type: PageAction.Alterar,
-        title: 'Edição',
-        subTitle: 'Edição do Planejamento Orçamentário',
-        actionButtonLabel: 'Salvar',
-      },
-      {
-        type: PageAction.Cadastrar,
-        title: 'Cadastro',
-        subTitle: 'Cadastro de Planejamento Orçamentário',
-        actionButtonLabel: 'Cadastrar',
-      },
-    ];
+    {
+      type: PageAction.Consultar,
+      title: 'Consulta',
+      subTitle: 'Consulta Planejamento Orçamentário',
+      actionButtonLabel: 'Fechar',
+    },
+    {
+      type: PageAction.Alterar,
+      title: 'Edição',
+      subTitle: 'Edição do Planejamento Orçamentário',
+      actionButtonLabel: 'Salvar',
+    },
+    {
+      type: PageAction.Cadastrar,
+      title: 'Cadastro',
+      subTitle: 'Cadastro de Planejamento Orçamentário',
+      actionButtonLabel: 'Cadastrar',
+    },
+  ];
 
   public titulo: string;
   public subTitulo: string;
@@ -141,13 +165,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
     NuContrato: null,
     NuTipoDemanda: null,
     NuPlanejamento: null,
-    TpOperacao: null
+    TpOperacao: null,
   };
 
-
   ListaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoDTO[] = [];
-  totalRegistros: number = 10;
-  numeroContrato = 'SIGVC-2025';
   dialogVisible = false;
   selectedDiff: any = null;
   filtrosSelecionado: string | null = null;
@@ -165,19 +186,17 @@ export class PlanejamentoCadastroComponent implements OnInit {
     private toastr: ToastrService,
     public token: TokenStorageService,
     private modalService: NgbModal
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loading = true;
     this.obterPermissoes();
     this.definirPageAction();
-
+    this.obterExercicios();
     this.formulario();
-
     this.obterContratos();
     this.obterFiliais();
     this.obterRubricas();
-    this.obterExercicios();
     this.obterTiposPlanejamento();
     this.obterTiposDemanda();
     this.obterClassificacoesPlanejamento();
@@ -200,9 +219,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.loading = false;
 
     ///efetua as validações de perfil
-    if (this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade
-      || this.currentProfile.noPerfil == PerfisEnum.Orcamento
-      || this.currentProfile.noPerfil == PerfisEnum.Administrador)
+    if (
+      this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
+      this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
+      this.currentProfile.noPerfil == PerfisEnum.Administrador
+    )
       this.isPerfilPrivilegiado = true;
     this.obterPlanejamentoItemHistorico();
   }
@@ -222,7 +243,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
       case 1: {
         this.filtroRegistros.TpOperacao = e.value;
         if (e.value == null || this.filtros.length > 1) {
-          console.log(this.filtroRegistros.TpOperacao, "OPERACAO")
           await this.obterPlanejamentoItemHistorico();
         }
         break;
@@ -234,13 +254,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
     }
     this.loading = false;
   }
-
-
-  // filtrarEventos() {
-  //   this.eventosFiltrados = this.filtrosSelecionado
-  //     ? this.ListaPlanejamentoItemHistorico.filter((e) => e.tpOperacao === this.filtrosSelecionado)
-  //     : [...this.ListaPlanejamentoItemHistorico];
-  // }
 
   filtros = [
     {
@@ -262,17 +275,18 @@ export class PlanejamentoCadastroComponent implements OnInit {
   ];
 
   /**
- *
- * FIM HISTORICO METODOS
- */
-
+   *
+   * FIM HISTORICO METODOS
+   */
 
   obterPermissoes() {
-  this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
+    this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
     this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
-    if (this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade
-      || this.currentProfile.noPerfil == PerfisEnum.Orcamento
-      || this.currentProfile.noPerfil == PerfisEnum.Administrador)
+    if (
+      this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
+      this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
+      this.currentProfile.noPerfil == PerfisEnum.Administrador
+    )
       this.isPerfilPrivilegiado = true;
   }
 
@@ -296,7 +310,16 @@ export class PlanejamentoCadastroComponent implements OnInit {
         ? element.subTitle
         : `${element.subTitle} ${this.nuPlanejamento?.nU_ORC}`;
     this.actionButtonLabel = element.actionButtonLabel;
+  }
 
+  /*ATRIBUTOS FORMULARIO NOVO */
+
+  public formNovo: FormGroup;
+
+  /* REFATORAÇÃO HISTORICO */
+
+  formularioNovo() {
+    this.formNovo = this.formBuilder.group({});
   }
 
   formulario() {
@@ -373,7 +396,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     });
 
     // Habilita todos os controles dentro do FormArray previsoesDesembolso
-     const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
+    const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
     if (previsoesArray) {
       previsoesArray.controls.forEach((grupo) => {
         if (grupo instanceof FormGroup) {
@@ -465,13 +488,19 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
 
   onValorRubricaChange(i: number) {
-  const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
+    const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
 
     const limparValor = (valor: string): number => {
       if (!valor) return 0;
-      return parseFloat(
-        valor?.toString().replace('R$ ', '').replace(/\./g, '').replace(',', '.')
-      ) || 0;
+      return (
+        parseFloat(
+          valor
+            ?.toString()
+            .replace('R$ ', '')
+            .replace(/\./g, '')
+            .replace(',', '.')
+        ) || 0
+      );
     };
 
     const total =
@@ -497,10 +526,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
     if (!valor) return 0;
     return (
       parseFloat(
-        (valor+"").replace('R$ ', '').replace(/\./g, '').replace(',', '.')
+        (valor + '').replace('R$ ', '').replace(',', '.')
       ) || 0
     );
   };
+
   somaValorTotalPlanejamentoOrcamentario() {
     let vrTotalOrcamentoPlanejamentoTemp = 0;
     const previsoesDesembolso = this.form.get(
@@ -524,7 +554,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
     if (!valor || typeof valor !== 'string') return;
 
     // Remove prefixo e separadores para verificar se é número
-    const valorLimpo = valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.');
+    const valorLimpo = valor
+      .replace('R$ ', '')
+      .replace(/\./g, '')
+      .replace(',', '.');
     const numero = parseFloat(valorLimpo);
 
     if (!isNaN(numero)) {
@@ -541,7 +574,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   onContratoChange(event: any) {
     //Limpa formulário antes de preencher os campos.
-    this.formulario();
+    //this.formulario();
     const nuContrato = event.target.value;
     if (nuContrato) {
       this.obterDadosContrato(nuContrato);
@@ -562,7 +595,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           nuFilial: response.data.nU_FILIAL,
           coFilial: response.data.cO_FILIAL,
           deObjeto: response.data.objeto,
-          nuPlanejamentoStatus: response.data.status,
+          //nuPlanejamentoStatus: response.data.status,
           nuObjetivoEstrategicoPdti: response.data.objetivO_PDTIC,
           nuObjetivoEstrategicoPei: response.data.objetivO_PEI,
           nuPlanejamentoTipo: this.tipo,
@@ -578,9 +611,23 @@ export class PlanejamentoCadastroComponent implements OnInit {
     try {
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioResponse>
-      >(`${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=` + this.nuPlanejamento.nU_CONTRATO + `&nuTipoDemanda=` + this.nuPlanejamento.nU_TIPO_DEMANDA + `&nuFilial=` + this.nuPlanejamento.nU_FILIAL + `&nuPlanejamento=` + this.nuPlanejamento.nU_PLANEJAMENTO);
+      >(
+        `${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=` +
+          this.nuPlanejamento.nU_CONTRATO +
+          `&nuTipoDemanda=` +
+          this.nuPlanejamento.nU_TIPO_DEMANDA +
+          `&nuFilial=` +
+          this.nuPlanejamento.nU_FILIAL +
+          `&nuPlanejamento=` +
+          this.nuPlanejamento.nU_PLANEJAMENTO
+      );
 
       this.planejamento = response.data[0];
+
+      const digital = this.listaDigitalBanco.find(
+        (x) => x.code == this.planejamento?.deDigital
+      );
+
       if (this.planejamento) {
         this.form.controls['nuPlanejamentoOrcamentario'].setValue(
           this.nuPlanejamento.nU_PLANEJAMENTO
@@ -588,17 +635,28 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.form.controls['coPlanejamentoOrcamentario'].setValue(
           this.nuPlanejamento.coPlanejamentoOrcamentario
         );
-        //this.form.controls['nuAno'].setValue("10");//this.planejamento.coExercicio);
+
+        // faz sentido isso ao registros novos
 
         const anoSelecionado = this.listaExercicios.find(
           (ano) =>
             ano.nuAnoOrcamento.toString() ===
             this.planejamento.coExercicio.toString()
         );
+
         if (anoSelecionado) {
           this.listaExercicios = [anoSelecionado];
-          this.form.controls['nuAno'].setValue(anoSelecionado.nuOrcamento);
-          this.form.controls['nuPlanejamentoTipo'].setValue(this.tipo);
+
+          // Aguarda o próximo ciclo para garantir que a lista foi atualizada
+          Promise.resolve().then(() => {
+            this.form.patchValue({
+              nuAno: anoSelecionado.nuOrcamento,
+              nuPlanejamentoTipo: this.tipo,
+            });
+
+            // Se precisar chamar outro método depois
+            this.obterExercicios();
+          });
         }
 
         this.form.controls['nuFilial'].setValue(this.planejamento.nuFilial);
@@ -606,11 +664,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.form.controls['deJustificativa'].setValue(
           this.planejamento.deJustificativa
         );
-        this.form.controls['deObservacao'].setValue(this.planejamento.deObjeto);
+        this.form.controls['deObservacao'].setValue(
+          this.planejamento.deObservacao
+        );
         this.form.controls['nuPlanejamentoStatus'].setValue(
           this.planejamento.nuStatusPlanejamentoItem
         );
-
 
         this.form.controls['nuDemandaTipo'].setValue(
           this.planejamento.nuTipoDemanda
@@ -627,13 +686,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.form.controls['nuObjetivoEstrategicoPei'].setValue(
           this.planejamento.nuObjetivoPei
         );
-        if (this.nuPlanejamento.dE_DEMANDA == 'Digital') {
-          this.form.controls['icDigital'].setValue(1);
-        } else if (this.nuPlanejamento.dE_DEMANDA == 'Digital - TD') {
-          this.form.controls['icDigital'].setValue(2);
-        } else {
-          this.form.controls['icDigital'].setValue(3);
-        }
+
+        this.form.controls['icDigital'].setValue(digital?.id);
+
         this.form.controls['nuClassificacaoPlanejamento'].setValue(
           this.planejamento.nuClassificacaoPlanejamento
         );
@@ -644,10 +699,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.form.controls['noCriador'].setValue(this.planejamento.coMatricula);
         this.form.controls['dhCadastro'].setValue(
           this.planejamento.dhCadastro.toString().substring(8, 10) +
-          '/' +
-          this.planejamento.dhCadastro.toString().substring(5, 7) +
-          '/' +
-          this.planejamento.dhCadastro.toString().substring(0, 4)
+            '/' +
+            this.planejamento.dhCadastro.toString().substring(5, 7) +
+            '/' +
+            this.planejamento.dhCadastro.toString().substring(0, 4)
         );
 
         if (this.planejamento) {
@@ -655,16 +710,15 @@ export class PlanejamentoCadastroComponent implements OnInit {
             ApiResponse<PrevisaoDesembolsoResponse[]>
           >(
             `${Endpoints.URL_ORCAMENTO}/ObterConsultaPorRubrica?nuContrato=` +
-            this.nuPlanejamento.nU_CONTRATO +
-            `&nuTipoDemanda=` +
-            this.nuPlanejamento.nU_TIPO_DEMANDA +
-            `&nuFilial=` +
-            this.nuPlanejamento.nU_FILIAL +
-            `&nuPlanejamento=` +
-            this.nuPlanejamento.nU_PLANEJAMENTO
+              this.nuPlanejamento.nU_CONTRATO +
+              `&nuTipoDemanda=` +
+              this.nuPlanejamento.nU_TIPO_DEMANDA +
+              `&nuFilial=` +
+              this.nuPlanejamento.nU_FILIAL +
+              `&nuPlanejamento=` +
+              this.nuPlanejamento.nU_PLANEJAMENTO
           );
           if (responseVlr.data) {
-
             this.planejamento.gcptb027PrevisoesDesembolso = responseVlr.data;
           }
 
@@ -739,12 +793,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
                   [Validators.required]
                 ),
                 nuReserva: new FormControl(
-                  { value: x.nuReserva, disabled: !this.isEditable },
+                  { value: x.nuReserva, disabled: !this.isEditable }
                   // [Validators.required]
                 ),
                 vrTotalRubrica: new FormControl(
                   {
-                    value:
+                    value: (
                       x.vrJaneiro +
                       x.vrFevereiro +
                       x.vrMarco +
@@ -756,28 +810,34 @@ export class PlanejamentoCadastroComponent implements OnInit {
                       x.vrSetembro +
                       x.vrOutubro +
                       x.vrNovembro +
-                      x.vrDezembro,
+                      x.vrDezembro
+                    ) / 100,
                     disabled: true,
                   },
                   [Validators.required]
                 ),
               });
 
-
               this.previsoesDesembolso.push(previsaoDesembolso);
 
-              const totalDesembolso =
-                this.planejamento.gcptb027PrevisoesDesembolso.reduce(
-                  (soma, item) => soma + item['vrPlanejamentoTotal'],
+
+                const totalDesembolso = this.planejamento.gcptb027PrevisoesDesembolso.reduce(
+                  (soma, item) => soma + item['vrPlanejamentoTotal'] / 100,
                   0
                 );
 
-              this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(totalDesembolso);
+
+              this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(
+                totalDesembolso
+              );
             });
           }
         }
       } else {
-        this.toastr.error('Não retornou dados para este detalhamento. Tente novamente mais tarde.', 'Erro');
+        this.toastr.error(
+          'Não retornou dados para este detalhamento. Tente novamente mais tarde.',
+          'Erro'
+        );
       }
     } catch (error) {
       console.error(error);
@@ -798,10 +858,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
           .sort((a, b) => a.coContrato.localeCompare(b.coContrato))
           .map(
             (m) =>
-            ({
-              value: m.nuContrato,
-              label: m.coContrato + ' - ' + m.noEmpresa,
-            } as Select2Option)
+              ({
+                value: m.nuContrato,
+                label: m.coContrato + ' - ' + m.noEmpresa,
+              } as Select2Option)
           );
       } else {
         const response = await this.apiService.get<
@@ -810,7 +870,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
         this.listaContratos = response.data;
       }
-    } catch (error) { }
+    } catch (error) {}
   }
 
   public async obterFiliais(): Promise<void> {
@@ -844,11 +904,16 @@ export class PlanejamentoCadastroComponent implements OnInit {
       );
 
       this.listaExercicios = response.data.filter(
-        (f) => f.nuAnoOrcamento >= new Date().getFullYear() && f.nuAnoOrcamento == this.ano
+        (f) =>
+          f.nuAnoOrcamento >= new Date().getFullYear() &&
+          f.nuAnoOrcamento == this.ano
       );
-      if(this.isCadastro){
-         this.form.controls['nuAno'].setValue(this.listaExercicios[0].nuOrcamento);
+      if (this.isCadastro) {
+        this.form.controls['nuAno'].setValue(
+          this.listaExercicios[0].nuOrcamento
+        );
       }
+      this.form.controls['nuAno'].disable();
     } catch (error) {
       console.error(error);
     }
@@ -897,6 +962,17 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
       this.listaStatusPlanejamento = response.data;
       this.buildStatusRank_();
+            //Define o campo como criado ao criar um novo contrato e desabilita o campo
+            if (this.isCadastro) {
+              const criadoId = this.listaStatusPlanejamento.find(
+                s => s.noPlanejamentoStatus === 'Criado'
+              )?.nuPlanejamentoStatus;
+        
+              if (criadoId) {
+                this.form.controls['nuPlanejamentoStatus'].setValue(criadoId);
+                this.form.controls['nuPlanejamentoStatus'].disable();
+              }
+            }
     } catch (error) {
       console.error(error);
     } finally {
@@ -923,7 +999,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.statusRank.clear();
     if (!this.listaStatusPlanejamento?.length) return;
     const mapByName = new Map<string, number>();
-    this.listaStatusPlanejamento.forEach(s => mapByName.set((s.noPlanejamentoStatus || '').trim(), s.nuPlanejamentoStatus));
+    this.listaStatusPlanejamento.forEach((s) =>
+      mapByName.set(
+        (s.noPlanejamentoStatus || '').trim(),
+        s.nuPlanejamentoStatus
+      )
+    );
     this.STATUS_ORDER.forEach((name, idx) => {
       const id = mapByName.get(name);
       if (id != null) this.statusRank.set(id, idx);
@@ -932,11 +1013,14 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   private getCurrentStatusId_(): number | null {
     const v = this.form?.get('nuPlanejamentoStatus')?.value;
-    return (v == null || v === '') ? this.originalStatusId : v;
+    return v == null || v === '' ? this.originalStatusId : v;
   }
 
   private getNameById_(id: number): string {
-    return (this.listaStatusPlanejamento?.find(s => s.nuPlanejamentoStatus === id)?.noPlanejamentoStatus || '').trim();
+    return (
+      this.listaStatusPlanejamento?.find((s) => s.nuPlanejamentoStatus === id)
+        ?.noPlanejamentoStatus || ''
+    ).trim();
   }
 
   private rank_(id: number): number {
@@ -960,10 +1044,13 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.originalStatusId = novoId;
         return;
       }
-      const rankNovo  = this.rank_(novoId);
+      const rankNovo = this.rank_(novoId);
       const rankAtual = this.rank_(this.originalStatusId);
       if (rankNovo < rankAtual) {
-        this.toastr.error('Não é permitido regredir o status.', 'Regra de negócio');
+        this.toastr.error(
+          'Não é permitido regredir o status.',
+          'Regra de negócio'
+        );
         ctrl.setValue(this.originalStatusId, { emitEvent: false });
         return;
       }
@@ -978,24 +1065,26 @@ export class PlanejamentoCadastroComponent implements OnInit {
     const currentRank = currentId == null ? -1 : this.rank_(currentId);
     if (!this.listaStatusPlanejamento?.length) return [];
 
-    if (isAdmin) return this.listaStatusPlanejamento;
+    //if (isAdmin) 
+      return this.listaStatusPlanejamento;
 
-    if (isOrc) {
-      return this.listaStatusPlanejamento.filter(s => this.ALLOWED_ORCAMENTO.has((s.noPlanejamentoStatus || '').trim()));
-    }
+    // if (isOrc) {
+    //   return this.listaStatusPlanejamento.filter((s) =>
+    //     this.ALLOWED_ORCAMENTO.has((s.noPlanejamentoStatus || '').trim())
+    //   );
+    // }
 
-    return this.listaStatusPlanejamento.filter(s => {
-      if (this.EXCLUDED_NON_ADMIN.has(s.nuPlanejamentoStatus)) return false;
-      const nome = (s.noPlanejamentoStatus || '').trim();
-      if (!this.ALLOWED_DEFAULT.has(nome)) return false;
-      const targetRank = this.rank_(s.nuPlanejamentoStatus);
-      return currentRank === -1 || targetRank >= currentRank;
-    });
+    // return this.listaStatusPlanejamento.filter((s) => {
+    //   if (this.EXCLUDED_NON_ADMIN.has(s.nuPlanejamentoStatus)) return false;
+    //   const nome = (s.noPlanejamentoStatus || '').trim();
+    //   if (!this.ALLOWED_DEFAULT.has(nome)) return false;
+    //   const targetRank = this.rank_(s.nuPlanejamentoStatus);
+    //   return currentRank === -1 || targetRank >= currentRank;
+    // });
   }
 
   public async obterPlanejamentoItemHistorico(): Promise<void> {
     try {
-
       // const queryParams = new URLSearchParams({
       //   paginaAtual: this.filtroRegistros.paginaAtual,
       //   tamanhoPagina: this.filtroRegistros.tamanhoPagina,
@@ -1008,34 +1097,39 @@ export class PlanejamentoCadastroComponent implements OnInit {
       // );
 
       this.filtroRegistros.NuContrato = this.nuPlanejamento?.nU_CONTRATO;
-      this.filtroRegistros.NuPlanejamento = this.nuPlanejamento?.nU_PLANEJAMENTO;
+      this.filtroRegistros.NuPlanejamento =
+        this.nuPlanejamento?.nU_PLANEJAMENTO;
       this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento?.nU_TIPO_DEMANDA;
-      const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
-        `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item`, this.filtroRegistros)
+      const response = await this.apiService.get<
+        ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>
+      >(
+        `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item`,
+        this.filtroRegistros
+      );
 
       this.ListaPlanejamentoItemHistorico = response.data.listaHistorico;
     } catch (error) {
       console.error(error);
     }
-
   }
 
- public async obterObjetivosEstrategicosPdti(): Promise<void> {
-  try {
-    const response = await this.apiService.get<
-      ApiResponse<ObjetivoEstrategicoResponse[]>
-    >(`${Endpoints.URL_ORCAMENTO}/objetivos-estrategicos-pdti`);
+  public async obterObjetivosEstrategicosPdti(): Promise<void> {
+    try {
+      const response = await this.apiService.get<
+        ApiResponse<ObjetivoEstrategicoResponse[]>
+      >(`${Endpoints.URL_ORCAMENTO}/objetivos-estrategicos-pdti`);
 
-    // Limita o texto de cada objetivo a 70 caracteres
-    this.listaObjetivosEstrategicosPdti = response.data.map(obj => ({
-      ...obj,
-      deObjetivoEstrategico: obj.deObjetivoEstrategico?.slice(0, 70) +
-        (obj.deObjetivoEstrategico?.length > 70 ? '...' : '')
-    }));
-  } catch (error) {
-    console.error(error);
+      // Limita o texto de cada objetivo a 70 caracteres
+      this.listaObjetivosEstrategicosPdti = response.data.map((obj) => ({
+        ...obj,
+        deObjetivoEstrategico:
+          obj.deObjetivoEstrategico?.slice(0, 70) +
+          (obj.deObjetivoEstrategico?.length > 70 ? '...' : ''),
+      }));
+    } catch (error) {
+      console.error(error);
+    }
   }
-}
 
   public async obterObjetivosEstrategicosPei(): Promise<void> {
     try {
@@ -1050,6 +1144,17 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
 
   public async onSubmit(): Promise<void> {
+    const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
+
+    if (totalContratacao === 0 || totalContratacao === null) {
+      await Swal.fire({
+        title: 'Atenção!',
+        text: 'A previsão de desembolso não pode ser zero. Informe um valor válido',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return; 
+    }
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
         this.Cadastrar();
@@ -1075,23 +1180,18 @@ export class PlanejamentoCadastroComponent implements OnInit {
     return Number(value);
   }
 
-
   public async Cadastrar(): Promise<void> {
-
     // const nuAno = this.listaExercicios.filter(x => x.nuAnoOrcamento == this.ano)[0].nuOrcamento
     // this.form.controls['nuAno'].setValue(nuAno)
     try {
-
       this.submitted = true;
       if (this.form.invalid) {
-        console.log(this.form)
         const invalids = [];
         const controls = this.form.controls;
         for (const name in controls) {
           if (controls[name].invalid) invalids.push(name);
         }
         if (this.form.controls['deObjeto'].value == '') {
-
           this.toastr.error('Informe o objeto.', 'Erro');
         }
         if (this.form.controls['deJustificativa'].value == '') {
@@ -1115,73 +1215,56 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
       var codigoContrato = this.form.controls['coContrato'].value;
       this.form.controls['nuContrato'].setValue(codigoContrato);
-      //console.log(codigoContrato, this.form.controls['nuContrato'], "valores");
 
       var obj = this.form.value;
 
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
+
+      const digital = this.listaDigitalBanco.find((x) => x.id == obj.icDigital);
       const previsoes = obj.previsoesDesembolso;
 
-      if(previsoes.length > 0){
-
+      if (previsoes.length > 0) {
         for (var p in previsoes) {
+          var item: PlanejamentoOrcamentarioItemRequest = {
+            NuPlanejamentoItem: 0,
+            NuPlanejamento: this.nuPlanejamentoOrcamento,
+            NuContrato: obj.nuContrato,
+            NuFilial: obj.nuFilial,
+            NuRubrica: previsoes[p].nuRubrica,
+            NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus,
+            NuTipoDemanda: obj.nuDemandaTipo,
+            NuVigencia: obj.nuAno,
+            DeDigital: digital?.code,
+            DeObjeto: obj.deObjeto,
+            DeObservacao: obj.deObservacao,
+            DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
+            DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
+            DeJustificativa: obj.deJustificativa,
 
-        var item: PlanejamentoOrcamentarioItemRequest = {
-          NuPlanejamentoItem: 0,
-          NuPlanejamento: this.nuPlanejamentoOrcamento,
-          NuContrato: obj.nuContrato,
-          NuFilial: obj.nuFilial,
-          NuRubrica: previsoes[p].nuRubrica,
-          NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus,
-          NuTipoDemanda: obj.nuDemandaTipo,
-          NuVigencia: obj.nuAno,
+            NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
+            NuReserva: Number(previsoes[p].nuReserva),
 
-          DeObjeto: obj.deObjeto,
-          DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
-          DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
-          DeJustificativa: obj.deJustificativa,
+            VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
+            VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
+            VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
+            VrMarco: this.parseDecimal(previsoes[p].vrMarco),
+            VrAbril: this.parseDecimal(previsoes[p].vrAbril),
+            VrMaio: this.parseDecimal(previsoes[p].vrMaio),
+            VrJunho: this.parseDecimal(previsoes[p].vrJunho),
+            VrJulho: this.parseDecimal(previsoes[p].vrJulho),
+            VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
+            VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
+            VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
+            VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
+            VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
+          };
 
-          NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
-          NuReserva: Number(previsoes[p].nuReserva),
+          lista.push(item);
+        }
 
-          VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
-          VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
-          VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
-          VrMarco: this.parseDecimal(previsoes[p].vrMarco),
-          VrAbril: this.parseDecimal(previsoes[p].vrAbril),
-          VrMaio: this.parseDecimal(previsoes[p].vrMaio),
-          VrJunho: this.parseDecimal(previsoes[p].vrJunho),
-          VrJulho: this.parseDecimal(previsoes[p].vrJulho),
-          VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
-          VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
-          VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
-          VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
-          VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
-
-          NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
-          DhCadastro: this.form.value.dhCadastro ?? new Date().toISOString(),
-          DhExclusao: undefined,
-          NuUsuarioExclusao: 0,
-          NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
-          DhAlteracao: new Date(),
-        };
-
-        lista.push(item);
-      }
-
-        // const response = await this.apiService.post<any>(
-        //   `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
-        //   lista
-        // );
-
-        this.cadastrarItem(lista)
-
-        this.atualizarPagina.emit(true);
-        this.activeModal.dismiss();
-      }
-      else
-      {
-          this.toastr.warning('Previsão de desembolso obrigatório', 'Aviso');
+        this.cadastrarItem(lista);
+      } else {
+        this.toastr.warning('Previsão de desembolso obrigatório', 'Aviso');
       }
     } catch (error) {
       this.atualizarPagina.emit(false);
@@ -1194,6 +1277,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.isReadonly = false;
 
       var obj = this.form.value;
+
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
 
       if (this.form.invalid) {
@@ -1201,7 +1285,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
         const controls = this.form.controls;
 
         for (const name in controls) {
-
           if (controls[name].invalid) itemErro.push(name);
         }
         this.isReadonly = true;
@@ -1216,7 +1299,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
           this.form.controls['deObjeto'].value == '' ||
           this.form.controls['deObjeto'].value == null
         ) {
-
           this.toastr.error('Informe o objeto.', 'Erro');
           return;
         }
@@ -1245,7 +1327,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == null
       ) {
-
       }
 
       if (
@@ -1259,15 +1340,27 @@ export class PlanejamentoCadastroComponent implements OnInit {
         return;
       }
       //regra: maquina de status
-      if (this.currentProfile.noPerfil == PerfisEnum.TorresGEGAT || this.currentProfile.noPerfil == PerfisEnum.GestorOperacional /* || this.currentProfile.noPerfil == PerfisEnum.UnidadeDemandante*/) {
-        if (this.nuPlanejamento == 5 && this.form.value.nuPlanejamentoStatus != 7) {//Criado para Revisado
+      if (
+        this.currentProfile.noPerfil == PerfisEnum.TorresGEGAT ||
+        this.currentProfile.noPerfil ==
+          PerfisEnum.GestorOperacional /* || this.currentProfile.noPerfil == PerfisEnum.UnidadeDemandante*/
+      ) {
+        if (
+          this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 5 &&
+          this.form.value.nuPlanejamentoStatus != 7
+        ) {
+          //Criado para Revisado
           this.toastr.error(
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
           );
           return;
         }
-        if (this.nuPlanejamento == 3 && this.form.value.nuPlanejamentoStatus != 9) { //Revisado e de Avaliado
+        if (
+          this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 3 &&
+          this.form.value.nuPlanejamentoStatus != 9
+        ) {
+          //Revisado e de Avaliado
           this.toastr.error(
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
@@ -1275,11 +1368,26 @@ export class PlanejamentoCadastroComponent implements OnInit {
           return;
         }
       }
+      
+      if (
+        this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 4 && //cancelado
+        this.form.value.nuPlanejamentoStatus != 4
+      ) {
+        //Revisado e de Avaliado
+        this.toastr.error(
+          'O status "Cancelado" não pode sofre alteração de status.',
+          'Erro'
+        );
+        return;
+      }
+
       const previsoes = obj.previsoesDesembolso;
 
+      const digital = this.listaDigitalBanco.find(
+        (x) => x.id == obj?.icDigital
+      );
 
       for (var p in previsoes) {
-
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
           NuPlanejamento: this.nuPlanejamentoOrcamento,
@@ -1289,7 +1397,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus,
           NuTipoDemanda: obj.nuDemandaTipo,
           NuVigencia: obj.nuAno,
-
+          DeDigital: digital?.code,
           DeObjeto: obj.deObjeto,
           DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
           DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
@@ -1311,51 +1419,43 @@ export class PlanejamentoCadastroComponent implements OnInit {
           VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
           VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
           VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
-
-          DhExclusao: undefined,
-          NuUsuarioExclusao: null,
-          NuUsuario: this.token.getUser()?.nuUsuario ?? 0,
-          NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
-          DhAlteracao: new Date(),
         };
 
         lista.push(item);
       }
 
-     const response = await this.apiService.post<ApiResponse<any>>(
+      const response = await this.apiService.post<ApiResponse<any>>(
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
         lista
       );
 
-     if (response?.succeeded && response.data?.succeeded) {
-      const resultado = response.data.resultados?.[0];
-      if (resultado?.succeeded) {
-        await Swal.fire({
-          title: 'Sucesso!',
-          text: `Item do Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} alterado com sucesso.`,
-          icon: 'success',
-          confirmButtonText: 'OK',
-        });
+      if (response?.succeeded && response.data?.succeeded) {
+        const resultado = response.data.resultados?.[0];
+        if (resultado?.succeeded) {
+          await Swal.fire({
+            title: 'Sucesso!',
+            text: `Item do Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} alterado com sucesso.`,
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+        } else {
+          console.warn('Falha ao alterar item:', resultado?.message);
+          await Swal.fire({
+            title: 'Erro!',
+            text: 'Falha ao alterar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        }
       } else {
-        console.warn('Falha ao alterar item:', resultado?.message);
+        console.error('Erro na resposta da API:', response.errors);
         await Swal.fire({
           title: 'Erro!',
-          text: 'Falha ao alterar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
           icon: 'error',
           confirmButtonText: 'OK',
         });
-
       }
-    } else {
-      console.error('Erro na resposta da API:', response.errors);
-      await Swal.fire({
-        title: 'Erro!',
-        text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      });
-    }
-
 
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
@@ -1366,9 +1466,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
     }
   }
 
-public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Promise<void> {
+  public async ExcluirItens(
+    planejamento: PlanejamentoOrcamentarioResponse
+  ): Promise<void> {
     try {
-
       this.submitted = true;
 
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
@@ -1379,14 +1480,12 @@ public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Prom
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
           NuStatusPlanejamentoItem: 10, //excluido
-          DhExclusao: new Date(),
-          NuUsuarioExclusao: this.token.getUser()?.nuUsuario ?? 0,
-          NuUsuarioAlteracao: this.token.getUser()?.nuUsuario ?? 0,
-          DhAlteracao: new Date(),
         };
 
         lista.push(item);
       }
+
+      // duplicar response igual alterar e cadastrar
 
       await this.apiService.post<any>(
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
@@ -1403,25 +1502,30 @@ public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Prom
     }
   }
 
-
   onReset(): void {
     this.submitted = false;
     this.form.reset();
   }
 
-  async buildClassificacaoPlanejamento(classificacao: ClassificacaoPlanejamentoResponse) {
-    if (classificacao.noEnquadramento == 'Digital') {
-      this.listaClassificacoesPlanejamentoDigitalFiltrada =
-        this.listaClassificacoesPlanejamentoDigital.filter(
-          (x) => x.noEnquadramento == 'Digital'
-        );
-    } else if (classificacao.noEnquadramento == 'Digital - TD') {
-      this.listaClassificacoesPlanejamentoDigitalFiltrada =
-        this.listaClassificacoesPlanejamentoDigital.filter(
-          (x) => x.noEnquadramento == 'Digital - TD'
-        );
-    }
-  }
+  // metodo não chamado
+
+  // async buildClassificacaoPlanejamento(classificacao: ClassificacaoPlanejamentoResponse) {
+  //   if (classificacao.noEnquadramento == 'Digital') {
+  //     this.listaClassificacoesPlanejamentoDigitalFiltrada =
+  //       this.listaClassificacoesPlanejamentoDigital.filter(
+  //         (x) => x.noEnquadramento == 'Digital'
+  //       );
+
+  //       console.log(" build caiu aqui if", this.listaClassificacoesPlanejamentoDigitalFiltrada )
+  //   } else if (classificacao.noEnquadramento == 'Digital - TD') {
+  //     this.listaClassificacoesPlanejamentoDigitalFiltrada =
+  //       this.listaClassificacoesPlanejamentoDigital.filter(
+  //         (x) => x.noEnquadramento == 'Digital - TD'
+  //       );
+
+  //       console.log(" build caiu aqui else if", this.listaClassificacoesPlanejamentoDigitalFiltrada )
+  //   }
+  // }
 
   async onIsDigitalChange(e: any): Promise<void> {
     const valorSelecionado = e.target.value.split(':')[0];
@@ -1435,6 +1539,7 @@ public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Prom
       this.form.controls[
         'nuClassificacaoPlanejamento'
       ].updateValueAndValidity();
+
     } else if (valorSelecionado == 2) {
       this.listaClassificacoesPlanejamentoDigitalFiltrada =
         this.listaClassificacoesPlanejamentoDigital.filter(
@@ -1449,26 +1554,11 @@ public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Prom
       this.form.controls[
         'nuClassificacaoPlanejamento'
       ].updateValueAndValidity();
+
+
     }
   }
 
-  // public async obterMensalizacaoContrato(coContrato: string): Promise<void> {
-  //   try {
-  //     const response = await this.apiService.get<
-  //       ApiResponse<Gcpvw008Mensalizacao[]>
-  //     >(`${Endpoints.URL_MENSALIZACAO}/contrato?coContrato=${coContrato}`);
-  //     this.gcpvw008Mensalizacao = response.data;
-  //     this.gcpvw008Mensalizacao.forEach(element => {
-  //       if (element.dE_PERIODO.includes(this.planejamento.nuAno.toString())) {
-  //         this.gcpvw008Mensalizacao2024.push(element)
-  //       }
-  //     });
-  //     this.gcpvw008Mensalizacao2024.sort((a, b) => (a.dE_PERIODO < b.dE_PERIODO ? -1 : 1));
-  //     this.rubricas = this.gcpvw008Mensalizacao2024.filter((item, i, arr) => arr.findIndex((t) => t.dE_RUBRICA === item.dE_RUBRICA) === i);
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }
   public async obterMensalizacaoContrato(coContrato: number): Promise<void> {
     try {
       const response = await this.apiService.get<
@@ -1571,79 +1661,88 @@ public async ExcluirItens(planejamento : PlanejamentoOrcamentarioResponse): Prom
     if (tipoModal == 'editar') {
       this.isEditable = isEditable;
       this.formularioLivre();
+        
+      const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
+      if (previsoesArray) {
+        previsoesArray.controls.forEach((grupo) => {
+          if (grupo instanceof FormGroup) {
+            const preComp = grupo.get('nuPreComprometimento');
+            const reserva = grupo.get('nuReserva');
+  
+            if (preComp?.value && !reserva?.value) {
+              reserva?.disable();
+            } else if (reserva?.value && !preComp?.value) {
+              preComp?.disable();
+            }
+          }
+        });
+      }
+      
     }
   }
 
-onPreComprometimentoInput(event: Event): void {
-  const value = (event.target as HTMLInputElement).value;
-  const reservaInput = document.getElementById('nuReserva') as HTMLInputElement;
-
-  if (value && value.trim() !== '') {
-    reservaInput.readOnly = true; // ou reservaInput.disabled = true;
-    this.form?.controls['nuReserva']?.removeValidators;
-  } else {
-    reservaInput.readOnly = false;
-    this.form?.controls['nuReserva']?.addValidators(Validators.required);
-  }
-}
-
-onReservaInput(event: Event): void {
-  const value = (event.target as HTMLInputElement).value;
-  const preComprometimentoInput = document.getElementById('nuPreComprometimento') as HTMLInputElement;
-
-  if (value && value.trim() !== '') {
-    preComprometimentoInput.readOnly = true; // ou reservaInput.disabled = true;
-    this.form?.controls['nuPreComprometimento']?.removeValidators;
-  } else {
-    preComprometimentoInput.readOnly = false;
-    this.form?.controls['nuPreComprometimento']?.addValidators(Validators.required);
+  onPreComprometimentoInput(event: Event, index: number): void {
+    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
+    const value = (event.target as HTMLInputElement).value;
+    if (value && value.trim() !== '') {
+      grupo.get('nuReserva')?.disable();
+    } else {
+      grupo.get('nuReserva')?.enable();
+    }
   }
 
+  onReservaInput(event: Event, index: number): void {
+    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
+    const value = (event.target as HTMLInputElement).value;
+    if (value && value.trim() !== '') {
+      grupo.get('nuPreComprometimento')?.setValue('');
+      grupo.get('nuPreComprometimento')?.disable();
+    } else {
+      grupo.get('nuPreComprometimento')?.enable();
+    }
+  }
 
-}
+  async cadastrarItem(lista: any): Promise<void> {
+    try {
+      const response = await this.apiService.post<any>(
+        `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
+        lista
+      );
 
-
-async cadastrarItem(lista: any): Promise<void> {
-  try {
-    const response = await this.apiService.post<any>(
-      `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
-      lista
-    );
-
-    if (response?.succeeded && response.data?.succeeded) {
-      const resultado = response.data.resultados?.[0];
-      if (resultado?.succeeded) {
-        console.log('Item cadastrado com sucesso:', resultado.nuPlanejamentoItem);
-        // Aqui você pode exibir um toast, atualizar a UI, etc.
-        await Swal.fire({
-          title: 'Sucesso!',
-          text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} cadastrado com sucesso.`,
-          icon: 'success',
-          confirmButtonText: 'OK',
-        });
+      if (response?.succeeded && response.data?.succeeded) {
+        const resultado = response.data.resultados?.[0];
+        if (resultado?.succeeded) {
+          // Aqui você pode exibir um toast, atualizar a UI, etc.
+          await Swal.fire({
+            title: 'Sucesso!',
+            text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} cadastrado com sucesso.`,
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+        } else {
+          console.warn('Falha ao cadastrar item:', resultado?.message);
+          await Swal.fire({
+            title: 'Erro!',
+            text: 'Falha ao cadastrar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        }
       } else {
-        console.warn('Falha ao cadastrar item:', resultado?.message);
+        console.error('Erro na resposta da API:', response.errors);
         await Swal.fire({
           title: 'Erro!',
-          text: 'Falha ao cadastrar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
           icon: 'error',
           confirmButtonText: 'OK',
         });
-
       }
-    } else {
-      console.error('Erro na resposta da API:', response.errors);
-      await Swal.fire({
-        title: 'Erro!',
-        text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      });
-    }
 
-  } catch (error) {
-    console.error('Erro na requisição:', error);
-    // Tratar erro de rede ou exceção
+      this.atualizarPagina.emit(true);
+      this.activeModal.dismiss();
+    } catch (error) {
+      console.error('Erro na requisição:', error);
+      // Tratar erro de rede ou exceção
+    }
   }
-}
 }
