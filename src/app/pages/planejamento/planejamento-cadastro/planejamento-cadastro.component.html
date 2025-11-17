@@ -561,6 +561,8 @@
                   <div *ngIf="event.listaDiffs" class="mt-2">
 
                     <button
+                      style="cursor: no-drop !important;"
+                      [disabled]="true"
                       class="btn-sm btn-default"
                       type="submit"
                       (click)="verDetalhes(event.listaDiffs)"
