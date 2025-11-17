@@ -961,6 +961,17 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
       this.listaStatusPlanejamento = response.data;
       this.buildStatusRank_();
+            //Define o campo como criado ao criar um novo contrato e desabilita o campo
+            if (this.isCadastro) {
+              const criadoId = this.listaStatusPlanejamento.find(
+                s => s.noPlanejamentoStatus === 'Criado'
+              )?.nuPlanejamentoStatus;
+        
+              if (criadoId) {
+                this.form.controls['nuPlanejamentoStatus'].setValue(criadoId);
+                this.form.controls['nuPlanejamentoStatus'].disable();
+              }
+            }
     } catch (error) {
       console.error(error);
     } finally {
@@ -1132,6 +1143,17 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
 
   public async onSubmit(): Promise<void> {
+    const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
+
+    if (totalContratacao === 0 || totalContratacao === null) {
+      await Swal.fire({
+        title: 'Atenção!',
+        text: 'A previsão de desembolso não pode ser zero. Informe um valor válido',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return; 
+    }
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
         this.Cadastrar();
