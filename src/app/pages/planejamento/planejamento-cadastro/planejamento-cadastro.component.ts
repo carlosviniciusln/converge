@@ -333,11 +333,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
         Validators.required,
       ]),
       deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
-        Validators.required,
+      
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.required]
+        
       ),
       deObservacao: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
@@ -350,7 +350,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }),
+      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }, [Validators.required]),
       coContrato: [''],
       nuObjetivoEstrategicoPdti: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -366,7 +366,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       }),
       nuPlanejamentoTipo: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.required]
+        
       ),
       noCriador: [''],
       dhCadastro: [''],
@@ -1222,12 +1222,16 @@ async removerRubrica(nuRubrica: string) {
         for (const name in controls) {
           if (controls[name].invalid) invalids.push(name);
         }
-        if (this.form.controls['deObjeto'].value == '') {
-          this.toastr.error('Informe o objeto.', 'Erro');
+        if (invalids.length > 0) {
+          this.toastr.error('Preencha todos os campos obrigatórios.', 'Erro');
+          console.warn('Campos inválidos:', invalids);
         }
-        if (this.form.controls['deJustificativa'].value == '') {
-          this.toastr.error('Informe a justificativa.', 'Erro');
-        }
+        // if (this.form.controls['deObjeto'].value == '') {
+        //   this.toastr.error('Informe o objeto.', 'Erro');
+        // }
+        // if (this.form.controls['deJustificativa'].value == '') {
+        //   this.toastr.error('Informe a justificativa.', 'Erro');
+        // }
 
         return;
       } else if (
@@ -1240,9 +1244,10 @@ async removerRubrica(nuRubrica: string) {
           'Erro'
         );
         return;
-      } else if (this.form.controls['deObjeto'].value == null) {
-        this.toastr.error('Informe o objeto.', 'Erro');
-      }
+      } 
+      // else if (this.form.controls['deObjeto'].value == null) {
+      //   this.toastr.error('Informe o objeto.', 'Erro');
+      // }
 
       var codigoContrato = this.form.controls['coContrato'].value;
       this.form.controls['nuContrato'].setValue(codigoContrato);
