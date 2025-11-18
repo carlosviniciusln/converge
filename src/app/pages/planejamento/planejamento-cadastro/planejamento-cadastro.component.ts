@@ -149,7 +149,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   public currentProfile: IUser;
   public isPerfilPrivilegiado = false;
-
+  rubricasSelecionadas: string[] = [];
   selectContratos: Select2Data;
   selectedContrato: string = null;
 
@@ -580,6 +580,37 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.obterDadosContrato(nuContrato);
     }
   }
+  onRubricaChange(event: any) {
+    var nuRubrica = event.target.value != null ? event.target.value.split(': ')[1] : event.target.value;
+    console.log("nuRubrica", nuRubrica)
+
+    if (nuRubrica) {
+      const controls = this.form.controls.previsoesDesembolso?.value;      
+      for (const i in controls) { 
+        const controlValue = controls[i].nuRubrica;
+        if (controlValue) {          
+          this.rubricasSelecionadas.push(controlValue+"");
+        }
+      }
+      const jaExiste = this.rubricasSelecionadas.includes(nuRubrica);
+      this.removerRubrica(nuRubrica);
+      const jaExiste2 = this.rubricasSelecionadas.includes(nuRubrica);
+      if (jaExiste2) {
+        event.target.value = '';
+        this.toastr.warning('Este Rubrica já foi selecionado. Escolha outra e tente novamente.', 'Aviso');
+        return;
+      }
+    }
+  
+  }
+  
+async removerRubrica(nuRubrica: string) {
+  const index = this.rubricasSelecionadas.indexOf(nuRubrica);
+  if (index !== -1) {
+    this.rubricasSelecionadas.splice(index, 1);
+  }
+}
+
 
   async obterDadosContrato(nuContrato: string) {
     try {
@@ -1434,7 +1465,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         if (resultado?.succeeded) {
           await Swal.fire({
             title: 'Sucesso!',
-            text: `Item do Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} alterado com sucesso.`,
+            text: `Item do Planejamento Orçamentário alterado com sucesso.`,
             icon: 'success',
             confirmButtonText: 'OK',
           });
@@ -1715,7 +1746,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           // Aqui você pode exibir um toast, atualizar a UI, etc.
           await Swal.fire({
             title: 'Sucesso!',
-            text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} cadastrado com sucesso.`,
+            text: `Item do Planejamento Orçamentário cadastrado com sucesso.`,
             icon: 'success',
             confirmButtonText: 'OK',
           });
