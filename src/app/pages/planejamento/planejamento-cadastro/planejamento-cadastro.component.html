@@ -225,7 +225,7 @@
       <!-- Campo Rubrica sempre visível -->
       <div class="col-md-4 pr-0">
         <label for="nuRubrica">Rubrica {{ i + 1 }} :</label>
-        <select class="form-control" id="nuRubrica" formControlName="nuRubrica"
+        <select class="form-control" id="nuRubrica" formControlName="nuRubrica" (change)="onRubricaChange($event)"
           [ngClass]="{'is-invalid': submitted && previsaoDesembolso?.get('nuRubrica')?.invalid}">
           <option value="" disabled selected>Selecione Rubrica</option>
           <option *ngFor="let a of listaRubricas" [ngValue]="a.nuRubrica">
