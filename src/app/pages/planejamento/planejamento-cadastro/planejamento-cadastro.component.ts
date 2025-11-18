@@ -1262,7 +1262,7 @@ async removerRubrica(nuRubrica: string) {
             NuContrato: obj.nuContrato,
             NuFilial: obj.nuFilial,
             NuRubrica: previsoes[p].nuRubrica,
-            NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus,
+            NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus == null ? 5 : obj.nuPlanejamentoStatus,
             NuTipoDemanda: obj.nuDemandaTipo,
             NuVigencia: obj.nuAno,
             DeDigital: digital?.code,
