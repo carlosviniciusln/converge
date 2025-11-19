@@ -41,13 +41,9 @@ export class ModalLimitesComponent implements OnInit {
   @Input() public registro: LimitesModel;
   @Input() public planejamentoEdit: number;
   @Input() public nuFilialEdit: number;
-
-
-
-
-  @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   @Input() public nuPlanejamento: number;
   @Input() public tipoModal: string;
+  @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
   public formCadastro: FormGroup;
   public listaExercicios: ExercicioModel[] = [];
@@ -133,7 +129,7 @@ export class ModalLimitesComponent implements OnInit {
         nuPlanejamento: ['', Validators.required],
         nuRubrica: ['', Validators.required],
         nuUnidadeDemandante: ['', Validators.required],
-        vrLimite: [0, Validators.required],
+        vrLimite: [this.formatarValorMonetario(0), Validators.required],
         nuLimitePlanejamento: [0, Validators.required]
       });
       this.isDisabled = false;
@@ -146,7 +142,7 @@ export class ModalLimitesComponent implements OnInit {
         nuPlanejamento: [this.planejamentoEdit, Validators.required],
         nuRubrica: [this.registro.nU_RUBRICA, Validators.required],
         nuUnidadeDemandante: [this.nuFilialEdit, Validators.required],
-        vrLimite: [this.registro.vR_LIMITE, Validators.required],
+        vrLimite: [this.formatarValorMonetario(this.registro.vR_LIMITE), Validators.required],
         nuLimitePlanejamento: [this.registro.nU_LIMITE_PLANEJAMENTO, Validators.required]
       });
     }
@@ -191,6 +187,7 @@ export class ModalLimitesComponent implements OnInit {
   public async onSubmit(): Promise<void> {
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
+        
         this.Cadastrar();
         break;
       case PageAction.Alterar:
@@ -228,7 +225,9 @@ export class ModalLimitesComponent implements OnInit {
         this.toastr.error('Todos os campos são obrigatórios.', 'Campo Obrigatório');
         console.log(invalids);
         return;
+        
       }
+      
 
       let validaJaCadastrado = false;
 
@@ -330,24 +329,47 @@ export class ModalLimitesComponent implements OnInit {
     }
   }
 
-  ajustarCentavos(): void {
-    const valor = this.formCadastro.get('vrLimite')?.value;
+ 
+formatarValor(): void {
+  let valor = this.formCadastro.get('vrLimite')?.value;
 
-    if (!valor || typeof valor !== 'string') return;
-
-    // Remove prefixo e separadores para verificar se é inteiro
-    const valorLimpo = valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.');
-    const numero = parseFloat(valorLimpo);
-
-    if (!isNaN(numero)) {
-      const partes = valorLimpo.split('.');
-      const temCentavos = partes.length > 1 && partes[1].length > 0;
-
-      if (!temCentavos) {
-        // Apenas atualiza o valor do FormControl com número formatado
-        // sem interferir na máscara
-        this.formCadastro.get('vrLimite')?.setValue(numero.toFixed(2).replace('.', ','), { emitEvent: true });
-      }
-    }
+  if (!valor) {
+    this.formCadastro.get('vrLimite')?.setValue('R$ ', { emitEvent: false });
+    return;
   }
+
+  // Remove tudo que não é número
+  valor = valor.replace(/\D/g, '');
+
+  if (!valor) {
+    this.formCadastro.get('vrLimite')?.setValue('R$ ', { emitEvent: false });
+    return;
+  }
+
+  // Se tiver menos de 3 dígitos, completa com zeros
+  while (valor.length < 3) {
+    valor = '0' + valor;
+  }
+
+  // Separa reais e centavos
+  const reais = valor.slice(0, -2);
+  const centavos = valor.slice(-2);
+
+  // Formata com separador de milhar
+  const reaisFormatados = parseInt(reais, 10).toLocaleString('pt-BR');
+
+  const formatado = `R$ ${reaisFormatados},${centavos}`;
+  this.formCadastro.get('vrLimite')?.setValue(formatado, { emitEvent: false });
+}
+
+
+private formatarValorMonetario(valor: any): string {
+  if (!valor || valor === '0') return 'R$ 0,00';
+
+  const numero = parseFloat(valor.toString().replace(',', '.'));
+  if (isNaN(numero)) return 'R$ 0,00';
+
+  return `R$ ${numero.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+}
+
 }
