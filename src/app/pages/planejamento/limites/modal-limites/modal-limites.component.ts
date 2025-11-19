@@ -309,7 +309,7 @@ export class ModalLimitesComponent implements OnInit {
         nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
         nuFilial: this.formCadastro.controls['nuUnidadeDemandante'].value,
         nuRubrica: this.formCadastro.controls['nuRubrica'].value,
-        novoLimite: Number(this.formCadastro.controls['vrLimite'].value?.replace(',', '.')),
+        novoLimite: this.formCadastro.controls['vrLimite'].value?.replace(',', '.'),
         nuLimitePlanejamento: this.formCadastro.controls['nuLimitePlanejamento'].value        
       };
 
