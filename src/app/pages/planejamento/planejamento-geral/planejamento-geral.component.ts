@@ -22,6 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
 import { TableLazyLoadEvent } from 'primeng/table';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -207,41 +208,43 @@ export class PlanejamentoGeralComponent implements OnInit {
 
 
 public async onSalvarMudancasStatus(): Promise<void> {
-  let confirmed = false;
-
-  try {
-    const modalRef = this.modalService.open(ConfirmacaoModalComponent, {
-      backdrop: 'static',
-      keyboard: false,
-      centered: true,
-      size: 'md'
-    });
-
-    modalRef.componentInstance.title = 'Confirmar alterações';
-    modalRef.componentInstance.message = 'Tem certeza que deseja salvar as alterações de status dos itens selecionados?';
-    modalRef.componentInstance.confirmLabel = 'Sim, alterar!';
-    modalRef.componentInstance.cancelLabel = 'Não, cancelar!';
-    modalRef.componentInstance.icon = 'pi pi-exclamation-triangle';
-    modalRef.componentInstance.iconClass = 'text-warning';
 
     try {
-      confirmed = await modalRef.result;
-    } catch {
-      confirmed = false;
-    }
 
-    if (!confirmed) return;
+      const idSelecionado = this.statusSelecionados[0];
+      const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
+      const itensSelecionados = this.perfilOrcamento || this.perfilAdm ? this.planejamentos.filter(p => p.sT_SELECIONADO): this.planejamentos.filter(p => p.sT_SELECIONADO && this.perfilUnidade == p.cO_FILIAL);
 
-    const idSelecionado = this.statusSelecionados[0];
-    const novoStatusObj = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
-    if (!novoStatusObj) return;
-
-    const itensSelecionados = this.perfilOrcamento || this.perfilAdm ? this.planejamentos.filter(p => p.sT_SELECIONADO)
-    : this.planejamentos.filter(p => p.sT_SELECIONADO && this.perfilUnidade == p.cO_FILIAL);
     if (itensSelecionados.length === 0) {
       this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
       return;
     }
+
+    if(this.statusSelecionados.length == 0){
+      this.toastr.warning('Selecione uma opção de status.', 'Aviso');
+      return;
+    }
+
+
+     const alert = await Swal.fire({
+       text: `Deseja realmente alterar o Status de todos os registros selecionados desta página para o Status ${novoStatusObj?.noPlanejamentoStatus} `,
+       icon: 'warning',
+       showCancelButton: true,
+       confirmButtonText: 'Sim, alterar!',
+       cancelButtonText: 'Não, cancelar!',
+     }).then((result) => {
+
+      if (result.value) {
+        return true;
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        return false;
+      }
+
+     });
+
+    if (!alert) return;
+
+    if (!novoStatusObj) return;
 
     const statusNovo: AlterarStatusPlanejamento = {
       nuPlanejamento: Number(this.nuPlanejamentoExercicio),
@@ -266,7 +269,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
     };
 
   } catch (error) {
-    this.toastr.error('Ocorreu um erro ao salvar', "Error");
+    console.error(error, "Erro na requisição")
   }
 }
 
