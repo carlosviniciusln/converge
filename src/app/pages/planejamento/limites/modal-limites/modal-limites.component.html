@@ -71,19 +71,12 @@
           </div>
           <div class="col-md-7 pr-0">
             <label for="vrLimite">Valor Limite:</label>
-            <input
+           <input
               formControlName="vrLimite"
               type="text"
               class="form-control"
-              mask="separator.2"
-              [thousandSeparator]="'.'"
-              [decimalMarker]="','"
-              prefix="R$ "
-              [dropSpecialCharacters]="false"
-              placeholder="R$ 0,00"
-              (blur)="ajustarCentavos()"
-            />
-
+              placeholder="0,00"
+              (input)="formatarValor()"/>
           </div>
         </div>
       </div>
@@ -179,19 +172,12 @@
           </div>
           <div class="col-md-7 pr-0">
             <label for="vrLimite">Valor Limite:</label>
-            <input
-              formControlName="vrLimite"
-              type="text"
-              class="form-control"
-              mask="separator.2"
-              [thousandSeparator]="'.'"
-              [decimalMarker]="','"
-              prefix="R$ "
-              [dropSpecialCharacters]="false"
-              placeholder="R$ 0,00"
-              (blur)="ajustarCentavos()"
-            />
-
+                <input
+                  formControlName="vrLimite"
+                  type="text"
+                  class="form-control"
+                  placeholder="0,00"
+                  (input)="formatarValor()"/>
           </div>
         </div>
       </div>
