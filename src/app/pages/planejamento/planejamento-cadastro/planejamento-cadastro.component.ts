@@ -517,7 +517,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.limparValor(prevDes.get('vrNovembro')?.value) +
       this.limparValor(prevDes.get('vrDezembro')?.value);
 
-    prevDes.get('vrTotalRubrica')?.setValue(total.toFixed(2));
+    prevDes.get('vrTotalRubrica')?.setValue(total);
 
     this.somaValorTotalPlanejamentoOrcamentario();
   }
@@ -842,7 +842,7 @@ async removerRubrica(nuRubrica: string) {
                       x.vrOutubro +
                       x.vrNovembro +
                       x.vrDezembro
-                    ) / 100,
+                    ),
                     disabled: true,
                   },
                   [Validators.required]
@@ -853,7 +853,7 @@ async removerRubrica(nuRubrica: string) {
 
 
                 const totalDesembolso = this.planejamento.gcptb027PrevisoesDesembolso.reduce(
-                  (soma, item) => soma + item['vrPlanejamentoTotal'] / 100,
+                  (soma, item) => soma + item['vrPlanejamentoTotal'],
                   0
                 );
 
