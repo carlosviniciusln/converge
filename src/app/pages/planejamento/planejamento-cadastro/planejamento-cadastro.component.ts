@@ -1331,20 +1331,20 @@ async removerRubrica(nuRubrica: string) {
           );
           return;
         }
-        if (
-          this.form.controls['deObjeto'].value == '' ||
-          this.form.controls['deObjeto'].value == null
-        ) {
-          this.toastr.error('Informe o objeto.', 'Erro');
-          return;
-        }
-        if (
-          this.form.controls['deJustificativa'].value == '' ||
-          this.form.controls['deJustificativa'].value == null
-        ) {
-          this.toastr.error('Informe a justificativa.', 'Erro');
-          return;
-        }
+        // if (
+        //   this.form.controls['deObjeto'].value == '' ||
+        //   this.form.controls['deObjeto'].value == null
+        // ) {
+        //   this.toastr.error('Informe o objeto.', 'Erro');
+        //   return;
+        // }
+        // if (
+        //   this.form.controls['deJustificativa'].value == '' ||
+        //   this.form.controls['deJustificativa'].value == null
+        // ) {
+        //   this.toastr.error('Informe a justificativa.', 'Erro');
+        //   return;
+        // }
 
         return;
       } else if (
@@ -1357,9 +1357,9 @@ async removerRubrica(nuRubrica: string) {
           'Erro'
         );
         return;
-      } else if (this.form.controls['deObjeto'].value == null) {
-        this.toastr.error('Informe o objeto.', 'Erro');
-        return;
+      // } else if (this.form.controls['deObjeto'].value == null) {
+      //   this.toastr.error('Informe o objeto.', 'Erro');
+      //   return;
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == null
       ) {
@@ -1456,7 +1456,9 @@ async removerRubrica(nuRubrica: string) {
           VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
           VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
         };
-
+        if (item.VrPlanejamentoItem == null || Number.isNaN(item.VrPlanejamentoItem)) {
+          item.VrPlanejamentoItem = await this.calcularPlanejamento(item);
+        }
         lista.push(item);
       }
 
@@ -1502,6 +1504,14 @@ async removerRubrica(nuRubrica: string) {
     }
   }
 
+  public async calcularPlanejamento(item: any): Promise<number> {
+    const meses = [
+      item.VrJaneiro, item.VrFevereiro, item.VrMarco, item.VrAbril,
+      item.VrMaio, item.VrJunho, item.VrJulho, item.VrAgosto,
+      item.VrSetembro, item.VrOutubro, item.VrNovembro, item.VrDezembro
+    ];
+    return meses.reduce((total, valor) => total + (valor ?? 0), 0);
+  }  
   public async ExcluirItens(
     planejamento: PlanejamentoOrcamentarioResponse
   ): Promise<void> {
