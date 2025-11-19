@@ -149,7 +149,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   public currentProfile: IUser;
   public isPerfilPrivilegiado = false;
-
+  rubricasSelecionadas: string[] = [];
   selectContratos: Select2Data;
   selectedContrato: string = null;
 
@@ -333,11 +333,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
         Validators.required,
       ]),
       deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
-        Validators.required,
+      
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.required]
+        
       ),
       deObservacao: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
@@ -350,7 +350,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }),
+      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }, [Validators.required]),
       coContrato: [''],
       nuObjetivoEstrategicoPdti: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -366,7 +366,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       }),
       nuPlanejamentoTipo: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.required]
+        
       ),
       noCriador: [''],
       dhCadastro: [''],
@@ -580,6 +580,37 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.obterDadosContrato(nuContrato);
     }
   }
+  onRubricaChange(event: any) {
+    var nuRubrica = event.target.value != null ? event.target.value.split(': ')[1] : event.target.value;
+    console.log("nuRubrica", nuRubrica)
+
+    if (nuRubrica) {
+      const controls = this.form.controls.previsoesDesembolso?.value;      
+      for (const i in controls) { 
+        const controlValue = controls[i].nuRubrica;
+        if (controlValue) {          
+          this.rubricasSelecionadas.push(controlValue+"");
+        }
+      }
+      const jaExiste = this.rubricasSelecionadas.includes(nuRubrica);
+      this.removerRubrica(nuRubrica);
+      const jaExiste2 = this.rubricasSelecionadas.includes(nuRubrica);
+      if (jaExiste2) {
+        event.target.value = '';
+        this.toastr.warning('Este Rubrica já foi selecionado. Escolha outra e tente novamente.', 'Aviso');
+        return;
+      }
+    }
+  
+  }
+  
+async removerRubrica(nuRubrica: string) {
+  const index = this.rubricasSelecionadas.indexOf(nuRubrica);
+  if (index !== -1) {
+    this.rubricasSelecionadas.splice(index, 1);
+  }
+}
+
 
   async obterDadosContrato(nuContrato: string) {
     try {
@@ -1191,12 +1222,16 @@ export class PlanejamentoCadastroComponent implements OnInit {
         for (const name in controls) {
           if (controls[name].invalid) invalids.push(name);
         }
-        if (this.form.controls['deObjeto'].value == '') {
-          this.toastr.error('Informe o objeto.', 'Erro');
+        if (invalids.length > 0) {
+          this.toastr.error('Preencha todos os campos obrigatórios.', 'Erro');
+          console.warn('Campos inválidos:', invalids);
         }
-        if (this.form.controls['deJustificativa'].value == '') {
-          this.toastr.error('Informe a justificativa.', 'Erro');
-        }
+        // if (this.form.controls['deObjeto'].value == '') {
+        //   this.toastr.error('Informe o objeto.', 'Erro');
+        // }
+        // if (this.form.controls['deJustificativa'].value == '') {
+        //   this.toastr.error('Informe a justificativa.', 'Erro');
+        // }
 
         return;
       } else if (
@@ -1209,9 +1244,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
           'Erro'
         );
         return;
-      } else if (this.form.controls['deObjeto'].value == null) {
-        this.toastr.error('Informe o objeto.', 'Erro');
-      }
+      } 
+      // else if (this.form.controls['deObjeto'].value == null) {
+      //   this.toastr.error('Informe o objeto.', 'Erro');
+      // }
 
       var codigoContrato = this.form.controls['coContrato'].value;
       this.form.controls['nuContrato'].setValue(codigoContrato);
@@ -1231,7 +1267,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
             NuContrato: obj.nuContrato,
             NuFilial: obj.nuFilial,
             NuRubrica: previsoes[p].nuRubrica,
-            NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus,
+            NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus == null ? 5 : obj.nuPlanejamentoStatus,
             NuTipoDemanda: obj.nuDemandaTipo,
             NuVigencia: obj.nuAno,
             DeDigital: digital?.code,
@@ -1434,7 +1470,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         if (resultado?.succeeded) {
           await Swal.fire({
             title: 'Sucesso!',
-            text: `Item do Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} alterado com sucesso.`,
+            text: `Item do Planejamento Orçamentário alterado com sucesso.`,
             icon: 'success',
             confirmButtonText: 'OK',
           });
@@ -1715,7 +1751,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
           // Aqui você pode exibir um toast, atualizar a UI, etc.
           await Swal.fire({
             title: 'Sucesso!',
-            text: `Planejamento Orçamentário Cód: ${resultado.nuPlanejamentoItem} cadastrado com sucesso.`,
+            text: `Item do Planejamento Orçamentário cadastrado com sucesso.`,
             icon: 'success',
             confirmButtonText: 'OK',
           });
