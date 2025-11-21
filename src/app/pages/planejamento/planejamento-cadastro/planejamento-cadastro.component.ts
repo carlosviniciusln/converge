@@ -1,3 +1,4 @@
+import { ListarContratoPlanejamentoOrcamentarioResponse } from './../../../models/response/ListarContratoPlanejamentoOrcamentarioResponse';
 import { Gcptb060PlanejamentoItemHistoricoDTO } from './../../../models/DTOs/Gcptb060PlanejamentoItemHistoricoDTO';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
@@ -63,7 +64,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   gcpvw008MensalizacaoAnoExercicio: Gcpvw008Mensalizacao[] = [];
   rubricas: Gcpvw008Mensalizacao[] = [];
   public form: FormGroup;
-  public listaContratos: ContratoResponse[] = [];
+  public listaContratos: ListarContratoPlanejamentoOrcamentarioResponse[] = [];
   public listaFiliais: Filial[] = [];
   public listaRubricas: Rubrica[] = [];
   public listaExercicios: Orcamento[] = [];
@@ -94,6 +95,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public selectTab: number = 0;
   loading: boolean = true;
   isReadonly = true;
+  contratoInativo = false;
   permissions: ActionPolicies;
   private readonly STATUS_ORDER = [
     'Criado',
@@ -333,11 +335,11 @@ export class PlanejamentoCadastroComponent implements OnInit {
         Validators.required,
       ]),
       deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
-      
+
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
-        
+
       ),
       deObservacao: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
@@ -366,7 +368,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
       }),
       nuPlanejamentoTipo: new FormControl(
         { value: '', disabled: !this.isEditable },
-        
+
       ),
       noCriador: [''],
       dhCadastro: [''],
@@ -466,10 +468,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
       vrTotalRubrica: new FormControl(0, [Validators.required]),
     });
   }
-
-  // async onContratoChange(e: { value: any }): Promise<void> {
-  //   this.form.controls['nuContrato'].setValue(e.value);
-  // }
 
   onPlanejadoParaChange() {
     if (this.form.controls['nuDemandaTipo'].value == 4) {
@@ -582,13 +580,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
   }
   onRubricaChange(event: any) {
     var nuRubrica = event.target.value != null ? event.target.value.split(': ')[1] : event.target.value;
-    console.log("nuRubrica", nuRubrica)
 
     if (nuRubrica) {
-      const controls = this.form.controls.previsoesDesembolso?.value;      
-      for (const i in controls) { 
+      const controls = this.form.controls.previsoesDesembolso?.value;
+      for (const i in controls) {
         const controlValue = controls[i].nuRubrica;
-        if (controlValue) {          
+        if (controlValue) {
           this.rubricasSelecionadas.push(controlValue+"");
         }
       }
@@ -601,9 +598,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
         return;
       }
     }
-  
+
   }
-  
+
 async removerRubrica(nuRubrica: string) {
   const index = this.rubricasSelecionadas.indexOf(nuRubrica);
   if (index !== -1) {
@@ -617,20 +614,23 @@ async removerRubrica(nuRubrica: string) {
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioConsultaResponse>
       >(
-        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/contrato?nuContrato=${nuContrato}`
+        `v1/Contrato/lista-contrato-planejamento?nuContrato=${nuContrato}`
       );
+
+
       if (response.succeeded && response.data) {
+
+        const contrato = response.data[0];
         this.form.patchValue({
-          nuContrato: response.data.contrato,
-          coContrato: response.data.nU_CONTRATO,
-          nuFilial: response.data.nU_FILIAL,
-          coFilial: response.data.cO_FILIAL,
-          deObjeto: response.data.objeto,
+          nuContrato: contrato?.nuContrato,
+          coContrato: contrato?.coContrato,
+          nuFilial: contrato?.nuFilial,
+          coFilial: contrato?.coFilial,
+          deObjeto: contrato?.noObjeto,
           //nuPlanejamentoStatus: response.data.status,
-          nuObjetivoEstrategicoPdti: response.data.objetivO_PDTIC,
-          nuObjetivoEstrategicoPei: response.data.objetivO_PEI,
-          nuPlanejamentoTipo: this.tipo,
-          deJustificativa: response.data.objeto,
+          nuObjetivoEstrategicoPdti: contrato?.nuObjetivoPdtic,
+          nuObjetivoEstrategicoPei: contrato?.nuObjetivoPei,
+          nuPlanejamentoTipo: this.tipo
         });
       }
     } catch (error) {
@@ -660,6 +660,16 @@ async removerRubrica(nuRubrica: string) {
       );
 
       if (this.planejamento) {
+
+
+        this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
+
+          this.form.controls['coContrato'].setValue(
+           this.planejamento.coContrato
+          );
+
+
+        this.isContratoForaDaLista();
         this.form.controls['nuPlanejamentoOrcamentario'].setValue(
           this.nuPlanejamento.nU_PLANEJAMENTO
         );
@@ -706,11 +716,7 @@ async removerRubrica(nuRubrica: string) {
           this.planejamento.nuTipoDemanda
         );
         this.onPlanejadoParaChange();
-        this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
-        if (this.planejamento.cO_CONTRATO)
-          this.form.controls['coContrato'].setValue(
-            this.nuPlanejamento.cO_CONTRATO
-          );
+
         this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
           this.planejamento.nuObjetivoPdtic
         );
@@ -877,30 +883,21 @@ async removerRubrica(nuRubrica: string) {
     this.editarTextos();
   }
 
+  isContratoForaDaLista(): boolean {
+  const valor = this.form.get('nuContrato')?.value;
+  return this.contratoInativo = valor && !this.listaContratos.some(c => c.nuContrato === valor);
+}
+
+
   //alterar para ativos - ### inviabiliza visualizar os não ativos #### pediu ta feito
   public async obterContratos(): Promise<void> {
     try {
-      if (this.tipoModal !== 'adicionar') {
         const response = await this.apiService.get<
-          ApiResponse<ContratoResponse[]>
-        >(`${Endpoints.URL_CONTRATOS_ATIVOS}`); //somente ativos
-        this.listaContratos = response.data;
-        this.selectContratos = this.listaContratos
-          .sort((a, b) => a.coContrato.localeCompare(b.coContrato))
-          .map(
-            (m) =>
-              ({
-                value: m.nuContrato,
-                label: m.coContrato + ' - ' + m.noEmpresa,
-              } as Select2Option)
-          );
-      } else {
-        const response = await this.apiService.get<
-          ApiResponse<ContratoResponse[]>
-        >(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/obter-todos`);
+          ApiResponse<ListarContratoPlanejamentoOrcamentarioResponse[]>
+        >(`v1/Contrato/lista-contrato-planejamento`);
 
         this.listaContratos = response.data;
-      }
+
     } catch (error) {}
   }
 
@@ -998,7 +995,7 @@ async removerRubrica(nuRubrica: string) {
               const criadoId = this.listaStatusPlanejamento.find(
                 s => s.noPlanejamentoStatus === 'Criado'
               )?.nuPlanejamentoStatus;
-        
+
               if (criadoId) {
                 this.form.controls['nuPlanejamentoStatus'].setValue(criadoId);
                 this.form.controls['nuPlanejamentoStatus'].disable();
@@ -1096,7 +1093,7 @@ async removerRubrica(nuRubrica: string) {
     const currentRank = currentId == null ? -1 : this.rank_(currentId);
     if (!this.listaStatusPlanejamento?.length) return [];
 
-    //if (isAdmin) 
+    //if (isAdmin)
       return this.listaStatusPlanejamento;
 
     // if (isOrc) {
@@ -1184,7 +1181,7 @@ async removerRubrica(nuRubrica: string) {
         icon: 'warning',
         confirmButtonText: 'OK'
       });
-      return; 
+      return;
     }
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
@@ -1244,13 +1241,13 @@ async removerRubrica(nuRubrica: string) {
           'Erro'
         );
         return;
-      } 
+      }
       // else if (this.form.controls['deObjeto'].value == null) {
       //   this.toastr.error('Informe o objeto.', 'Erro');
       // }
 
-      var codigoContrato = this.form.controls['coContrato'].value;
-      this.form.controls['nuContrato'].setValue(codigoContrato);
+      // var codigoContrato = this.form.controls['coContrato'].value;
+      // this.form.controls['nuContrato'].setValue(codigoContrato);
 
       var obj = this.form.getRawValue();
 
@@ -1331,20 +1328,20 @@ async removerRubrica(nuRubrica: string) {
           );
           return;
         }
-        // if (
-        //   this.form.controls['deObjeto'].value == '' ||
-        //   this.form.controls['deObjeto'].value == null
-        // ) {
-        //   this.toastr.error('Informe o objeto.', 'Erro');
-        //   return;
-        // }
-        // if (
-        //   this.form.controls['deJustificativa'].value == '' ||
-        //   this.form.controls['deJustificativa'].value == null
-        // ) {
-        //   this.toastr.error('Informe a justificativa.', 'Erro');
-        //   return;
-        // }
+        if (
+          this.form.controls['deObjeto'].value == '' ||
+          this.form.controls['deObjeto'].value == null
+        ) {
+          this.toastr.error('Informe o objeto.', 'Erro');
+          return;
+        }
+        if (
+          this.form.controls['deJustificativa'].value == '' ||
+          this.form.controls['deJustificativa'].value == null
+        ) {
+          this.toastr.error('Informe a justificativa.', 'Erro');
+          return;
+        }
 
         return;
       } else if (
@@ -1357,9 +1354,9 @@ async removerRubrica(nuRubrica: string) {
           'Erro'
         );
         return;
-      // } else if (this.form.controls['deObjeto'].value == null) {
-      //   this.toastr.error('Informe o objeto.', 'Erro');
-      //   return;
+      } else if (this.form.controls['deObjeto'].value == null) {
+        this.toastr.error('Informe o objeto.', 'Erro');
+        return;
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == null
       ) {
@@ -1404,7 +1401,7 @@ async removerRubrica(nuRubrica: string) {
           return;
         }
       }
-      
+
       if (
         this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 4 && //cancelado
         this.form.value.nuPlanejamentoStatus != 4
@@ -1456,9 +1453,7 @@ async removerRubrica(nuRubrica: string) {
           VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
           VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
         };
-        if (item.VrPlanejamentoItem == null || Number.isNaN(item.VrPlanejamentoItem)) {
-          item.VrPlanejamentoItem = await this.calcularPlanejamento(item);
-        }
+
         lista.push(item);
       }
 
@@ -1504,14 +1499,6 @@ async removerRubrica(nuRubrica: string) {
     }
   }
 
-  public async calcularPlanejamento(item: any): Promise<number> {
-    const meses = [
-      item.VrJaneiro, item.VrFevereiro, item.VrMarco, item.VrAbril,
-      item.VrMaio, item.VrJunho, item.VrJulho, item.VrAgosto,
-      item.VrSetembro, item.VrOutubro, item.VrNovembro, item.VrDezembro
-    ];
-    return meses.reduce((total, valor) => total + (valor ?? 0), 0);
-  }  
   public async ExcluirItens(
     planejamento: PlanejamentoOrcamentarioResponse
   ): Promise<void> {
@@ -1552,26 +1539,6 @@ async removerRubrica(nuRubrica: string) {
     this.submitted = false;
     this.form.reset();
   }
-
-  // metodo não chamado
-
-  // async buildClassificacaoPlanejamento(classificacao: ClassificacaoPlanejamentoResponse) {
-  //   if (classificacao.noEnquadramento == 'Digital') {
-  //     this.listaClassificacoesPlanejamentoDigitalFiltrada =
-  //       this.listaClassificacoesPlanejamentoDigital.filter(
-  //         (x) => x.noEnquadramento == 'Digital'
-  //       );
-
-  //       console.log(" build caiu aqui if", this.listaClassificacoesPlanejamentoDigitalFiltrada )
-  //   } else if (classificacao.noEnquadramento == 'Digital - TD') {
-  //     this.listaClassificacoesPlanejamentoDigitalFiltrada =
-  //       this.listaClassificacoesPlanejamentoDigital.filter(
-  //         (x) => x.noEnquadramento == 'Digital - TD'
-  //       );
-
-  //       console.log(" build caiu aqui else if", this.listaClassificacoesPlanejamentoDigitalFiltrada )
-  //   }
-  // }
 
   async onIsDigitalChange(e: any): Promise<void> {
     const valorSelecionado = e.target.value.split(':')[0];
@@ -1714,7 +1681,7 @@ async removerRubrica(nuRubrica: string) {
           if (grupo instanceof FormGroup) {
             const preComp = grupo.get('nuPreComprometimento');
             const reserva = grupo.get('nuReserva');
-  
+
             if (preComp?.value && !reserva?.value) {
               reserva?.disable();
             } else if (reserva?.value && !preComp?.value) {
@@ -1723,7 +1690,7 @@ async removerRubrica(nuRubrica: string) {
           }
         });
       }
-      
+
     }
   }
 
@@ -1750,6 +1717,7 @@ async removerRubrica(nuRubrica: string) {
 
   async cadastrarItem(lista: any): Promise<void> {
     try {
+
       const response = await this.apiService.post<any>(
         `${Endpoints.URL_ORCAMENTO_CADASTRO}`,
         lista
