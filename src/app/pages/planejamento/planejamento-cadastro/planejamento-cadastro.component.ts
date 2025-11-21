@@ -1486,13 +1486,13 @@ async removerRubrica(nuRubrica: string) {
           });
         }
       } else {
-        console.error('Erro na resposta da API:', response.errors);
-        await Swal.fire({
-          title: 'Erro!',
-          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
+        console.error('Atenção!', response.errors);
+       await Swal.fire({
+        title: 'Atenção!',
+        text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
       }
 
       this.atualizarPagina.emit(true);
