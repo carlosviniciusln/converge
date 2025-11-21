@@ -95,6 +95,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public selectTab: number = 0;
   loading: boolean = true;
   isReadonly = true;
+  contratoInativo = false;
   permissions: ActionPolicies;
   private readonly STATUS_ORDER = [
     'Criado',
@@ -573,15 +574,12 @@ export class PlanejamentoCadastroComponent implements OnInit {
     //Limpa formulário antes de preencher os campos.
     //this.formulario();
     const nuContrato = event.target.value;
-
-    console.log(nuContrato, 'TESTET 5')
     if (nuContrato) {
       this.obterDadosContrato(nuContrato);
     }
   }
   onRubricaChange(event: any) {
     var nuRubrica = event.target.value != null ? event.target.value.split(': ')[1] : event.target.value;
-    console.log("nuRubrica", nuRubrica)
 
     if (nuRubrica) {
       const controls = this.form.controls.previsoesDesembolso?.value;
@@ -619,7 +617,7 @@ async removerRubrica(nuRubrica: string) {
         `v1/Contrato/lista-contrato-planejamento?nuContrato=${nuContrato}`
       );
 
-      console.log(response, "TESTE 6")
+
       if (response.succeeded && response.data) {
 
         const contrato = response.data[0];
@@ -662,6 +660,16 @@ async removerRubrica(nuRubrica: string) {
       );
 
       if (this.planejamento) {
+
+
+        this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
+
+          this.form.controls['coContrato'].setValue(
+           this.planejamento.coContrato
+          );
+
+
+        this.isContratoForaDaLista();
         this.form.controls['nuPlanejamentoOrcamentario'].setValue(
           this.nuPlanejamento.nU_PLANEJAMENTO
         );
@@ -708,11 +716,7 @@ async removerRubrica(nuRubrica: string) {
           this.planejamento.nuTipoDemanda
         );
         this.onPlanejadoParaChange();
-        this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
-        if (this.planejamento.cO_CONTRATO)
-          this.form.controls['coContrato'].setValue(
-            this.nuPlanejamento.cO_CONTRATO
-          );
+
         this.form.controls['nuObjetivoEstrategicoPdti'].setValue(
           this.planejamento.nuObjetivoPdtic
         );
@@ -879,6 +883,12 @@ async removerRubrica(nuRubrica: string) {
     this.editarTextos();
   }
 
+  isContratoForaDaLista(): boolean {
+  const valor = this.form.get('nuContrato')?.value;
+  return this.contratoInativo = valor && !this.listaContratos.some(c => c.nuContrato === valor);
+}
+
+
   //alterar para ativos - ### inviabiliza visualizar os não ativos #### pediu ta feito
   public async obterContratos(): Promise<void> {
     try {
@@ -886,9 +896,7 @@ async removerRubrica(nuRubrica: string) {
           ApiResponse<ListarContratoPlanejamentoOrcamentarioResponse[]>
         >(`v1/Contrato/lista-contrato-planejamento`);
 
-        console.log(response, "TESTE")
         this.listaContratos = response.data;
-        console.log(this.listaContratos, "TESTE")
 
     } catch (error) {}
   }
@@ -1139,7 +1147,6 @@ async removerRubrica(nuRubrica: string) {
         ApiResponse<ObjetivoEstrategicoResponse[]>
       >(`${Endpoints.URL_ORCAMENTO}/objetivos-estrategicos-pdti`);
 
-      console.log(response, "Pdtic")
       // Limita o texto de cada objetivo a 70 caracteres
       this.listaObjetivosEstrategicosPdti = response.data.map((obj) => ({
         ...obj,
@@ -1157,8 +1164,6 @@ async removerRubrica(nuRubrica: string) {
       const response = await this.apiService.get<
         ApiResponse<ObjetivoEstrategicoResponse[]>
       >(`${Endpoints.URL_ORCAMENTO}/objetivos-estrategicos-pei`);
-
-      console.log(response, "PEI")
 
       this.listaObjetivosEstrategicosPei = response.data;
     } catch (error) {
@@ -1241,8 +1246,8 @@ async removerRubrica(nuRubrica: string) {
       //   this.toastr.error('Informe o objeto.', 'Erro');
       // }
 
-      var codigoContrato = this.form.controls['coContrato'].value;
-      this.form.controls['nuContrato'].setValue(codigoContrato);
+      // var codigoContrato = this.form.controls['coContrato'].value;
+      // this.form.controls['nuContrato'].setValue(codigoContrato);
 
       var obj = this.form.value;
 
@@ -1534,26 +1539,6 @@ async removerRubrica(nuRubrica: string) {
     this.submitted = false;
     this.form.reset();
   }
-
-  // metodo não chamado
-
-  // async buildClassificacaoPlanejamento(classificacao: ClassificacaoPlanejamentoResponse) {
-  //   if (classificacao.noEnquadramento == 'Digital') {
-  //     this.listaClassificacoesPlanejamentoDigitalFiltrada =
-  //       this.listaClassificacoesPlanejamentoDigital.filter(
-  //         (x) => x.noEnquadramento == 'Digital'
-  //       );
-
-  //       console.log(" build caiu aqui if", this.listaClassificacoesPlanejamentoDigitalFiltrada )
-  //   } else if (classificacao.noEnquadramento == 'Digital - TD') {
-  //     this.listaClassificacoesPlanejamentoDigitalFiltrada =
-  //       this.listaClassificacoesPlanejamentoDigital.filter(
-  //         (x) => x.noEnquadramento == 'Digital - TD'
-  //       );
-
-  //       console.log(" build caiu aqui else if", this.listaClassificacoesPlanejamentoDigitalFiltrada )
-  //   }
-  // }
 
   async onIsDigitalChange(e: any): Promise<void> {
     const valorSelecionado = e.target.value.split(':')[0];

@@ -31,8 +31,14 @@
             <select class="form-control" id="nuContrato" formControlName="nuContrato"
               [ngClass]="{ 'is-invalid': submitted && f.nuContrato?.invalid }" (change)="onContratoChange($event)">
               <option value={{null}} selected>Selecione o Contrato</option>
+
+
+            <option *ngIf="this.contratoInativo == true" [value]="f.nuContrato?.value">
+              {{ f.coContrato?.value }}
+            </option>
+
               <option *ngFor="let a of listaContratos" [value]="a.nuContrato">
-                {{ a.coContrato }}
+                {{ a.coContrato || f.coContrato }}
               </option>
             </select>
           </div>
