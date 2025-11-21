@@ -1174,6 +1174,9 @@ async removerRubrica(nuRubrica: string) {
   public async onSubmit(): Promise<void> {
     const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
 
+    switch (this.currentPageAction) {
+      case PageAction.Cadastrar:
+
     if (totalContratacao === 0 || totalContratacao === null) {
       await Swal.fire({
         title: 'Atenção!',
@@ -1183,11 +1186,19 @@ async removerRubrica(nuRubrica: string) {
       });
       return;
     }
-    switch (this.currentPageAction) {
-      case PageAction.Cadastrar:
         this.Cadastrar();
         break;
       case PageAction.Alterar:
+
+    if (totalContratacao === 0 || totalContratacao === null) {
+      await Swal.fire({
+        title: 'Atenção!',
+        text: 'A previsão de desembolso não pode ser zero. Informe um valor válido',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
         this.Alterar();
         break;
       case PageAction.Consultar:
@@ -1196,7 +1207,6 @@ async removerRubrica(nuRubrica: string) {
         break;
     }
   }
-
   /* nova conversao  - inicio */
   public parseDecimal(value: any): number {
     if (!value) return undefined;
@@ -1453,7 +1463,9 @@ async removerRubrica(nuRubrica: string) {
           VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
           VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
         };
-
+        if (item.VrPlanejamentoItem == null || Number.isNaN(item.VrPlanejamentoItem)) {
+          item.VrPlanejamentoItem = await this.calcularPlanejamento(item);
+        }
         lista.push(item);
       }
 
@@ -1499,6 +1511,14 @@ async removerRubrica(nuRubrica: string) {
     }
   }
 
+  public async calcularPlanejamento(item: any): Promise<number> {
+    const meses = [
+      item.VrJaneiro, item.VrFevereiro, item.VrMarco, item.VrAbril,
+      item.VrMaio, item.VrJunho, item.VrJulho, item.VrAgosto,
+      item.VrSetembro, item.VrOutubro, item.VrNovembro, item.VrDezembro
+    ];
+    return meses.reduce((total, valor) => total + (valor ?? 0), 0);
+  }
   public async ExcluirItens(
     planejamento: PlanejamentoOrcamentarioResponse
   ): Promise<void> {
