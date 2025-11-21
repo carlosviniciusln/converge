@@ -255,7 +255,14 @@ public async onSalvarMudancasStatus(): Promise<void> {
       }))
     };
 
-    const response : any = await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
+    var response : any;
+    try {
+      response = await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);      
+    } catch (error: any) {
+      setTimeout(() => {
+        window.location.reload()
+      }, 3000);
+    } 
 
     if(response.length > 0){
       this.toastr.success('Alterações de status confirmadas.', 'Confirmação');

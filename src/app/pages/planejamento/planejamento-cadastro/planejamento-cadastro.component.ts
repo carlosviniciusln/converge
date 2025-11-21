@@ -1252,7 +1252,7 @@ async removerRubrica(nuRubrica: string) {
       var codigoContrato = this.form.controls['coContrato'].value;
       this.form.controls['nuContrato'].setValue(codigoContrato);
 
-      var obj = this.form.value;
+      var obj = this.form.getRawValue();
 
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
 
@@ -1486,13 +1486,13 @@ async removerRubrica(nuRubrica: string) {
           });
         }
       } else {
-        console.error('Erro na resposta da API:', response.errors);
-        await Swal.fire({
-          title: 'Erro!',
-          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
+        console.error('Atenção!', response.errors);
+       await Swal.fire({
+        title: 'Atenção!',
+        text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
       }
 
       this.atualizarPagina.emit(true);
@@ -1707,7 +1707,7 @@ async removerRubrica(nuRubrica: string) {
     if (tipoModal == 'editar') {
       this.isEditable = isEditable;
       this.formularioLivre();
-        
+      this.form.controls['nuAno'].disable();
       const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
       if (previsoesArray) {
         previsoesArray.controls.forEach((grupo) => {
