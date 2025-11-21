@@ -28,17 +28,10 @@
           </div>
           <div class="col-md-3 pr-0">
             <label for="coContrato">N&#186; Contrato:</label>
-            <select *ngIf="tipoModal === 'adicionar'" class="form-control" id="nuContrato" formControlName="nuContrato"
+            <select class="form-control" id="nuContrato" formControlName="nuContrato"
               [ngClass]="{ 'is-invalid': submitted && f.nuContrato?.invalid }" (change)="onContratoChange($event)">
               <option value={{null}} selected>Selecione o Contrato</option>
-              <option *ngFor="let a of listaContratos" [value]="a.contrato">
-                {{ a.contrato }}
-              </option>
-            </select>
-            <select *ngIf="tipoModal !== 'adicionar'" class="form-control" id="nuContrato" formControlName="nuContrato"
-              [ngClass]="{ 'is-invalid': submitted && f.nuContrato?.invalid }">
-              <option value={{null}} selected>Selecione o Contrato</option>
-              <option *ngFor="let a of listaContratos" [ngValue]="a.nuContrato">
+              <option *ngFor="let a of listaContratos" [value]="a.nuContrato">
                 {{ a.coContrato }}
               </option>
             </select>
@@ -131,7 +124,7 @@
               <option value="" disabled selected>
                 Selecione Objetivo Estratégico
               </option>
-              <option *ngFor="let a of listaObjetivosEstrategicosPdti" [ngValue]="a?.nuObjetivoEstrategico">
+              <option *ngFor="let a of listaObjetivosEstrategicosPdti" [value]="a?.nuObjetivoEstrategicoPdti">
                 {{ a?.coObjetivoEstrategico }} - {{ a?.deObjetivoEstrategico }}
               </option>
             </select>
@@ -145,7 +138,7 @@
               <option value="" disabled selected>
                 Selecione Objetivo Estratégico PEI
               </option>
-              <option *ngFor="let a of listaObjetivosEstrategicosPei" [ngValue]="a?.nuObjetivoEstrategico">
+              <option *ngFor="let a of listaObjetivosEstrategicosPei" [value]="a?.nuObjetivoEstrategicoPei">
                 {{ a.coObjetivoEstrategico }} - {{ a.deObjetivoEstrategico }}
               </option>
             </select>
