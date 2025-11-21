@@ -1252,7 +1252,7 @@ async removerRubrica(nuRubrica: string) {
       var codigoContrato = this.form.controls['coContrato'].value;
       this.form.controls['nuContrato'].setValue(codigoContrato);
 
-      var obj = this.form.value;
+      var obj = this.form.getRawValue();
 
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
 
@@ -1707,7 +1707,7 @@ async removerRubrica(nuRubrica: string) {
     if (tipoModal == 'editar') {
       this.isEditable = isEditable;
       this.formularioLivre();
-        
+      this.form.controls['nuAno'].disable();
       const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
       if (previsoesArray) {
         previsoesArray.controls.forEach((grupo) => {
