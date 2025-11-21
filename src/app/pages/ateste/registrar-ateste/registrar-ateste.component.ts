@@ -50,28 +50,23 @@ export class RegistrarAtesteComponent implements OnInit {
   }
 
 
-calcularTotal(values: any[]) {
-  this.total = values.reduce((acc, curr, index) => {
-    let valorStr = curr.vrApurado?.toString().trim() || '';
+  public totalFormatado: string = '';
 
-    // Remove o símbolo R$ e espaços
-    valorStr = valorStr.replace('R$', '').trim();
+  calcularTotal(values: any[]): void {
+    let soma = values.reduce((acc, curr) => {
+      let valorStr = (curr.vrApurado ?? '').toString().trim();
+      valorStr = valorStr.replace(/R\$\s?/g, '').trim();
+      valorStr = valorStr.replace(/\./g, '').replace(',', '.');
+      const vrApurado = parseFloat(valorStr);
+      return acc + (isNaN(vrApurado) ? 0 : vrApurado);
+    }, 0);
 
-    // Atualiza o campo com o valor limpo
-    this.faturamentos
-      .at(index)
-      .get('vrApurado')
-      ?.setValue(valorStr, { emitEvent: false });
-
-    // Remove os pontos (milhares) e troca vírgula por ponto (decimal)
-    const valorNumerico = valorStr.replace(/\./g, '').replace(',', '.');
-
-    // Converte para número
-    const vrApurado = parseFloat(valorNumerico) || 0;
-
-    return acc + vrApurado;
-  }, 0);
-}
+    // Garante que soma é número e formata como string
+    this.totalFormatado = `R$ ${soma.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+  }
 
 
   formulario() {
@@ -105,14 +100,17 @@ calcularTotal(values: any[]) {
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
       deObservacao: new FormControl('', [Validators.required]),
+  
+      // Aqui você adiciona os valores iniciais:
       vrPagamento: new FormControl(''),
-      vrRetencao: new FormControl('', [Validators.required]),
+      vrRetencao: new FormControl(''),
+      vrMulta: new FormControl(''),
+  
       dePenalidade: new FormControl('', [
         Validators.required,
         Validators.maxLength(100),
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
-      vrMulta: new FormControl('', [Validators.required]),
       arquivoAnexado: new FormControl(null),
       faturamentos: new FormArray([]),
     });
@@ -262,14 +260,4 @@ calcularTotal(values: any[]) {
     }
   }
 
-  formatarValor(event: any, campo: string) {
-    let valor = event.target.value.replace(/\D/g, '');
-    if (valor.length > 0) {
-      const numero = (parseInt(valor) / 100).toFixed(2);
-      event.target.value = `R$ ${numero.replace('.', ',')}`;
-      this.form.get(campo)?.setValue(event.target.value);
-    } else {
-      this.form.get(campo)?.setValue('');
-    }
-  }
 }
