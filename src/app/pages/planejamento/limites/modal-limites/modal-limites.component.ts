@@ -280,54 +280,59 @@ export class ModalLimitesComponent implements OnInit {
     return formData;
   }
 
-  public async Alterar(): Promise<void> {
-    try {
-      this.submitted = true;
+public async Alterar(): Promise<void> {
+  try {
+    this.submitted = true;
 
-      if (this.formCadastro.invalid) {
-        const invalids = [];
-        const controls = this.formCadastro.controls;
-        for (const name in controls) {
-          if (controls[name].invalid) invalids.push(name);
-        }
-        console.log(invalids);
-        return;
+    if (this.formCadastro.invalid) {
+      const invalids = [];
+      const controls = this.formCadastro.controls;
+      for (const name in controls) {
+        if (controls[name].invalid) invalids.push(name);
       }
-
-      //remover o R$
-      const valorAtual = this.formCadastro.controls['vrLimite'].value;
-      const valorSemPrefixo = valorAtual.replace('R$ ', '');
-      this.formCadastro.controls['vrLimite'].setValue(valorSemPrefixo);
-
-      if (Number.isNaN(valorSemPrefixo)) {
-          this.toastr.error('valor informado em formato inválido. Informe novamente o novo limite', 'Erro');
-          this.formCadastro.controls['vrLimite'].setValue('');
-          return;
-      }
-
-      const updateRequest: LimitesRubricasUpdateV2 = {
-        nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
-        nuFilial: this.formCadastro.controls['nuUnidadeDemandante'].value,
-        nuRubrica: this.formCadastro.controls['nuRubrica'].value,
-        novoLimite: this.formCadastro.controls['vrLimite'].value?.replace(',', '.'),
-        nuLimitePlanejamento: this.formCadastro.controls['nuLimitePlanejamento'].value        
-      };
-
-      await this.apiService.put<LimitesRubricasUpdate>(
-        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/Atualizar-limite`,
-        updateRequest
-      );
-
-      this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
-      this.atualizarPagina.emit(true);
-      this.activeModal.dismiss();
-      setTimeout(() => {
-        window.location.reload()
-      }, 3000);
-    } catch (error) {
-      this.atualizarPagina.emit(false);
+      console.log(invalids);
+      return;
     }
+
+    let valorAtual = this.formCadastro.controls['vrLimite'].value;
+    let valorSemPrefixo = valorAtual.replace('R$ ', '').trim();
+    valorSemPrefixo = valorSemPrefixo.replace(/\./g, '');
+    valorSemPrefixo = valorSemPrefixo.replace(',', '.');
+    const valorNumerico = parseFloat(valorSemPrefixo);
+    if (isNaN(valorNumerico)) {
+      this.toastr.error('Valor informado em formato inválido. Informe novamente o novo limite', 'Erro');
+      this.formCadastro.controls['vrLimite'].setValue('');
+      return;
+    }
+
+    const updateRequest: LimitesRubricasUpdateV2 = {
+      nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
+      nuFilial: this.formCadastro.controls['nuUnidadeDemandante'].value,
+      nuRubrica: this.formCadastro.controls['nuRubrica'].value,
+      novoLimite: valorNumerico,
+      nuLimitePlanejamento: this.formCadastro.controls['nuLimitePlanejamento'].value
+    };
+
+    await this.apiService.put<LimitesRubricasUpdateV2>(
+      `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/Atualizar-limite`,
+      updateRequest
+    );
+
+    const valorFormatado = `R$ ${valorNumerico.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2
+    })}`;
+    this.formCadastro.controls['vrLimite'].setValue(valorFormatado);
+
+    this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
+    this.atualizarPagina.emit(true);
+    this.activeModal.dismiss();
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+  } catch (error) {
+    this.atualizarPagina.emit(false);
   }
+}
 
  
 formatarValor(): void {

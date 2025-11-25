@@ -184,31 +184,50 @@
           <ng-template pTemplate="body" let-faturamento let-i="rowIndex">
             <tr [formGroup]="faturamento">
               <td>
-
+                
                 <!---
                     ALTERAR PARA DROPDOWN PARTIR DE UMA LISTA EM BANCO SERVIÇO TIPO / DEVE PODE SER UMA LISTA
                 -->
                 <div class="c-dropdown">
-                <p-dropdown [options]="listaGcptb018TipoServico"
-                                    [filter]="true" optionLabel="label" optionValue="value"
-                                    formControlName="nuServicoTipo"
-                                    placeholder="Bens/Serviços"></p-dropdown>
+                  <p-dropdown
+                    [options]="listaGcptb018TipoServico"
+                    [filter]="true"
+                    optionLabel="label"
+                    optionValue="value"
+                    formControlName="nuServicoTipo"
+                    placeholder="Bens/Serviços"
+          
+                    appendTo="body"             
+                    scrollHeight="200px"         
+                    [autoZIndex]="true"          
+                    [baseZIndex]="1100"          
+                  >
+                  </p-dropdown>
                 </div>
+              </td>
+          
               <td>
-                <!-- <input
+                 <!-- <input
                   formControlName="vrApurado"
                   class="form-control"
                   mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
                   [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"
                   placeholder="Valor apurado"
                 /> -->
-                <input formControlName="vrApurado"
-                    type="text"
-                    class="form-control col-12"
-                    inputmode="numeric"
-                    (input)="formatarValor($event, 'vrApurado')"
-                    placeholder="R$ 0,00"/>
+                <input
+                  formControlName="vrApurado"
+                  class="form-control"
+                  mask="separator.2"
+                  [allowNegativeNumbers]="false"
+                  [thousandSeparator]="'.'"
+                  [decimalMarker]="','"
+                  prefix="R$ "
+                  [dropSpecialCharacters]="false"
+                  maxlength="38"
+                  placeholder="R$ 0,00"
+                />
               </td>
+          
               <td>
                 <button type="button" class="btn-sm btn-secondary" (click)="removerFaturamento(i)">
                   <i class="tim-icons icon-trash-simple"></i>
@@ -216,11 +235,12 @@
               </td>
             </tr>
           </ng-template>
+          
           <ng-template pTemplate="footer">
             <tr>
               <h5> VALOR TOTAL PARA PAGAMENTO <i class="fa fa-info-circle" pTooltip="Valor Total do Pagamento: valor a pagar considerando os descontos por eventuais ajustes de faturamento (não incluir valor de multa)." tooltipPosition="top" placeholder="Top"></i></h5>
               <td class="fw-bold" style="text-align: end">
-                {{ total | currency : "BRL" : "symbol" : "1.2-2" }}
+                {{ totalFormatado }}
               </td>
               <td></td>
             </tr>
@@ -247,14 +267,20 @@
                   }"
                   placeholder="Retenção"
                   class="form-control col-9"
+                  maxlength="255"
                 />
 
                 <input formControlName="vrRetencao"
-                    inputmode="numeric"
-                     class="form-control col-2"
-                    (input)="formatarValor($event, 'vrRetencao')"
+                    type="text"
+                    class="form-control col-2"
+                    mask="separator.2"
+                    [allowNegativeNumbers]="false"
+                    [thousandSeparator]="'.'"
+                    [decimalMarker]="','"
+                    prefix="R$ "
+                    maxlength="38"
+                    [dropSpecialCharacters]="false"
                     placeholder="R$ 0,00" />
-
             </div>
           </div>
 
@@ -268,17 +294,22 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
                   type="text"
                   placeholder="Penalidade"
                   class="form-control col-9"
+                   maxlength="255"
                   [ngClass]="{
                     'is-invalid': submitted && form.get('dePenalidade').invalid
                   }"
                 />
 
-                <input formControlName="vrMulta"
-                      type="text"
-                      class="form-control col-2"
-                      inputmode="numeric"
-                      (input)="formatarValor($event, 'vrMulta')"
-                      placeholder="R$ 0,00" />
+                  <input formControlName="vrMulta"
+                        type="text"
+                        class="form-control col-2"
+                        mask="separator.2"
+                        [allowNegativeNumbers]="false"
+                        [thousandSeparator]="'.'"
+                        [decimalMarker]="','"
+                        prefix="R$ "
+                        [dropSpecialCharacters]="false"
+                        placeholder="R$ 0,00" />
             </div>
           </div>
 

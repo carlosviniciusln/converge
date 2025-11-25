@@ -180,7 +180,8 @@ export interface PlanejamentoObjetoResponse {
 }
 
 export interface ObjetivoEstrategicoResponse {
-    nuObjetivoEstrategico: number;
+    nuObjetivoEstrategicoPdti: number;
+    nuObjetivoEstrategicoPei: number;
     coObjetivoEstrategico: string;
     deObjetivoEstrategico: string;
 }
