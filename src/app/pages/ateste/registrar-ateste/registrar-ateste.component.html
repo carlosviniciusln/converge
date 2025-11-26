@@ -214,18 +214,11 @@
                   [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="false"
                   placeholder="Valor apurado"
                 /> -->
-                <input
-                  formControlName="vrApurado"
-                  class="form-control"
-                  mask="separator.2"
-                  [allowNegativeNumbers]="false"
-                  [thousandSeparator]="'.'"
-                  [decimalMarker]="','"
-                  prefix="R$ "
-                  [dropSpecialCharacters]="false"
-                  maxlength="38"
-                  placeholder="R$ 0,00"
-                />
+                <input type="text"
+                    class="form-control"
+                    formControlName="vrApurado"
+                    placeholder="R$ 0,00"
+                    (input)="formatarCampo(i)" />
               </td>
           
               <td>
@@ -273,13 +266,7 @@
                 <input formControlName="vrRetencao"
                     type="text"
                     class="form-control col-2"
-                    mask="separator.2"
-                    [allowNegativeNumbers]="false"
-                    [thousandSeparator]="'.'"
-                    [decimalMarker]="','"
-                    prefix="R$ "
-                    maxlength="38"
-                    [dropSpecialCharacters]="false"
+                    (input)="formatarCampo('vrRetencao')"
                     placeholder="R$ 0,00" />
             </div>
           </div>
@@ -300,16 +287,11 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
                   }"
                 />
 
-                  <input formControlName="vrMulta"
-                        type="text"
-                        class="form-control col-2"
-                        mask="separator.2"
-                        [allowNegativeNumbers]="false"
-                        [thousandSeparator]="'.'"
-                        [decimalMarker]="','"
-                        prefix="R$ "
-                        [dropSpecialCharacters]="false"
-                        placeholder="R$ 0,00" />
+                <input formControlName="vrMulta"
+                    type="text"
+                    class="form-control col-2"
+                    (input)="formatarCampo('vrMulta')"
+                    placeholder="R$ 0,00" />
             </div>
           </div>
 

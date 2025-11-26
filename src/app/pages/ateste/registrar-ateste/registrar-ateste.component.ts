@@ -51,21 +51,27 @@ export class RegistrarAtesteComponent implements OnInit {
 
 
   public totalFormatado: string = '';
-
+  
   calcularTotal(values: any[]): void {
-    let soma = values.reduce((acc, curr) => {
-      let valorStr = (curr.vrApurado ?? '').toString().trim();
-      valorStr = valorStr.replace(/R\$\s?/g, '').trim();
-      valorStr = valorStr.replace(/\./g, '').replace(',', '.');
-      const vrApurado = parseFloat(valorStr);
-      return acc + (isNaN(vrApurado) ? 0 : vrApurado);
-    }, 0);
+    let somaCentavos = 0;
+    for (const curr of values) {
+      let valorStr = (curr.vrApurado ?? '').toString()
+        .replace(/R\$\s?/g, '') 
+        .replace(/\./g, '')     
+        .replace(',', '')       
+        .trim();
+    
+      if (!valorStr) continue;
 
-    // Garante que soma é número e formata como string
-    this.totalFormatado = `R$ ${soma.toLocaleString('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`;
+      const centavos = parseInt(valorStr);
+      if (!isNaN(centavos)) somaCentavos += centavos;
+    }
+
+    const reais = Math.floor(somaCentavos / 100);
+    const centavosRestantes = somaCentavos % 100;
+
+    const inteiroFormatado = reais.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    this.totalFormatado = `R$ ${inteiroFormatado},${centavosRestantes.toString().padStart(2, '0')}`;
   }
 
 
@@ -259,5 +265,34 @@ export class RegistrarAtesteComponent implements OnInit {
       this.toastr.error('Erro ao salvar ateste', 'Erro');
     }
   }
+  formatarCampo(ref: number | string): void {
+    let control;
 
+    // Se for número, pega do FormArray
+    if (typeof ref === 'number') {
+      control = (this.faturamentos.at(ref) as FormGroup).get('vrApurado');
+    } else {
+      // Se for string, pega do FormGroup principal
+      control = this.form.get(ref);
+    }
+
+    if (!control) return;
+
+    let valor = control.value.replace(/\D/g, '');
+
+    if (!valor) {
+      control.setValue('R$ 0,00', { emitEvent: false });
+      return;
+    }
+
+    if (valor.length > 15) valor = valor.slice(0, 15);
+
+    const numero = (parseInt(valor) / 100).toFixed(2);
+    const formatado = `R$ ${parseFloat(numero).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+
+    control.setValue(formatado, { emitEvent: false });
+  }
 }
