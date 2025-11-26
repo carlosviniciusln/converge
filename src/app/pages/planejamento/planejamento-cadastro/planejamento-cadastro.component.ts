@@ -1338,20 +1338,20 @@ async removerRubrica(nuRubrica: string) {
           );
           return;
         }
-        if (
-          this.form.controls['deObjeto'].value == '' ||
-          this.form.controls['deObjeto'].value == null
-        ) {
-          this.toastr.error('Informe o objeto.', 'Erro');
-          return;
-        }
-        if (
-          this.form.controls['deJustificativa'].value == '' ||
-          this.form.controls['deJustificativa'].value == null
-        ) {
-          this.toastr.error('Informe a justificativa.', 'Erro');
-          return;
-        }
+        // if (
+        //   this.form.controls['deObjeto'].value == '' ||
+        //   this.form.controls['deObjeto'].value == null
+        // ) {
+        //   this.toastr.error('Informe o objeto.', 'Erro');
+        //   return;
+        // }
+        // if (
+        //   this.form.controls['deJustificativa'].value == '' ||
+        //   this.form.controls['deJustificativa'].value == null
+        // ) {
+        //   this.toastr.error('Informe a justificativa.', 'Erro');
+        //   return;
+        // }
 
         return;
       } else if (
@@ -1364,9 +1364,9 @@ async removerRubrica(nuRubrica: string) {
           'Erro'
         );
         return;
-      } else if (this.form.controls['deObjeto'].value == null) {
-        this.toastr.error('Informe o objeto.', 'Erro');
-        return;
+      // } else if (this.form.controls['deObjeto'].value == null) {
+      //   this.toastr.error('Informe o objeto.', 'Erro');
+      //   return;
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == null
       ) {
@@ -1383,6 +1383,7 @@ async removerRubrica(nuRubrica: string) {
         return;
       }
       //regra: maquina de status
+      //  5	Criado - 7	Revisado - 9	Ajustado
       if (
         this.currentProfile.noPerfil == PerfisEnum.TorresGEGAT ||
         this.currentProfile.noPerfil ==
@@ -1400,7 +1401,18 @@ async removerRubrica(nuRubrica: string) {
           return;
         }
         if (
-          this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 3 &&
+          this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 7 &&
+          this.form.value.nuPlanejamentoStatus != 9
+        ) {
+          //Revisado e de Avaliado
+          this.toastr.error(
+            'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+            'Erro'
+          );
+          return;
+        }
+        if (
+          this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 9 &&
           this.form.value.nuPlanejamentoStatus != 9
         ) {
           //Revisado e de Avaliado
