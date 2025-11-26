@@ -170,7 +170,7 @@
                         <p-checkbox [(ngModel)]="selecionarTodos" (onChange)="selecionarTodosItens()" [binary]="true">
                         </p-checkbox>
                         <p-dropdown [options]="selectStatusPlanejamentoCompleto" [(ngModel)]="statusSelecionados[0]"
-                          placeholder="Status" (onChange)="atualizarStatusSelecionados($event)" optionLabel="label"
+                          placeholder="Status" (onChange)="atualizarStatusSelecionados()" optionLabel="label"
                           optionValue="value">
                         </p-dropdown>
                       </div>
@@ -226,7 +226,7 @@
                     (keydown.space)="$event.stopPropagation()">                    
                     <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && (perfilOrcamento || perfilAdm || (perfilOperacional && planejamento.cO_FILIAL == perfilUnidade) || (perfilTorre && planejamento.cO_FILIAL == perfilUnidade))">
                       <p-checkbox [(ngModel)]="planejamento.sT_SELECIONADO" [binary]="true"
-                        (onChange)="onToggleItemSelecionado($event)" (click)="$event.stopPropagation()">
+                        (onChange)="onToggleItemSelecionado()" (click)="$event.stopPropagation()">
                       </p-checkbox>
                     </ng-container>
                     {{ planejamento.nO_STATUS }}

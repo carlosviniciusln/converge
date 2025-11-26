@@ -280,7 +280,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
   }
 }
 
-  atualizarStatusSelecionados(event: any) {
+  atualizarStatusSelecionados() {
     const itensNaoSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO == false)
      console.log("itensNaoSelecionados", itensNaoSelecionados)        
       this.planejamentos.forEach(p1 => {
@@ -308,12 +308,12 @@ public async onSalvarMudancasStatus(): Promise<void> {
     this.planejamentos.forEach(p => {
       p.sT_SELECIONADO = this.selecionarTodos;
     });
-    this.atualizarStatusSelecionados(null);
+    this.atualizarStatusSelecionados();
   }
 
 
-  onToggleItemSelecionado(event: any): void {
-    this.atualizarStatusSelecionados(event);
+  onToggleItemSelecionado(): void {
+    this.atualizarStatusSelecionados();
   }
 
 
