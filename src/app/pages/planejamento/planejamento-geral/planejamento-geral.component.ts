@@ -93,7 +93,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   ultimaAtualizacaoOrcamento : string = '09/06/2025 18:29';
 
   permissions: ActionPolicies;
-
+  public isUltimaReprogramacao: boolean = false
   public listaStatusPlanejamentoColapse: PlanejamentoStatusResponse[] = [];
   public labelTeste : string;
   public filtroRegistros: any = {
@@ -124,6 +124,7 @@ export class PlanejamentoGeralComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.route.queryParams.subscribe(params => {
+      this.isUltimaReprogramacao = params['isUltimaReprogramacao'] === 'true';
       this.anoExercicio =params['cO_EXERCICIO'];
       this.ordemTipoExercicio = params['tipo'];
       this.statusExercio = params['statusPlanejamento'];
@@ -225,6 +226,16 @@ public async onSalvarMudancasStatus(): Promise<void> {
       return;
     }
 
+    if (this.statusExercio === 'Encerrado') {
+      this.toastr.warning('Não é permitido alterar status em planejamentos encerrados.', 'Aviso');
+      return;
+    }
+    
+    const isUltimaReprogramacao = await this.verificarUltimaReprogramacao();
+    if (!isUltimaReprogramacao) {
+      this.toastr.warning('Não é permitido alterar status em reprogramações que não sejam as últimas.', 'Aviso');
+      return;
+    }
 
      const alert = await Swal.fire({
        text: `Deseja realmente alterar o Status de todos os registros selecionados desta página para o Status ${novoStatusObj?.noPlanejamentoStatus} `,
@@ -429,5 +440,11 @@ public async onSalvarMudancasStatus(): Promise<void> {
       this.loading = false;
       console.error('Erro ao obter planejamentos', error);
     }
+  }
+  private async verificarUltimaReprogramacao(): Promise<boolean> {
+    const response = await this.apiService.get<ApiResponse<any[]>>('v1/Exercicio/resumo-planejamento');
+    const lista = response.data || [];
+    const ultimaAberta = lista.filter(p => p.dT_FECHAMENTO === null).sort((a, b) => (b.ordem ?? 0) - (a.ordem ?? 0))[0];
+    return ultimaAberta && Number(this.nuPlanejamentoExercicio) === Number(ultimaAberta.nU_PLANEJAMENTO);
   }
 }
