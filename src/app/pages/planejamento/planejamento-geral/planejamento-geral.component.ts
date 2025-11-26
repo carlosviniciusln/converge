@@ -280,7 +280,15 @@ public async onSalvarMudancasStatus(): Promise<void> {
   }
 }
 
-  atualizarStatusSelecionados() {
+  atualizarStatusSelecionados(event: any) {
+    const itensNaoSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO == false)
+     console.log("itensNaoSelecionados", itensNaoSelecionados)        
+      this.planejamentos.forEach(p1 => {
+          const existe = itensNaoSelecionados.some(p2 => p2.nU_ORC === p1.nU_ORC);
+          if (existe) {
+            p1.nO_STATUS = p1.nO_STATUS_Original;
+          }
+      });
     if (!this.statusSelecionados || this.statusSelecionados.length === 0) return;
 
     const idSelecionado = this.statusSelecionados[0];
@@ -300,11 +308,12 @@ public async onSalvarMudancasStatus(): Promise<void> {
     this.planejamentos.forEach(p => {
       p.sT_SELECIONADO = this.selecionarTodos;
     });
+    this.atualizarStatusSelecionados(null);
   }
 
 
-  onToggleItemSelecionado(): void {
-    this.atualizarStatusSelecionados();
+  onToggleItemSelecionado(event: any): void {
+    this.atualizarStatusSelecionados(event);
   }
 
 
@@ -412,7 +421,10 @@ public async onSalvarMudancasStatus(): Promise<void> {
       this.selectNuOrcs = response?.data?.listaNuOrc.map(g => ({ label: g, value: g }));
       this.selectOpcoesIsDigital = this.listaOpcoesIsDigital.map(g => ({ label: g.label, value: g.value }));
       this.quantidadeTotal = response.data.totalRecords;
-      this.loading = false;
+      this.loading = false;      
+      this.planejamentos.forEach(p => {
+        p.nO_STATUS_Original = p.nO_STATUS; // adiciona propriedade auxiliar
+      });
     } catch (error) {
       this.loading = false;
       console.error('Erro ao obter planejamentos', error);
