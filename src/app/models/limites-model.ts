@@ -1,30 +1,60 @@
 
+
+// NOMENCLATURA DE BANCO, SEMPRE UTILIZAR O PADRÃO PARA CADA LINGUAGEM
+// export interface LimitesModel {
+//   nU_PLANEJAMENTO?:number;
+//   nU_EXERCICIO_ORCAMENTO?:number;
+//   cO_EXERCICIO?:number;
+//   nU_FILIAL?:number;
+//   cO_FILIAL?:number;
+//   sG_FILIAL?:string;
+//   nU_RUBRICA?:number
+//   cO_RUBRICA?:string;
+//   dE_RUBRICA?:string;
+//   nO_RUBRICA_TIPO?:string;
+//   vR_PLANEJAMENTO?:number
+//   nU_STATUS_PLANEJAMENTO?:number
+//   nO_STATUS?:string;
+//   nU_PLANEJAMENTO_TIPO?:number
+//   dE_PLANEJAMENTO_TIPO?:string;
+//   vR_LIMITE?:number;
+//   vR_DIFERENCA?:number;
+//   nU_LIMITE_PLANEJAMENTO?:number;
+//   expanded?:boolean;
+//   segundoExpanded?:boolean;
+//   terceiroExpanded?:boolean;
+//   detalhes?:Partial<LimitesModel>[];
+//   segundoNivel?:Partial<LimitesModel>[];
+//   terceiroNivel?:Partial<LimitesModel>[];
+//   dE_ORDEM_PROG?: string;
+// }
+
 export interface LimitesModel {
-  nU_PLANEJAMENTO?:number;
-  nU_EXERCICIO_ORCAMENTO?:number;
-  cO_EXERCICIO?:number;
-  nU_FILIAL?:number;
-  cO_FILIAL?:number;
-  sG_FILIAL?:string;
-  nU_RUBRICA?:number
-  cO_RUBRICA?:string;
-  dE_RUBRICA?:string;
-  nO_RUBRICA_TIPO?:string;
-  vR_PLANEJAMENTO?:number
-  nU_STATUS_PLANEJAMENTO?:number
-  nO_STATUS?:string;
-  nU_PLANEJAMENTO_TIPO?:number
-  dE_PLANEJAMENTO_TIPO?:string;
-  vR_LIMITE?:number;
-  vR_DIFERENCA?:number;
-  nU_LIMITE_PLANEJAMENTO?:number;
+  nuPlanejamento?:number;
+  nuExercicioOrcamento?:number;
+  coExercicio?:number;
+  nuFilial?:number;
+  coFilial?:number;
+  sgFilial?:string;
+  nuRubrica?:number
+  coRubrica?:string;
+  deRubrica?:string;
+  noRubricaTipo?:string;
+  vrPlanejamento?:number
+  nuStatusPlanejamento?:number
+  noStatus?:string;
+  nuPlanejamentoTipo?:number
+  dePlanejamentoTipo?:string;
+  vrLimite?:number;
+  vrDiferenca?:number;
+  nuLimitePlanejamento?:number;
   expanded?:boolean;
   segundoExpanded?:boolean;
   terceiroExpanded?:boolean;
   detalhes?:Partial<LimitesModel>[];
   segundoNivel?:Partial<LimitesModel>[];
   terceiroNivel?:Partial<LimitesModel>[];
-  dE_ORDEM_PROG?: string;
+  deOrdemProg?: string;
 }
 
 
