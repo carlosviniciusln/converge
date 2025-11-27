@@ -94,6 +94,9 @@ import { MatListModule } from '@angular/material/list';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
 import { PaginatorModule } from 'primeng/paginator';
+import { PlanejamentoNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-novo.component';
+import { PlanejamentoOrcamentarioNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-lista/planejamento-orcamentario-novo.component';
+import { PlanejamentoCadastroNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-cadastro-novo/planejamento-cadastro-novo.component';
 
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
@@ -196,6 +199,12 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     // NotificationsComponent,
     // MapComponent,
     // RtlComponent
+
+    /* MODULO PLANEJAMENTO NOVO */
+
+    PlanejamentoNovoComponent,
+    PlanejamentoOrcamentarioNovoComponent,
+    PlanejamentoCadastroNovoComponent
   ],
   providers: [
     CustomerService,

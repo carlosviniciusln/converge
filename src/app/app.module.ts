@@ -59,6 +59,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from "primeng/api";
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { CargaGerais } from "src/assets/mock/Gcptb051CargaPlanejamentoItem";
+import { ModalPlanejamentoNovoComponent } from "./pages/planejamento-novo/planejamento-lista/modal-planejamento/modal-planejamento-novo.component";
+import { PlanejamentoGeralNovoComponent } from "./pages/planejamento-novo/planejamento-geral-novo/planejamento-geral-novo.component";
 
 registerLocaleData(ptBr);
 
@@ -121,8 +123,13 @@ const maskConfig: Partial<IConfig> = {
     RegistrarAtesteComponent,
     LimitesComponent,
     ModalLimitesComponent,
-    ModalUploadComponent
+    ModalUploadComponent,
     //AuthLayoutComponent
+
+    /*PLANEJAMENTOS NOVO */
+
+    ModalPlanejamentoNovoComponent,
+    PlanejamentoGeralNovoComponent
   ],
   providers: [
     AuthGuard,
