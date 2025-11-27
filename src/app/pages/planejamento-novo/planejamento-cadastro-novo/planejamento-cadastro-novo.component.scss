@@ -115,3 +115,26 @@ label {
 //     text-overflow: ellipsis;
 //     max-width: 150px;
 //   }
+
+
+
+
+:host ::ng-deep .custom-dropdown > div {
+  width: 100%;
+}
+
+:host ::ng-deep .custom-dropdown .p-dropdown-trigger {
+  justify-content: flex-end;
+}
+
+:host ::ng-deep .custom-dropdown .p-dropdown-trigger-icon {
+  font-size: 10px;
+  color: black;
+  font-weight: 800;
+}
+
+:host ::ng-deep .custom-dropdown .p-dropdown-panel .p-dropdown-items-wrapper > .p-dropdown-items .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
+  color: white;
+  background: #1279df;
+}
+

@@ -32,6 +32,7 @@ import { DevelopComponent } from 'src/app/components/develop/develop.component';
 import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
 import { PlanejamentoNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-novo.component';
 import { PlanejamentoOrcamentarioNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-lista/planejamento-orcamentario-novo.component';
+import { PlanejamentoGeralNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-geral-novo/planejamento-geral-novo.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'develop', component: DevelopComponent },
@@ -81,6 +82,6 @@ export const AdminLayoutRoutes: Routes = [
   // *PLANEJAMENTO ORÇAMENTARIO NOVO */
   { path: 'planejamento-novo', component: PlanejamentoNovoComponent },
   { path: 'planejamento-orcamentario-novo', component: PlanejamentoOrcamentarioNovoComponent},
-   { path: 'planejamento-orcamentario-detalhe-novo', component: PlanejamentoGeralComponent },
+   { path: 'planejamento-orcamentario-detalhe-novo', component: PlanejamentoGeralNovoComponent },
 
 ];

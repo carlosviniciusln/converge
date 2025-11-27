@@ -573,7 +573,8 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
   onContratoChange(event: any) {
     //Limpa formulário antes de preencher os campos.
     //this.formulario();
-    const nuContrato = event.target.value;
+    const nuContrato = event?.value;
+
     if (nuContrato) {
       this.obterDadosContrato(nuContrato);
     }
@@ -640,15 +641,13 @@ async removerRubrica(nuRubrica: string) {
 
   public async obterPlanejamento(): Promise<void> {
     try {
+
+      console.log(this.nuPlanejamento, "TESTE 1");
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioResponse>
       >(
-        `${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=` +
-          this.nuPlanejamento.nU_CONTRATO +
-          `&nuTipoDemanda=` +
-          this.nuPlanejamento.nU_TIPO_DEMANDA +
-          `&nuFilial=` +
-          this.nuPlanejamento.nU_FILIAL +
+        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/ObterConsultaGeral?nuOrc=` +
+          this.nuPlanejamento.nU_ORC +
           `&nuPlanejamento=` +
           this.nuPlanejamento.nU_PLANEJAMENTO
       );

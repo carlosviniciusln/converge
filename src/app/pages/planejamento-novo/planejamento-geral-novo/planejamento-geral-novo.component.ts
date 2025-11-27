@@ -327,10 +327,10 @@ public async onSalvarMudancasStatus(): Promise<void> {
     this.atualizarStatusSelecionados();
   }
 
-
+ // mudança de endpoint
   public downloadPlanejamentoDesembolso() {
     return this.apiService.downloadfile(
-      `${Endpoints.URL_ORCAMENTO}/detalhamento-excel`,
+      `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/detalhamento-excel`,
       this.filtroRegistros
     );
   }
@@ -418,11 +418,12 @@ public async onSalvarMudancasStatus(): Promise<void> {
     this.loading = false;
   }
 
+  // MUDANÇA DE ENDPOINT
   public async obterPlanejamentosOrc(): Promise<void> {
     this.loading = true;
     try {
       const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
-      (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
+      (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO_NOVO}`, this.filtroRegistros);
       this.planejamentos = response?.data?.contratos.map(p => ({...p,sT_SELECIONADO: false }));
       this.selectContratos = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
       this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
