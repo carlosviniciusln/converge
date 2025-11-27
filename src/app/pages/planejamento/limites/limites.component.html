@@ -20,16 +20,16 @@
 
           <!-- Filtros -->
           <div style="min-width: 70px; margin-left: 5px">
-            <p-dropdown [(ngModel)]="selectedExercicio" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Exercício" styleClass="w-100"[options]="listaExercicios" (onChange)="onFiltroChange()"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedExercicio" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Exercício" styleClass="w-100"[options]="listaExercicios" (onChange)="onFiltroChange($event, 1)"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [(ngModel)]="selectedTipo" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Tipo" styleClass="w-100" [options]="selectTipo" (onChange)="onFiltroChange()"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedTipo" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Tipo" styleClass="w-100" [options]="selectTipo" (onChange)="onFiltroChange($event, 2)"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [(ngModel)]="selectedRubrica" [filter]="true" optionLabel="label" optionValu="value" [showClear]="true" placeholder="Rubrica" styleClass="w-100" [options]="selectRubrica" (onChange)="onFiltroChange()"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedRubrica" [filter]="true" optionLabel="label" optionValu="value" [showClear]="true" placeholder="Rubrica" styleClass="w-100" [options]="selectRubrica" (onChange)="onFiltroChange($event, 3)"></p-dropdown>
           </div>
           <div style="min-width: 70px;margin-left: 5px">
-            <p-dropdown [(ngModel)]="selectedUnidadeDemandante" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Unidade Demandante" styleClass="w-100" [options]="selectFilial" (onChange)="onFiltroChange()"></p-dropdown>
+            <p-dropdown [(ngModel)]="selectedUnidadeDemandante" [filter]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Unidade Demandante" styleClass="w-100" [options]="selectFilial" (onChange)="onFiltroChange($event, 4)"></p-dropdown>
           </div>
 
           <!-- //[(ngModel)]="selectedTipoContrato" (onChange)=""-->
@@ -58,11 +58,11 @@
                   <td>
                       <button style="color: black; background-color: white;" type="button" pButton pRipple [pRowToggler]="visaoum" (click)="detalharPorTipoRubrica(visaoum)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
                   </td>
-                    <td style="color: white; text-align: center;">{{visaoum.cO_EXERCICIO}}</td>
-                    <td style="color: white;" >{{visaoum.dE_ORDEM_PROG}}</td>
-                    <td style="color: white; text-align: right; ">{{visaoum.vR_LIMITE | currency:'BRL'}}</td>
-                    <td style="color: white; text-align: right;">{{visaoum.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                    <td style="color: white; text-align: right;">{{visaoum.vR_DIFERENCA | currency:'BRL'}} <span *ngIf="visaoum.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
+                    <td style="color: white; text-align: center;">{{visaoum.coExercicio}}</td>
+                    <td style="color: white;" >{{visaoum.deOrdemProg}}</td>
+                    <td style="color: white; text-align: right; ">{{visaoum.vrLimite | currency:'BRL'}}</td>
+                    <td style="color: white; text-align: right;">{{visaoum.vrPlanejamento | currency:'BRL'}}</td>
+                    <td style="color: white; text-align: right;">{{visaoum.vrDiferenca | currency:'BRL'}} <span *ngIf="visaoum.vrDiferenca != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-registro>
@@ -86,12 +86,12 @@
                                             <td>
                                                 <button style="color: black; background-color: white;" type="button" pButton pRipple [pRowToggler]="tipo" (click)="detalharPorRubricaTipo(registro, tipo)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
                                             </td>
-                                            <td style="background-color: #6eb47d; color: white; text-align: center; "><span style="margin-left: -7px;">{{tipo.cO_EXERCICIO}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white;"><span style="margin-left: -7px;">{{tipo.dE_ORDEM_PROG}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white;"><span style="margin-left: -7px;">{{tipo.nO_RUBRICA_TIPO}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{tipo.vR_LIMITE | currency:'BRL'}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{tipo.vR_PLANEJAMENTO | currency:'BRL'}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{tipo.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="tipo.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></span></td>
+                                            <td style="background-color: #6eb47d; color: white; text-align: center; "><span style="margin-left: -7px;">{{tipo.coExercicio}}</span></td>
+                                            <td style="background-color: #6eb47d; color: white;"><span style="margin-left: -7px;">{{tipo.deOrdemProg}}</span></td>
+                                            <td style="background-color: #6eb47d; color: white;"><span style="margin-left: -7px;">{{tipo.noRubricaTipo}}</span></td>
+                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{tipo.vrLimite | currency:'BRL'}}</span></td>
+                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{tipo.vrPlanejamento | currency:'BRL'}}</span></td>
+                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{tipo.vrDiferenca | currency:'BRL'}}<span *ngIf="tipo.vrDiferenca != 0" style="color:red; font-size: 14pt;"><b> !</b></span></span></td>
                                         </tr>
                                     </ng-template>
 
@@ -117,13 +117,13 @@
                                                                 <td style="background-color: #9dcc9b;">
                                                                     <button style="color: black; background-color: white;" type="button" pButton pRipple [pRowToggler]="contr" (click)="detalharPorUd(registro, contr)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
                                                                 </td>
-                                                                <td style="background-color: #9dcc9b; color: black; text-align: right;"><span style="margin-right: 10%;">{{contr.cO_EXERCICIO}}</span></td>
-                                                                <td style="background-color: #9dcc9b; color: black">{{contr.dE_ORDEM_PROG}}</td>
-                                                                <td style="background-color: #9dcc9b; color: black">{{contr.cO_RUBRICA}}</td>
-                                                                <td style="background-color: #9dcc9b; color: black">{{contr.dE_RUBRICA}}</td>
-                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vR_LIMITE | currency:'BRL'}}</td>
-                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="contr.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
+                                                                <td style="background-color: #9dcc9b; color: black; text-align: right;"><span style="margin-right: 10%;">{{contr.coExercicio}}</span></td>
+                                                                <td style="background-color: #9dcc9b; color: black">{{contr.deOrdemProg}}</td>
+                                                                <td style="background-color: #9dcc9b; color: black">{{contr.coRubrica}}</td>
+                                                                <td style="background-color: #9dcc9b; color: black">{{contr.deRubrica}}</td>
+                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrLimite | currency:'BRL'}}</td>
+                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrPlanejamento | currency:'BRL'}}</td>
+                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrDiferenca | currency:'BRL'}}<span *ngIf="contr.vrDiferenca != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
                                                             </tr>
                                                         </ng-template>
                                                         <ng-template pTemplate="rowexpansion" let-contrato>
@@ -145,14 +145,14 @@
                                                                           </ng-template>
                                                                           <ng-template pTemplate="body" let-ud let-expanded="expanded">
                                                                               <tr (click)="openModalPlanejamento('alteracao', ud, registro)" style="text-decoration: underline; cursor: pointer;">
-                                                                                  <td style="background-color: #b4dec9; color: black; text-align: right;"><span style="margin-right: 10%;">{{ud.cO_EXERCICIO}}</span></td>
-                                                                                  <td style="background-color: #b4dec9; color: black">{{ud.dE_ORDEM_PROG}}</td>
-                                                                                  <td style="background-color: #b4dec9; color: black">{{ud.sG_FILIAL}}</td>
-                                                                                  <td style="background-color: #b4dec9; color: black">{{ud.cO_RUBRICA}}</td>
-                                                                                  <td style="background-color: #b4dec9; color: black">{{ud.dE_RUBRICA}}</td>
-                                                                                  <td style="background-color: #b4dec9; color: black; text-align: right;">{{ud.vR_LIMITE | currency:'BRL'}}</td>
-                                                                                  <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vR_PLANEJAMENTO | currency:'BRL'}}</td>
-                                                                                  <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vR_DIFERENCA | currency:'BRL'}}<span *ngIf="ud.vR_DIFERENCA != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
+                                                                                  <td style="background-color: #b4dec9; color: black; text-align: right;"><span style="margin-right: 10%;">{{ud.coExercicio}}</span></td>
+                                                                                  <td style="background-color: #b4dec9; color: black">{{ud.deOrdemProg}}</td>
+                                                                                  <td style="background-color: #b4dec9; color: black">{{ud.sgFilial}}</td>
+                                                                                  <td style="background-color: #b4dec9; color: black">{{ud.coRubrica}}</td>
+                                                                                  <td style="background-color: #b4dec9; color: black">{{ud.deRubrica}}</td>
+                                                                                  <td style="background-color: #b4dec9; color: black; text-align: right;">{{ud.vrLimite | currency:'BRL'}}</td>
+                                                                                  <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vrPlanejamento | currency:'BRL'}}</td>
+                                                                                  <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vrDiferenca | currency:'BRL'}}<span *ngIf="ud.vrDiferenca != 0" style="color:red; font-size: 14pt;"><b> !</b></span></td>
                                                                               </tr>
                                                                           </ng-template>
                                                                       </p-table>

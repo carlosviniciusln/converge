@@ -134,16 +134,16 @@ export class ModalLimitesComponent implements OnInit {
       });
       this.isDisabled = false;
     } else {
-      this.descricaoRubrica = this.registro?.dE_RUBRICA;
-      this.exercicio = this.registro?.cO_EXERCICIO;
-      this.rubrica = this.registro?.cO_RUBRICA;
-      this.unidadeDemandante = this.registro?.sG_FILIAL;
+      this.descricaoRubrica = this.registro?.deRubrica;
+      this.exercicio = this.registro?.coExercicio;
+      this.rubrica = this.registro?.coRubrica;
+      this.unidadeDemandante = this.registro?.sgFilial;
       this.formCadastro = this.formBuilder.group({
         nuPlanejamento: [this.planejamentoEdit, Validators.required],
-        nuRubrica: [this.registro.nU_RUBRICA, Validators.required],
+        nuRubrica: [this.registro.nuRubrica, Validators.required],
         nuUnidadeDemandante: [this.nuFilialEdit, Validators.required],
-        vrLimite: [this.formatarValorMonetario(this.registro.vR_LIMITE), Validators.required],
-        nuLimitePlanejamento: [this.registro.nU_LIMITE_PLANEJAMENTO, Validators.required]
+        vrLimite: [this.formatarValorMonetario(this.registro.vrLimite), Validators.required],
+        nuLimitePlanejamento: [this.registro.nuLimitePlanejamento, Validators.required]
       });
     }
   }
@@ -187,7 +187,7 @@ export class ModalLimitesComponent implements OnInit {
   public async onSubmit(): Promise<void> {
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
-        
+
         this.Cadastrar();
         break;
       case PageAction.Alterar:
@@ -225,9 +225,9 @@ export class ModalLimitesComponent implements OnInit {
         this.toastr.error('Todos os campos são obrigatórios.', 'Campo Obrigatório');
         console.log(invalids);
         return;
-        
+
       }
-      
+
 
       let validaJaCadastrado = false;
 
@@ -334,7 +334,7 @@ public async Alterar(): Promise<void> {
   }
 }
 
- 
+
 formatarValor(): void {
   let valor = this.formCadastro.get('vrLimite')?.value;
 
