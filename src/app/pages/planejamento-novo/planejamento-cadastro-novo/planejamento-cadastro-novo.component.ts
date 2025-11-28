@@ -745,12 +745,8 @@ async removerRubrica(nuRubrica: string) {
           const responseVlr = await this.apiService.get<
             ApiResponse<PrevisaoDesembolsoResponse[]>
           >(
-            `${Endpoints.URL_ORCAMENTO}/ObterConsultaPorRubrica?nuContrato=` +
-              this.nuPlanejamento.nU_CONTRATO +
-              `&nuTipoDemanda=` +
-              this.nuPlanejamento.nU_TIPO_DEMANDA +
-              `&nuFilial=` +
-              this.nuPlanejamento.nU_FILIAL +
+            `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/ObterConsultaPorRubrica?nuOrc=` +
+              this.nuPlanejamento.nU_ORC +
               `&nuPlanejamento=` +
               this.nuPlanejamento.nU_PLANEJAMENTO
           );
