@@ -46,11 +46,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Gcptb060PlanejamentoItemHistoricoResponse } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoResponse';
 
 @Component({
-  selector: 'app-planejamento-cadastro',
-  templateUrl: './planejamento-cadastro.component.html',
-  styleUrls: ['./planejamento-cadastro.component.scss'],
+  selector: 'app-planejamento-cadastro-novo',
+  templateUrl: './planejamento-cadastro-novo.component.html',
+  styleUrls: ['./planejamento-cadastro-novo.component.scss'],
 })
-export class PlanejamentoCadastroComponent implements OnInit {
+export class PlanejamentoCadastroNovoComponent implements OnInit {
   @Input() public nuPlanejamento: any;
   @Input() public nuPlanejamentoOrcamento: any;
   @Input() public ano: any;
@@ -573,7 +573,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
   onContratoChange(event: any) {
     //Limpa formulário antes de preencher os campos.
     //this.formulario();
-    const nuContrato = event.target.value;
+    const nuContrato = event?.value;
+
     if (nuContrato) {
       this.obterDadosContrato(nuContrato);
     }
@@ -640,15 +641,13 @@ async removerRubrica(nuRubrica: string) {
 
   public async obterPlanejamento(): Promise<void> {
     try {
+
+      console.log(this.nuPlanejamento, "TESTE 1");
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioResponse>
       >(
-        `${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=` +
-          this.nuPlanejamento.nU_CONTRATO +
-          `&nuTipoDemanda=` +
-          this.nuPlanejamento.nU_TIPO_DEMANDA +
-          `&nuFilial=` +
-          this.nuPlanejamento.nU_FILIAL +
+        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/ObterConsultaGeral?nuOrc=` +
+          this.nuPlanejamento.nU_ORC +
           `&nuPlanejamento=` +
           this.nuPlanejamento.nU_PLANEJAMENTO
       );
@@ -746,12 +745,8 @@ async removerRubrica(nuRubrica: string) {
           const responseVlr = await this.apiService.get<
             ApiResponse<PrevisaoDesembolsoResponse[]>
           >(
-            `${Endpoints.URL_ORCAMENTO}/ObterConsultaPorRubrica?nuContrato=` +
-              this.nuPlanejamento.nU_CONTRATO +
-              `&nuTipoDemanda=` +
-              this.nuPlanejamento.nU_TIPO_DEMANDA +
-              `&nuFilial=` +
-              this.nuPlanejamento.nU_FILIAL +
+            `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/ObterConsultaPorRubrica?nuOrc=` +
+              this.nuPlanejamento.nU_ORC +
               `&nuPlanejamento=` +
               this.nuPlanejamento.nU_PLANEJAMENTO
           );
@@ -1319,58 +1314,6 @@ async removerRubrica(nuRubrica: string) {
       this.submitted = true;
       this.isReadonly = false;
 
-      this.form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
-
-      const meses = [
-        'vrJaneiro','vrFevereiro','vrMarco','vrAbril','vrMaio','vrJunho',
-        'vrJulho','vrAgosto','vrSetembro','vrOutubro','vrNovembro','vrDezembro'
-      ];
-      
-    const normalizarValor = (valor: any): number => {
-      // trata vazio
-      if (valor === null || valor === undefined || valor === '') return NaN;
-      // se já for número, usa direto
-      if (typeof valor === 'number') return valor;
-      // se for string com máscara, limpa
-      const limpo = String(valor)
-        .replace(/\s/g, '')   // remove espaços
-        .replace(/R\$/g, '')  // remove "R$"
-        .replace(/\./g, '')   // remove pontos (milhar)
-        .replace(',', '.');   
-      return Number(limpo);
-    };
-
-    const previsoesFA = this.form.get('previsoesDesembolso') as import('@angular/forms').FormArray;
-    if (!previsoesFA || !previsoesFA.controls?.length) {
-      await Swal.fire({
-        title: 'Atenção!',
-        text: 'Inclua pelo menos uma previsão de desembolso.',
-        icon: 'warning',
-        confirmButtonText: 'OK'
-      });
-      return;
-    }
-
-      const existeAlgumValor = previsoesFA.controls.some(grp => {
-        const itemGrp = grp as import('@angular/forms').FormGroup;
-        return meses.some(m => {
-          const raw = itemGrp.get(m)?.value;
-          const val = normalizarValor(raw);
-          return !isNaN(val) && val > 0; // pelo menos um mês com valor > 0
-        });
-      });
-
-      if (!existeAlgumValor) {
-        await Swal.fire({
-          title: 'Atenção!',
-          text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
-          icon: 'warning',
-          confirmButtonText: 'OK'
-        });
-        return;
-      }
-
-
       var obj = this.form.value;
 
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
@@ -1443,7 +1386,7 @@ async removerRubrica(nuRubrica: string) {
       ) {
         if (
           this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 5 &&
-          this.form.value.nuPlanejamentoStatus != 7 && this.form.value.nuPlanejamentoStatus != 5
+          this.form.value.nuPlanejamentoStatus != 7
         ) {
           //Criado para Revisado
           this.toastr.error(
@@ -1454,7 +1397,7 @@ async removerRubrica(nuRubrica: string) {
         }
         if (
           this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 7 &&
-          this.form.value.nuPlanejamentoStatus != 9 && this.form.value.nuPlanejamentoStatus != 7
+          this.form.value.nuPlanejamentoStatus != 9
         ) {
           //Revisado e de Avaliado
           this.toastr.error(

@@ -62,6 +62,7 @@ export interface ContratoPlanejamentosOrcamentario {
   nU_TIPO_DEMANDA: number,
   dE_DEMANDA: string,
   nO_STATUS: string,
+  nO_STATUS_Original: string,
   nU_FILIAL: number,
   sG_FILIAL: string,
   vR_PLANEJAMENTO: number,

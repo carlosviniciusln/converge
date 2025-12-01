@@ -12,6 +12,7 @@ import { ModalUploadComponent } from './modal-upload/modal-upload.component';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { Filial } from 'src/app/models/filial';
 import { Rubrica } from 'src/app/models/rubrica';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-limites',
@@ -48,6 +49,18 @@ export class LimitesComponent implements OnInit {
   public selectRubrica: Select2Data;
   public listaExercicios: Select2Data;
   public selectFilial: Select2Data;
+
+
+  /* ATRIBUTOS FILTROS */
+
+    public filtroRegistros: any = {
+    pageNumber: 1,
+    pageSize: 10,
+    nuFilial: null,
+    coRubrica: null,
+    noRubricaTipo: null,
+    deOrdemProg: null
+  };
 
   public readonly selectTipo: {
       label: string;
@@ -90,36 +103,47 @@ export class LimitesComponent implements OnInit {
     }
   }
 
-  //EXPORTAR EXCEL
-  exportExcel() {
-    const dadosFiltrados = this.listaLimitesCompleta.map(item => {
-      return {
-        'Ano': item.cO_EXERCICIO,
-        'Tipo': item.dE_ORDEM_PROG,
-        'Unidade Demandante': item.sG_FILIAL,
-        'Cod. Rubrica': item.cO_RUBRICA,
-        'Desc. Rubrica': item.dE_RUBRICA,
-        'Limite/Planejado': item.vR_LIMITE,
-        'Solicitado': item.vR_PLANEJAMENTO,
-        'Diferença': item.vR_DIFERENCA
-      }
-    })
-    import("xlsx").then(xlsx => {
-      const worksheet = xlsx.utils.json_to_sheet(dadosFiltrados);
-      const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-      const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-      this.saveAsExcelFile(excelBuffer, "Orçamento_Limites_");
-    });
+  //EXPORTAR EXCEL ANTIGO
+  // exportExcel() {
+  //   const dadosFiltrados = this.listaLimitesCompleta.map(item => {
+  //     return {
+  //       'Ano': item.cO_EXERCICIO,
+  //       'Tipo': item.dE_ORDEM_PROG,
+  //       'Unidade Demandante': item.sG_FILIAL,
+  //       'Cod. Rubrica': item.cO_RUBRICA,
+  //       'Desc. Rubrica': item.dE_RUBRICA,
+  //       'Limite/Planejado': item.vR_LIMITE,
+  //       'Solicitado': item.vR_PLANEJAMENTO,
+  //       'Diferença': item.vR_DIFERENCA
+  //     }
+  //   })
+  //   import("xlsx").then(xlsx => {
+  //     const worksheet = xlsx.utils.json_to_sheet(dadosFiltrados);
+  //     const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+  //     const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+  //     this.saveAsExcelFile(excelBuffer, "Orçamento_Limites_");
+  //   });
+  // }
+
+  // saveAsExcelFile(buffer: any, fileName: string): void {
+  //   let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+  //   let EXCEL_EXTENSION = '.xlsx';
+  //   const data: Blob = new Blob([buffer], {
+  //     type: EXCEL_TYPE
+  //   });
+  //   fileSaver.saveAs(data, fileName + new Date().getTime() + EXCEL_EXTENSION);
+  // }
+
+  //EXPORTAR EXCEL NOVO
+
+  exportExcel(){
+    return this.apiService.downloadfile(
+      `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/obter-relatorio-limites-excel`,
+      this.filtroRegistros
+    );
+
   }
 
-  saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE
-    });
-    fileSaver.saveAs(data, fileName + new Date().getTime() + EXCEL_EXTENSION);
-  }
 
   //FILTRO
 filterItem(value: string) {
@@ -134,17 +158,17 @@ filterItem(value: string) {
 
   const matchAndClean = (item: LimitesModel): LimitesModel | null => {
     const matchPrincipal =
-    normaliza(item.dE_ORDEM_PROG).includes(termo) ||
-      normaliza(item.cO_EXERCICIO).includes(termo) ||
-      normaliza(item.nU_PLANEJAMENTO).includes(termo) ||
-      normaliza(item.vR_LIMITE).includes(termo) ||
-      normaliza(item.vR_PLANEJAMENTO).includes(termo) ||
-      normaliza(item.dE_PLANEJAMENTO_TIPO).includes(termo) ||
-      normaliza(item.nO_RUBRICA_TIPO).includes(termo) ||
-      normaliza(item.dE_RUBRICA).includes(termo) ||
-      normaliza(item.nO_STATUS).includes(termo) ||
-      normaliza(item.sG_FILIAL).includes(termo);
-      
+    normaliza(item.deOrdemProg).includes(termo) ||
+      normaliza(item.coExercicio).includes(termo) ||
+      normaliza(item.nuPlanejamento).includes(termo) ||
+      normaliza(item.vrLimite).includes(termo) ||
+      normaliza(item.vrPlanejamento).includes(termo) ||
+      normaliza(item.dePlanejamentoTipo).includes(termo) ||
+      normaliza(item.noRubricaTipo).includes(termo) ||
+      normaliza(item.deRubrica).includes(termo) ||
+      normaliza(item.noStatus).includes(termo) ||
+      normaliza(item.sgFilial).includes(termo);
+
 
     const detalhesFiltrados = item.detalhes?.map(matchAndClean).filter(Boolean) ?? [];
     const segundoNivelFiltrado = item.segundoNivel?.map(matchAndClean).filter(Boolean) ?? [];
@@ -188,29 +212,29 @@ filterItem(value: string) {
 
       const agrupado = response.data.reduce((acc, item) => {
         const passaFiltro =
-          (!nuFilial || item.nU_FILIAL === nuFilial) &&
-          (!nuExercicio || item.dE_ORDEM_PROG === nuExercicio) &&
-          (!nuRubrica || item.cO_RUBRICA === nuRubrica) &&
-          (!tipoProg || item.nO_RUBRICA_TIPO === tipoProg);
+          (!nuFilial || item.nuFilial === nuFilial) &&
+          (!nuExercicio || item.deOrdemProg === nuExercicio) &&
+          (!nuRubrica || item.coRubrica === nuRubrica) &&
+          (!tipoProg || item.noRubricaTipo === tipoProg);
 
         if (!passaFiltro) return acc;
 
-        const tipo = `${item.dE_ORDEM_PROG}`;
+        const tipo = `${item.deOrdemProg}`;
 
         if (!acc[tipo]) {
           acc[tipo] = {
-            cO_EXERCICIO: item.cO_EXERCICIO,
-            nU_PLANEJAMENTO: item.nU_PLANEJAMENTO,
-            dE_ORDEM_PROG: item.dE_ORDEM_PROG,
-            vR_LIMITE: 0,
-            vR_PLANEJAMENTO: 0,
-            vR_DIFERENCA: 0
+            coExercicio: item.coExercicio,
+            nuPlanejamento: item.nuPlanejamento,
+            deOrdemProg: item.deOrdemProg,
+            vrLimite: 0,
+            vrPlanejamento: 0,
+            vrDiferenca: 0
           };
         }
 
-        acc[tipo].vR_LIMITE += item.vR_LIMITE;
-        acc[tipo].vR_PLANEJAMENTO += item.vR_PLANEJAMENTO;
-        acc[tipo].vR_DIFERENCA += item.vR_DIFERENCA;
+        acc[tipo].vrLimite += item.vrLimite;
+        acc[tipo].vrPlanejamento += item.vrPlanejamento;
+        acc[tipo].vrDiferenca += item.vrDiferenca;
 
         return acc;
       }, {} as { [key: string]: Partial<LimitesModel> });
@@ -218,10 +242,10 @@ filterItem(value: string) {
       const listaAgrupada = Object.values(agrupado);
 
       const listaAgrupadaOrdenada = listaAgrupada.sort((a, b) => {
-        if (b.cO_EXERCICIO !== a.cO_EXERCICIO) {
-          return b.cO_EXERCICIO - a.cO_EXERCICIO;
+        if (b.coExercicio !== a.coExercicio) {
+          return b.coExercicio - a.coExercicio;
         }
-        return b.nU_PLANEJAMENTO - a.nU_PLANEJAMENTO;
+        return b.nuPlanejamento - a.nuPlanejamento;
       });
 
       this.listaLimites = Object.values(listaAgrupadaOrdenada);
@@ -238,41 +262,41 @@ filterItem(value: string) {
       if (registro.expanded && !registro.detalhes) {
         const filtrado = this.listaLimitesCompleta.filter(item => {
           return (
-            item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO &&
-            item.dE_ORDEM_PROG &&
-            (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante) &&
-            (!this.selectedExercicio || item.dE_ORDEM_PROG === this.selectedExercicio) &&
-            (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica.label) &&
-            (!this.selectedTipo || item.nO_RUBRICA_TIPO === this.selectedTipo)
+            item.nuPlanejamento === registro.nuPlanejamento &&
+            item.deOrdemProg &&
+            (!this.selectedUnidadeDemandante || item.nuFilial === this.selectedUnidadeDemandante) &&
+            (!this.selectedExercicio || item.deOrdemProg === this.selectedExercicio) &&
+            (!this.selectedRubrica?.label || item.coRubrica === this.selectedRubrica.label) &&
+            (!this.selectedTipo || item.noRubricaTipo === this.selectedTipo)
           );
         });
 
         const agrupado = filtrado.reduce((acc, item) => {
-          const chave = `${item.dE_ORDEM_PROG}_${item.nO_RUBRICA_TIPO}`;
+          const chave = `${item.deOrdemProg}_${item.noRubricaTipo}`;
 
           if (!acc[chave]) {
             acc[chave] = {
-              nU_LIMITE_PLANEJAMENTO: item.nU_LIMITE_PLANEJAMENTO,
-              cO_EXERCICIO: item.cO_EXERCICIO,
-              nO_RUBRICA_TIPO: item.nO_RUBRICA_TIPO,
-              vR_LIMITE: 0,
-              vR_PLANEJAMENTO: 0,
-              vR_DIFERENCA: 0,
-              dE_ORDEM_PROG: item.dE_ORDEM_PROG,
+              nuLimitePlanejamento: item.nuLimitePlanejamento,
+              coExercicio: item.coExercicio,
+              noRubricaTipo: item.noRubricaTipo,
+              vrLimite: 0,
+              vrPlanejamento: 0,
+              vrDiferenca: 0,
+              deOrdemProg: item.deOrdemProg,
             };
           }
 
-          acc[chave].vR_LIMITE += item.vR_LIMITE;
-          acc[chave].vR_PLANEJAMENTO += item.vR_PLANEJAMENTO;
-          acc[chave].vR_DIFERENCA += item.vR_DIFERENCA;
+          acc[chave].vrLimite += item.vrLimite;
+          acc[chave].vrPlanejamento += item.vrPlanejamento;
+          acc[chave].vrDiferenca += item.vrDiferenca;
 
           return acc;
         }, {} as Record<string, LimitesModel>);
 
         const listaDetalhada = Object.values(agrupado).sort((a, b) =>
-          b.cO_EXERCICIO !== a.cO_EXERCICIO
-            ? b.cO_EXERCICIO - a.cO_EXERCICIO
-            : a.dE_ORDEM_PROG.localeCompare(b.dE_ORDEM_PROG)
+          b.coExercicio !== a.coExercicio
+            ? b.coExercicio - a.coExercicio
+            : a.deOrdemProg.localeCompare(b.deOrdemProg)
         );
 
         registro.detalhes = listaDetalhada;
@@ -292,44 +316,44 @@ filterItem(value: string) {
       if (limite.expanded && !limite.segundoNivel.data) {
         const filtrado = this.listaLimitesCompleta.filter(item => {
           return (
-            item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO &&
-            item.nO_RUBRICA_TIPO === limite.nO_RUBRICA_TIPO &&
-            item.dE_ORDEM_PROG &&
-            (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante) &&
-            (!this.selectedExercicio || item.dE_ORDEM_PROG === this.selectedExercicio) &&
-            (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica.label) &&
-            (!this.selectedTipo?.label || item.nO_RUBRICA_TIPO === this.selectedTipo.label)
+            item.nuPlanejamento === registro.nuPlanejamento &&
+            item.noRubricaTipo === limite.noRubricaTipo &&
+            item.deOrdemProg &&
+            (!this.selectedUnidadeDemandante || item.nuFilial === this.selectedUnidadeDemandante) &&
+            (!this.selectedExercicio || item.deOrdemProg === this.selectedExercicio) &&
+            (!this.selectedRubrica?.label || item.coRubrica === this.selectedRubrica.label) &&
+            (!this.selectedTipo?.label || item.noRubricaTipo === this.selectedTipo.label)
           );
         });
 
         const agrupado = filtrado.reduce((acc, item) => {
-          const chave = `${item.dE_ORDEM_PROG}_${item.nU_RUBRICA}_${item.cO_RUBRICA}`;
+          const chave = `${item.deOrdemProg}_${item.nuRubrica}_${item.coRubrica}`;
 
           if (!acc[chave]) {
             acc[chave] = {
-              nU_LIMITE_PLANEJAMENTO: item.nU_LIMITE_PLANEJAMENTO,
-              cO_EXERCICIO: item.cO_EXERCICIO,
-              nU_RUBRICA: item.nU_RUBRICA,
-              cO_RUBRICA: item.cO_RUBRICA,
-              dE_RUBRICA: item.dE_RUBRICA,
-              vR_LIMITE: 0,
-              vR_PLANEJAMENTO: 0,
-              vR_DIFERENCA: 0,
-              dE_ORDEM_PROG: item.dE_ORDEM_PROG
+              nuLimitePlanejamento: item.nuLimitePlanejamento,
+              coExercicio: item.coExercicio,
+              nuRubrica: item.nuRubrica,
+              coRubrica: item.coRubrica,
+              deRubrica: item.deRubrica,
+              vrLimite: 0,
+              vrPlanejamento: 0,
+              vrDiferenca: 0,
+              deOrdemProg: item.deOrdemProg
             };
           }
 
-          acc[chave].vR_LIMITE += item.vR_LIMITE;
-          acc[chave].vR_PLANEJAMENTO += item.vR_PLANEJAMENTO;
-          acc[chave].vR_DIFERENCA += item.vR_DIFERENCA;
+          acc[chave].vrLimite += item.vrLimite;
+          acc[chave].vrPlanejamento += item.vrPlanejamento;
+          acc[chave].vrDiferenca += item.vrDiferenca;
 
           return acc;
         }, {} as Record<string, LimitesModel>);
 
         const listaDetalhada2 = Object.values(agrupado).sort((a, b) =>
-          b.cO_EXERCICIO !== a.cO_EXERCICIO
-            ? b.cO_EXERCICIO - a.cO_EXERCICIO
-            : a.dE_ORDEM_PROG.localeCompare(b.dE_ORDEM_PROG)
+          b.coExercicio !== a.coExercicio
+            ? b.coExercicio - a.coExercicio
+            : a.deOrdemProg.localeCompare(b.deOrdemProg)
         );
 
         registro.segundoNivel = listaDetalhada2;
@@ -350,46 +374,46 @@ filterItem(value: string) {
 
         const filtrado = this.listaLimitesCompleta.filter(item => {
           return (
-            item.nU_PLANEJAMENTO === registro.nU_PLANEJAMENTO &&
-            item.nO_RUBRICA_TIPO === this.ultimoDetalheLimite.nO_RUBRICA_TIPO &&
-            item.nU_RUBRICA === detalhe.nU_RUBRICA &&
-            item.dE_ORDEM_PROG &&
-            (!this.selectedUnidadeDemandante || item.nU_FILIAL === this.selectedUnidadeDemandante) &&
-            (!this.selectedExercicio || item.dE_ORDEM_PROG === this.selectedExercicio) &&
-            (!this.selectedRubrica?.label || item.cO_RUBRICA === this.selectedRubrica.label) &&
-            (!this.selectedTipo?.label || item.nO_RUBRICA_TIPO === this.selectedTipo.label)
+            item.nuPlanejamento === registro.nuPlanejamento &&
+            item.noRubricaTipo === this.ultimoDetalheLimite.noRubricaTipo &&
+            item.nuRubrica === detalhe.nuRubrica &&
+            item.deOrdemProg &&
+            (!this.selectedUnidadeDemandante || item.nuFilial === this.selectedUnidadeDemandante) &&
+            (!this.selectedExercicio || item.deOrdemProg === this.selectedExercicio) &&
+            (!this.selectedRubrica?.label || item.coRubrica === this.selectedRubrica.label) &&
+            (!this.selectedTipo?.label || item.noRubricaTipo === this.selectedTipo.label)
           );
         });
 
         const agrupado = filtrado.reduce((acc, item) => {
-          const chave = `${item.dE_ORDEM_PROG}_${item.nU_RUBRICA}_${item.cO_RUBRICA}_${item.sG_FILIAL}`;
+          const chave = `${item.deOrdemProg}_${item.nuRubrica}_${item.coRubrica}_${item.sgFilial}`;
 
           if (!acc[chave]) {
             acc[chave] = {
-              nU_LIMITE_PLANEJAMENTO: item.nU_LIMITE_PLANEJAMENTO,
-              cO_EXERCICIO: item.cO_EXERCICIO,
-              nU_RUBRICA: item.nU_RUBRICA,
-              cO_RUBRICA: item.cO_RUBRICA,
-              sG_FILIAL: item.sG_FILIAL,
-              dE_RUBRICA: item.dE_RUBRICA,
-              vR_LIMITE: 0,
-              vR_PLANEJAMENTO: 0,
-              vR_DIFERENCA: 0,
-              dE_ORDEM_PROG: item.dE_ORDEM_PROG
+              nuLimitePlanejamento: item.nuLimitePlanejamento,
+              coExercicio: item.coExercicio,
+              nuRubrica: item.nuRubrica,
+              coRubrica: item.coRubrica,
+              sgFilial: item.sgFilial,
+              deRubrica: item.deRubrica,
+              vrLimite: 0,
+              vrPlanejamento: 0,
+              vrDiferenca: 0,
+              deOrdemProg: item.deOrdemProg
             };
           }
 
-          acc[chave].vR_LIMITE += item.vR_LIMITE;
-          acc[chave].vR_PLANEJAMENTO += item.vR_PLANEJAMENTO;
-          acc[chave].vR_DIFERENCA += item.vR_DIFERENCA;
+          acc[chave].vrLimite += item.vrLimite;
+          acc[chave].vrPlanejamento += item.vrPlanejamento;
+          acc[chave].vrDiferenca += item.vrDiferenca;
 
           return acc;
         }, {} as Record<string, LimitesModel>);
 
         const listaDetalhada3 = Object.values(agrupado).sort((a, b) =>
-          b.cO_EXERCICIO !== a.cO_EXERCICIO
-            ? b.cO_EXERCICIO - a.cO_EXERCICIO
-            : a.dE_ORDEM_PROG.localeCompare(b.dE_ORDEM_PROG)
+          b.coExercicio !== a.coExercicio
+            ? b.coExercicio - a.coExercicio
+            : a.deOrdemProg.localeCompare(b.deOrdemProg)
         );
         registro.terceiroNivel = listaDetalhada3;
       }
@@ -417,10 +441,10 @@ filterItem(value: string) {
         backdrop: 'static',
         keyboard: false,
       });
-      const filialselecionada = this.selectFilial.find((item): item is Select2Option => 'value' in item && item.label === ud.sG_FILIAL);
+      const filialselecionada = this.selectFilial.find((item): item is Select2Option => 'value' in item && item.label === ud.sgFilial);
       modalRef.componentInstance.isEditable = true;
       modalRef.componentInstance.registro = ud;
-      modalRef.componentInstance.planejamentoEdit = registro.nU_PLANEJAMENTO;
+      modalRef.componentInstance.planejamentoEdit = registro.nuPlanejamento;
       modalRef.componentInstance.nuFilialEdit = filialselecionada?.value;
     }
   }
@@ -467,7 +491,25 @@ filterItem(value: string) {
     } catch (error) { }
   }
 
-  onFiltroChange(): void {
+  onFiltroChange(e, op: number): void {
+    console.log()
+     switch (op) {
+        case 1:
+          this.filtroRegistros.deOrdemProg = e.value;
+          break;
+        case 2:
+          this.filtroRegistros.noRubricaTipo = e.value;
+          break;
+        case 3:
+          this.filtroRegistros.coRubrica = e.value?.label;
+          break;
+        case 4:
+          this.filtroRegistros.nuFilial = e.value;
+          break;
+        default:
+          break
+      }
+
     if (this.selectedExercicio == null && this.selectedRubrica == null && this.selectedTipo == null && this.selectedUnidadeDemandante == null) {
       setTimeout(() => {
         window.location.reload()
@@ -481,7 +523,7 @@ filterItem(value: string) {
         item.terceiroNivel = undefined;
       });
     }
-    
+
   }
 
 }

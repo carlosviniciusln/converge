@@ -26,22 +26,25 @@
             <label for="dhCadastro">Data de Cria&ccedil;&atilde;o:</label>
             <input readonly formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
           </div>
-          <div class="col-md-3 pr-0">
-            <label for="coContrato">N&#186; Contrato:</label>
-            <select class="form-control" id="nuContrato" formControlName="nuContrato"
-              [ngClass]="{ 'is-invalid': submitted && f.nuContrato?.invalid }" (change)="onContratoChange($event)">
-              <option value={{null}} selected>Selecione o Contrato</option>
 
 
-            <option *ngIf="this.contratoInativo == true" [value]="f.nuContrato?.value">
-              {{ f.coContrato?.value }}
-            </option>
+        <div class="col-md-3 pr-0" style="display: flex; flex-direction: column;">
+          <label for="nuContrato">Nº Contrato:</label>
+          <p-dropdown
+            class="custom-dropdown"
+            [options]="listaContratos"
+            optionLabel="coContrato"
+            optionValue="nuContrato"
+            formControlName="nuContrato"
+            placeholder="Selecione o Contrato"
+            [filter]="true"
+            [emptyMessage]="'Nenhum contrato cadastrado.'"
+            [showClear]="true"
+            [ngClass]="{ 'is-invalid': submitted && f.nuContrato?.invalid }"
+            (onChange)="onContratoChange($event)">
+          </p-dropdown>
+        </div>
 
-              <option *ngFor="let a of listaContratos" [value]="a.nuContrato">
-                {{ a.coContrato || f.coContrato }}
-              </option>
-            </select>
-          </div>
           <div class="col-md-3 min-height-59">
             <label for="icServicoContinuo">Servi&ccedil;o Cont&iacute;nuo?</label>
             <div class="row">
@@ -241,8 +244,9 @@
         <div class="col-md-3 pr-0">
           <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
           <input formControlName="nuPreComprometimento"
-                 type="text"
+                 type="number"
                  class="form-control blockCampo"
+                 min="1" step="1"
                  oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"
                  (input)="onPreComprometimentoInput($event, i)" />
         </div>

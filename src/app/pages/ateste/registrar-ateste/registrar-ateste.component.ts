@@ -51,21 +51,55 @@ export class RegistrarAtesteComponent implements OnInit {
 
 
   public totalFormatado: string = '';
-
+  
   calcularTotal(values: any[]): void {
-    let soma = values.reduce((acc, curr) => {
-      let valorStr = (curr.vrApurado ?? '').toString().trim();
-      valorStr = valorStr.replace(/R\$\s?/g, '').trim();
-      valorStr = valorStr.replace(/\./g, '').replace(',', '.');
-      const vrApurado = parseFloat(valorStr);
-      return acc + (isNaN(vrApurado) ? 0 : vrApurado);
-    }, 0);
-
-    // Garante que soma é número e formata como string
-    this.totalFormatado = `R$ ${soma.toLocaleString('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`;
+    let totalCentavos = '0';
+  
+    for (const curr of values) {
+      const raw = (curr.vrApurado ?? '').toString().trim();
+      if (!raw) continue;
+  
+      const semPrefixo = raw.replace(/R\$\s*/g, '');
+  
+      const partes = semPrefixo.split(',');
+      const parteInteiraRaw = partes[0] ?? '';
+      const parteDecimalRaw = partes[1] ?? '';
+  
+      const parteInteiraDigits = parteInteiraRaw.replace(/\D/g, '') || '0';
+  
+      let parteDecimalDigits = parteDecimalRaw.replace(/\D/g, '');
+      parteDecimalDigits = (parteDecimalDigits + '00').slice(0, 2);
+  
+      const valorCentavos = parteInteiraDigits + parteDecimalDigits;
+  
+      if (!/^\d+$/.test(valorCentavos)) continue;
+  
+      let i = totalCentavos.length - 1;
+      let j = valorCentavos.length - 1;
+      let carry = 0;
+      let soma = '';
+  
+      while (i >= 0 || j >= 0 || carry > 0) {
+        const digA = i >= 0 ? (totalCentavos.charCodeAt(i) - 48) : 0;
+        const digB = j >= 0 ? (valorCentavos.charCodeAt(j) - 48) : 0;
+        const s = digA + digB + carry;
+        soma = (s % 10) + soma;
+        carry = Math.floor(s / 10);
+        i--; j--;
+      }
+  
+      totalCentavos = soma;
+    }
+  
+    if (totalCentavos.length < 3) totalCentavos = totalCentavos.padStart(3, '0');
+  
+    const inteiroRaw = totalCentavos.slice(0, -2) || '0';
+    const dec = totalCentavos.slice(-2);
+  
+    const inteiro = inteiroRaw.replace(/^0+/, '') || '0';
+    const inteiroFormatado = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  
+    this.totalFormatado = `R$ ${inteiroFormatado},${dec}`;
   }
 
 
@@ -259,5 +293,34 @@ export class RegistrarAtesteComponent implements OnInit {
       this.toastr.error('Erro ao salvar ateste', 'Erro');
     }
   }
+  formatarCampo(ref: number | string): void {
+    let control;
 
+    // Se for número, pega do FormArray
+    if (typeof ref === 'number') {
+      control = (this.faturamentos.at(ref) as FormGroup).get('vrApurado');
+    } else {
+      // Se for string, pega do FormGroup principal
+      control = this.form.get(ref);
+    }
+
+    if (!control) return;
+
+    let valor = control.value.replace(/\D/g, '');
+
+    if (!valor) {
+      control.setValue('R$ 0,00', { emitEvent: false });
+      return;
+    }
+
+    if (valor.length > 15) valor = valor.slice(0, 15);
+
+    const numero = (parseInt(valor) / 100).toFixed(2);
+    const formatado = `R$ ${parseFloat(numero).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+
+    control.setValue(formatado, { emitEvent: false });
+  }
 }
