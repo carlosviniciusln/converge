@@ -1319,6 +1319,58 @@ async removerRubrica(nuRubrica: string) {
       this.submitted = true;
       this.isReadonly = false;
 
+      this.form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
+
+      const meses = [
+        'vrJaneiro','vrFevereiro','vrMarco','vrAbril','vrMaio','vrJunho',
+        'vrJulho','vrAgosto','vrSetembro','vrOutubro','vrNovembro','vrDezembro'
+      ];
+      
+    const normalizarValor = (valor: any): number => {
+      // trata vazio
+      if (valor === null || valor === undefined || valor === '') return NaN;
+      // se já for número, usa direto
+      if (typeof valor === 'number') return valor;
+      // se for string com máscara, limpa
+      const limpo = String(valor)
+        .replace(/\s/g, '')   // remove espaços
+        .replace(/R\$/g, '')  // remove "R$"
+        .replace(/\./g, '')   // remove pontos (milhar)
+        .replace(',', '.');   
+      return Number(limpo);
+    };
+
+    const previsoesFA = this.form.get('previsoesDesembolso') as import('@angular/forms').FormArray;
+    if (!previsoesFA || !previsoesFA.controls?.length) {
+      await Swal.fire({
+        title: 'Atenção!',
+        text: 'Inclua pelo menos uma previsão de desembolso.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+      const existeAlgumValor = previsoesFA.controls.some(grp => {
+        const itemGrp = grp as import('@angular/forms').FormGroup;
+        return meses.some(m => {
+          const raw = itemGrp.get(m)?.value;
+          const val = normalizarValor(raw);
+          return !isNaN(val) && val > 0; // pelo menos um mês com valor > 0
+        });
+      });
+
+      if (!existeAlgumValor) {
+        await Swal.fire({
+          title: 'Atenção!',
+          text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+
+
       var obj = this.form.value;
 
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
