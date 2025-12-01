@@ -1391,7 +1391,7 @@ async removerRubrica(nuRubrica: string) {
       ) {
         if (
           this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 5 &&
-          this.form.value.nuPlanejamentoStatus != 7
+          this.form.value.nuPlanejamentoStatus != 7 && this.form.value.nuPlanejamentoStatus != 5
         ) {
           //Criado para Revisado
           this.toastr.error(
@@ -1402,7 +1402,7 @@ async removerRubrica(nuRubrica: string) {
         }
         if (
           this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 7 &&
-          this.form.value.nuPlanejamentoStatus != 9
+          this.form.value.nuPlanejamentoStatus != 9 && this.form.value.nuPlanejamentoStatus != 7
         ) {
           //Revisado e de Avaliado
           this.toastr.error(
