@@ -218,6 +218,7 @@
                     class="form-control"
                     formControlName="vrApurado"
                     placeholder="R$ 0,00"
+                    maxlength="20"
                     (input)="formatarCampo(i)" />
               </td>
           
@@ -307,6 +308,7 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
             <textarea formControlName="deObservacao" id="deObservacao"
               placeholder="Digite..."
               class="form-control border border-light rounded" rows="4"
+              maxlength="255"
               [ngClass]="{
                 'is-invalid': submitted && form.get('deObservacao').invalid
               }" >
