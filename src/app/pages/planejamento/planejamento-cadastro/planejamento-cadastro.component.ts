@@ -352,7 +352,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }, [Validators.required]),
+      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }),
       coContrato: [''],
       nuObjetivoEstrategicoPdti: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -1218,8 +1218,8 @@ async removerRubrica(nuRubrica: string) {
     return Number(value);
   }
   public async ValidarValores(obj: any): Promise<boolean> {
-    /**** nova validação de valores *********/    
-          const previsoes = obj.previsoesDesembolso;          
+    /**** nova validação de valores *********/
+          const previsoes = obj.previsoesDesembolso;
           for (var p in previsoes) {
             var item: PlanejamentoOrcamentarioItemRequest = {
               NuPlanejamentoItem: 0,
@@ -1552,13 +1552,13 @@ async removerRubrica(nuRubrica: string) {
           });
         }
       } else {
-        console.error('Atenção!', response.errors);
-       await Swal.fire({
-        title: 'Atenção!',
-        text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
-        icon: 'warning',
-        confirmButtonText: 'OK'
-      });
+        console.error('Erro na resposta da API:', response.errors);
+        await Swal.fire({
+          title: 'Erro!',
+          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       }
 
       this.atualizarPagina.emit(true);
