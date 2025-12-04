@@ -141,7 +141,7 @@ export class ModalLimitesComponent implements OnInit {
       this.formCadastro = this.formBuilder.group({
         nuPlanejamento: [this.planejamentoEdit, Validators.required],
         nuRubrica: [this.registro.nuRubrica, Validators.required],
-        nuUnidadeDemandante: [this.nuFilialEdit, Validators.required],
+        nuUnidadeDemandante: [this.registro.nuFilial, Validators.required],
         vrLimite: [this.formatarValorMonetario(this.registro.vrLimite), Validators.required],
         nuLimitePlanejamento: [this.registro.nuLimitePlanejamento, Validators.required]
       });
@@ -223,7 +223,7 @@ export class ModalLimitesComponent implements OnInit {
           if (controls[name].invalid) invalids.push(name);
         }
         this.toastr.error('Todos os campos são obrigatórios.', 'Campo Obrigatório');
-        console.log(invalids);
+        console.error(invalids);
         return;
 
       }
@@ -254,7 +254,7 @@ export class ModalLimitesComponent implements OnInit {
         }
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
       this.atualizarPagina.emit(false);
     }
   }
@@ -283,6 +283,7 @@ export class ModalLimitesComponent implements OnInit {
 public async Alterar(): Promise<void> {
   try {
     this.submitted = true;
+    console.log('Valores do formulário:', this.formCadastro.value);
 
     if (this.formCadastro.invalid) {
       const invalids = [];
@@ -290,7 +291,7 @@ public async Alterar(): Promise<void> {
       for (const name in controls) {
         if (controls[name].invalid) invalids.push(name);
       }
-      console.log(invalids);
+      console.error(invalids);
       return;
     }
 
