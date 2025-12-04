@@ -335,14 +335,15 @@ export class PlanejamentoCadastroComponent implements OnInit {
         Validators.required,
       ]),
       deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
-
+      Validators.maxLength(255)
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
-
+        [Validators.maxLength(255)]
       ),
       deObservacao: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
+        Validators.maxLength(255)
       ]),
       nuPlanejamentoStatus: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -487,6 +488,16 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   onValorRubricaChange(i: number) {
     const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
+    
+    Object.keys(prevDes.controls).forEach((campo) => {
+      if (campo.startsWith('vr') && campo !== 'vrTotalRubrica') {
+        const ctrl = prevDes.get(campo);
+        const v = ctrl?.value;
+        if (v === '' || v === null || v === undefined) {
+          ctrl?.setValue(0, { emitEvent: false });
+        }
+      }
+    });
 
     const limparValor = (valor: string): number => {
       if (!valor) return 0;
