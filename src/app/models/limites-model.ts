@@ -51,7 +51,7 @@ export interface LimitesModel {
   expanded?:boolean;
   segundoExpanded?:boolean;
   terceiroExpanded?:boolean;
-  detalhes?:Partial<LimitesModel>[];
+  primeiroNivel?:Partial<LimitesModel>[];
   segundoNivel?:Partial<LimitesModel>[];
   terceiroNivel?:Partial<LimitesModel>[];
   deOrdemProg?: string;

@@ -55,7 +55,7 @@
           </div>
           <div class="col-md-6 pr-0">
             <label for="deObjeto">Objeto:</label>
-            <input formControlName="deObjeto" id="deObjeto" placeholder="Digite..." type="text" class="form-control" />
+            <input formControlName="deObjeto" id="deObjeto" placeholder="Digite..." type="text" class="form-control" maxlength="255"/>
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuPlanejamentoTipo">Tipo de Planejamento:</label>
@@ -163,7 +163,7 @@
           </div>
           <div class="col-md-9 pr-0">
             <label for="deJustificativa">Justificativa para Or&ccedil;amento:</label>
-            <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text"
+            <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
               class="form-control"
                />
           </div>
@@ -270,37 +270,37 @@
                 <label for="vrJaneiro">Janeiro:</label>
                 <input currencyMask id="vrJaneiro" formControlName="vrJaneiro"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrFevereiro">Fevereiro:</label>
                 <input currencyMask id="vrFevereiro" formControlName="vrFevereiro"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrMarco">Março:</label>
                 <input currencyMask id="vrMarco" formControlName="vrMarco"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrAbril">Abril:</label>
                 <input currencyMask id="vrAbril" formControlName="vrAbril"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrMaio">Maio:</label>
                 <input currencyMask id="vrMaio" formControlName="vrMaio"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrJunho">Junho:</label>
                 <input currencyMask id="vrJunho" formControlName="vrJunho"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
             </div>
 
@@ -309,37 +309,37 @@
                 <label for="vrJulho">Julho:</label>
                 <input currencyMask id="vrJulho" formControlName="vrJulho"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrAgosto">Agosto:</label>
                 <input currencyMask id="vrAgosto" formControlName="vrAgosto"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrSetembro">Setembro:</label>
                 <input currencyMask id="vrSetembro" formControlName="vrSetembro"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrOutubro">Outubro:</label>
                 <input currencyMask id="vrOutubro" formControlName="vrOutubro"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrNovembro">Novembro:</label>
                 <input currencyMask id="vrNovembro" formControlName="vrNovembro"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
               <div class="col-md-2 pl-[-1] pr-[-1]">
                 <label for="vrDezembro">Dezembro:</label>
                 <input currencyMask id="vrDezembro" formControlName="vrDezembro"
                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
-                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" />
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
             </div>
             <div class="row">
@@ -485,7 +485,7 @@
             </h4>
             <textarea formControlName="deObservacao" id="deObservacao"
               [ngClass]="{ 'is-invalid': submitted && f.deObservacao?.invalid }" placeholder="Digite..."
-              class="form-control border border-light rounded" rows="4"></textarea>
+              class="form-control border border-light rounded" maxlength="255" rows="4"></textarea>
           </div>
         </div>
       </div>

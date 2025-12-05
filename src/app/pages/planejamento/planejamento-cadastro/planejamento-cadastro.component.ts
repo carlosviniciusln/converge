@@ -335,14 +335,15 @@ export class PlanejamentoCadastroComponent implements OnInit {
         Validators.required,
       ]),
       deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
-
+      Validators.maxLength(255)
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
-
+        [Validators.maxLength(255)]
       ),
       deObservacao: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
+        Validators.maxLength(255)
       ]),
       nuPlanejamentoStatus: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -352,7 +353,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }, [Validators.required]),
+      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }),
       coContrato: [''],
       nuObjetivoEstrategicoPdti: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -487,6 +488,16 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   onValorRubricaChange(i: number) {
     const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
+    
+    Object.keys(prevDes.controls).forEach((campo) => {
+      if (campo.startsWith('vr') && campo !== 'vrTotalRubrica') {
+        const ctrl = prevDes.get(campo);
+        const v = ctrl?.value;
+        if (v === '' || v === null || v === undefined) {
+          ctrl?.setValue(0, { emitEvent: false });
+        }
+      }
+    });
 
     const limparValor = (valor: string): number => {
       if (!valor) return 0;
@@ -1217,6 +1228,34 @@ async removerRubrica(nuRubrica: string) {
     }
     return Number(value);
   }
+  public async ValidarValores(obj: any): Promise<boolean> {
+    /**** nova validação de valores *********/
+          const previsoes = obj.previsoesDesembolso;
+          for (var p in previsoes) {
+            var item: PlanejamentoOrcamentarioItemRequest = {
+              NuPlanejamentoItem: 0,
+              VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
+              VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
+              VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
+              VrMarco: this.parseDecimal(previsoes[p].vrMarco),
+              VrAbril: this.parseDecimal(previsoes[p].vrAbril),
+              VrMaio: this.parseDecimal(previsoes[p].vrMaio),
+              VrJunho: this.parseDecimal(previsoes[p].vrJunho),
+              VrJulho: this.parseDecimal(previsoes[p].vrJulho),
+              VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
+              VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
+              VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
+              VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
+              VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
+            };
+            if (item.VrPlanejamentoItem == null || Number.isNaN(item.VrPlanejamentoItem)) {
+              item.VrPlanejamentoItem = await this.calcularPlanejamento(item);
+            }
+            if(item.VrPlanejamentoItem == 0) return true;
+          }
+          return false;
+        /**** nova validação de valores *********/
+  }
 
   public async Cadastrar(): Promise<void> {
     // const nuAno = this.listaExercicios.filter(x => x.nuAnoOrcamento == this.ano)[0].nuOrcamento
@@ -1260,6 +1299,16 @@ async removerRubrica(nuRubrica: string) {
       // this.form.controls['nuContrato'].setValue(codigoContrato);
 
       var obj = this.form.getRawValue();
+      var totalRubrica = await this.ValidarValores(obj);
+      if(totalRubrica){
+        await Swal.fire({
+          title: 'Atenção!',
+          text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
 
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
 
@@ -1319,48 +1368,9 @@ async removerRubrica(nuRubrica: string) {
       this.submitted = true;
       this.isReadonly = false;
 
-      this.form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
-
-      const meses = [
-        'vrJaneiro','vrFevereiro','vrMarco','vrAbril','vrMaio','vrJunho',
-        'vrJulho','vrAgosto','vrSetembro','vrOutubro','vrNovembro','vrDezembro'
-      ];
-      
-    const normalizarValor = (valor: any): number => {
-      // trata vazio
-      if (valor === null || valor === undefined || valor === '') return NaN;
-      // se já for número, usa direto
-      if (typeof valor === 'number') return valor;
-      // se for string com máscara, limpa
-      const limpo = String(valor)
-        .replace(/\s/g, '')   // remove espaços
-        .replace(/R\$/g, '')  // remove "R$"
-        .replace(/\./g, '')   // remove pontos (milhar)
-        .replace(',', '.');   
-      return Number(limpo);
-    };
-
-    const previsoesFA = this.form.get('previsoesDesembolso') as import('@angular/forms').FormArray;
-    if (!previsoesFA || !previsoesFA.controls?.length) {
-      await Swal.fire({
-        title: 'Atenção!',
-        text: 'Inclua pelo menos uma previsão de desembolso.',
-        icon: 'warning',
-        confirmButtonText: 'OK'
-      });
-      return;
-    }
-
-      const existeAlgumValor = previsoesFA.controls.some(grp => {
-        const itemGrp = grp as import('@angular/forms').FormGroup;
-        return meses.some(m => {
-          const raw = itemGrp.get(m)?.value;
-          const val = normalizarValor(raw);
-          return !isNaN(val) && val > 0; // pelo menos um mês com valor > 0
-        });
-      });
-
-      if (!existeAlgumValor) {
+      var obj = this.form.value;
+      var totalRubrica = await this.ValidarValores(obj);
+      if(totalRubrica){
         await Swal.fire({
           title: 'Atenção!',
           text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
@@ -1369,10 +1379,6 @@ async removerRubrica(nuRubrica: string) {
         });
         return;
       }
-
-
-      var obj = this.form.value;
-
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
 
       if (this.form.invalid) {
@@ -1557,13 +1563,13 @@ async removerRubrica(nuRubrica: string) {
           });
         }
       } else {
-        console.error('Atenção!', response.errors);
-       await Swal.fire({
-        title: 'Atenção!',
-        text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
-        icon: 'warning',
-        confirmButtonText: 'OK'
-      });
+        console.error('Erro na resposta da API:', response.errors);
+        await Swal.fire({
+          title: 'Erro!',
+          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       }
 
       this.atualizarPagina.emit(true);

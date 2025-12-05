@@ -53,55 +53,26 @@ export class RegistrarAtesteComponent implements OnInit {
   public totalFormatado: string = '';
   
   calcularTotal(values: any[]): void {
-    let totalCentavos = '0';
-  
+    let somaCentavos = 0;
     for (const curr of values) {
-      const raw = (curr.vrApurado ?? '').toString().trim();
-      if (!raw) continue;
-  
-      const semPrefixo = raw.replace(/R\$\s*/g, '');
-  
-      const partes = semPrefixo.split(',');
-      const parteInteiraRaw = partes[0] ?? '';
-      const parteDecimalRaw = partes[1] ?? '';
-  
-      const parteInteiraDigits = parteInteiraRaw.replace(/\D/g, '') || '0';
-  
-      let parteDecimalDigits = parteDecimalRaw.replace(/\D/g, '');
-      parteDecimalDigits = (parteDecimalDigits + '00').slice(0, 2);
-  
-      const valorCentavos = parteInteiraDigits + parteDecimalDigits;
-  
-      if (!/^\d+$/.test(valorCentavos)) continue;
-  
-      let i = totalCentavos.length - 1;
-      let j = valorCentavos.length - 1;
-      let carry = 0;
-      let soma = '';
-  
-      while (i >= 0 || j >= 0 || carry > 0) {
-        const digA = i >= 0 ? (totalCentavos.charCodeAt(i) - 48) : 0;
-        const digB = j >= 0 ? (valorCentavos.charCodeAt(j) - 48) : 0;
-        const s = digA + digB + carry;
-        soma = (s % 10) + soma;
-        carry = Math.floor(s / 10);
-        i--; j--;
-      }
-  
-      totalCentavos = soma;
-    }
-  
-    if (totalCentavos.length < 3) totalCentavos = totalCentavos.padStart(3, '0');
-  
-    const inteiroRaw = totalCentavos.slice(0, -2) || '0';
-    const dec = totalCentavos.slice(-2);
-  
-    const inteiro = inteiroRaw.replace(/^0+/, '') || '0';
-    const inteiroFormatado = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  
-    this.totalFormatado = `R$ ${inteiroFormatado},${dec}`;
-  }
+      let valorStr = (curr.vrApurado ?? '').toString()
+        .replace(/R\$\s?/g, '') 
+        .replace(/\./g, '')     
+        .replace(',', '')       
+        .trim();
+    
+      if (!valorStr) continue;
 
+      const centavos = parseInt(valorStr);
+      if (!isNaN(centavos)) somaCentavos += centavos;
+    }
+
+    const reais = Math.floor(somaCentavos / 100);
+    const centavosRestantes = somaCentavos % 100;
+
+    const inteiroFormatado = reais.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    this.totalFormatado = `R$ ${inteiroFormatado},${centavosRestantes.toString().padStart(2, '0')}`;
+  }
 
   formulario() {
     this.form = this.formBuilder.group({
@@ -293,14 +264,12 @@ export class RegistrarAtesteComponent implements OnInit {
       this.toastr.error('Erro ao salvar ateste', 'Erro');
     }
   }
+
   formatarCampo(ref: number | string): void {
     let control;
-
-    // Se for número, pega do FormArray
     if (typeof ref === 'number') {
       control = (this.faturamentos.at(ref) as FormGroup).get('vrApurado');
     } else {
-      // Se for string, pega do FormGroup principal
       control = this.form.get(ref);
     }
 

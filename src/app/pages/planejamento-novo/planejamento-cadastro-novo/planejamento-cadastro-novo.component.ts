@@ -352,7 +352,7 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
         { value: '', disabled: !this.isEditable },
         [Validators.required]
       ),
-      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }, [Validators.required]),
+      nuContrato: new FormControl({ value: '', disabled: !this.isEditable }),
       coContrato: [''],
       nuObjetivoEstrategicoPdti: new FormControl(
         { value: '', disabled: !this.isEditable },

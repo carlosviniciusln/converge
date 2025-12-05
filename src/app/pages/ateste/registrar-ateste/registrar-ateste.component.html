@@ -218,6 +218,7 @@
                     class="form-control"
                     formControlName="vrApurado"
                     placeholder="R$ 0,00"
+                    maxlength="20"
                     (input)="formatarCampo(i)" />
               </td>
           
@@ -266,6 +267,7 @@
                 <input formControlName="vrRetencao"
                     type="text"
                     class="form-control col-2"
+                    maxlength="20"
                     (input)="formatarCampo('vrRetencao')"
                     placeholder="R$ 0,00" />
             </div>
@@ -281,7 +283,7 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
                   type="text"
                   placeholder="Penalidade"
                   class="form-control col-9"
-                   maxlength="255"
+                  maxlength="255"
                   [ngClass]="{
                     'is-invalid': submitted && form.get('dePenalidade').invalid
                   }"
@@ -290,6 +292,7 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
                 <input formControlName="vrMulta"
                     type="text"
                     class="form-control col-2"
+                    maxlength="20"
                     (input)="formatarCampo('vrMulta')"
                     placeholder="R$ 0,00" />
             </div>
@@ -307,6 +310,7 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
             <textarea formControlName="deObservacao" id="deObservacao"
               placeholder="Digite..."
               class="form-control border border-light rounded" rows="4"
+              maxlength="255"
               [ngClass]="{
                 'is-invalid': submitted && form.get('deObservacao').invalid
               }" >
