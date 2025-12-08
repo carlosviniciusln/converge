@@ -74,173 +74,26 @@ ngOnChanges(changes: SimpleChanges) {
             });
         }
     }
-    
-    async exportExcel() {
-        const rubricas = this.listaPlanejamentoOrcamentario?.length
-          ? this.listaPlanejamentoOrcamentario
-          : this.planejamentoOrcamentario;
-        if (!rubricas || rubricas.length === 0) return;
-      
-        type Linha = {
-          Ano: number | string;
-          Mes: string;
-          Rubrica: string;
-          Contrato: string;
-          UD: string;
-          Empresa: string;
-          Planejado: number;
-          Limite: number;
-          Diferenca: number;
-          Executado: number;
-          '%EP': number;
-        };
-        const linhas: Linha[] = [];
-      
-        const K = {
-          contrato: ['cO_CONTRATO', 'CO_CONTRATO', 'nU_CONTRATO', 'NU_CONTRATO'] as string[],
-          empresa: ['nO_EMPRESA', 'NO_EMPRESA'] as string[],
-          filialNum: ['nU_FILIAL', 'NU_FILIAL'] as string[],
-          filialSigla: ['sG_FILIAL', 'SG_FILIAL'] as string[],
-          periodo: ['dE_PERIODO', 'DE_PERIODO'] as string[],
-          limite: ['vR_LIMITE', 'VR_LIMITE'] as string[],
-          planejadoMes: ['vR_PLANEJADO_MES', 'VR_PLANEJADO_MES'] as string[],
-          diferenca: ['vR_DIFERENCA', 'VR_DIFERENCA'] as string[],
-          executado: ['vR_EXECUTADO', 'VR_EXECUTADO'] as string[],
-          ep: ['pC_EP', 'PC_EP'] as string[],
-          exercicio: ['cO_EXERCICIO', 'CO_EXERCICIO'] as string[],
-          rubricaCod: ['cO_RUBRICA', 'CO_RUBRICA', 'nU_RUBRICA', 'NU_RUBRICA'] as string[],
-          rubricaDesc: ['dE_RUBRICA', 'DE_RUBRICA'] as string[],
-        };
-      
-        const getStr = (obj: any, keys: string[], def = ''): string => {
-          if (!obj) return def;
-          for (const k of keys) {
-            const v = obj[k];
-            if (v !== undefined && v !== null && String(v) !== '') return String(v);
-          }
-          return def;
-        };
-      
-        const getNum = (obj: any, keys: string[], def = 0): number => {
-          if (!obj) return def;
-          for (const k of keys) {
-            const v = obj[k];
-            if (v !== undefined && v !== null && String(v) !== '') {
-              const n = Number(v);
-              if (!isNaN(n)) return n;
-            }
-          }
-          return def;
-        };
-      
-        const cascadeNum = (keys: string[], def = 0, ...objs: any[]): number => {
-          for (const o of objs) {
-            const v = getNum(o, keys, NaN);
-            if (!isNaN(v)) return v;
-          }
-          return def;
-        };
-      
-        const anoFromPeriodo = (periodo: string, fallback: any): number | string => {
-          const y = periodo && periodo.length >= 4 ? Number(periodo.slice(-4)) : NaN;
-          if (!isNaN(y)) return y;
-          const fb = getNum(fallback, K.exercicio, 0);
-          return fb !== 0 ? fb : '';
-        };
 
-        const getContrato = (m: any, c: any, ud: any, r: any): string => {
-          const pick = (o: any) => {
-            const val = getStr(o, K.contrato, '');
-            return val === '0' ? '' : val;
-          };
-          return pick(m) || pick(c) || pick(ud) || pick(r) || '';
-        };
-      
-        const getRubricaFromRegistro = (r: any): string => {
-          const code = getStr(r, K.rubricaCod, '');
-          if (code && code !== '0') return code;
-          return getStr(r, K.rubricaDesc, '');
-        };
-      
-        const mesesFrom = (c: any, r: any): any[] => {
-          const local = Array.isArray(c?.terceiroNivel) ? c.terceiroNivel : [];
-          const reg = Array.isArray(r?.terceiroNivel) ? (r.terceiroNivel as any[]) : [];
-          return local.length ? local : reg;
-        };
-      
-        const siglaUD = (filialRef: number, udSiglas: Map<number, string>, ud: any, r: any): string => {
-          if (!isNaN(filialRef)) {
-            const s = udSiglas.get(filialRef);
-            if (s) return s;
-          }
-          return getStr(ud, K.filialSigla, getStr(r, K.filialSigla, ''));
-        };
-      
-        const udPromises: Promise<void>[] = [];
-        for (const reg of rubricas) {
-          const r: any = reg;
-          if (!Array.isArray(r.detalhes) || r.detalhes.length === 0) {
-            udPromises.push(this.detalharPorUD(reg));
-          }
-        }
-        if (udPromises.length) await Promise.all(udPromises);
-      
-        for (const reg of rubricas) {
-          const r: any = reg;
-          const uds: any[] = Array.isArray(r.detalhes) ? r.detalhes : [];
-          if (!uds.length) continue;
-      
-          const rubricaDoRegistro = getRubricaFromRegistro(r);
-      
-          const udSiglaPorFilial = new Map<number, string>();
-          for (const ud of uds) {
-            const filial = getNum(ud, K.filialNum, NaN);
-            if (!isNaN(filial)) udSiglaPorFilial.set(filial, getStr(ud, K.filialSigla, ''));
-          }
-      
-          for (const ud of uds) {
-            await this.detalharPorContrato(reg, ud);
-            const contratos: any[] = Array.isArray(r.segundoNivel) ? r.segundoNivel : [];
-            if (!contratos.length) continue;
-      
-            for (const c of contratos) {
-              await this.detalharPorMes(reg, c);
-              const meses = mesesFrom(c, r);
-              if (!meses.length) continue;
-      
-              const empresaStr = getStr(c, K.empresa, '') || getStr(ud, K.empresa, '') || getStr(r, K.empresa, '');
-              const filialRef = getNum(c, K.filialNum, NaN) || getNum(ud, K.filialNum, NaN);
-              const udSigla = siglaUD(filialRef, udSiglaPorFilial, ud, r);
-      
-              for (const m of meses) {
-                const periodo = getStr(m, K.periodo, '');
-                const ano = anoFromPeriodo(periodo, c ?? r);
-                const contratoFinal = getContrato(m, c, ud, r);
-      
-                linhas.push({
-                  Ano: ano,
-                  Mes: periodo,
-                  Rubrica: rubricaDoRegistro,
-                  Contrato: contratoFinal,
-                  UD: udSigla,
-                  Empresa: empresaStr,
-                  Planejado: cascadeNum(K.planejadoMes, 0, m, c, ud, r),
-                  Limite: cascadeNum(K.limite, 0, m, c, ud, r),
-                  Diferenca: cascadeNum(K.diferenca, 0, m, c, ud, r),
-                  Executado: cascadeNum(K.executado, 0, m, c, ud, r),
-                  '%EP': cascadeNum(K.ep, 0, c, ud, r),
-                });
-              }
+    exportExcel() {
+
+        const dadosFiltrados = this.listaPlanejamentoOrcamentario.map(item => {
+            return {
+                Ano: item.cO_EXERCICIO,
+                Contrato: item.cO_CONTRATO,
+                UD: item.sG_FILIAL,
+                Empresa: item.nO_EMPRESA,
+                "Limite": item.vR_LIMITE,
+                "Diferença": item.vR_DIFERENCA,
+                "% EP": item.pC_EP
             }
-          }
-        }
-      
-        const xlsx = await import('xlsx');
-        const lib = (xlsx as any).default ?? xlsx;
-        const worksheet = lib.utils.json_to_sheet(linhas);
-        const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-        const excelBuffer: any = lib.write(workbook, { bookType: 'xlsx', type: 'array' });
-        this.saveAsExcelFile(excelBuffer, 'contratos');
+        })
+        import("xlsx").then(xlsx => {
+            const worksheet = xlsx.utils.json_to_sheet(dadosFiltrados);
+            const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+            const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            this.saveAsExcelFile(excelBuffer, "contratos");
+        });
     }      
       
     saveAsExcelFile(buffer: any, fileName: string): void {
