@@ -488,7 +488,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
 
   onValorRubricaChange(i: number) {
     const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
-    
+
     Object.keys(prevDes.controls).forEach((campo) => {
       if (campo.startsWith('vr') && campo !== 'vrTotalRubrica') {
         const ctrl = prevDes.get(campo);
@@ -584,7 +584,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
   onContratoChange(event: any) {
     //Limpa formulário antes de preencher os campos.
     //this.formulario();
-    const nuContrato = event.target.value;
+    const nuContrato = event?.value;
+
     if (nuContrato) {
       this.obterDadosContrato(nuContrato);
     }
@@ -654,12 +655,8 @@ async removerRubrica(nuRubrica: string) {
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioResponse>
       >(
-        `${Endpoints.URL_ORCAMENTO}/ObterConsultaGeral?nuContrato=` +
-          this.nuPlanejamento.nU_CONTRATO +
-          `&nuTipoDemanda=` +
-          this.nuPlanejamento.nU_TIPO_DEMANDA +
-          `&nuFilial=` +
-          this.nuPlanejamento.nU_FILIAL +
+        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/ObterConsultaGeral?nuOrc=` +
+          this.nuPlanejamento.nU_ORC +
           `&nuPlanejamento=` +
           this.nuPlanejamento.nU_PLANEJAMENTO
       );
@@ -757,12 +754,8 @@ async removerRubrica(nuRubrica: string) {
           const responseVlr = await this.apiService.get<
             ApiResponse<PrevisaoDesembolsoResponse[]>
           >(
-            `${Endpoints.URL_ORCAMENTO}/ObterConsultaPorRubrica?nuContrato=` +
-              this.nuPlanejamento.nU_CONTRATO +
-              `&nuTipoDemanda=` +
-              this.nuPlanejamento.nU_TIPO_DEMANDA +
-              `&nuFilial=` +
-              this.nuPlanejamento.nU_FILIAL +
+            `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/ObterConsultaPorRubrica?nuOrc=` +
+              this.nuPlanejamento.nU_ORC +
               `&nuPlanejamento=` +
               this.nuPlanejamento.nU_PLANEJAMENTO
           );

@@ -178,7 +178,7 @@ export class PlanejamentoGeralComponent implements OnInit {
       keyboard: false,
     });
 
-   
+
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
@@ -230,7 +230,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
       this.toastr.warning('Não é permitido alterar status em planejamentos encerrados.', 'Aviso');
       return;
     }
-    
+
     const isUltimaReprogramacao = await this.verificarUltimaReprogramacao();
     if (!isUltimaReprogramacao) {
       this.toastr.warning('Não é permitido alterar status em reprogramações que não sejam as últimas.', 'Aviso');
@@ -268,12 +268,12 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
     var response : any;
     try {
-      response = await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);      
+      response = await this.apiService.put(`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`, statusNovo);
     } catch (error: any) {
       setTimeout(() => {
         window.location.reload()
       }, 3000);
-    } 
+    }
 
     if(response.length > 0){
       this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
@@ -293,7 +293,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
   atualizarStatusSelecionados() {
     const itensNaoSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO == false)
-     console.log("itensNaoSelecionados", itensNaoSelecionados)        
+     console.log("itensNaoSelecionados", itensNaoSelecionados)
       this.planejamentos.forEach(p1 => {
           const existe = itensNaoSelecionados.some(p2 => p2.nU_ORC === p1.nU_ORC);
           if (existe) {
@@ -327,10 +327,10 @@ public async onSalvarMudancasStatus(): Promise<void> {
     this.atualizarStatusSelecionados();
   }
 
-
+ // mudança de endpoint
   public downloadPlanejamentoDesembolso() {
     return this.apiService.downloadfile(
-      `${Endpoints.URL_ORCAMENTO}/detalhamento-excel`,
+      `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/detalhamento-excel`,
       this.filtroRegistros
     );
   }
@@ -362,7 +362,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
       switch (op) {
         case 2: {
           this.filtroRegistros.nuOrc = e.value;
-          this.filtroRegistros.pageNumber = 1; 
+          this.filtroRegistros.pageNumber = 1;
           if (e.value == null || this.selectNuOrcs.length > 1) {
               await this.obterPlanejamentosOrc();
           }
@@ -419,11 +419,12 @@ public async onSalvarMudancasStatus(): Promise<void> {
     this.loading = false;
   }
 
+  // MUDANÇA DE ENDPOINT
   public async obterPlanejamentosOrc(): Promise<void> {
     this.loading = true;
     try {
       const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
-      (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
+      (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO_NOVO}`, this.filtroRegistros);
       this.planejamentos = response?.data?.contratos.map(p => ({...p,sT_SELECIONADO: false }));
       this.selectContratos = (response?.data?.listaContrato ?? []).map(c => ({ label: c, value: c }));
       this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
@@ -433,7 +434,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
       this.selectNuOrcs = response?.data?.listaNuOrc.map(g => ({ label: g, value: g }));
       this.selectOpcoesIsDigital = this.listaOpcoesIsDigital.map(g => ({ label: g.label, value: g.value }));
       this.quantidadeTotal = response.data.totalRecords;
-      this.loading = false;      
+      this.loading = false;
       this.planejamentos.forEach(p => {
         p.nO_STATUS_Original = p.nO_STATUS; // adiciona propriedade auxiliar
       });
