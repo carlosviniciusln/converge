@@ -75,11 +75,16 @@ ngOnChanges(changes: SimpleChanges) {
         }
     }
 
-    exportExcel() {
-        return this.apiService.downloadfile(
-            `${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_RELATORIO_RUBRICAS}`,
-        );
+    
+    async exportExcel(nuPlanejamento: number) {
+        try {
+            const url = `${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_RELATORIO_RUBRICAS}?nuPlanejamento=${nuPlanejamento}`;
+            const response = await this.apiService.downloadfile(url);
+        } catch (error) {
+            console.error(error, 'exportExcel por rubrica');
+        }
     }
+
 
     public async obterValores(nuplanejamento: string) {
         try {
