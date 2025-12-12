@@ -80,6 +80,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
   public planejamento: PlanejamentoOrcamentarioResponse;
   public planejamentoEditar: PlanejamentoOrcamentarioResponse;
+  public isFlagStyle : boolean = false;
   public listaDigital: any[] = [
     { id: 1, tipo: 'Digital' },
     { id: 2, tipo: 'Digital - TD' },
@@ -669,8 +670,8 @@ async removerRubrica(nuRubrica: string) {
 
       if (this.planejamento) {
 
-
-        this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
+         this.isFlagStyle = true;
+         this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
 
           this.form.controls['coContrato'].setValue(
            this.planejamento.coContrato
