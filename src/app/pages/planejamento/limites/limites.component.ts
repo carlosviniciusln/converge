@@ -37,31 +37,27 @@ export class LimitesComponent implements OnInit {
   permissions!: ActionPolicies;
   public currentProfile!: PerfisEnum;
   public isPerfilAdminOrcamento = false;
+  private listaCompletaMaster: LimitesModel[] = [];
 
-  /** Cache e listas */
   private filteredRawCache: LimitesModel[] = [];
-  listaLimites: Partial<LimitesModel>[] = [];
-  listaLimitesCompleta: Partial<LimitesModel>[] = [];
-  listaAgrupadaBase: Partial<LimitesModel>[] = [];
+  listaLimites: LimitesModel[] = [];
+  listaLimitesCompleta: LimitesModel[] = [];
+  listaAgrupadaBase: LimitesModel[] = [];
 
-  /** Filtros */
   selectedUnidadeDemandante: any;
   selectedExercicio!: string;
   selectedTipo: any;
   selectedRubrica: any;
 
-  /** Combos */
   public selectRubrica: Select2Data = [];
   public listaExercicios: Select2Data = [];
   public selectFilial: Select2Data = [];
   public selectTipo: Select2Data = [];
 
-  /** Expansões por nível (imutáveis) */
   expandedKeysL0: { [key: string]: boolean } = {};
   expandedKeysL1: { [key: string]: boolean } = {};
   expandedKeysL2: { [key: string]: boolean } = {};
 
-  /** Filtro usado na API */
   public filtroRegistros: any = {
     pageNumber: 1,
     pageSize: 10,
@@ -78,20 +74,17 @@ export class LimitesComponent implements OnInit {
     private cd: ChangeDetectorRef
   ) {}
 
-  // ========= Ciclo de vida =========
   ngOnInit() {
     this.obterPermissoes();
     this.obterValores();
   }
 
-  // ========= Permissões =========
   obterPermissoes() {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Limites);
     this.currentProfile = this.token.getUserPerfil();
     this.isPerfilAdminOrcamento = (this.currentProfile === 'Orçamento' || this.currentProfile === 'Administrador');
   }
 
-  // ========= Utilidades =========
   exportExcel() {
     return this.apiService.downloadfile(
       `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/obter-relatorio-limites-excel`,
@@ -111,7 +104,6 @@ export class LimitesComponent implements OnInit {
     return sel.toString().trim();
   }
 
-  /** Keys únicas por nível (namespaced) */
   private keyL0(row: Partial<LimitesModel>): string {
     return `L0|${row.coExercicio}|${row.deOrdemProg}`;
   }
@@ -122,17 +114,14 @@ export class LimitesComponent implements OnInit {
     return `L2|${contr.coExercicio}|${contr.deOrdemProg}|${contr.coRubrica}`;
   }
   private keyL3(ud: Partial<LimitesModel>): string {
-    const contrato = (ud as any).nuContrato ?? '';
-    return `L3|${ud.coExercicio}|${ud.deOrdemProg}|${ud.sgFilial}|${ud.coRubrica}|${contrato}`;
+    return `L3|${ud.coExercicio}|${ud.deOrdemProg}|${ud.noRubricaTipo}|${ud.coRubrica}|${ud.sgFilial}|${ud.deRubrica}`;
   }
 
-  /** TrackBy por nível (usa a key que também vai em dataKey) */
-  trackByNivel0 = (index: number, item: Partial<LimitesModel>) => item['nivel0Key'] ?? this.keyL0(item);
-  trackByNivel1 = (index: number, item: Partial<LimitesModel>) => item['nivel1Key'] ?? this.keyL1(item);
-  trackByNivel2 = (index: number, item: Partial<LimitesModel>) => item['nivel2Key'] ?? this.keyL2(item);
-  trackByNivel3 = (index: number, item: Partial<LimitesModel>) => item['nivel3Key'] ?? this.keyL3(item);
+  trackByNivel0 = (index: number, item: LimitesModel) => (item as any).nivel0Key ?? this.keyL0(item);
+  trackByNivel1 = (index: number, item: LimitesModel) => (item as any).nivel1Key ?? this.keyL1(item);
+  trackByNivel2 = (index: number, item: LimitesModel) => (item as any).nivel2Key ?? this.keyL2(item);
+  trackByNivel3 = (index: number, item: LimitesModel) => (item as any).nivel3Key ?? this.keyL3(item);
 
-  // ========= Filtros (frontend) =========
   private aplicaFiltroNaBaseCrua(): LimitesModel[] {
     const fExc = this.norm(this.selectedExercicio).trim();
     const fTip = this.norm(this.selectedTipo).trim();
@@ -153,12 +142,11 @@ export class LimitesComponent implements OnInit {
       return okExercicio && okTipo && okRubrica && okUnidade;
     };
 
-    return (this.listaLimitesCompleta as LimitesModel[]).filter(matchRaw);
+    return this.listaLimitesCompleta.filter(matchRaw);
   }
 
-  /** Agrupa base por deOrdemProg (nível 0) */
   private groupByExercicio(raw: LimitesModel[]): LimitesModel[] {
-    const acc: Record<string, Partial<LimitesModel>> = {};
+    const acc: Record<string, LimitesModel> = {};
     raw.forEach(item => {
       const grupo = `${item.deOrdemProg ?? ''}`;
 
@@ -169,9 +157,8 @@ export class LimitesComponent implements OnInit {
           vrLimite: 0,
           vrPlanejamento: 0,
           vrDiferenca: 0
-        };
+        } as LimitesModel;
       }
-
       acc[grupo].vrLimite = (acc[grupo].vrLimite ?? 0) + (item.vrLimite ?? 0);
       acc[grupo].vrPlanejamento = (acc[grupo].vrPlanejamento ?? 0) + (item.vrPlanejamento ?? 0);
       acc[grupo].vrDiferenca = (acc[grupo].vrDiferenca ?? 0) + (item.vrDiferenca ?? 0);
@@ -186,33 +173,75 @@ export class LimitesComponent implements OnInit {
     });
   }
 
-  limparFiltros() {
-    this.selectedExercicio = null as any;
-    this.selectedTipo = null;
-    this.selectedRubrica = null;
-    this.selectedUnidadeDemandante = null;
-    this.filterItem();
+  private hydrateCombos(master: LimitesModel[]) {
+    
+    const listaDistinta = Array.from(new Set(master.map(item => item.deOrdemProg)));
+    listaDistinta.sort((a, b) => {
+      const numA = parseFloat(a);
+      const numB = parseFloat(b);
+      const isNumA = !isNaN(numA) && /^[0-9]+$/.test(a);
+      const isNumB = !isNaN(numB) && /^[0-9]+$/.test(b);
+      if (isNumA && isNumB) return numA - numB;
+      if (isNumA) return -1;
+      if (isNumB) return 1;
+      return a.localeCompare(b, 'pt-BR', { numeric: true });
+    });
+    this.listaExercicios = listaDistinta.map(valor => ({ value: valor, label: valor })) as Select2Data;
+
+    const listaDistintaTipo = Array.from(new Set(master.map(item => item.noRubricaTipo)));
+    this.selectTipo = listaDistintaTipo.map(valor => ({ value: valor, label: valor })) as Select2Data;
+
+    const listaDistintaRubrica = Array.from(new Set(master.map(item => item.coRubrica)));
+    listaDistintaRubrica.sort((a, b) => {
+      const numA = parseInt(a.split('-')[0], 10);
+      const numB = parseInt(b.split('-')[0], 10);
+      if (numA !== numB) return numA - numB;
+      const subA = a.split('-')[1] ? parseInt(a.split('-')[1], 10) : 0;
+      const subB = b.split('-')[1] ? parseInt(b.split('-')[1], 10) : 0;
+      return subA - subB;
+    });
+    this.selectRubrica = listaDistintaRubrica.map(valor => ({ value: valor, label: valor })) as Select2Data;
+
+    const listaDistintaFiliais = Array.from(new Set(master.map(item => item.sgFilial)));
+    listaDistintaFiliais.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    this.selectFilial = listaDistintaFiliais.map(valor => ({ value: valor, label: valor })) as Select2Data;
   }
 
-  filtraTodosNiveis(row: LimitesModel) {
-    const fExc = this.getFilterValue(this.selectedExercicio);
-    const fTip = this.getFilterValue(this.selectedTipo);
-    const fFil = this.getFilterValue(this.selectedUnidadeDemandante);
-    const fRub = this.selectedRubrica?.label ?? this.getFilterValue(this.selectedRubrica);
+  private renderGrid(base: LimitesModel[]) {
+    this.loading = true;
 
-    return (this.listaLimitesCompleta as LimitesModel[]).filter(item => {
-      const mesmoGrupo =
-        item.deOrdemProg === row.deOrdemProg &&
-        item.coExercicio === row.coExercicio;
+    this.listaLimitesCompleta = base.slice();
 
-      return (
-        mesmoGrupo &&
-        (!fExc || item.deOrdemProg === fExc) &&
-        (!fTip || item.noRubricaTipo === fTip) &&
-        (!fRub || item.coRubrica === fRub) &&
-        (!fFil || item.sgFilial === fFil)
-      );
+    this.filteredRawCache = base;
+    const agrupada = this.groupByExercicio(this.filteredRawCache);
+
+    this.listaLimites = (agrupada as LimitesModel[]).map(x => {
+      const item = { ...x } as any;
+      item.nivel0Key = this.keyL0(item);
+      return item as LimitesModel;
     });
+
+    this.collapseAll();
+    this.loading = false;
+    this.cd.detectChanges();
+  }
+
+  public async obterValores() {
+    try {
+      this.loading = true;
+      const response = await this.apiService.get<ApiResponse<LimitesModel[]>>(
+        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/obter-relatorio-limites`
+      );
+
+      const master = (response.data ?? []);
+      this.listaCompletaMaster = master.slice();      
+      this.hydrateCombos(this.listaCompletaMaster);   
+      this.renderGrid(this.listaCompletaMaster);
+    } catch (error) {
+      console.error(error, 'obterValores nivel 1');
+    } finally {
+      this.loading = false;
+    }
   }
 
   filtraLista(): LimitesModel[] {
@@ -227,21 +256,20 @@ export class LimitesComponent implements OnInit {
     this.filtroRegistros.coRubrica = fRub || null;
 
     if (fUnid) {
-      const selected = (this.listaLimitesCompleta as LimitesModel[]).find(x => x.sgFilial === fUnid);
+      const selected = this.listaCompletaMaster.find(x => x.sgFilial === fUnid);
       this.filtroRegistros.nuFilial = selected?.nuFilial ?? null;
     } else {
       this.filtroRegistros.nuFilial = null;
     }
 
-    // Aplica filtro de verdade
-    let base = (this.listaLimitesCompleta as LimitesModel[]).slice();
-    if (fExc) base = base.filter(x => x.deOrdemProg === fExc);
+    let base = this.listaCompletaMaster.slice();
+    if (fExc)  base = base.filter(x => x.deOrdemProg === fExc);
     if (fTipo) base = base.filter(x => x.noRubricaTipo === fTipo);
-    if (fRub) base = base.filter(x => x.coRubrica === fRub);
+    if (fRub)  base = base.filter(x => x.coRubrica === fRub);
     if (fUnid) base = base.filter(x => x.sgFilial === fUnid);
 
     if (nenhumFiltro) {
-      base = (this.listaLimitesCompleta as LimitesModel[]).slice();
+      base = this.listaCompletaMaster.slice();
       this.filtroRegistros = {
         pageNumber: 1,
         pageSize: 10,
@@ -257,86 +285,47 @@ export class LimitesComponent implements OnInit {
 
   filterItem() {
     const baseFiltrada = this.filtraLista();
-    this.processa(baseFiltrada);
-    this.collapseAll();
-    this.cd.detectChanges();
+    this.renderGrid(baseFiltrada);   
+  }
+
+  limparFiltros() {
+    this.selectedExercicio = null as any;
+    this.selectedTipo = null;
+    this.selectedRubrica = null;
+    this.selectedUnidadeDemandante = null;
+    this.renderGrid(this.listaCompletaMaster);
   }
 
   private collapseAll() {
     this.expandedKeysL0 = {};
     this.expandedKeysL1 = {};
     this.expandedKeysL2 = {};
-    this.listaLimites.forEach(r => { (r as any).primeiroNivel = undefined; });
-    this.cd.detectChanges();
+    this.listaLimites = (this.listaLimites ?? []).map(r => ({ ...r, primeiroNivel: undefined })) as LimitesModel[];
+
+    this.cd.markForCheck();
   }
 
-  // ========= Requisições =========
-  public async obterValores() {
-    try {
-      this.loading = true;
-      const response = await this.apiService.get<ApiResponse<LimitesModel[]>>(
-        `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/obter-relatorio-limites`
+  filtraTodosNiveis(row: LimitesModel): LimitesModel[] {
+    const fExc = this.getFilterValue(this.selectedExercicio);
+    const fTip = this.getFilterValue(this.selectedTipo);
+    const fFil = this.getFilterValue(this.selectedUnidadeDemandante);
+    const fRub = this.selectedRubrica?.label ?? this.getFilterValue(this.selectedRubrica);
+
+    return this.listaLimitesCompleta.filter(item => {
+      const mesmoGrupo =
+        item.deOrdemProg === row.deOrdemProg &&
+        item.coExercicio === row.coExercicio;
+
+      return (
+        mesmoGrupo &&
+        (!fExc || item.deOrdemProg === fExc) &&
+        (!fTip || item.noRubricaTipo === fTip) &&
+        (!fRub || item.coRubrica === fRub) &&
+        (!fFil || item.sgFilial === fFil)
       );
-      this.processa(response.data ?? []);
-    } catch (error) {
-      console.error(error, 'obterValores nivel 1');
-    } finally {
-      this.loading = false;
-    }
+    });
   }
 
-  processa(limites: LimitesModel[]) {
-    this.loading = true;
-    this.listaLimitesCompleta = Array.isArray(limites) ? limites.slice() : [];
-
-    /** Combos */
-    const listaDistinta = Array.from(new Set((this.listaLimitesCompleta as LimitesModel[]).map(item => item.deOrdemProg)));
-    listaDistinta.sort((a, b) => {
-      const numA = parseFloat(a);
-      const numB = parseFloat(b);
-      const isNumA = !isNaN(numA) && /^[0-9]+$/.test(a);
-      const isNumB = !isNaN(numB) && /^[0-9]+$/.test(b);
-      if (isNumA && isNumB) return numA - numB;
-      if (isNumA) return -1;
-      if (isNumB) return 1;
-      return a.localeCompare(b, 'pt-BR', { numeric: true });
-    });
-    this.listaExercicios = listaDistinta.map(valor => ({ value: valor, label: valor })) as Select2Data;
-
-    const listaDistintaTipo = Array.from(new Set((this.listaLimitesCompleta as LimitesModel[]).map(item => item.noRubricaTipo)));
-    this.selectTipo = listaDistintaTipo.map(valor => ({ value: valor, label: valor })) as Select2Data;
-
-    const listaDistintaRubrica = Array.from(new Set((this.listaLimitesCompleta as LimitesModel[]).map(item => item.coRubrica)));
-    listaDistintaRubrica.sort((a, b) => {
-      const numA = parseInt(a.split('-')[0], 10);
-      const numB = parseInt(b.split('-')[0], 10);
-      if (numA !== numB) return numA - numB;
-      const subA = a.split('-')[1] ? parseInt(a.split('-')[1], 10) : 0;
-      const subB = b.split('-')[1] ? parseInt(b.split('-')[1], 10) : 0;
-      return subA - subB;
-    });
-    this.selectRubrica = listaDistintaRubrica.map(valor => ({ value: valor, label: valor })) as Select2Data;
-
-    const listaDistintaFiliais = Array.from(new Set((this.listaLimitesCompleta as LimitesModel[]).map(item => item.sgFilial)));
-    listaDistintaFiliais.sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    this.selectFilial = listaDistintaFiliais.map(valor => ({ value: valor, label: valor })) as Select2Data;
-
-    // Agrupa e injeta chave nível 0
-    this.filteredRawCache = limites;
-    const agrupada = this.groupByExercicio(this.filteredRawCache);
-
-    this.listaLimites = agrupada.map(x => {
-      const item = { ...x } as any;
-      item.nivel0Key = this.keyL0(item);
-      return item;
-    });
-
-    this.collapseAll();
-    this.loading = false;
-    this.cd.detectChanges();
-  }
-
-  // ====== Builders ======
   private buildPrimeiroNivel(row: LimitesModel): LimitesModel[] {
     const filtrado = this.filtraTodosNiveis(row);
     const agrupado = filtrado.reduce((acc, item) => {
@@ -352,17 +341,17 @@ export class LimitesComponent implements OnInit {
           deOrdemProg: item.deOrdemProg
         } as LimitesModel;
       }
-      acc[chave].vrLimite += (item.vrLimite ?? 0);
-      acc[chave].vrPlanejamento += (item.vrPlanejamento ?? 0);
-      acc[chave].vrDiferenca += (item.vrDiferenca ?? 0);
+      acc[chave].vrLimite       = (acc[chave].vrLimite ?? 0) + (item.vrLimite ?? 0);
+      acc[chave].vrPlanejamento = (acc[chave].vrPlanejamento ?? 0) + (item.vrPlanejamento ?? 0);
+      acc[chave].vrDiferenca    = (acc[chave].vrDiferenca ?? 0) + (item.vrDiferenca ?? 0);
       return acc;
     }, {} as Record<string, LimitesModel>);
 
-    return Object.values(agrupado)
+    return (Object.values(agrupado) as LimitesModel[])
       .map(x => {
         const y = { ...x } as any;
         y.nivel1Key = this.keyL1(y);
-        return y;
+        return y as LimitesModel;
       })
       .sort((a, b) =>
         (b.coExercicio ?? 0) !== (a.coExercicio ?? 0)
@@ -374,7 +363,7 @@ export class LimitesComponent implements OnInit {
   private buildSegundoNivel(row: LimitesModel, tipo: LimitesModel): LimitesModel[] {
     const filtrado = this.filtraTodosNiveis(row);
     const agrupado = filtrado.reduce((acc, item) => {
-      const chave = `${item.deOrdemProg}_${item.noRubricaTipo}_${item.nuRubrica}`;
+      const chave = `${item.deOrdemProg}_${item.noRubricaTipo}_${item.coRubrica}`;
       if (!acc[chave]) {
         acc[chave] = {
           nuLimitePlanejamento: item.nuLimitePlanejamento,
@@ -388,18 +377,18 @@ export class LimitesComponent implements OnInit {
           deOrdemProg: item.deOrdemProg
         } as LimitesModel;
       }
-      acc[chave].vrLimite += (item.vrLimite ?? 0);
-      acc[chave].vrPlanejamento += (item.vrPlanejamento ?? 0);
-      acc[chave].vrDiferenca += (item.vrDiferenca ?? 0);
+      acc[chave].vrLimite       = (acc[chave].vrLimite ?? 0) + (item.vrLimite ?? 0);
+      acc[chave].vrPlanejamento = (acc[chave].vrPlanejamento ?? 0) + (item.vrPlanejamento ?? 0);
+      acc[chave].vrDiferenca    = (acc[chave].vrDiferenca ?? 0) + (item.vrDiferenca ?? 0);
       return acc;
     }, {} as Record<string, LimitesModel>);
 
-    return Object.values(agrupado)
+    return (Object.values(agrupado) as LimitesModel[])
       .filter(item => item.noRubricaTipo === tipo.noRubricaTipo)
       .map(x => {
         const y = { ...x } as any;
         y.nivel2Key = this.keyL2(y);
-        return y;
+        return y as LimitesModel;
       })
       .sort((a, b) =>
         (b.coExercicio ?? 0) !== (a.coExercicio ?? 0)
@@ -411,11 +400,11 @@ export class LimitesComponent implements OnInit {
   private buildTerceiroNivel(row: LimitesModel, limite: LimitesModel, contr: LimitesModel): LimitesModel[] {
     const filtrado = this.filtraTodosNiveis(row);
     const agrupado = filtrado.reduce((acc, item) => {
-      const chave = `${item.deOrdemProg}_${item.nuRubrica}_${item.coRubrica}_${item.sgFilial}`;
+      const chave = `${item.deOrdemProg}_${item.noRubricaTipo}_${item.coRubrica}_${item.sgFilial}_${item.deRubrica}`;
       if (!acc[chave]) {
         acc[chave] = {
           nuLimitePlanejamento: item.nuLimitePlanejamento,
-          nuPlanejamento: item.nuPlanejamento, // necessário para edição
+          nuPlanejamento: item.nuPlanejamento, 
           coExercicio: item.coExercicio,
           noRubricaTipo: item.noRubricaTipo,
           coRubrica: item.coRubrica,
@@ -429,18 +418,18 @@ export class LimitesComponent implements OnInit {
           deOrdemProg: item.deOrdemProg
         } as LimitesModel;
       }
-      acc[chave].vrLimite += (item.vrLimite ?? 0);
-      acc[chave].vrPlanejamento += (item.vrPlanejamento ?? 0);
-      acc[chave].vrDiferenca += (item.vrDiferenca ?? 0);
+      acc[chave].vrLimite       = (acc[chave].vrLimite ?? 0) + (item.vrLimite ?? 0);
+      acc[chave].vrPlanejamento = (acc[chave].vrPlanejamento ?? 0) + (item.vrPlanejamento ?? 0);
+      acc[chave].vrDiferenca    = (acc[chave].vrDiferenca ?? 0) + (item.vrDiferenca ?? 0);
       return acc;
     }, {} as Record<string, LimitesModel>);
 
-    return Object.values(agrupado)
+    return (Object.values(agrupado) as LimitesModel[])
       .filter(item => item.noRubricaTipo === limite.noRubricaTipo && item.deRubrica === contr.deRubrica)
       .map(x => {
         const y = { ...x } as any;
         y.nivel3Key = this.keyL3(y);
-        return y;
+        return y as LimitesModel;
       })
       .sort((a, b) =>
         (b.coExercicio ?? 0) !== (a.coExercicio ?? 0)
@@ -449,7 +438,60 @@ export class LimitesComponent implements OnInit {
       );
   }
 
-  // ====== Toggles (imutáveis + ordem correta) ======
+  onRowExpandL0(evt: { data: LimitesModel }) {
+    const row = evt.data;
+    const key = (row as any).nivel0Key ?? this.keyL0(row);
+    this.expandedKeysL0 = { ...this.expandedKeysL0, [key]: true };
+
+    if (!(row as any).primeiroNivel) {
+      (row as any).primeiroNivel = [...this.buildPrimeiroNivel(row)];
+    }
+    this.cd.markForCheck();
+  }
+  onRowCollapseL0(evt: { data: LimitesModel }) {
+    const row = evt.data;
+    const key = (row as any).nivel0Key ?? this.keyL0(row);
+    const { [key]: _, ...rest } = this.expandedKeysL0;
+    this.expandedKeysL0 = rest;
+    this.cd.markForCheck();
+  }
+
+  onRowExpandL1(evt: { data: LimitesModel }, parent: LimitesModel) {
+    const tipo = evt.data;
+    const key = (tipo as any).nivel1Key ?? this.keyL1(tipo);
+    this.expandedKeysL1 = { ...this.expandedKeysL1, [key]: true };
+
+    if (!(tipo as any).segundoNivel) {
+      (tipo as any).segundoNivel = [...this.buildSegundoNivel(parent, tipo)];
+    }
+    this.cd.markForCheck();
+  }
+  onRowCollapseL1(evt: { data: LimitesModel }) {
+    const tipo = evt.data;
+    const key = (tipo as any).nivel1Key ?? this.keyL1(tipo);
+    const { [key]: _, ...rest } = this.expandedKeysL1;
+    this.expandedKeysL1 = rest;
+    this.cd.markForCheck();
+  }
+
+  onRowExpandL2(evt: { data: LimitesModel }, parent: LimitesModel, tipo: LimitesModel) {
+    const contr = evt.data;
+    const key = (contr as any).nivel2Key ?? this.keyL2(contr);
+    this.expandedKeysL2 = { ...this.expandedKeysL2, [key]: true };
+
+    if (!(contr as any).terceiroNivel) {
+      (contr as any).terceiroNivel = [...this.buildTerceiroNivel(parent, tipo, contr)];
+    }
+    this.cd.markForCheck();
+  }
+  onRowCollapseL2(evt: { data: LimitesModel }) {
+    const contr = evt.data;
+    const key = (contr as any).nivel2Key ?? this.keyL2(contr);
+    const { [key]: _, ...rest } = this.expandedKeysL2;
+    this.expandedKeysL2 = rest;
+    this.cd.markForCheck();
+  }
+
   onTogglePrimeiroNivel(row: LimitesModel) {
     const key = this.keyL0(row);
     const isOpen = !!this.expandedKeysL0[key];
@@ -459,14 +501,10 @@ export class LimitesComponent implements OnInit {
       this.expandedKeysL0 = rest;
       (row as any).primeiroNivel = undefined;
     } else {
-      // 1) popula filhos com nova referência
       (row as any).primeiroNivel = [...this.buildPrimeiroNivel(row)];
-      // 2) só depois marca expandido (nova referência de objeto)
-      setTimeout(() => {
-        this.expandedKeysL0 = { ...this.expandedKeysL0, [key]: true };
-        this.cd.detectChanges();
-      }, 0);
+      this.expandedKeysL0 = { ...this.expandedKeysL0, [key]: true };
     }
+    this.cd.markForCheck();
   }
 
   onToggleSegundoNivel(row: LimitesModel, tipo: LimitesModel) {
@@ -479,11 +517,9 @@ export class LimitesComponent implements OnInit {
       (tipo as any).segundoNivel = undefined;
     } else {
       (tipo as any).segundoNivel = [...this.buildSegundoNivel(row, tipo)];
-      setTimeout(() => {
-        this.expandedKeysL1 = { ...this.expandedKeysL1, [key]: true };
-        this.cd.detectChanges();
-      }, 0);
+      this.expandedKeysL1 = { ...this.expandedKeysL1, [key]: true };
     }
+    this.cd.markForCheck();
   }
 
   onToggleTerceiroNivel(row: LimitesModel, limite: LimitesModel, contr: LimitesModel) {
@@ -496,14 +532,11 @@ export class LimitesComponent implements OnInit {
       (contr as any).terceiroNivel = undefined;
     } else {
       (contr as any).terceiroNivel = [...this.buildTerceiroNivel(row, limite, contr)];
-      setTimeout(() => {
-        this.expandedKeysL2 = { ...this.expandedKeysL2, [key]: true };
-        this.cd.detectChanges();
-      }, 0);
+      this.expandedKeysL2 = { ...this.expandedKeysL2, [key]: true };
     }
+    this.cd.markForCheck();
   }
 
-  // ====== Modal ======
   openModalPlanejamento(acao: string, ud?: any, registro?: any) {
     if (acao === 'cadastro') {
       const modalRef = this.modalService.open(ModalLimitesComponent, {
@@ -534,7 +567,7 @@ export class LimitesComponent implements OnInit {
   }
 
   private tryGetNuPlanejamentoFallback(ud: any): number | null {
-    const found = (this.listaLimitesCompleta as LimitesModel[]).find(i =>
+    const found = this.listaLimitesCompleta.find(i =>
       i.coExercicio === ud?.coExercicio &&
       i.deOrdemProg === ud?.deOrdemProg &&
       i.sgFilial === ud?.sgFilial &&
