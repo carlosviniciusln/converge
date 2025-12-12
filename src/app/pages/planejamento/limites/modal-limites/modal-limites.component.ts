@@ -144,7 +144,7 @@ export class ModalLimitesComponent implements OnInit {
         nuRubrica: [this.registro.nuRubrica, Validators.required],
         nuUnidadeDemandante: [this.registro.nuFilial, Validators.required],
         vrLimite: [this.formatarValorMonetario(this.registro.vrLimite), Validators.required],
-        nuLimitePlanejamento: [this.registro.nuLimitePlanejamento, Validators.required]
+        nuLimitePlanejamento: [this.registro.nuLimitePlanejamento, Validators.required],
       });
     }
   }
@@ -364,7 +364,7 @@ public async onDelete(): Promise<void> {
   }
 
   try {
-    const urlDelete = `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/excluir-limite/${id}`;
+    const urlDelete = `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/inativar-limite/${id}`;
     await this.apiService.delete<ApiResponse<void>>(urlDelete);
 
     await Swal.fire({
