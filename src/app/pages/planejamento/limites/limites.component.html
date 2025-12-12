@@ -12,7 +12,10 @@
         [rows]="10"
         [rowTrackBy]="trackByNivel0"
         currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
-        [showCurrentPageReport]="true">
+        [showCurrentPageReport]="true"
+        (onRowExpand)="onRowExpandL0($event)"
+        (onRowCollapse)="onRowCollapseL0($event)"
+      >
 
         <ng-template pTemplate="caption">
           <div class="p-d-flex p-ai-center p-flex-wrap" style="gap: 8px;">
@@ -66,7 +69,7 @@
           <tr style="background-color: #499c70;">
             <td style="width: 3rem;">
               <button style="color: black; background-color: white;" pButton type="button"
-                (click)="onTogglePrimeiroNivel(visaoum)" class="p-button-text p-button-rounded">
+                [pRowToggler]="visaoum" class="p-button-text p-button-rounded">
                 <span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
               </button>
             </td>
@@ -77,6 +80,7 @@
            <td class="diff-col">  <span class="diff diff--right">    
             <span class="diff__val">{{ formatBRLDiffNoBreak(visaoum.vrLimite - visaoum.vrPlanejamento) }}</span>    
             <span *ngIf="(visaoum.vrLimite - visaoum.vrPlanejamento) !== 0" class="diff__alert">!</span></span>
+            </td>
           </tr>
         </ng-template>
 
@@ -88,7 +92,10 @@
                   [value]="registro.primeiroNivel"
                   dataKey="nivel1Key"
                   [expandedRowKeys]="expandedKeysL1"
-                  [rowTrackBy]="trackByNivel1">
+                  [rowTrackBy]="trackByNivel1"
+                  (onRowExpand)="onRowExpandL1($event, registro)"
+                  (onRowCollapse)="onRowCollapseL1($event)"
+                >
 
                   <ng-template pTemplate="header">
                     <tr>
@@ -116,7 +123,7 @@
                     <tr style="background-color: #6eb47d;">
                       <td>
                         <button style="color: black; background-color: white;" type="button" pButton
-                          (click)="onToggleSegundoNivel(registro, tipo)"
+                          [pRowToggler]="tipo"
                           class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain">
                           <span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
                         </button>
@@ -142,7 +149,7 @@
                             <span class="diff__val">{{ formatBRLDiffNoBreak(tipo.vrLimite - tipo.vrPlanejamento) }}</span>
                             <span *ngIf="tipo.vrDiferenca !== 0" class="diff__alert">!</span>
                         </span>
-
+                      </td>
                     </tr>
                   </ng-template>
 
@@ -154,7 +161,10 @@
                             [value]="tipo.segundoNivel"
                             dataKey="nivel2Key"
                             [expandedRowKeys]="expandedKeysL2"
-                            [rowTrackBy]="trackByNivel2">
+                            [rowTrackBy]="trackByNivel2"
+                            (onRowExpand)="onRowExpandL2($event, registro, tipo)"
+                            (onRowCollapse)="onRowCollapseL2($event)"
+                          >
 
                             <ng-template pTemplate="header">
                               <tr>
@@ -173,7 +183,7 @@
                               <tr>
                                 <td style="background-color: #9dcc9b;">
                                   <button style="color: black; background-color: white;" type="button" pButton
-                                    (click)="onToggleTerceiroNivel(registro, tipo, contr)"
+                                    [pRowToggler]="contr"
                                     class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain">
                                     <span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
                                   </button>
@@ -186,13 +196,12 @@
                                 <td style="background-color: #9dcc9b; color: black">{{contr.deRubrica}}</td>
                                 <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrLimite | currency:'BRL'}}</td>
                                 <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrPlanejamento | currency:'BRL'}}</td>
-                               
                                 <td style="background-color: #9dcc9b; text-align: right; color: black;">
                                 <span class="diff diff--right">
                                     <span class="diff__val">{{ formatBRLDiffNoBreak(contr.vrLimite - contr.vrPlanejamento) }}</span>
                                     <span *ngIf="contr.vrDiferenca !== 0" class="diff__alert">!</span>
                                 </span>
-
+                                </td>
                               </tr>
                             </ng-template>
 
@@ -216,7 +225,7 @@
                                       </ng-template>
 
                                       
-                                      <ng-template pTemplate="body" let-ud let-expanded="expanded">
+                                      <ng-template pTemplate="body" let-ud>
                                         <tr (click)="openModalPlanejamento('alteracao', ud, registro)"
                                           style="text-decoration: underline; cursor: pointer;">
                                           <td style="background-color: #b4dec9; color: black; text-align: right;">
@@ -228,13 +237,12 @@
                                           <td style="background-color: #b4dec9; color: black">{{ud.deRubrica}}</td>
                                           <td style="background-color: #b4dec9; color: black; text-align: right;">{{ud.vrLimite | currency:'BRL'}}</td>
                                           <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vrPlanejamento | currency:'BRL'}}</td>
-                                          
                                         <td style="background-color: #b4dec9; text-align: right; color: black;">
                                         <span class="diff diff--right">
                                             <span class="diff__val">{{ formatBRLDiffNoBreak(ud.vrLimite - ud.vrPlanejamento) }}</span>
                                             <span *ngIf="ud.vrDiferenca !== 0" class="diff__alert">!</span>
                                         </span>
-
+                                       </td>
                                         </tr>
                                       </ng-template>
                                     </p-table>
