@@ -54,6 +54,11 @@ export class LimitesComponent implements OnInit {
   public selectFilial: Select2Data = [];
   public selectTipo: Select2Data = [];
 
+  private initialListaExercicios: Select2Data = [];
+  private initialSelectTipo: Select2Data = [];
+  private initialSelectRubrica: Select2Data = [];
+  private initialSelectFilial: Select2Data = [];
+
   expandedKeysL0: { [key: string]: boolean } = {};
   expandedKeysL1: { [key: string]: boolean } = {};
   expandedKeysL2: { [key: string]: boolean } = {};
@@ -225,17 +230,35 @@ export class LimitesComponent implements OnInit {
     this.loading = false;
     this.cd.detectChanges();
   }
-
+  
   public async obterValores() {
     try {
       this.loading = true;
-      const response = await this.apiService.get<ApiResponse<LimitesModel[]>>(
+      
+      const response = await this.apiService.get<any>(
         `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/obter-relatorio-limites`
       );
 
-      const master = (response.data ?? []);
-      this.listaCompletaMaster = master.slice();      
-      this.hydrateCombos(this.listaCompletaMaster);   
+      const data = response?.data ?? {};
+      const master = (data.limites ?? []) as LimitesModel[];
+
+      this.listaCompletaMaster = master.slice();
+
+      const ordemProgList: string[] = Array.isArray(data.listaOrdemProg) ? data.listaOrdemProg : [];
+      const tipoList: string[]       = Array.isArray(data.listaTipo) ? data.listaTipo : [];
+      const rubricasList: string[]   = Array.isArray(data.listaRubricas) ? data.listaRubricas : [];
+      const filiaisList: string[]    = Array.isArray(data.listaUnidadeDemandante) ? data.listaUnidadeDemandante : [];
+
+      this.listaExercicios = ordemProgList.map(valor => ({ value: valor, label: valor })) as Select2Data;
+      this.selectTipo      = tipoList.map(valor => ({ value: valor, label: valor })) as Select2Data;
+      this.selectRubrica   = rubricasList.map(valor => ({ value: valor, label: valor })) as Select2Data;
+      this.selectFilial    = filiaisList.map(valor => ({ value: valor, label: valor })) as Select2Data;
+
+      this.initialListaExercicios = [...this.listaExercicios];
+      this.initialSelectTipo      = [...this.selectTipo];
+      this.initialSelectRubrica   = [...this.selectRubrica];
+      this.initialSelectFilial    = [...this.selectFilial];
+
       this.renderGrid(this.listaCompletaMaster);
     } catch (error) {
       console.error(error, 'obterValores nivel 1');
@@ -282,10 +305,11 @@ export class LimitesComponent implements OnInit {
 
     return base;
   }
-
+  
   filterItem() {
     const baseFiltrada = this.filtraLista();
-    this.renderGrid(baseFiltrada);   
+    this.renderGrid(baseFiltrada);
+    this.hydrateCombos(baseFiltrada);
   }
 
   limparFiltros() {
