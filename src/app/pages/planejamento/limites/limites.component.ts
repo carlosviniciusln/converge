@@ -234,20 +234,24 @@ export class LimitesComponent implements OnInit {
   public async obterValores() {
     try {
       this.loading = true;
-      
-      const response = await this.apiService.get<any>(
+
+      const response = await this.apiService.get<ApiResponse<LimitesModel[]>>(
         `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/obter-relatorio-limites`
       );
 
-      const data = response?.data ?? {};
-      const master = (data.limites ?? []) as LimitesModel[];
+      const data = (response?.data ?? {}) as unknown as LimitesModel;
+
+      const master =
+        Array.isArray((data as any).limites)
+          ? (((data as any).limites) as LimitesModel[])
+          : ((response?.data ?? []) as LimitesModel[]);
 
       this.listaCompletaMaster = master.slice();
 
-      const ordemProgList: string[] = Array.isArray(data.listaOrdemProg) ? data.listaOrdemProg : [];
-      const tipoList: string[]       = Array.isArray(data.listaTipo) ? data.listaTipo : [];
-      const rubricasList: string[]   = Array.isArray(data.listaRubricas) ? data.listaRubricas : [];
-      const filiaisList: string[]    = Array.isArray(data.listaUnidadeDemandante) ? data.listaUnidadeDemandante : [];
+      const ordemProgList: string[]   = Array.isArray((data as any).listaOrdemProg) ? (data as any).listaOrdemProg : [];
+      const tipoList: string[]        = Array.isArray((data as any).listaTipo) ? (data as any).listaTipo : [];
+      const rubricasList: string[]    = Array.isArray((data as any).listaRubricas) ? (data as any).listaRubricas : [];
+      const filiaisList: string[]     = Array.isArray((data as any).listaUnidadeDemandante) ? (data as any).listaUnidadeDemandante : [];
 
       this.listaExercicios = ordemProgList.map(valor => ({ value: valor, label: valor })) as Select2Data;
       this.selectTipo      = tipoList.map(valor => ({ value: valor, label: valor })) as Select2Data;
