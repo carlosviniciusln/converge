@@ -315,13 +315,30 @@ export class LimitesComponent implements OnInit {
     this.renderGrid(baseFiltrada);
     this.hydrateCombos(baseFiltrada);
   }
-
+  
   limparFiltros() {
     this.selectedExercicio = null as any;
     this.selectedTipo = null;
     this.selectedRubrica = null;
     this.selectedUnidadeDemandante = null;
+
+    //Resetar filtros na planilha
+    this.filtroRegistros = {
+      pageNumber: 1,
+      pageSize: 10,
+      nuFilial: null,
+      coRubrica: null,
+      noRubricaTipo: null,
+      deOrdemProg: null
+    };
+
     this.renderGrid(this.listaCompletaMaster);
+
+    //Resetar filtros na tela
+    this.listaExercicios = [...this.initialListaExercicios];
+    this.selectTipo      = [...this.initialSelectTipo];
+    this.selectRubrica   = [...this.initialSelectRubrica];
+    this.selectFilial    = [...this.initialSelectFilial];
   }
 
   private collapseAll() {
