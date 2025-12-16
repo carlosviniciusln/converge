@@ -451,8 +451,8 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
       nuRubrica: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
       ]),
-      nuPreComprometimento: new FormControl(),
-      nuReserva: new FormControl(),
+      nuSap: new FormControl({value: "", disabled: true}),
+      deSap: new FormControl({value: "", disabled: true}),
       vrJaneiro: new FormControl(0, [Validators.required]),
       vrFevereiro: new FormControl(0, [Validators.required]),
       vrMarco: new FormControl(0, [Validators.required]),
@@ -820,12 +820,12 @@ async removerRubrica(nuRubrica: string) {
                   { value: x.vrDezembro, disabled: !this.isEditable },
                   [Validators.required]
                 ),
-                nuPreComprometimento: new FormControl(
-                  { value: x.nuPreComprometimento, disabled: !this.isEditable },
+                nuSap: new FormControl(
+                  { value: x.nuSap, disabled: true },
                   [Validators.required]
                 ),
-                nuReserva: new FormControl(
-                  { value: x.nuReserva, disabled: !this.isEditable }
+                deSap: new FormControl(
+                  { value: x.deSap, disabled: true }
                   // [Validators.required]
                 ),
                 vrTotalRubrica: new FormControl(
@@ -1279,8 +1279,8 @@ async removerRubrica(nuRubrica: string) {
             DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
 
-            NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
-            NuReserva: Number(previsoes[p].nuReserva),
+            NuSap: Number(previsoes[p].nuSap),
+            DeSap: String(previsoes[p].deSap),
 
             VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
             VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
@@ -1453,8 +1453,8 @@ async removerRubrica(nuRubrica: string) {
           DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
           DeJustificativa: obj.deJustificativa,
           DeObservacao: obj.deObservacao,
-          NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
-          NuReserva: Number(previsoes[p].nuReserva),
+          NuSap: Number(previsoes[p].nuSap),
+          DeSap: String(previsoes[p].deSap),
 
           VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
           VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
@@ -1702,43 +1702,6 @@ async removerRubrica(nuRubrica: string) {
       this.isEditable = isEditable;
       this.formularioLivre();
       this.form.controls['nuAno'].disable();
-      const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
-      if (previsoesArray) {
-        previsoesArray.controls.forEach((grupo) => {
-          if (grupo instanceof FormGroup) {
-            const preComp = grupo.get('nuPreComprometimento');
-            const reserva = grupo.get('nuReserva');
-
-            if (preComp?.value && !reserva?.value) {
-              reserva?.disable();
-            } else if (reserva?.value && !preComp?.value) {
-              preComp?.disable();
-            }
-          }
-        });
-      }
-
-    }
-  }
-
-  onPreComprometimentoInput(event: Event, index: number): void {
-    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
-    const value = (event.target as HTMLInputElement).value;
-    if (value && value.trim() !== '') {
-      grupo.get('nuReserva')?.disable();
-    } else {
-      grupo.get('nuReserva')?.enable();
-    }
-  }
-
-  onReservaInput(event: Event, index: number): void {
-    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
-    const value = (event.target as HTMLInputElement).value;
-    if (value && value.trim() !== '') {
-      grupo.get('nuPreComprometimento')?.setValue('');
-      grupo.get('nuPreComprometimento')?.disable();
-    } else {
-      grupo.get('nuPreComprometimento')?.enable();
     }
   }
 
