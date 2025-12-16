@@ -182,6 +182,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
+    modalRef.componentInstance.statusExercicio = this.statusExercio != "Encerrado" && this.statusExercio != "Cancelado";
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.nuAno = (planejamento?.nU_EXERCICIO_ORCAMENTO != null? planejamento?.nU_EXERCICIO_ORCAMENTO : nuAno);
