@@ -6,4 +6,3 @@ export const environment = {
   //end_point: 'https://api.sigvc.des.caixa/api'
  end_point: '__BACK_API_URL__'
 };
-
