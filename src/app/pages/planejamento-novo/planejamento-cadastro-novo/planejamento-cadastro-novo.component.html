@@ -242,22 +242,18 @@
         </div>
 
         <div class="col-md-3 pr-0">
-          <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
-          <input formControlName="nuPreComprometimento"
-                 type="number"
+          <label for="nuSap">Nº Pré-comprometimento:</label>
+          <input formControlName="nuSap"
+                 type="text"
                  class="form-control blockCampo"
-                 min="1" step="1"
-                 oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"
-                 (input)="onPreComprometimentoInput($event, i)" />
+                 oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"/>
         </div>
 
         <div class="col-md-3 pr-0">
-          <label for="nuReserva">Nº da reserva :</label>
+          <label for="deSaP">Nº da reserva :</label>
           <input type="text"
                  class="form-control blockCampo"
-                 formControlName="nuReserva"
-                 oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"
-                 (input)="onReservaInput($event, i)" />
+                 formControlName="deSap"/>
         </div>
 
         <div class="col-md-1 pr-0" style="margin-top: 25px;">
