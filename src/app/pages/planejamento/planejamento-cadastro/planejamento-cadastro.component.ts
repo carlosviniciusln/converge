@@ -440,7 +440,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         Validators.required,
       ]),
       nuSap: new FormControl({value: "", disabled: true}),
-      nuReserva: new FormControl({value: "", disabled: true}),
+      deSap: new FormControl({value: "", disabled: true}),
       vrJaneiro: new FormControl(0, [Validators.required]),
       vrFevereiro: new FormControl(0, [Validators.required]),
       vrMarco: new FormControl(0, [Validators.required]),
