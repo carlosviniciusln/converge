@@ -58,6 +58,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   @Input() public tipo: any;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
+  @Input() public statusExercicio: boolean;
   @Input() public isCadastro: boolean;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   gcpvw008Mensalizacao: Gcpvw008Mensalizacao[] = [];
@@ -227,7 +228,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
     )
-      this.isPerfilPrivilegiado = true;
+      if(this.statusExercicio){
+        this.isPerfilPrivilegiado = true;
+      }
     this.obterPlanejamentoItemHistorico();
   }
 
@@ -289,8 +292,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
-    )
+    ) 
+    if(this.statusExercicio){
       this.isPerfilPrivilegiado = true;
+    }
   }
 
   definirPageAction() {
