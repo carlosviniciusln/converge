@@ -985,6 +985,18 @@ async removerRubrica(nuRubrica: string) {
       >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
 
       this.listaStatusPlanejamento = response.data;
+      //conflito de regras - o backend impedi a visualização do status cancelado e encerrado 
+      /*      
+      if(this.isPerfilPrivilegiado){        
+        this.listaStatusPlanejamento.push({
+          nuPlanejamentoStatus: 4,
+          noPlanejamentoStatus: 'Cancelado',
+        },{
+          nuPlanejamentoStatus: 6,
+          noPlanejamentoStatus: 'Encerrado',
+        });
+      }
+      */
       this.buildStatusRank_();
             //Define o campo como criado ao criar um novo contrato e desabilita o campo
             if (this.isCadastro) {
