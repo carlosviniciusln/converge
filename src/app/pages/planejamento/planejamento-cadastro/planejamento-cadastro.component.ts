@@ -1335,7 +1335,7 @@ async removerRubrica(nuRubrica: string) {
             DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
             DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
-
+            NuOrc: this.nuPlanejamento?.nU_ORC,
             NuSap: Number(previsoes[p].nuSap),
             DeSap: String(previsoes[p].deSap),
 
@@ -1521,7 +1521,7 @@ async removerRubrica(nuRubrica: string) {
           DeObservacao: obj.deObservacao,
           NuSap: Number(previsoes[p].nuSap),
           DeSap: String(previsoes[p].deSap),
-
+          NuOrc: this.nuPlanejamento?.nU_ORC,
           VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
           VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
           VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
