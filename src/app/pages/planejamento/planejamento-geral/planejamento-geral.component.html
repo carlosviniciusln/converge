@@ -69,7 +69,7 @@
             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros">
               <ng-template pTemplate="caption">
                 <div class="c-menu">
-                  <div class="pl-1 pr-1" *ngIf="statusExercio != 'Encerrado' && statusExercio != 'Cancelado'">
+                  <div class="pl-1 pr-1">
                     <div class="text-right">
                       <button type="button" class="btn-sm btn-add"
                         (click)="openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio)"
@@ -126,7 +126,7 @@
                       [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)"
                       [showClear]="true" placeholder="Objeto"></p-dropdown>
                   </div>
-                  <div class="pl-1 pr-1 me-3" *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && this.statusExercio != 'Encerrado' && this.statusExercio != 'Cancelado'">
+                  <div class="pl-1 pr-1 me-3" *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
                     <button type="button" class="btn-sm btn-add btn-save-status" (click)="onSalvarMudancasStatus()"
                       title="Salvar alterações de status">
                       Salvar status
@@ -159,13 +159,13 @@
                   </th>
                   <th>
                     <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
-                    <div *ngIf="!(selectStatusPlanejamentoCompleto?.length > 0) || this.statusExercio == 'Encerrado' || this.statusExercio == 'Cancelado'" 
+                    <div *ngIf="!(selectStatusPlanejamentoCompleto?.length > 0)" 
                       class="p-d-flex p-jc-between text-center">
                       Status
                     </div>
 
                     <!-- Exibe checkbox + dropdown SOMENTE quando houver opções -->
-                    <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && this.statusExercio != 'Encerrado' && this.statusExercio != 'Cancelado'">
+                    <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0">
                       <div class="c-dropdown-status">
                         <p-checkbox [(ngModel)]="selecionarTodos" (onChange)="selecionarTodosItens()" [binary]="true">
                         </p-checkbox>
@@ -225,7 +225,7 @@
                     (dblclick)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()"
                     (keydown.space)="$event.stopPropagation()">                    
                     <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && (perfilOrcamento || perfilAdm || (perfilOperacional && planejamento.cO_FILIAL == perfilUnidade) || (perfilTorre && planejamento.cO_FILIAL == perfilUnidade))">
-                      <p-checkbox [(ngModel)]="planejamento.sT_SELECIONADO" [binary]="true" *ngIf="this.statusExercio != 'Encerrado' && this.statusExercio != 'Cancelado'"
+                      <p-checkbox [(ngModel)]="planejamento.sT_SELECIONADO" [binary]="true"
                         (onChange)="onToggleItemSelecionado()" (click)="$event.stopPropagation()">
                       </p-checkbox>
                     </ng-container>

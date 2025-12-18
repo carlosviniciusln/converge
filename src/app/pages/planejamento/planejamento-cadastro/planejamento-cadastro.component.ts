@@ -228,9 +228,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
     )
-      if(this.statusExercicio){
+      //if(this.statusExercicio){
         this.isPerfilPrivilegiado = true;
-      }
+      //}
     this.obterPlanejamentoItemHistorico();
   }
 
@@ -295,9 +295,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
     )
 
 
-    if(this.statusExercicio){
+    //if(this.statusExercicio){
       this.isPerfilPrivilegiado = true;
-    }
+    //}
   }
 
   definirPageAction() {
