@@ -292,7 +292,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
-    ) 
+    )
+
+
     if(this.statusExercicio){
       this.isPerfilPrivilegiado = true;
     }
@@ -661,7 +663,11 @@ async removerRubrica(nuRubrica: string) {
 
       if (this.planejamento) {
 
-         this.isFlagStyle = true;
+
+        if (this.planejamento.nuContrato != 0)
+          {
+            this.isFlagStyle = true;
+          }
          this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
 
           this.form.controls['coContrato'].setValue(
@@ -985,9 +991,9 @@ async removerRubrica(nuRubrica: string) {
       >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
 
       this.listaStatusPlanejamento = response.data;
-      //conflito de regras - o backend impedi a visualização do status cancelado e encerrado 
-      /*      
-      if(this.isPerfilPrivilegiado){        
+      //conflito de regras - o backend impedi a visualização do status cancelado e encerrado
+      /*
+      if(this.isPerfilPrivilegiado){
         this.listaStatusPlanejamento.push({
           nuPlanejamentoStatus: 4,
           noPlanejamentoStatus: 'Cancelado',
