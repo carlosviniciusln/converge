@@ -364,8 +364,11 @@ public async onDelete(): Promise<void> {
   }
 
   try {
-    const urlDelete = `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/inativar-limite/${id}`;
-    await this.apiService.delete<ApiResponse<void>>(urlDelete);
+    let urlDelete = `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/inativar-limite`;
+
+    const result = await this.apiService.put<LimitesRubricasUpdateV2>(
+      `${urlDelete}`, id
+    );
 
     await Swal.fire({
       title: 'Sucesso!',

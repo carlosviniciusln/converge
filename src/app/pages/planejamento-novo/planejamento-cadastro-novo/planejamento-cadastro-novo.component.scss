@@ -117,9 +117,26 @@ label {
 //   }
 
 
+// :host ::ng-deep .custom-dropdown-active > div {
+//     background: #E3E3E3;
+//     border-color: rgba(29, 37, 59, 0.3);
+//     cursor: no-drop;
+// }
+
+// :host ::ng-deep .custom-dropdown > div {
+//   width: 100%;
+// }
 
 
-:host ::ng-deep .custom-dropdown > div {
+/* estado "ativo" cinza */
+:host ::ng-deep .custom-dropdown-active .p-dropdown {
+  background: #E3E3E3;
+  border-color: rgba(29, 37, 59, 0.3);
+  cursor: not-allowed; /* melhor que no-drop para desabilitado */
+}
+
+/* largura padrão quando não está "ativo" */
+:host ::ng-deep .custom-dropdown .p-dropdown {
   width: 100%;
 }
 

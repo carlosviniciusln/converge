@@ -58,6 +58,7 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
   @Input() public tipo: any;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
+  @Input() public statusExercicio: boolean;
   @Input() public isCadastro: boolean;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   gcpvw008Mensalizacao: Gcpvw008Mensalizacao[] = [];
@@ -80,6 +81,7 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
   public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
   public planejamento: PlanejamentoOrcamentarioResponse;
   public planejamentoEditar: PlanejamentoOrcamentarioResponse;
+  public isFlagStyle : boolean = false;
   public listaDigital: any[] = [
     { id: 1, tipo: 'Digital' },
     { id: 2, tipo: 'Digital - TD' },
@@ -226,7 +228,11 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
     )
-      this.isPerfilPrivilegiado = true;
+
+
+      if(this.statusExercicio){
+        this.isPerfilPrivilegiado = true;
+      }
     this.obterPlanejamentoItemHistorico();
   }
 
@@ -289,7 +295,9 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
     )
+    if(this.statusExercicio){
       this.isPerfilPrivilegiado = true;
+    }
   }
 
   definirPageAction() {
@@ -335,14 +343,15 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
         Validators.required,
       ]),
       deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
-
+      Validators.maxLength(255)
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
-
+        [Validators.maxLength(255)]
       ),
       deObservacao: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
+        Validators.maxLength(255)
       ]),
       nuPlanejamentoStatus: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -487,6 +496,16 @@ export class PlanejamentoCadastroNovoComponent implements OnInit {
 
   onValorRubricaChange(i: number) {
     const prevDes = this.previsoesDesembolso.at(i) as FormGroup;
+
+    Object.keys(prevDes.controls).forEach((campo) => {
+      if (campo.startsWith('vr') && campo !== 'vrTotalRubrica') {
+        const ctrl = prevDes.get(campo);
+        const v = ctrl?.value;
+        if (v === '' || v === null || v === undefined) {
+          ctrl?.setValue(0, { emitEvent: false });
+        }
+      }
+    });
 
     const limparValor = (valor: string): number => {
       if (!valor) return 0;
@@ -660,8 +679,12 @@ async removerRubrica(nuRubrica: string) {
 
       if (this.planejamento) {
 
+        if (this.planejamento.nuContrato != 0)
+          {
+            this.isFlagStyle = true;
+          }
 
-        this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
+         this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
 
           this.form.controls['coContrato'].setValue(
            this.planejamento.coContrato
@@ -822,7 +845,7 @@ async removerRubrica(nuRubrica: string) {
                 ),
                 nuSap: new FormControl(
                   { value: x.nuSap, disabled: true },
-                  [Validators.required]
+                  // [Validators.required]
                 ),
                 deSap: new FormControl(
                   { value: x.deSap, disabled: true }
@@ -1386,7 +1409,7 @@ async removerRubrica(nuRubrica: string) {
       ) {
         if (
           this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 5 &&
-          this.form.value.nuPlanejamentoStatus != 7
+          this.form.value.nuPlanejamentoStatus != 7 && this.form.value.nuPlanejamentoStatus != 5
         ) {
           //Criado para Revisado
           this.toastr.error(
@@ -1397,7 +1420,7 @@ async removerRubrica(nuRubrica: string) {
         }
         if (
           this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 7 &&
-          this.form.value.nuPlanejamentoStatus != 9
+          this.form.value.nuPlanejamentoStatus != 9 && this.form.value.nuPlanejamentoStatus != 7
         ) {
           //Revisado e de Avaliado
           this.toastr.error(
@@ -1500,13 +1523,13 @@ async removerRubrica(nuRubrica: string) {
           });
         }
       } else {
-        console.error('Atenção!', response.errors);
-       await Swal.fire({
-        title: 'Atenção!',
-        text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
-        icon: 'warning',
-        confirmButtonText: 'OK'
-      });
+        console.error('Erro na resposta da API:', response.errors);
+        await Swal.fire({
+          title: 'Erro!',
+          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       }
 
       this.atualizarPagina.emit(true);
