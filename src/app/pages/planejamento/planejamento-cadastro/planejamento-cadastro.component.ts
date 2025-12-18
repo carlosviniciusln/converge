@@ -829,7 +829,7 @@ async removerRubrica(nuRubrica: string) {
                 ),
                 nuSap: new FormControl(
                   { value: x.nuSap, disabled: true },
-                  [Validators.required]
+                  //[Validators.required]
                 ),
                 deSap: new FormControl(
                   { value: x.deSap, disabled: true }
@@ -1584,6 +1584,29 @@ async removerRubrica(nuRubrica: string) {
     }
   }
 
+  public habilitarCamposMeses(): void {
+    const meses = [
+      'vrJaneiro','vrFevereiro','vrMarco','vrAbril','vrMaio','vrJunho',
+      'vrJulho','vrAgosto','vrSetembro','vrOutubro','vrNovembro','vrDezembro'
+    ];  
+    const arr = this.form.get('previsoesDesembolso') as FormArray | null;
+    if (!arr) {
+      console.warn('FormArray "previsoesDesembolso" não encontrado');
+      return;
+    }  
+    arr.controls.forEach((itemCtrl, idx) => {
+      const grupo = itemCtrl as FormGroup;
+      meses.forEach((nome) => {
+        const ctrl = grupo.get(nome);
+        if (ctrl) {
+          ctrl.enable({ emitEvent: true });
+        } else {
+          console.warn(`Item ${idx}: campo "${nome}" não encontrado`);
+        }
+      });
+    });
+  }
+  
   public async calcularPlanejamento(item: any): Promise<number> {
     const meses = [
       item.VrJaneiro, item.VrFevereiro, item.VrMarco, item.VrAbril,
@@ -1768,6 +1791,7 @@ async removerRubrica(nuRubrica: string) {
       this.isEditable = isEditable;
       this.formularioLivre();
       this.form.controls['nuAno'].disable();
+      this.habilitarCamposMeses();
     }
   }
 
