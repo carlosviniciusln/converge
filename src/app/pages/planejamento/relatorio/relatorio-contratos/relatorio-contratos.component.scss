@@ -1,0 +1,28 @@
+
+:host ::ng-deep .p-dropdown {
+  width: 160px !important;
+  max-width: 160px !important;
+  flex: 0 0 160px; 
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+  display: block;          
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-header .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.table-header .row > .pl-1.pr-1 {
+  flex: 0 0 160px;         
+  max-width: 160px;
+}
+
+.title {
+    margin-right: 15px;
+}
