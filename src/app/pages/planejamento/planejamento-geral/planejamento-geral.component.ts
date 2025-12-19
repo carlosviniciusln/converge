@@ -85,6 +85,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   quantidadeTotal: number = 0;
   loading: boolean = true;
   perfilOrcamento: boolean = false;
+  isPerfilPrivilegiado: boolean = false;
   perfilAdm: boolean = false;
   perfilOperacional: boolean = false;
   perfilTorre: boolean = false;
@@ -149,6 +150,14 @@ export class PlanejamentoGeralComponent implements OnInit {
     if(this.currentProfile == 'Gestor Operacional') this.perfilOperacional = true;
     if(this.currentProfile == 'Torres GEGAT') this.perfilTorre = true;
 
+    if(this.statusExercio == "Cancelado"){ //nenhum perfil pode alterar
+      this.isPerfilPrivilegiado = false;
+    } else if (this.statusExercio == "Encerrado" && !this.perfilOrcamento){ //encerrado so perfil orçamento pode alterar
+      this.isPerfilPrivilegiado = false;
+    } else {
+      this.isPerfilPrivilegiado = true;
+    }
+
     this.currentUser = this.token.getUser();
     this.perfilUnidade = this.currentUser?.coUnidade;
   }
@@ -182,7 +191,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
-    modalRef.componentInstance.statusExercicio = this.statusExercio != "Encerrado" && this.statusExercio != "Cancelado";
+    modalRef.componentInstance.statusExercicio = this.statusExercio;
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.nuAno = (planejamento?.nU_EXERCICIO_ORCAMENTO != null? planejamento?.nU_EXERCICIO_ORCAMENTO : nuAno);
