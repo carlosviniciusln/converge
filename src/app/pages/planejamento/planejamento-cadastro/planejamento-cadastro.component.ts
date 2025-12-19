@@ -58,7 +58,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   @Input() public tipo: any;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
-  @Input() public statusExercicio: boolean;
+  @Input() public statusExercicio: string;
   @Input() public isCadastro: boolean;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   gcpvw008Mensalizacao: Gcpvw008Mensalizacao[] = [];
@@ -227,10 +227,15 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
-    )
-      //if(this.statusExercicio){
+    ){
+      if(this.statusExercicio == "Cancelado"){ //nenhum perfil pode alterar
+        this.isPerfilPrivilegiado = false;
+      } else if (this.statusExercicio == "Encerrado" && this.currentProfile.noPerfil != PerfisEnum.Orcamento){ //encerrado apena so perfil orçamento pode alterar
+      this.isPerfilPrivilegiado = false;
+      } else {
         this.isPerfilPrivilegiado = true;
-      //}
+      }
+    }
     this.obterPlanejamentoItemHistorico();
   }
 
@@ -291,13 +296,16 @@ export class PlanejamentoCadastroComponent implements OnInit {
     if (
       this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
-      this.currentProfile.noPerfil == PerfisEnum.Administrador
-    )
-
-
-    //if(this.statusExercicio){
-      this.isPerfilPrivilegiado = true;
-    //}
+      this.currentProfile.noPerfil == PerfisEnum.Administrador		
+    ){
+      if(this.statusExercicio == "Cancelado"){ //nenhum perfil pode alterar
+        this.isPerfilPrivilegiado = false;
+      } else if (this.statusExercicio == "Encerrado" && this.currentProfile.noPerfil != PerfisEnum.Orcamento){ //encerrado apena so perfil orçamento pode alterar
+        this.isPerfilPrivilegiado = false;
+      } else {
+        this.isPerfilPrivilegiado = true;
+      }
+    }
   }
 
   definirPageAction() {
