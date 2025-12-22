@@ -263,7 +263,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
       status: novoStatusObj.nuPlanejamentoStatus,
       nuPlanejamentoItem: itensSelecionados.map(item => ({
         NuTipoDemanda: item.nU_TIPO_DEMANDA,
-        NuContrato: item.nU_CONTRATO
+        NuContrato: item.nU_CONTRATO,
+        NuOrc: item.nU_ORC
       }))
     };
 

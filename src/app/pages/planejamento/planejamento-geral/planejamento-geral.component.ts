@@ -20,9 +20,9 @@ import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejam
 import { ConfirmacaoModalComponent } from 'src/app/components/modal-confirmacao/confirmacao-modal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
-import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
 import { TableLazyLoadEvent } from 'primeng/table';
 import Swal from 'sweetalert2';
+import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -272,7 +272,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
       status: novoStatusObj.nuPlanejamentoStatus,
       nuPlanejamentoItem: itensSelecionados.map(item => ({
         NuTipoDemanda: item.nU_TIPO_DEMANDA,
-        NuContrato: item.nU_CONTRATO
+        NuContrato: item.nU_CONTRATO,
+        NuOrc : item.nU_ORC
       }))
     };
 
