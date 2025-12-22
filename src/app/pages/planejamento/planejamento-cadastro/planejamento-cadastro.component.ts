@@ -170,6 +170,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     NuTipoDemanda: null,
     NuPlanejamento: null,
     TpOperacao: null,
+    NuOrc: null
   };
 
   ListaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoDTO[] = [];
@@ -296,7 +297,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     if (
       this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
-      this.currentProfile.noPerfil == PerfisEnum.Administrador		
+      this.currentProfile.noPerfil == PerfisEnum.Administrador
     ){
       if(this.statusExercicio == "Cancelado"){ //nenhum perfil pode alterar
         this.isPerfilPrivilegiado = false;
@@ -1147,9 +1148,10 @@ async removerRubrica(nuRubrica: string) {
       // );
 
       this.filtroRegistros.NuContrato = this.nuPlanejamento?.nU_CONTRATO;
-      this.filtroRegistros.NuPlanejamento =
-        this.nuPlanejamento?.nU_PLANEJAMENTO;
+      this.filtroRegistros.NuPlanejamento =this.nuPlanejamento?.nU_PLANEJAMENTO;
       this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento?.nU_TIPO_DEMANDA;
+      this.filtroRegistros.NuOrc = this.nuPlanejamento.nU_ORC;
+
       const response = await this.apiService.get<
         ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>
       >(
@@ -1596,12 +1598,12 @@ async removerRubrica(nuRubrica: string) {
     const meses = [
       'vrJaneiro','vrFevereiro','vrMarco','vrAbril','vrMaio','vrJunho',
       'vrJulho','vrAgosto','vrSetembro','vrOutubro','vrNovembro','vrDezembro'
-    ];  
+    ];
     const arr = this.form.get('previsoesDesembolso') as FormArray | null;
     if (!arr) {
       console.warn('FormArray "previsoesDesembolso" não encontrado');
       return;
-    }  
+    }
     arr.controls.forEach((itemCtrl, idx) => {
       const grupo = itemCtrl as FormGroup;
       meses.forEach((nome) => {
@@ -1614,7 +1616,7 @@ async removerRubrica(nuRubrica: string) {
       });
     });
   }
-  
+
   public async calcularPlanejamento(item: any): Promise<number> {
     const meses = [
       item.VrJaneiro, item.VrFevereiro, item.VrMarco, item.VrAbril,

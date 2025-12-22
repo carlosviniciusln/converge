@@ -14,7 +14,7 @@ export interface PlanejamentoOrcamentarioItemRequest {
     DeObjetivoPDTIC?: string;
     DeObjetivoPEI?: string;
     DeJustificativa?: string;
-    NuOrc?: string;
+    NuOrc?: number;
     NuSap?: number;
     DeSap?: string;
 
