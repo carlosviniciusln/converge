@@ -82,7 +82,7 @@
             <input type="text" formControlName="nuPlanejamentoTipo" class="form-control" id="nuPlanejamentoTipo" value="{{tipo}}" placeholder="{{tipo}}" [readonly]="isReadonly" />
           </div>
           <div class="col-md-3 pr-0">
-            <label for="nuDemandaTipo">Planejado Para:</label>
+            <label for="nuDemandaTipo">Planejado Para:<span class="span-red"> *</span></label>
             <select class="form-control" id="nuDemandaTipo" formControlName="nuDemandaTipo"
               [ngClass]="{ 'is-invalid': submitted && f.nuDemandaTipo?.invalid }" (change)="onPlanejadoParaChange()">
               <option value="" disabled selected>
@@ -134,7 +134,7 @@
             </select>
           </div>
           <div class="col-md-3 pr-0">
-            <label for="nuObjetivoEstrategicoPdti">Objetivo Estratégico PDTIC:</label>
+            <label for="nuObjetivoEstrategicoPdti">Objetivo Estratégico PDTIC:<span class="span-red"> *</span></label>
             <select class="form-control cl-select-pdtic" id="nuObjetivoEstrategicoPdti" formControlName="nuObjetivoEstrategicoPdti"
               [ngClass]="{
                 'is-invalid': submitted && f.nuObjetivoEstrategicoPdti?.invalid
@@ -148,7 +148,7 @@
             </select>
           </div>
           <div class="col-md-3 pr-0">
-            <label for="nuObjetivoEstrategico">Objetivo Estratégico PEI:</label>
+            <label for="nuObjetivoEstrategico">Objetivo Estratégico PEI:<span class="span-red"> *</span></label>
             <select class="form-control" id="nuObjetivoEstrategicoPei" formControlName="nuObjetivoEstrategicoPei"
               [ngClass]="{
                 'is-invalid': submitted && f.nuObjetivoEstrategicoPei?.invalid
@@ -162,7 +162,7 @@
             </select>
           </div>
           <div class="col-md-3 pr-0">
-            <label for="icDigital">Classifica&ccedil;&atilde;o Digital</label>
+            <label for="icDigital">Classifica&ccedil;&atilde;o Digital:<span class="span-red"> *</span></label>
             <select class="form-control" id="icDigital" formControlName="icDigital"
               [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" (change)="onIsDigitalChange($event)">
               <option value="" disabled selected>
@@ -196,7 +196,7 @@
             </div>
           </div> -->
           <div class="col-md-3 pr-0">
-            <label for="nuFilial">Unidade Demandante:</label>
+            <label for="nuFilial">Unidade Demandante:<span class="span-red"> *</span></label>
             <select class="form-control" id="nuFilial" formControlName="nuFilial"
               [ngClass]="{ 'is-invalid': submitted && f.nuFilial?.invalid }">
               <option value="" disabled selected>
@@ -234,7 +234,7 @@
 
       <!-- Campo Rubrica sempre visível -->
       <div class="col-md-4 pr-0">
-        <label for="nuRubrica">Rubrica {{ i + 1 }} :</label>
+        <label for="nuRubrica">Rubrica {{ i + 1 }} :<span class="span-red"> *</span></label>
         <select class="form-control" id="nuRubrica" formControlName="nuRubrica" (change)="onRubricaChange($event)"
           [ngClass]="{'is-invalid': submitted && previsaoDesembolso?.get('nuRubrica')?.invalid}">
           <option value="" disabled selected>Selecione Rubrica</option>
@@ -490,7 +490,7 @@
           </div> -->
           <div class="col-md-12 pr-0">
             <h4 class="modal-title" id="modal-basic-title" for="deObservacao" style="margin-bottom: 8px;">
-              <b>Observa&ccedil;&otilde;es</b>
+              <b>Observa&ccedil;&otilde;es:<span class="span-red"> *</span></b>
             </h4>
             <textarea formControlName="deObservacao" id="deObservacao"
               [ngClass]="{ 'is-invalid': submitted && f.deObservacao?.invalid }" placeholder="Digite..."
