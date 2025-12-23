@@ -1380,7 +1380,7 @@ async removerRubrica(nuRubrica: string) {
     try {
       this.submitted = true;
       this.isReadonly = false;
-
+      await this.habilitarCampoRubrica(true);
       var obj = this.form.value;
       var totalRubrica = await this.ValidarValores(obj);
       if(totalRubrica){
@@ -1390,6 +1390,7 @@ async removerRubrica(nuRubrica: string) {
           icon: 'warning',
           confirmButtonText: 'OK'
         });
+        this.habilitarCampoRubrica(false);
         return;
       }
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
@@ -1407,6 +1408,7 @@ async removerRubrica(nuRubrica: string) {
             'Informe a previsão de desembolso por completo.',
             'Erro'
           );
+          this.habilitarCampoRubrica(false);
           return;
         }
         // if (
@@ -1423,7 +1425,7 @@ async removerRubrica(nuRubrica: string) {
         //   this.toastr.error('Informe a justificativa.', 'Erro');
         //   return;
         // }
-
+        this.habilitarCampoRubrica(false);
         return;
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == 1 &&
@@ -1434,6 +1436,7 @@ async removerRubrica(nuRubrica: string) {
           'Informe a categoria da classificação digital.',
           'Erro'
         );
+        this.habilitarCampoRubrica(false);
         return;
       // } else if (this.form.controls['deObjeto'].value == null) {
       //   this.toastr.error('Informe o objeto.', 'Erro');
@@ -1451,6 +1454,7 @@ async removerRubrica(nuRubrica: string) {
           'Informe a categoria da classificação digital.',
           'Erro'
         );
+        this.habilitarCampoRubrica(false);
         return;
       }
       //regra: maquina de status
@@ -1469,6 +1473,7 @@ async removerRubrica(nuRubrica: string) {
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
           );
+          this.habilitarCampoRubrica(false);
           return;
         }
         if (
@@ -1480,6 +1485,7 @@ async removerRubrica(nuRubrica: string) {
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
           );
+          this.habilitarCampoRubrica(false);
           return;
         }
         if (
@@ -1491,6 +1497,7 @@ async removerRubrica(nuRubrica: string) {
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
           );
+          this.habilitarCampoRubrica(false);
           return;
         }
       }
@@ -1504,6 +1511,7 @@ async removerRubrica(nuRubrica: string) {
           'O status "Cancelado" não pode sofre alteração de status.',
           'Erro'
         );
+        this.habilitarCampoRubrica(false);
         return;
       }
 
@@ -1552,6 +1560,7 @@ async removerRubrica(nuRubrica: string) {
         lista.push(item);
       }
 
+      await this.habilitarCampoRubrica(false);
       const response = await this.apiService.post<ApiResponse<any>>(
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
         lista
@@ -1594,10 +1603,10 @@ async removerRubrica(nuRubrica: string) {
     }
   }
 
-  public habilitarCamposMeses(): void {
+  public async habilitarCamposMesId(): Promise<void> {
     const meses = [
       'vrJaneiro','vrFevereiro','vrMarco','vrAbril','vrMaio','vrJunho',
-      'vrJulho','vrAgosto','vrSetembro','vrOutubro','vrNovembro','vrDezembro'
+      'vrJulho','vrAgosto','vrSetembro','vrOutubro','vrNovembro','vrDezembro','nuPlanejamentoItem'
     ];
     const arr = this.form.get('previsoesDesembolso') as FormArray | null;
     if (!arr) {
@@ -1615,6 +1624,27 @@ async removerRubrica(nuRubrica: string) {
         }
       });
     });
+  }
+
+  public async habilitarCampoRubrica(rubrica:boolean): Promise<void> {
+      const arr = this.form.get('previsoesDesembolso') as FormArray | null;
+      if (!arr) {
+        console.warn('FormArray "previsoesDesembolso" não encontrado');
+        return;
+      }
+      arr.controls.forEach((itemCtrl, idx) => {
+        const grupo = itemCtrl as FormGroup;
+          const ctrl = grupo.get("nuRubrica");
+          if (ctrl) {
+            if(rubrica){
+              ctrl.enable({ emitEvent: true });
+            } else {
+              ctrl.disable({ emitEvent: true });
+            }
+          } else {
+            console.warn(`Item ${idx}: campo "${"nuRubrica"}" não encontrado`);
+          }
+      });
   }
 
   public async calcularPlanejamento(item: any): Promise<number> {
@@ -1801,7 +1831,8 @@ async removerRubrica(nuRubrica: string) {
       this.isEditable = isEditable;
       this.formularioLivre();
       this.form.controls['nuAno'].disable();
-      this.habilitarCamposMeses();
+      this.habilitarCamposMesId();
+      this.habilitarCampoRubrica(false);
     }
   }
 
