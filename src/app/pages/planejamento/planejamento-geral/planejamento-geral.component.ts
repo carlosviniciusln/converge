@@ -20,9 +20,9 @@ import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejam
 import { ConfirmacaoModalComponent } from 'src/app/components/modal-confirmacao/confirmacao-modal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
-import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
 import { TableLazyLoadEvent } from 'primeng/table';
 import Swal from 'sweetalert2';
+import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -85,6 +85,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   quantidadeTotal: number = 0;
   loading: boolean = true;
   perfilOrcamento: boolean = false;
+  isPerfilPrivilegiado: boolean = false;
   perfilAdm: boolean = false;
   perfilOperacional: boolean = false;
   perfilTorre: boolean = false;
@@ -149,6 +150,14 @@ export class PlanejamentoGeralComponent implements OnInit {
     if(this.currentProfile == 'Gestor Operacional') this.perfilOperacional = true;
     if(this.currentProfile == 'Torres GEGAT') this.perfilTorre = true;
 
+    if(this.statusExercio == "Cancelado"){ //nenhum perfil pode alterar
+      this.isPerfilPrivilegiado = false;
+    } else if (this.statusExercio == "Encerrado" && !this.perfilOrcamento){ //encerrado so perfil orçamento pode alterar
+      this.isPerfilPrivilegiado = false;
+    } else {
+      this.isPerfilPrivilegiado = true;
+    }
+
     this.currentUser = this.token.getUser();
     this.perfilUnidade = this.currentUser?.coUnidade;
   }
@@ -182,6 +191,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.nuPlanejamento = planejamento;
     modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
     modalRef.componentInstance.isEditable = isEditable;
+    modalRef.componentInstance.statusExercicio = this.statusExercio;
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.nuAno = (planejamento?.nU_EXERCICIO_ORCAMENTO != null? planejamento?.nU_EXERCICIO_ORCAMENTO : nuAno);
@@ -262,7 +272,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
       status: novoStatusObj.nuPlanejamentoStatus,
       nuPlanejamentoItem: itensSelecionados.map(item => ({
         NuTipoDemanda: item.nU_TIPO_DEMANDA,
-        NuContrato: item.nU_CONTRATO
+        NuContrato: item.nU_CONTRATO,
+        NuOrc : item.nU_ORC
       }))
     };
 

@@ -184,6 +184,7 @@ export class PlanejamentoGeralNovoComponent implements OnInit {
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
+    modalRef.componentInstance.statusExercicio = this.statusExercio != "Encerrado" && this.statusExercio != "Cancelado";
     modalRef.componentInstance.nuAno = (planejamento?.nU_EXERCICIO_ORCAMENTO != null? planejamento?.nU_EXERCICIO_ORCAMENTO : nuAno);
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
@@ -262,7 +263,8 @@ public async onSalvarMudancasStatus(): Promise<void> {
       status: novoStatusObj.nuPlanejamentoStatus,
       nuPlanejamentoItem: itensSelecionados.map(item => ({
         NuTipoDemanda: item.nU_TIPO_DEMANDA,
-        NuContrato: item.nU_CONTRATO
+        NuContrato: item.nU_CONTRATO,
+        NuOrc: item.nU_ORC
       }))
     };
 

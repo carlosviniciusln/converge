@@ -85,14 +85,23 @@
     <div class="modal-footer">
       <div class="col-md-12">
         <div class="row">
-          <div class="col-md-8 pr-0 text-right"></div>
-          <div class="col-md-4 pr-0 text-right">
+          <div class="col-md-4 pr-0 text-right"></div>
+          <div class="col-md-8 pr-0 text-right">
             <button
               class="btn-sm btn-default"
               type="submit"
               (click)="onSubmit()"
             >
               {{actionButtonLabel}}
+            </button>
+              <button
+                style="margin-left: 10px;"
+                *ngIf="currentPageAction === PageAction.Alterar && registro"
+                class="btn-sm btn-danger mr-2"
+                type="button"
+                [disabled]="!(formCadastro?.controls?.['nuLimitePlanejamento']?.value ?? registro?.nuLimitePlanejamento)"
+                (click)="onDelete()">
+                Excluir
             </button>
           </div>
         </div>

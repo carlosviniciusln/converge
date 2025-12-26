@@ -33,6 +33,7 @@ import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.com
 import { PlanejamentoNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-novo.component';
 import { PlanejamentoOrcamentarioNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-lista/planejamento-orcamentario-novo.component';
 import { PlanejamentoGeralNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-geral-novo/planejamento-geral-novo.component';
+import { RelatorioContratosComponent } from 'src/app/pages/planejamento/relatorio/relatorio-contratos/relatorio-contratos.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'develop', component: DevelopComponent },
@@ -83,5 +84,10 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'planejamento-novo', component: PlanejamentoNovoComponent },
   { path: 'planejamento-orcamentario-novo', component: PlanejamentoOrcamentarioNovoComponent},
    { path: 'planejamento-orcamentario-detalhe-novo', component: PlanejamentoGeralNovoComponent },
+
+
+  //Relatório de Contratos
+   { path: 'relatorio-contratos', component: RelatorioContratosComponent },
+
 
 ];

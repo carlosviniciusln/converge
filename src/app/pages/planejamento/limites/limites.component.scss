@@ -26,3 +26,36 @@
 .afastamento{
   margin-left: 5px;
 }
+
+
+.diff-col {
+  text-align: right;      
+  white-space: nowrap;  
+  color: white;  
+}
+
+.diff {
+  display: inline-flex;
+  width: 100%;            
+  align-items: center;
+  gap: 6px;               
+  white-space: nowrap;
+}
+
+.diff--right {
+  justify-content: flex-end;  
+}
+
+.diff__val {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.diff__alert {
+  color: red;
+  font-size: 11pt;
+  font-weight: bold;
+  line-height: 1;         
+  display: inline-block;
+}

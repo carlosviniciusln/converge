@@ -58,6 +58,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   @Input() public tipo: any;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
+  @Input() public statusExercicio: string;
   @Input() public isCadastro: boolean;
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   gcpvw008Mensalizacao: Gcpvw008Mensalizacao[] = [];
@@ -80,6 +81,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
   public planejamento: PlanejamentoOrcamentarioResponse;
   public planejamentoEditar: PlanejamentoOrcamentarioResponse;
+  public isFlagStyle : boolean = false;
   public listaDigital: any[] = [
     { id: 1, tipo: 'Digital' },
     { id: 2, tipo: 'Digital - TD' },
@@ -168,6 +170,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     NuTipoDemanda: null,
     NuPlanejamento: null,
     TpOperacao: null,
+    NuOrc: null
   };
 
   ListaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoDTO[] = [];
@@ -225,8 +228,15 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
-    )
-      this.isPerfilPrivilegiado = true;
+    ){
+      if(this.statusExercicio == "Cancelado"){ //nenhum perfil pode alterar
+        this.isPerfilPrivilegiado = false;
+      } else if (this.statusExercicio == "Encerrado" && this.currentProfile.noPerfil != PerfisEnum.Orcamento){ //encerrado apena so perfil orçamento pode alterar
+      this.isPerfilPrivilegiado = false;
+      } else {
+        this.isPerfilPrivilegiado = true;
+      }
+    }
     this.obterPlanejamentoItemHistorico();
   }
 
@@ -288,8 +298,15 @@ export class PlanejamentoCadastroComponent implements OnInit {
       this.nuPlanejamento?.cO_FILIAL == this.currentProfile.coUnidade ||
       this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
       this.currentProfile.noPerfil == PerfisEnum.Administrador
-    )
-      this.isPerfilPrivilegiado = true;
+    ){
+      if(this.statusExercicio == "Cancelado"){ //nenhum perfil pode alterar
+        this.isPerfilPrivilegiado = false;
+      } else if (this.statusExercicio == "Encerrado" && this.currentProfile.noPerfil != PerfisEnum.Orcamento){ //encerrado apena so perfil orçamento pode alterar
+        this.isPerfilPrivilegiado = false;
+      } else {
+        this.isPerfilPrivilegiado = true;
+      }
+    }
   }
 
   definirPageAction() {
@@ -398,20 +415,6 @@ export class PlanejamentoCadastroComponent implements OnInit {
       }
     });
 
-    // Habilita todos os controles dentro do FormArray previsoesDesembolso
-    const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
-    if (previsoesArray) {
-      previsoesArray.controls.forEach((grupo) => {
-        if (grupo instanceof FormGroup) {
-          Object.keys(grupo.controls).forEach((childKey) => {
-            const childControl = grupo.get(childKey);
-            if (childControl?.disabled && childKey != 'vrTotalRubrica') {
-              childControl.enable();
-            }
-          });
-        }
-      });
-    }
     this.onPlanejadoParaChange();
   }
 
@@ -452,8 +455,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
       nuRubrica: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
       ]),
-      nuPreComprometimento: new FormControl(),
-      nuReserva: new FormControl(),
+      nuSap: new FormControl({value: "", disabled: true}),
+      deSap: new FormControl({value: "", disabled: true}),
       vrJaneiro: new FormControl(0, [Validators.required]),
       vrFevereiro: new FormControl(0, [Validators.required]),
       vrMarco: new FormControl(0, [Validators.required]),
@@ -670,7 +673,11 @@ async removerRubrica(nuRubrica: string) {
       if (this.planejamento) {
 
 
-        this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
+        if (this.planejamento.nuContrato != 0)
+          {
+            this.isFlagStyle = true;
+          }
+         this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
 
           this.form.controls['coContrato'].setValue(
            this.planejamento.coContrato
@@ -829,12 +836,12 @@ async removerRubrica(nuRubrica: string) {
                   { value: x.vrDezembro, disabled: !this.isEditable },
                   [Validators.required]
                 ),
-                nuPreComprometimento: new FormControl(
-                  { value: x.nuPreComprometimento, disabled: !this.isEditable },
-                  [Validators.required]
+                nuSap: new FormControl(
+                  { value: x.nuSap, disabled: true },
+                  //[Validators.required]
                 ),
-                nuReserva: new FormControl(
-                  { value: x.nuReserva, disabled: !this.isEditable }
+                deSap: new FormControl(
+                  { value: x.deSap, disabled: true }
                   // [Validators.required]
                 ),
                 vrTotalRubrica: new FormControl(
@@ -993,6 +1000,18 @@ async removerRubrica(nuRubrica: string) {
       >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
 
       this.listaStatusPlanejamento = response.data;
+      //conflito de regras - o backend impedi a visualização do status cancelado e encerrado
+      /*
+      if(this.isPerfilPrivilegiado){
+        this.listaStatusPlanejamento.push({
+          nuPlanejamentoStatus: 4,
+          noPlanejamentoStatus: 'Cancelado',
+        },{
+          nuPlanejamentoStatus: 6,
+          noPlanejamentoStatus: 'Encerrado',
+        });
+      }
+      */
       this.buildStatusRank_();
             //Define o campo como criado ao criar um novo contrato e desabilita o campo
             if (this.isCadastro) {
@@ -1129,9 +1148,10 @@ async removerRubrica(nuRubrica: string) {
       // );
 
       this.filtroRegistros.NuContrato = this.nuPlanejamento?.nU_CONTRATO;
-      this.filtroRegistros.NuPlanejamento =
-        this.nuPlanejamento?.nU_PLANEJAMENTO;
+      this.filtroRegistros.NuPlanejamento =this.nuPlanejamento?.nU_PLANEJAMENTO;
       this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento?.nU_TIPO_DEMANDA;
+      this.filtroRegistros.NuOrc = this.nuPlanejamento.nU_ORC;
+
       const response = await this.apiService.get<
         ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>
       >(
@@ -1325,9 +1345,9 @@ async removerRubrica(nuRubrica: string) {
             DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
             DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
-
-            NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
-            NuReserva: Number(previsoes[p].nuReserva),
+            NuOrc: this.nuPlanejamento?.nU_ORC,
+            NuSap: Number(previsoes[p].nuSap),
+            DeSap: String(previsoes[p].deSap),
 
             VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
             VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
@@ -1360,7 +1380,7 @@ async removerRubrica(nuRubrica: string) {
     try {
       this.submitted = true;
       this.isReadonly = false;
-
+      await this.habilitarCampoRubrica(true);
       var obj = this.form.value;
       var totalRubrica = await this.ValidarValores(obj);
       if(totalRubrica){
@@ -1370,6 +1390,7 @@ async removerRubrica(nuRubrica: string) {
           icon: 'warning',
           confirmButtonText: 'OK'
         });
+        this.habilitarCampoRubrica(false);
         return;
       }
       var lista: PlanejamentoOrcamentarioItemRequest[] = [];
@@ -1387,6 +1408,7 @@ async removerRubrica(nuRubrica: string) {
             'Informe a previsão de desembolso por completo.',
             'Erro'
           );
+          this.habilitarCampoRubrica(false);
           return;
         }
         // if (
@@ -1403,7 +1425,7 @@ async removerRubrica(nuRubrica: string) {
         //   this.toastr.error('Informe a justificativa.', 'Erro');
         //   return;
         // }
-
+        this.habilitarCampoRubrica(false);
         return;
       } else if (
         this.form.controls['nuClassificacaoPlanejamento'].value == 1 &&
@@ -1414,6 +1436,7 @@ async removerRubrica(nuRubrica: string) {
           'Informe a categoria da classificação digital.',
           'Erro'
         );
+        this.habilitarCampoRubrica(false);
         return;
       // } else if (this.form.controls['deObjeto'].value == null) {
       //   this.toastr.error('Informe o objeto.', 'Erro');
@@ -1431,6 +1454,7 @@ async removerRubrica(nuRubrica: string) {
           'Informe a categoria da classificação digital.',
           'Erro'
         );
+        this.habilitarCampoRubrica(false);
         return;
       }
       //regra: maquina de status
@@ -1449,6 +1473,7 @@ async removerRubrica(nuRubrica: string) {
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
           );
+          this.habilitarCampoRubrica(false);
           return;
         }
         if (
@@ -1460,6 +1485,7 @@ async removerRubrica(nuRubrica: string) {
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
           );
+          this.habilitarCampoRubrica(false);
           return;
         }
         if (
@@ -1471,6 +1497,7 @@ async removerRubrica(nuRubrica: string) {
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
           );
+          this.habilitarCampoRubrica(false);
           return;
         }
       }
@@ -1484,6 +1511,7 @@ async removerRubrica(nuRubrica: string) {
           'O status "Cancelado" não pode sofre alteração de status.',
           'Erro'
         );
+        this.habilitarCampoRubrica(false);
         return;
       }
 
@@ -1509,9 +1537,9 @@ async removerRubrica(nuRubrica: string) {
           DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
           DeJustificativa: obj.deJustificativa,
           DeObservacao: obj.deObservacao,
-          NuPreComprometimento: Number(previsoes[p].nuPreComprometimento),
-          NuReserva: Number(previsoes[p].nuReserva),
-
+          NuSap: Number(previsoes[p].nuSap),
+          DeSap: String(previsoes[p].deSap),
+          NuOrc: this.nuPlanejamento?.nU_ORC,
           VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
           VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
           VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
@@ -1532,6 +1560,7 @@ async removerRubrica(nuRubrica: string) {
         lista.push(item);
       }
 
+      await this.habilitarCampoRubrica(false);
       const response = await this.apiService.post<ApiResponse<any>>(
         `${Endpoints.URL_ORCAMENTO_EDITA}`,
         lista
@@ -1572,6 +1601,50 @@ async removerRubrica(nuRubrica: string) {
       this.toastr.error('Erro ao salvar alterações.', 'Erro');
       this.atualizarPagina.emit(false);
     }
+  }
+
+  public async habilitarCamposMesId(): Promise<void> {
+    const meses = [
+      'vrJaneiro','vrFevereiro','vrMarco','vrAbril','vrMaio','vrJunho',
+      'vrJulho','vrAgosto','vrSetembro','vrOutubro','vrNovembro','vrDezembro','nuPlanejamentoItem'
+    ];
+    const arr = this.form.get('previsoesDesembolso') as FormArray | null;
+    if (!arr) {
+      console.warn('FormArray "previsoesDesembolso" não encontrado');
+      return;
+    }
+    arr.controls.forEach((itemCtrl, idx) => {
+      const grupo = itemCtrl as FormGroup;
+      meses.forEach((nome) => {
+        const ctrl = grupo.get(nome);
+        if (ctrl) {
+          ctrl.enable({ emitEvent: true });
+        } else {
+          console.warn(`Item ${idx}: campo "${nome}" não encontrado`);
+        }
+      });
+    });
+  }
+
+  public async habilitarCampoRubrica(rubrica:boolean): Promise<void> {
+      const arr = this.form.get('previsoesDesembolso') as FormArray | null;
+      if (!arr) {
+        console.warn('FormArray "previsoesDesembolso" não encontrado');
+        return;
+      }
+      arr.controls.forEach((itemCtrl, idx) => {
+        const grupo = itemCtrl as FormGroup;
+          const ctrl = grupo.get("nuRubrica");
+          if (ctrl) {
+            if(rubrica){
+              ctrl.enable({ emitEvent: true });
+            } else {
+              ctrl.disable({ emitEvent: true });
+            }
+          } else {
+            console.warn(`Item ${idx}: campo "${"nuRubrica"}" não encontrado`);
+          }
+      });
   }
 
   public async calcularPlanejamento(item: any): Promise<number> {
@@ -1758,43 +1831,8 @@ async removerRubrica(nuRubrica: string) {
       this.isEditable = isEditable;
       this.formularioLivre();
       this.form.controls['nuAno'].disable();
-      const previsoesArray = this.form.get('previsoesDesembolso') as FormArray;
-      if (previsoesArray) {
-        previsoesArray.controls.forEach((grupo) => {
-          if (grupo instanceof FormGroup) {
-            const preComp = grupo.get('nuPreComprometimento');
-            const reserva = grupo.get('nuReserva');
-
-            if (preComp?.value && !reserva?.value) {
-              reserva?.disable();
-            } else if (reserva?.value && !preComp?.value) {
-              preComp?.disable();
-            }
-          }
-        });
-      }
-
-    }
-  }
-
-  onPreComprometimentoInput(event: Event, index: number): void {
-    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
-    const value = (event.target as HTMLInputElement).value;
-    if (value && value.trim() !== '') {
-      grupo.get('nuReserva')?.disable();
-    } else {
-      grupo.get('nuReserva')?.enable();
-    }
-  }
-
-  onReservaInput(event: Event, index: number): void {
-    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
-    const value = (event.target as HTMLInputElement).value;
-    if (value && value.trim() !== '') {
-      grupo.get('nuPreComprometimento')?.setValue('');
-      grupo.get('nuPreComprometimento')?.disable();
-    } else {
-      grupo.get('nuPreComprometimento')?.enable();
+      this.habilitarCamposMesId();
+      this.habilitarCampoRubrica(false);
     }
   }
 
