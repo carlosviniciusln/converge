@@ -1,8 +1,10 @@
-
-:host ::ng-deep .p-dropdown {
-  width: 160px !important;
-  max-width: 160px !important;
-  flex: 0 0 160px; 
+.p-datatable-customers{
+    font-size: 11px !important;
+}
+.mat-menu-item{
+    border: 0px!important;
+    outline: solid 0px;
+    border: 0px;
 }
 
 :host ::ng-deep .p-dropdown .p-dropdown-label {
@@ -26,3 +28,7 @@
 .title {
     margin-right: 15px;
 }
+
+
+
+
