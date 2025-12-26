@@ -27,6 +27,11 @@
               Upload <i class="pi pi-upload" aria-hidden="true" style="color:white"></i>
             </button>
 
+             <button style=" margin-left: 5px" type="button" class="btn btn-sm btn-default"
+              (click)="openModalDownload()" *ngIf="isPerfilAdminOrcamento">
+              Limite/Planejado <i class="pi pi-download" aria-hidden="true" style="color:white"></i>
+            </button>
+
             <button style=" margin-left: 5px; margin-right: 5px" type="button"
               class="btn btn-sm btn-secondary" (click)="exportExcel()">
               <i class="tim-icons icon-cloud-download-93"></i>
