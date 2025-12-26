@@ -5,8 +5,8 @@ export interface Gcptb051PlanejamentoItem{
          ObjetivoPDTIC : string;
          ObjetivoPEI : string;
          Justificativa : string;
-         PreComprometimento : string;
-         Reserva : string;
+         NuSap : string;
+         DeSap : string;
          Janeiro : string;
          Fevereiro : string;
          Marco : string;

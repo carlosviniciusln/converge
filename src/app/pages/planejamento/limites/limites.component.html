@@ -1,200 +1,267 @@
+
 <div class="content">
-    <div class="row">
-        <div class="col-12">
-            <p-table #dt [value]="listaLimites" dataKey="nuPlanejamento" [expandedRowKeys]="expandedRowKeys"
-                [autoLayout]="true" [paginator]="false" [rows]="10" [rowTrackBy]="trackByPlanejamento"
-                currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)" [showCurrentPageReport]="true">
-                <ng-template pTemplate="caption">
-                    <div class="p-d-flex p-ai-center p-flex-wrap" style="gap: 8px;">
-                        <button style=" margin-left: 5px" type="button" class="btn btn-sm btn-default"
-                            (click)="openModalPlanejamento('cadastro')" *ngIf="isPerfilAdminOrcamento">Novo
-                            Registro</button>
-                        <button style=" margin-left: 5px" type="button" class="btn btn-sm btn-default"
-                            (click)="openModalUpload()" *ngIf="isPerfilAdminOrcamento">
-                            Upload <i class="pi pi-upload" aria-hidden="true" style="color:white"></i>
-                        </button>
-                        <button style=" margin-left: 5px; margin-right: 5px" type="button"
-                            class="btn btn-sm btn-secondary" (click)="exportExcel()">
-                            <i class="tim-icons icon-cloud-download-93"></i>
-                        </button>
-                        <p-dropdown [(ngModel)]="selectedExercicio" [filter]="true" [showClear]="true"
-                            placeholder="Exercício" optionLabel="label" optionValue="value" [options]="listaExercicios"
-                            (onChange)="filterItem()" class="w-12rem afastamento"></p-dropdown>
+  <div class="row">
+    <div class="col-12">
+      <p-table
+        #dt
+        [value]="listaLimites"
+        dataKey="nivel0Key"
+        [expandedRowKeys]="expandedKeysL0"
+        [autoLayout]="true"
+        [paginator]="false"
+        [rows]="10"
+        [rowTrackBy]="trackByNivel0"
+        currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+        [showCurrentPageReport]="true"
+        (onRowExpand)="onRowExpandL0($event)"
+        (onRowCollapse)="onRowCollapseL0($event)"
+      >
 
-                        <p-dropdown [(ngModel)]="selectedTipo" [filter]="true" [showClear]="true" placeholder="Tipo"
-                            optionLabel="label" optionValue="value" [options]="selectTipo" (onChange)="filterItem()"
-                            class="w-12rem afastamento"></p-dropdown>
+        <ng-template pTemplate="caption">
+          <div class="p-d-flex p-ai-center p-flex-wrap" style="gap: 8px;">
+            <button style=" margin-left: 5px" type="button" class="btn btn-sm btn-default"
+              (click)="openModalPlanejamento('cadastro')" *ngIf="isPerfilAdminOrcamento">Novo Registro</button>
 
-                        <p-dropdown [(ngModel)]="selectedRubrica" [filter]="true" [showClear]="true"
-                            placeholder="Rubrica" optionLabel="label" optionValue="label" [options]="selectRubrica"
-                            (onChange)="filterItem()" class="w-16rem afastamento"></p-dropdown>
+            <button style=" margin-left: 5px" type="button" class="btn btn-sm btn-default"
+              (click)="openModalUpload()" *ngIf="isPerfilAdminOrcamento">
+              Upload <i class="pi pi-upload" aria-hidden="true" style="color:white"></i>
+            </button>
 
-                        <p-dropdown [(ngModel)]="selectedUnidadeDemandante" [filter]="true" [showClear]="true"
-                            placeholder="Unidade Demandante" optionLabel="label" optionValue="label"
-                            [options]="selectFilial" (onChange)="filterItem()" class="w-14rem afastamento"></p-dropdown>
+            <button style=" margin-left: 5px; margin-right: 5px" type="button"
+              class="btn btn-sm btn-secondary" (click)="exportExcel()">
+              <i class="tim-icons icon-cloud-download-93"></i>
+            </button>
 
-                        <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
-                            (click)="limparFiltros()"></button>
-                    </div>
-                </ng-template>
+            <p-dropdown [(ngModel)]="selectedExercicio" [filter]="true" [showClear]="true"
+              placeholder="Exercício" optionLabel="label" optionValue="value" [options]="listaExercicios"
+              (onChange)="filterItem()" class="w-12rem afastamento"></p-dropdown>
 
-                <!-- Corpo (nível 0) -->
-                <ng-template pTemplate="header">
+            <p-dropdown [(ngModel)]="selectedTipo" [filter]="true" [showClear]="true" placeholder="Tipo"
+              optionLabel="label" optionValue="value" [options]="selectTipo" (onChange)="filterItem()"
+              class="w-12rem afastamento"></p-dropdown>
+
+            <p-dropdown [(ngModel)]="selectedRubrica" [filter]="true" [showClear]="true"
+              placeholder="Rubrica" optionLabel="label" optionValue="label" [options]="selectRubrica"
+              (onChange)="filterItem()" class="w-16rem afastamento"></p-dropdown>
+
+            <p-dropdown [(ngModel)]="selectedUnidadeDemandante" [filter]="true" [showClear]="true"
+              placeholder="Unidade Demandante" optionLabel="label" optionValue="label"
+              [options]="selectFilial" (onChange)="filterItem()" class="w-14rem afastamento"></p-dropdown>
+
+            <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+              (click)="limparFiltros()"></button>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 1%;background-color:#499c70; color: white;"></th>
+            <th style="width: 10%;font-size: 14px; background-color: #499c70; color: white; text-align: center;">Exercício</th>
+            <th style="width: 69%;font-size: 14px;  background-color: #499c70; color: white;">Tipo</th>
+            <th style="width: 10%;font-size: 14px;  background-color: #499c70; color: white; text-align: right;">Limite/Planejado</th>
+            <th style="width: 10%;font-size: 14px;  background-color: #499c70; color: white; text-align: right;">Solicitado</th>
+            <th pSortableColumn="vrDiferenca"
+              style="font-size: 14px; background-color:#499c70; color: white; text-align: right;">Diferença</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-visaoum let-expanded="expanded">
+          <tr style="background-color: #499c70;">
+            <td style="width: 3rem;">
+              <button style="color: black; background-color: white;" pButton type="button"
+                [pRowToggler]="visaoum" class="p-button-text p-button-rounded">
+                <span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
+              </button>
+            </td>
+            <td style="color: white; text-align: center;">{{visaoum.coExercicio}}</td>
+            <td style="color: white;">{{visaoum.deOrdemProg}}</td>
+            <td style="color: white; text-align: right;">{{visaoum.vrLimite | currency:'BRL'}}</td>
+            <td style="color: white; text-align: right;">{{visaoum.vrPlanejamento | currency:'BRL'}}</td>
+           <td class="diff-col">  <span class="diff diff--right">    
+            <span class="diff__val">{{ formatBRLDiffNoBreak(visaoum.vrLimite - visaoum.vrPlanejamento) }}</span>    
+            <span *ngIf="(visaoum.vrLimite - visaoum.vrPlanejamento) !== 0" class="diff__alert">!</span></span>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-registro>
+          <tr *ngIf="registro.primeiroNivel" style="background-color: #6eb47d;">
+            <td colspan="7">
+              <div class="p-p-3" style="margin-left: -16px;margin-right: -16px;">
+                <p-table
+                  [value]="registro.primeiroNivel"
+                  dataKey="nivel1Key"
+                  [expandedRowKeys]="expandedKeysL1"
+                  [rowTrackBy]="trackByNivel1"
+                  (onRowExpand)="onRowExpandL1($event, registro)"
+                  (onRowCollapse)="onRowCollapseL1($event)"
+                >
+
+                  <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 1%;background-color:#499c70; color: white;"></th>
-                        <th
-                            style="width: 10%;font-size: 14px; background-color: #499c70; color: white; text-align: center; ">
-                            Exercício</th>
-                        <th style="width: 69%;font-size: 14px;  background-color: #499c70; color: white;">Tipo</th>
-                        <th
-                            style="width: 10%;font-size: 14px;  background-color: #499c70; color: white; text-align: right; ">
-                            Limite/Planejado</th>
-                        <th
-                            style="width: 10%;font-size: 14px;  background-color: #499c70; color: white; text-align: right;">
-                            Solicitado</th>
-                        <th pSortableColumn="vrDiferenca"
-                            style="font-size: 14px; background-color:#499c70; color: white; text-align: right;">
-                            Diferença</th>
+                      <th style="width: 1%;background-color: #6eb47d;"></th>
+                      <th style="width: 8%;background-color: #6eb47d; color: white; text-align: center;">
+                        <span style="margin-left: -7px;">Exercício</span>
+                      </th>
+                      <th style="width: 16%;background-color: #6eb47d; color: white;">
+                        <span style="margin-left: -7px;">Tipo</span>
+                      </th>
+                      <th style="width: 23%;background-color: #6eb47d; color: white;">
+                        <span style="margin-left: -7px;">Descrição</span>
+                      </th>
+                      <th style="width: 10%;background-color: #6eb47d; text-align: right; color: white;">
+                        <span style="margin-left: -7px;">Limite/Planejado</span>
+                      </th>
+                      <th style="width: 10%;background-color: #6eb47d; text-align: right; color: white;">
+                        <span style="margin-left: -7px;">Solicitado</span>
+                      </th>
+                      <th style="width: 10%;background-color: #6eb47d; text-align: right; color: white;" pSortableColumn="vrDiferenca">Diferença</th>
                     </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-visaoum let-expanded="expanded">
-                    <tr style="background-color: #499c70;">
-                        <td style="width: 3rem;">
-                            <button style="color: black; background-color: white;" pButton type="button"
-                                (click)="onTogglePrimeiroNivel(visaoum)" class="p-button-text p-button-rounded">
-                                <span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
-                            </button>
-                        </td>
-                        <td style="color: white; text-align: center;">{{visaoum.coExercicio}}</td>
-                        <td style="color: white;">{{visaoum.deOrdemProg}}</td>
-                        <td style="color: white; text-align: right; ">{{visaoum.vrLimite | currency:'BRL'}}</td>
-                        <td style="color: white; text-align: right;">{{visaoum.vrPlanejamento | currency:'BRL'}}</td>
-                        <td style="color: white; text-align: right;">{{(visaoum.vrLimite - visaoum.vrPlanejamento) | currency:'BRL'}}
-                             <span *ngIf="(visaoum.vrLimite - visaoum.vrPlanejamento) != 0" style="color:red; font-size: 11pt;">
-                            <b> !</b></span>
-                        </td>
-                    </tr>
-                </ng-template>
+                  </ng-template>
 
-                <!-- Expansão (nível 1) -->
-                <ng-template pTemplate="rowexpansion" let-registro>
-                    <tr *ngIf="registro.primeiroNivel" style="background-color: #6eb47d;">
-                        <td colspan="7">
-                            <div class="p-p-3" style="margin-left: -16px;margin-right: -16px;">
-                                <p-table [value]="registro?.primeiroNivel" dataKey="noRubricaTipo">
-                                    <ng-template pTemplate="header">
+                  <ng-template pTemplate="body" let-tipo let-expanded="expanded">
+                    <tr style="background-color: #6eb47d;">
+                      <td>
+                        <button style="color: black; background-color: white;" type="button" pButton
+                          [pRowToggler]="tipo"
+                          class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain">
+                          <span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
+                        </button>
+                      </td>
+                      <td style="background-color: #6eb47d; color: white; text-align: center;">
+                        <span style="margin-left: -7px;">{{tipo.coExercicio}}</span>
+                      </td>
+                      <td style="background-color: #6eb47d; color: white;">
+                        <span style="margin-left: -7px;">{{tipo.deOrdemProg}}</span>
+                      </td>
+                      <td style="background-color: #6eb47d; color: white;">
+                        <span style="margin-left: -7px;">{{tipo.noRubricaTipo}}</span>
+                      </td>
+                      <td style="background-color: #6eb47d; color: white; text-align: right;">
+                        <span style="margin-left: -7px;">{{tipo.vrLimite | currency:'BRL'}}</span>
+                      </td>
+                      <td style="background-color: #6eb47d; color: white; text-align: right;">
+                        <span style="margin-left: -7px;">{{tipo.vrPlanejamento | currency:'BRL'}}</span>
+                      </td>
+                      
+                        <td style="background-color: #6eb47d; color: white; text-align: right;">
+                        <span class="diff diff--right">
+                            <span class="diff__val">{{ formatBRLDiffNoBreak(tipo.vrLimite - tipo.vrPlanejamento) }}</span>
+                            <span *ngIf="tipo.vrDiferenca !== 0" class="diff__alert">!</span>
+                        </span>
+                      </td>
+                    </tr>
+                  </ng-template>
+
+                  <ng-template pTemplate="rowexpansion" let-tipo>
+                    <tr style="background-color: #6eb47d;">
+                      <td colspan="8">
+                        <div class="p-p-3" style="margin-left: -16px;margin-right: -16px;">
+                          <p-table
+                            [value]="tipo.segundoNivel"
+                            dataKey="nivel2Key"
+                            [expandedRowKeys]="expandedKeysL2"
+                            [rowTrackBy]="trackByNivel2"
+                            (onRowExpand)="onRowExpandL2($event, registro, tipo)"
+                            (onRowCollapse)="onRowCollapseL2($event)"
+                          >
+
+                            <ng-template pTemplate="header">
+                              <tr>
+                                <th style="width: 0%;background-color: #9dcc9b;"></th>
+                                <th style="width: 0%;background-color: #9dcc9b; color: black"><span style="margin-left: 13px;">Exercício</span></th>
+                                <th style="width: 1%;background-color: #9dcc9b; color: black">Tipo</th>
+                                <th style="width: 1%;background-color: #9dcc9b; color: black">Rubrica</th>
+                                <th style="width: 16%;background-color: #9dcc9b; color: black">Descrição</th>
+                                <th style="width: 1%;background-color: #9dcc9b; color: black">Limite/Planejado</th>
+                                <th style="width: 1%;background-color: #9dcc9b; text-align: right; color: black">Solicitado</th>
+                                <th style="width: 1%;background-color: #9dcc9b; text-align: right; color: black" pSortableColumn="vrDiferenca">Diferença</th>
+                              </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-contr let-expanded="expanded">
+                              <tr>
+                                <td style="background-color: #9dcc9b;">
+                                  <button style="color: black; background-color: white;" type="button" pButton
+                                    [pRowToggler]="contr"
+                                    class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain">
+                                    <span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
+                                  </button>
+                                </td>
+                                <td style="background-color: #9dcc9b; color: black; text-align: right;">
+                                  <span style="margin-right: 10%;">{{contr.coExercicio}}</span>
+                                </td>
+                                <td style="background-color: #9dcc9b; color: black">{{contr.deOrdemProg}}</td>
+                                <td style="background-color: #9dcc9b; color: black">{{contr.coRubrica}}</td>
+                                <td style="background-color: #9dcc9b; color: black">{{contr.deRubrica}}</td>
+                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrLimite | currency:'BRL'}}</td>
+                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrPlanejamento | currency:'BRL'}}</td>
+                                <td style="background-color: #9dcc9b; text-align: right; color: black;">
+                                <span class="diff diff--right">
+                                    <span class="diff__val">{{ formatBRLDiffNoBreak(contr.vrLimite - contr.vrPlanejamento) }}</span>
+                                    <span *ngIf="contr.vrDiferenca !== 0" class="diff__alert">!</span>
+                                </span>
+                                </td>
+                              </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="rowexpansion" let-contr>
+                              <tr style="background-color: #6eb47d;">
+                                <td colspan="8">
+                                  <div class="p-p-3" style="margin-left: -16px;margin-right: -16px;">
+                                    <p-table [value]="contr.terceiroNivel" dataKey="nivel3Key" [rowTrackBy]="trackByNivel3">
+                                      
+                                      <ng-template pTemplate="header">
                                         <tr>
-                                            <th style="width: 1%;background-color: #6eb47d;"> </th>
-                                            <th style="width: 8%;background-color: #6eb47d; color: white; text-align: center; "><span
-                                                    style="margin-left: -7px;">Exercício</span></th>
-                                            <th style="width: 16%;background-color: #6eb47d; color: white;"><span
-                                                    style="margin-left: -7px;">Tipo</span></th>
-                                            <th style="width: 23%;background-color: #6eb47d; color: white;"><span
-                                                    style="margin-left: -7px;">Descrição</span></th>
-                                            <th style="width: 10%;background-color: #6eb47d; text-align: right; color: white;"><span
-                                                    style="margin-left: -7px;">Limite/Planejado</span></th>
-                                            <th style="width: 10%;background-color: #6eb47d; text-align: right; color: white;"><span
-                                                    style="margin-left: -7px;">Solicitado</span></th>
-                                            <th style="width: 10%;background-color: #6eb47d; text-align: right; color: white;"
-                                                pSortableColumn="vrDiferenca">Diferença</th>
+                                          <th style="width: 4%;background-color: #b4dec9; color: black; text-align: right;">Exercício</th>
+                                          <th style="width: 1%;background-color: #b4dec9; color: black">Tipo</th>
+                                          <th style="width: 1%;background-color: #b4dec9; color: black">UD</th>
+                                          <th style="width: 1%;background-color: #b4dec9; color: black">Rubrica</th>
+                                          <th style="width: 9%;background-color: #b4dec9; color: black">Descrição</th>
+                                          <th style="width: 1%;background-color: #b4dec9; text-align: right; color: black">Limite/Planejado</th>
+                                          <th style="width: 1%;background-color: #b4dec9; text-align: right; color: black">Solicitado</th>
+                                          <th style="width: 1%;background-color: #b4dec9; text-align: right; color: black" pSortableColumn="vrDiferenca">Diferença</th>
                                         </tr>
-                                    </ng-template>
+                                      </ng-template>
 
-                                    <ng-template pTemplate="body" let-tipo let-expanded="expanded">
-                                        <tr style="background-color: #6eb47d;">
-                                            <td>
-                                                <button style="color: black; background-color: white;" type="button" pButton pRipple
-                                                    [pRowToggler]="tipo" (click)="onToggleSegundoNivel(registro, tipo)"
-                                                    class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span
-                                                        [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
-                                            </td>
-                                            <td style="background-color: #6eb47d; color: white; text-align: center; "><span style="margin-left: -7px;">{{tipo.coExercicio}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white;"><span style="margin-left: -7px;">{{tipo.deOrdemProg}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white;"><span style="margin-left: -7px;">{{tipo.noRubricaTipo}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{tipo.vrLimite | currency:'BRL'}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{tipo.vrPlanejamento | currency:'BRL'}}</span></td>
-                                            <td style="background-color: #6eb47d; color: white; text-align: right;"><span style="margin-left: -7px;">{{(tipo.vrLimite - tipo.vrPlanejamento) | currency:'BRL'}}<span *ngIf="tipo.vrDiferenca != 0" style="color:red; font-size: 11pt;"><b> !</b></span></span></td>
+                                      
+                                      <ng-template pTemplate="body" let-ud>
+                                        <tr (click)="openModalPlanejamento('alteracao', ud, registro)"
+                                          style="text-decoration: underline; cursor: pointer;">
+                                          <td style="background-color: #b4dec9; color: black; text-align: right;">
+                                            <span style="margin-right: 10%;">{{ud.coExercicio}}</span>
+                                          </td>
+                                          <td style="background-color: #b4dec9; color: black">{{ud.deOrdemProg}}</td>
+                                          <td style="background-color: #b4dec9; color: black">{{ud.sgFilial}}</td>
+                                          <td style="background-color: #b4dec9; color: black">{{ud.coRubrica}}</td>
+                                          <td style="background-color: #b4dec9; color: black">{{ud.deRubrica}}</td>
+                                          <td style="background-color: #b4dec9; color: black; text-align: right;">{{ud.vrLimite | currency:'BRL'}}</td>
+                                          <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vrPlanejamento | currency:'BRL'}}</td>
+                                        <td style="background-color: #b4dec9; text-align: right; color: black;">
+                                        <span class="diff diff--right">
+                                            <span class="diff__val">{{ formatBRLDiffNoBreak(ud.vrLimite - ud.vrPlanejamento) }}</span>
+                                            <span *ngIf="ud.vrDiferenca !== 0" class="diff__alert">!</span>
+                                        </span>
+                                       </td>
                                         </tr>
-                                    </ng-template>
-                                    <ng-template pTemplate="rowexpansion" let-contrato>
-                                        <tr style="background-color: #6eb47d;">
-                                            <td colspan="8">
-                                                <div class="p-p-3" style="margin-left: -16px;margin-right: -16px;">
-                                                    <p-table [value]="registro.segundoNivel" dataKey="coRubrica">
-                                                        <ng-template pTemplate="header">
-                                                            <tr>
-                                                                <th style="width: 0%;background-color: #9dcc9b;"> </th>
-                                                                <th style="width: 0%;background-color: #9dcc9b; color: black"><span style="margin-left: 13px;">Exercício</span></th>
-                                                                <th style="width: 1%;background-color: #9dcc9b; color: black">Tipo</th>
-                                                                <th style="width: 1%;background-color: #9dcc9b; color: black">Rubrica</th>
-                                                                <th style="width: 16%;background-color: #9dcc9b; color: black">Descrição</th>
-                                                                <th style="width: 1%;background-color: #9dcc9b; color: black">Limite/Planejado</th>
-                                                                <th style="width: 1%;background-color: #9dcc9b; text-align: right; color: black">Solicitado</th>
-                                                                <th style="width: 1%;background-color: #9dcc9b; text-align: right; color: black" pSortableColumn="vrDiferenca">Diferença</th>
-                                                            </tr>
-                                                        </ng-template>
-                                                        <ng-template pTemplate="body" let-contr let-expanded="expanded">
-                                                            <tr>
-                                                                <td style="background-color: #9dcc9b;">
-                                                                    <button style="color: black; background-color: white;" type="button" pButton pRipple [pRowToggler]="contr" (click)="onToggleTerceiroNivel(registro, contrato, contr)" class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
-                                                                </td>
-                                                                <td style="background-color: #9dcc9b; color: black; text-align: right;"><span style="margin-right: 10%;">{{contr.coExercicio}}</span></td>
-                                                                <td style="background-color: #9dcc9b; color: black">{{contr.deOrdemProg}}</td>
-                                                                <td style="background-color: #9dcc9b; color: black">{{contr.coRubrica}}</td>
-                                                                <td style="background-color: #9dcc9b; color: black">{{contr.deRubrica}}</td>
-                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrLimite | currency:'BRL'}}</td>
-                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{contr.vrPlanejamento | currency:'BRL'}}</td>
-                                                                <td style="background-color: #9dcc9b; text-align: right;color: black">{{(contr.vrLimite - contr.vrPlanejamento) | currency:'BRL'}}<span *ngIf="contr.vrDiferenca != 0" style="color:red; font-size: 11pt;"><b> !</b></span></td>
-                                                            </tr>
-                                                        </ng-template>
-                                                        <ng-template pTemplate="rowexpansion" let-contrato>
-                                                            <tr style="background-color: #6eb47d;">
-                                                                <td colspan="8">
-                                                                    <div class="p-p-3" style="margin-left: -16px;margin-right: -16px;">
-                                                                        <p-table [value]="registro.terceiroNivel" dataKey="nuContrato">
-                                                                            <ng-template pTemplate="header">
-                                                                                <tr>
-                                                                                    <th style="width: 4%;background-color: #b4dec9; color: black; text-align: right;">Exercício</th>
-                                                                                    <th style="width: 1%;background-color: #b4dec9; color: black">Tipo</th>
-                                                                                    <th style="width: 1%;background-color: #b4dec9; color: black">UD</th>
-                                                                                    <th style="width: 1%;background-color: #b4dec9; color: black">Rubrica</th>
-                                                                                    <th style="width: 9%;background-color: #b4dec9; color: black">Descrição</th>
-                                                                                    <th style="width: 1%;background-color: #b4dec9; text-align: right; color: black">Limite/Planejado</th>
-                                                                                    <th style="width: 1%;background-color: #b4dec9; text-align: right; color: black">Solicitado</th>
-                                                                                    <th style="width: 1%;background-color: #b4dec9; text-align: right; color: black" pSortableColumn="vrDiferenca">Diferença</th>
-                                                                                </tr>
-                                                                            </ng-template>
-                                                                            <ng-template pTemplate="body" let-ud let-expanded="expanded">
-                                                                                <tr (click)="openModalPlanejamento('alteracao', ud, registro)"
-                                                                                    style="text-decoration: underline; cursor: pointer;">
-                                                                                    <td style="background-color: #b4dec9; color: black; text-align: right;"><span style="margin-right: 10%;">{{ud.coExercicio}}</span></td>
-                                                                                    <td style="background-color: #b4dec9; color: black">{{ud.deOrdemProg}}</td>
-                                                                                    <td style="background-color: #b4dec9; color: black">{{ud.sgFilial}}</td>
-                                                                                    <td style="background-color: #b4dec9; color: black">{{ud.coRubrica}}</td>
-                                                                                    <td style="background-color: #b4dec9; color: black">{{ud.deRubrica}}</td>
-                                                                                    <td style="background-color: #b4dec9; color: black; text-align: right;">{{ud.vrLimite | currency:'BRL'}}</td>
-                                                                                    <td style="background-color: #b4dec9; text-align: right;color: black">{{ud.vrPlanejamento | currency:'BRL'}}</td>
-                                                                                    <td style="background-color: #b4dec9; text-align: right;color: black">{{(ud.vrLimite - ud.vrPlanejamento)  | currency:'BRL'}}
-                                                                                    <span *ngIf="ud.vrDiferenca != 0" style="color:red; font-size: 11pt;">
-                                                                                    <b>!</b></span></td>
-                                                                                </tr>
-                                                                            </ng-template>
-                                                                        </p-table>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </ng-template>
-                                                    </p-table>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </ng-template>
-                                </p-table>
-                            </div>
-                        </td>
+                                      </ng-template>
+                                    </p-table>
+                                  </div>
+                                </td>
+                              </tr>
+                            </ng-template>
+                          </p-table>
+                        </div>
+                      </td>
                     </tr>
-                </ng-template>
-            </p-table>
-        </div>
+                  </ng-template>
+                </p-table>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
+  </div>
 </div>
+

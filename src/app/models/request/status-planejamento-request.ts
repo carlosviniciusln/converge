@@ -3,9 +3,10 @@ export interface AlterarStatusPlanejamento {
     status: number,
     nuPlanejamentoItem: Gcptb051NuPlanejamentoItemDTO[]
 }
- 
- 
+
+
 export interface Gcptb051NuPlanejamentoItemDTO{
     NuTipoDemanda : number,
-    NuContrato : number
+    NuContrato : number,
+    NuOrc: number
 }

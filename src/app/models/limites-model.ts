@@ -29,6 +29,7 @@
 //   dE_ORDEM_PROG?: string;
 // }
 
+
 export interface LimitesModel {
   nuPlanejamento?:number;
   nuExercicioOrcamento?:number;
@@ -55,7 +56,16 @@ export interface LimitesModel {
   segundoNivel?:Partial<LimitesModel>[];
   terceiroNivel?:Partial<LimitesModel>[];
   deOrdemProg?: string;
+  listaOrdemProg?: string[];
+  listaUnidadeDemandante?: string[];
+  listaRubricas?: string[];
+  listaTipo?: string[];
+  totalRecords?: number;
+  nuOrc?: string | null;
+  ud?: string | null;
+  tipo?: string | null;
 }
+
 
 
 export interface ExercicioModel {

@@ -21,7 +21,7 @@ export interface PlanejamentoOrcamentarioResponse {
     nuObjetivoEstrategicoPdti: number;
     nuObjetivoEstrategicoPei: number;
     nuClassificacaoPlanejamento: number;
-    nuPreComprometimento?: number;
+    nuSap?: number;
     vrPreComprometimento?: number;
     nuPlanejamentoTipo: number; // Tipo Planejamento [Programação, Reprogramação]
     vrTotalOrcamentoPlanejamento: number;
@@ -90,7 +90,7 @@ export interface PlanejamentoItemResponse {
     nuObjetivoEstrategicoPdti: number;
     nuObjetivoEstrategicoPei: number;
     nuClassificacaoPlanejamento: number;
-    nuPreComprometimento?: number;
+    nuSap?: number;
     vrPreComprometimento?: number;
     nuPlanejamentoTipo: number; // Tipo Planejamento [Programação, Reprogramação]
     vrTotalOrcamentoPlanejamento: number;
@@ -118,7 +118,7 @@ export interface PlanejamentoItemResponse {
     vrNovembro: number;
     vrDezembro: number;
     vrTotalRubrica: number;
-    nuReserva: number;
+    deSap: string;
 
 
     cO_CONTRATO?: string;
@@ -209,9 +209,9 @@ export interface PrevisaoDesembolsoResponse {
     vrNovembro: number;
     vrDezembro: number;
     vrTotalRubrica: number;
-    nuPreComprometimento: number;
+    nuSap: number;
     vrPreComprometimento: number;
-    nuReserva: number;
+    deSap: string;
 }
 
 /* novo mapeamento */

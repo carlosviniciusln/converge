@@ -2,18 +2,15 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
-  FormControl,
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api.service';
 import { PageAction, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
-import { ApiResponse, ApiResponsePaginado } from 'src/app/models/api-response';
+import { ApiResponse } from 'src/app/models/api-response';
 import { Filial } from 'src/app/models/filial';
 import {
-  LimitesRubricaResponse,
-  LimitesRubricasUpdate,
   LimitesRubricasUpdateV2,
 } from 'src/app/models/limites-rubrica-response';
 import { PlanejamentoTipoResponse } from 'src/app/models/planejamento-response';
@@ -30,6 +27,7 @@ import {
   StatusPlanejamentoModel,
 } from 'src/app/models/limites-model';
 import { Select2Data } from 'ng-select2-component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modal-limites',
@@ -37,6 +35,8 @@ import { Select2Data } from 'ng-select2-component';
   styleUrls: ['./modal-limites.component.scss'],
 })
 export class ModalLimitesComponent implements OnInit {
+  public PageAction = PageAction;
+
   @Input() public isEditable: boolean;
   @Input() public registro: LimitesModel;
   @Input() public planejamentoEdit: number;
@@ -56,7 +56,7 @@ export class ModalLimitesComponent implements OnInit {
   public subTitulo: string;
   public actionButtonLabel: string;
   public currentPageAction: PageAction;
-  submitted = false;
+  public submitted = false;
   public listaRubrica: Rubrica[] = [];
   public selectedRubrica: string = null;
   public selectRubrica: Select2Data;
@@ -105,10 +105,10 @@ export class ModalLimitesComponent implements OnInit {
     this.editarTextos();
   }
 
-  definirPageAction() {
-    if (this.isEditable)
+  definirPageAction(): void {
+    if (this.isEditable) {
       this.currentPageAction = PageAction.Alterar;
-    else {
+    } else {
       this.currentPageAction = PageAction.Cadastrar;
       this.obterOrcamentos();
       this.obterRubricas();
@@ -116,21 +116,22 @@ export class ModalLimitesComponent implements OnInit {
     }
   }
 
-  editarTextos() {
-    var element = this.actionList.find((x) => x.type == this.currentPageAction);
+  editarTextos(): void {
+    const element = this.actionList.find((x) => x.type === this.currentPageAction);
+    if (!element) return;
     this.titulo = element.title;
     this.subTitulo = element.subTitle;
     this.actionButtonLabel = element.actionButtonLabel;
   }
 
-  formulario() {
+  formulario(): void {
     if (!this.registro) {
       this.formCadastro = this.formBuilder.group({
         nuPlanejamento: ['', Validators.required],
         nuRubrica: ['', Validators.required],
         nuUnidadeDemandante: ['', Validators.required],
         vrLimite: [this.formatarValorMonetario(0), Validators.required],
-        nuLimitePlanejamento: [0, Validators.required]
+        nuLimitePlanejamento: [0, Validators.required],
       });
       this.isDisabled = false;
     } else {
@@ -143,7 +144,7 @@ export class ModalLimitesComponent implements OnInit {
         nuRubrica: [this.registro.nuRubrica, Validators.required],
         nuUnidadeDemandante: [this.registro.nuFilial, Validators.required],
         vrLimite: [this.formatarValorMonetario(this.registro.vrLimite), Validators.required],
-        nuLimitePlanejamento: [this.registro.nuLimitePlanejamento, Validators.required]
+        nuLimitePlanejamento: [this.registro.nuLimitePlanejamento, Validators.required],
       });
     }
   }
@@ -156,6 +157,7 @@ export class ModalLimitesComponent implements OnInit {
 
       this.selectRubrica = response?.data?.map(c => ({ label: c.coRubrica, value: c.nuRubrica + '-' + c.deRubrica }));
     } catch (error) {
+      console.error(error);
     }
   }
 
@@ -167,6 +169,7 @@ export class ModalLimitesComponent implements OnInit {
 
       this.selectFilial = response?.data?.filter((x) => x.nuFilialPai != null).map(c => ({ label: c.sgFilial, value: c.nuFilial }));
     } catch (error) {
+      console.error(error);
     }
   }
 
@@ -176,22 +179,24 @@ export class ModalLimitesComponent implements OnInit {
         `${Endpoints.URL_CONTRATOS}/exercicios-ativos`
       );
       this.listaExercicios = response.data;
-    } catch (error) { }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  public fillRubrica(e: any) {
-    this.descricaoRubrica = e.value.split('-')[1]
-    this.nuRubrica = e.value.split('-')[0]
+  public fillRubrica(e: any): void {
+    this.descricaoRubrica = e.value.split('-')[1];
+    this.nuRubrica = Number(e.value.split('-')[0]);
   }
 
   public async onSubmit(): Promise<void> {
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
 
-        this.Cadastrar();
+        await this.Cadastrar();
         break;
       case PageAction.Alterar:
-        this.Alterar();
+        await this.Alterar();
         break;
       case PageAction.Consultar:
       default:
@@ -210,7 +215,6 @@ export class ModalLimitesComponent implements OnInit {
       this.formCadastro.markAllAsTouched();
       const nuRubricaNum = Number(this.nuRubrica);
       this.formCadastro.controls['nuRubrica'].setValue(nuRubricaNum);
-      //remover o R$
       const valorAtual = this.formCadastro.controls['vrLimite'].value;
       const valorSemPrefixo = valorAtual.replace('R$ ', '');
       this.formCadastro.controls['vrLimite'].setValue(valorSemPrefixo);
@@ -229,32 +233,31 @@ export class ModalLimitesComponent implements OnInit {
       }
 
 
-      let validaJaCadastrado = false;
+      const validaJaCadastrado = false;
 
       if (validaJaCadastrado) {
         this.toastr.error('Por favor, nesse caso o valor deverá ser alterado.', 'Registro já Cadastro');
+        return;
       }
-      else {
-        if (nuRubricaNum > 0) {
-          let response = await this.apiService.postFormData<any>(
-            `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-limite`,
-            formData
-          );
-          if (response.data.succeeded) {
-            this.toastr.success(response.data.data, 'Sucesso');
-            this.atualizarPagina.emit(true);
-            this.activeModal.dismiss();
-            setTimeout(() => {
-              window.location.reload()
-            }, 3000);
-          } else {
-            this.toastr.error(response.data, 'Registro já Cadastro');
-            this.atualizarPagina.emit(false);
-          }
+      if (nuRubricaNum > 0) {
+        const response = await this.apiService.postFormData<any>(
+          `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-limite`,
+          formData
+        );
+        if (response.data.succeeded) {
+          this.toastr.success(response.data.data, 'Sucesso');
+          this.atualizarPagina.emit(true);
+          this.activeModal.dismiss();
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+        } else {
+          this.toastr.error(response.data, 'Registro já Cadastro');
+          this.atualizarPagina.emit(false);
         }
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
       this.atualizarPagina.emit(false);
     }
   }
@@ -331,6 +334,60 @@ public async Alterar(): Promise<void> {
       window.location.reload();
     }, 2000);
   } catch (error) {
+    console.error(error);
+    this.atualizarPagina.emit(false);
+  }
+}
+
+public async onDelete(): Promise<void> {
+  const result = await Swal.fire({
+    title: 'Confirmação',
+    text: 'Tem certeza que deseja excluir este registro?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim, excluir',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6'
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  const id = this.formCadastro?.controls?.['nuLimitePlanejamento']?.value
+    ?? this.registro?.nuLimitePlanejamento;
+
+  if (!id) {
+    this.toastr.error('ID do limite não encontrado.', 'Erro');
+    return;
+  }
+
+  try {
+    let urlDelete = `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/inativar-limite`;
+
+    const result = await this.apiService.put<LimitesRubricasUpdateV2>(
+      `${urlDelete}`, id
+    );
+
+    await Swal.fire({
+      title: 'Sucesso!',
+      text: 'Registro excluído com sucesso.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
+
+    this.atualizarPagina.emit(true);
+    this.activeModal.dismiss();
+    setTimeout(() => window.location.reload(), 2000);
+  } catch (error) {
+    console.error(error);
+    await Swal.fire({
+      title: 'Erro!',
+      text: 'Não foi possível excluir o registro.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
     this.atualizarPagina.emit(false);
   }
 }
@@ -344,7 +401,6 @@ formatarValor(): void {
     return;
   }
 
-  // Remove tudo que não é número
   valor = valor.replace(/\D/g, '');
 
   if (!valor) {
@@ -352,22 +408,17 @@ formatarValor(): void {
     return;
   }
 
-  // Se tiver menos de 3 dígitos, completa com zeros
   while (valor.length < 3) {
     valor = '0' + valor;
   }
 
-  // Separa reais e centavos
   const reais = valor.slice(0, -2);
   const centavos = valor.slice(-2);
-
-  // Formata com separador de milhar
   const reaisFormatados = parseInt(reais, 10).toLocaleString('pt-BR');
 
   const formatado = `R$ ${reaisFormatados},${centavos}`;
   this.formCadastro.get('vrLimite')?.setValue(formatado, { emitEvent: false });
 }
-
 
 private formatarValorMonetario(valor: any): string {
   if (!valor || valor === '0') return 'R$ 0,00';
@@ -377,5 +428,4 @@ private formatarValorMonetario(valor: any): string {
 
   return `R$ ${numero.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 }
-
 }
