@@ -1,3 +1,23 @@
+<!-- <div class="content">
+  <div *ngIf="this.ultimaAtualizacao">
+    <p class="card-title date-info" style="margin-top: -40px !important;">
+      <b>Atualizado em: {{ this.ultimaAtualizacao }}</b>
+    </p>
+  </div>
+  <div class="card">
+    <mat-tab-group (selectedIndexChange)="exibeDetalhes($event)">
+      <mat-tab *ngFor="let tab of tabs" label="{{ tab }}">
+        <div *ngIf="tab == 'Execução Contratual'" class="general-layout">
+          <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/5018%20-%20SUGTI/SUGTI02/PUBLICADO/PORTAL/Contratos_v1_sc?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe>
+        </div>
+        <div *ngIf="tab == 'Orçamento'" class="general-layout">
+          <iframe src="https://novobi.caixa/ReportsPBI/powerbi/Relat%C3%B3rios%20P%C3%BAblicos/5814%20%E2%80%93%20VITEC/5018%20-%20SUGTI/SUGTI02/PUBLICADO/PORTAL/Orcamento_v1_sc?rs:embed=true" width="100%" height="600" style="border: none;" allowfullscreen></iframe>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+</div> -->
 <div class="content" *ngIf="!loading && (execucao || orcamentos)">
 
   <div *ngIf="this.ultimaAtualizacao">
@@ -62,11 +82,11 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
-            <tr [ngClass]="[item.sG_FILIAL.startsWith('VI') ? 'p-selectable-row example template-body' : 'p-selectable-row template-body']">
+            <tr [ngClass]="[(item.sG_FILIAL+'').startsWith('VI') ? 'p-selectable-row example template-body' : 'p-selectable-row template-body']">
               <td>
                 {{item.sG_FILIAL}}
               </td>
-              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock1"
+              <td *ngIf="!(item.sG_FILIAL+'').startsWith('VI'); else elseBlock1"
                 (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, null, null, null, 'c_at', item.coContrato)">
                 <a [ngClass]="{'none-decoration': item.qT_CONTRATO_ATIVO == 0}">
                   {{item.qT_CONTRATO_ATIVO}}
@@ -77,7 +97,7 @@
                   {{item.qT_CONTRATO_ATIVO}}
                 </td>
               </ng-template>
-              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock2"
+              <td *ngIf="!(item.sG_FILIAL+'').startsWith('VI'); else elseBlock2"
                 (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, null, null, null, 'ac_est', item.coContrato)">
                 <a [ngClass]="{'none-decoration': item.qT_ACIMA_ESTIMADO == 0 }">
                   {{item.qT_ACIMA_ESTIMADO}}
@@ -88,7 +108,7 @@
                   {{item.qT_ACIMA_ESTIMADO}}
                 </td>
               </ng-template>
-              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock3"
+              <td *ngIf="!(item.sG_FILIAL+'').startsWith('VI'); else elseBlock3"
                 (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, null, null, null, 'ab_est', item.coContrato)">
                 <a [ngClass]="{'none-decoration': item.qT_ABAIXO_ESTIMADO == 0 }">
                   {{ item.qT_ABAIXO_ESTIMADO}}
@@ -99,7 +119,7 @@
                   {{item.qT_ABAIXO_ESTIMADO}}
                 </td>
               </ng-template>
-              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock4"
+              <td *ngIf="!(item.sG_FILIAL+'').startsWith('VI'); else elseBlock4"
                 (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, null, null, null, 's_es', item.coContrato)">
                 <a [ngClass]="{'none-decoration': item.qT_SALDO_ESGOTADO == 0 }">
                   {{ item.qT_SALDO_ESGOTADO}}
@@ -110,7 +130,7 @@
                   {{item.qT_SALDO_ESGOTADO}}
                 </td>
               </ng-template>
-              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock5"
+              <td *ngIf="!(item.sG_FILIAL+'').startsWith('VI'); else elseBlock5"
                 (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, 0, 30, null, 'p30', item.coContrato)">
                 <a [ngClass]="{'none-decoration': item.qT_PROXIMO30 == 0 }">
                   {{item.qT_PROXIMO30 }}
@@ -121,7 +141,7 @@
                   {{item.qT_PROXIMO30}}
                 </td>
               </ng-template>
-              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock6"
+              <td *ngIf="!(item.sG_FILIAL+'').startsWith('VI'); else elseBlock6"
                 (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, 0, 90, null, 'p90', item.coContrato)">
                 <a [ngClass]="{'none-decoration': item.qT_PROXIMO90 == 0 }">
                   {{item.qT_PROXIMO90 }}
@@ -132,7 +152,7 @@
                   {{item.qT_PROXIMO90}}
                 </td>
               </ng-template>
-              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock7"
+              <td *ngIf="!(item.sG_FILIAL+'').startsWith('VI'); else elseBlock7"
                 (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, 0, 180, null, 'p180', item.coContrato)">
                 <a [ngClass]="{'none-decoration': item.qT_PROXIMO180 == 0 }">
                   {{item.qT_PROXIMO180 }}
@@ -143,7 +163,7 @@
                   {{item.qT_PROXIMO180}}
                 </td>
               </ng-template>
-              <td *ngIf="!item.sG_FILIAL.startsWith('VI'); else elseBlock8"
+              <td *ngIf="!(item.sG_FILIAL+'').startsWith('VI'); else elseBlock8"
                 (click)="openModalContratoVigencia(item.sG_FILIAL, item.nU_FILIAL, -1, -1, null, 'c_in', item.coContrato)">
                 <a [ngClass]="{'none-decoration': item.qT_CONTRATO_INATIVO == 0 }">
                   {{ item.qT_CONTRATO_INATIVO}}

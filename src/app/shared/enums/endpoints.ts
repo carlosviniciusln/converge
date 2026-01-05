@@ -6,6 +6,7 @@ export enum Endpoints {
   URL_LOGIN = 'v1/auth',
 
   URL_CONTRATOS = 'v1/contrato',
+  URL_CONTRATOS_ATIVOS = 'v1/contrato/ativo',
   URL_CONTRATOS_VIGENCIAS = 'v1/contrato/vigencias',
   URL_CONTRATOS_EVOLUCAO_FINANCEIRA = 'v1/contrato/evolucao-financeira',
   URL_CONTRATOS_EVOLUCAO_FINANCEIRA_AQUISICAO = 'v1/contrato/evolucao-financeira-aquisicao',
@@ -36,6 +37,9 @@ export enum Endpoints {
 
   URL_ORCAMENTO = 'v1/orcamento',
 
+  URL_ORCAMENTO_CADASTRO = 'v1/PlanejamentoOrcamentario/cadastrar-planejamento-item',
+  URL_ORCAMENTO_EDITA = 'v1/PlanejamentoOrcamentario/editar-planejamento-item',
+
   URL_PLANEJAMENTO_ORCAMENTO = 'v1/PlanejamentoOrcamentario',
 
   URL_MENSALIZACAO = 'v1/mensalizacao',
@@ -51,5 +55,13 @@ export enum Endpoints {
   URL_PLANEJAMENTO_ORCAMENTARIO_CONTRATO = 'v1/PlanejamentoOrcamentario/ud-contrato',
   URL_PLANEJAMENTO_ORCAMENTARIO_MES = 'v1/PlanejamentoOrcamentario/contrato-mes',
   URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO = 'v1/PlanejamentoOrcamentario/filter-paginado',
-  URL_PLANEJAMENTO_ORCAMENTARIO_DASHBOARD = 'v1/PlanejamentoOrcamentario/dashboard'
+  URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO_NOVO = 'v1/PlanejamentoOrcamentario/filter-paginado-novo',
+  URL_PLANEJAMENTO_ORCAMENTARIO_DASHBOARD = 'v1/PlanejamentoOrcamentario/dashboard',
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL1= 'v1/PlanejamentoOrcamentario/limite-nivel-1',
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL2 = 'v1/PlanejamentoOrcamentario/limite-nivel-2',
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL3 = 'v1/PlanejamentoOrcamentario/limite-nivel-3',
+  URL_PLANEJAMENTO_ORCAMENTARIO_LIMITE_NIVEL4 = 'v1/PlanejamentoOrcamentario/limite-nivel-4',
+  URL_PLANEJAMENTO_ORCAMENTARIO_RELATORIO_RUBRICAS = 'v1/PlanejamentoOrcamentario/obter-relatorio-rubricas-excel',
+
+  URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS = 'v1/PlanejamentoOrcamentario/alterar-status-planejamento-item'
 }

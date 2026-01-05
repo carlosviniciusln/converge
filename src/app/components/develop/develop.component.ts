@@ -1,4 +1,7 @@
+import { CargaGerais } from './../../../assets/mock/Gcptb051CargaPlanejamentoItem';
 import { Component, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Gcptb060PlanejamentoItemHistoricoDTO } from 'src/app/models/DTOs/Gcptb060PlanejamentoItemHistoricoDTO';
 
 @Component({
   selector: 'app-develop',
@@ -7,9 +10,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DevelopComponent implements OnInit {
 
-  constructor() { }
-
   ngOnInit(): void {
+    throw new Error('Method not implemented.');
   }
+
 
 }

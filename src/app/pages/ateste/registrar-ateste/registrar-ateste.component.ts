@@ -22,6 +22,7 @@ import { Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030
 export class RegistrarAtesteComponent implements OnInit {
   @Input() public contrato: Gcpvw030DetalhamentoDeContratosResponse;
 
+
   constructor(
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
@@ -48,34 +49,38 @@ export class RegistrarAtesteComponent implements OnInit {
     });
   }
 
-  calcularTotal(values: any[]) {
-    this.total = values.reduce((acc, curr, index) => {
-      let valorStr = curr.vrApurado?.toString().trim() || '0';
 
-      valorStr = valorStr.replace('R$', '').trim();
+  public totalFormatado: string = '';
+  
+  calcularTotal(values: any[]): void {
+    let somaCentavos = 0;
+    for (const curr of values) {
+      let valorStr = (curr.vrApurado ?? '').toString()
+        .replace(/R\$\s?/g, '') 
+        .replace(/\./g, '')     
+        .replace(',', '')       
+        .trim();
+    
+      if (!valorStr) continue;
 
-      if (!valorStr.includes(',')) {
-        valorStr += ',00';
-      }
+      const centavos = parseInt(valorStr);
+      if (!isNaN(centavos)) somaCentavos += centavos;
+    }
 
-      this.faturamentos
-        .at(index)
-        .get('vrApurado')
-        ?.setValue(valorStr, { emitEvent: false });
-      const valorNumerico = valorStr.replace(/\./g, '').replace(',', '.');
-      const vrApurado = parseFloat(valorNumerico) || 0;
+    const reais = Math.floor(somaCentavos / 100);
+    const centavosRestantes = somaCentavos % 100;
 
-      return acc + vrApurado;
-    }, 0);
+    const inteiroFormatado = reais.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    this.totalFormatado = `R$ ${inteiroFormatado},${centavosRestantes.toString().padStart(2, '0')}`;
   }
 
   formulario() {
     this.form = this.formBuilder.group({
-      nuContrato: [this.contrato[0].nuContrato, [Validators.required]],
-      coContrato: [this.contrato[0].coContrato, [Validators.required]],
-      noEmpresa: [this.contrato[0].noEmpresa, [Validators.required]],
-      noObjeto: [this.contrato[0].noObjeto, [Validators.required]],
-      nuVigencia: [this.contrato[0].nuVigencia, [Validators.required]],
+      nuContrato: [this.contrato[0]?.nuContrato, [Validators.required]],
+      coContrato: [this.contrato[0]?.coContrato, [Validators.required]],
+      noEmpresa: [this.contrato[0]?.noEmpresa, [Validators.required]],
+      noObjeto: [this.contrato[0]?.noObjeto, [Validators.required]],
+      nuVigencia: [this.contrato[0]?.nuVigencia, [Validators.required]],
       inicioVigencia: new FormControl(
         this.contrato[0].inicioVigencia?.substring(0, 10),
         [Validators.required]
@@ -100,14 +105,17 @@ export class RegistrarAtesteComponent implements OnInit {
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
       deObservacao: new FormControl('', [Validators.required]),
-      vrPagamento: new FormControl(0),
-      vrRetencao: new FormControl('0,00', [Validators.required]),
+  
+      // Aqui você adiciona os valores iniciais:
+      vrPagamento: new FormControl(''),
+      vrRetencao: new FormControl(''),
+      vrMulta: new FormControl(''),
+  
       dePenalidade: new FormControl('', [
         Validators.required,
         Validators.maxLength(100),
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
-      vrMulta: new FormControl('0,00', [Validators.required]),
       arquivoAnexado: new FormControl(null),
       faturamentos: new FormArray([]),
     });
@@ -170,7 +178,6 @@ export class RegistrarAtesteComponent implements OnInit {
   }
 
   public onSubmit() {
-    console.log(this.form);
     this.submitted = true;
     this.form.markAllAsTouched();
     if (this.form.invalid) {
@@ -184,20 +191,6 @@ export class RegistrarAtesteComponent implements OnInit {
             if (control.errors?.required) {
               this.toastr.error(`O campo item(s) de faturamento é obrigatório`, 'Error');
             }
-
-            // if (control.errors?.pattern) {
-            //   this.toastr.error(
-            //     `O campo ${campo} está fora do padrão`,
-            //     'Error'
-            //   );
-            // }
-
-            // if(control.errors?.email){
-            //   this.toastr.error(`E-mail inválido`, "Error");
-            // }
-            // if(control.errors?.mask){
-            //   this.toastr.error(`Telefone inválido`, "Error");
-            // }
           }
         });
       });
@@ -225,11 +218,10 @@ export class RegistrarAtesteComponent implements OnInit {
     }
 
     this.form.get('vrPagamento')?.setValue(this.total);
+    const vrApurado = this.form.get('vrApurado')?.value.replace('R$', '').trim();
     const vrMulta = this.form.get('vrMulta')?.value.replace('R$', '').trim();
-    const vrRetencao = this.form
-      .get('vrRetencao')
-      ?.value.replace('R$', '')
-      .trim();
+    const vrRetencao = this.form.get('vrRetencao')?.value.replace('R$', '').trim();
+    this.form.get('vrApurado')?.setValue(vrApurado);
     this.form.get('vrMulta')?.setValue(vrMulta);
     this.form.get('vrRetencao')?.setValue(vrRetencao);
     const formData = this.toFormData(this.form);
@@ -271,5 +263,33 @@ export class RegistrarAtesteComponent implements OnInit {
       console.error('Erro ao salvar ateste:', error);
       this.toastr.error('Erro ao salvar ateste', 'Erro');
     }
+  }
+
+  formatarCampo(ref: number | string): void {
+    let control;
+    if (typeof ref === 'number') {
+      control = (this.faturamentos.at(ref) as FormGroup).get('vrApurado');
+    } else {
+      control = this.form.get(ref);
+    }
+
+    if (!control) return;
+
+    let valor = control.value.replace(/\D/g, '');
+
+    if (!valor) {
+      control.setValue('R$ 0,00', { emitEvent: false });
+      return;
+    }
+
+    if (valor.length > 15) valor = valor.slice(0, 15);
+
+    const numero = (parseInt(valor) / 100).toFixed(2);
+    const formatado = `R$ ${parseFloat(numero).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+
+    control.setValue(formatado, { emitEvent: false });
   }
 }

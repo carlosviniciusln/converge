@@ -31,6 +31,7 @@ export interface PlanejamentosOrcamentariosResponse {
     exercicio: string,
     ud: string,
     contrato: string,
+    nuOrc: number,
     tipo: string,
     digital: string,
     status: string,
@@ -40,6 +41,7 @@ export interface PlanejamentosOrcamentariosResponse {
     listaPlanejamento: string[],
     listaExercicio: number[],
     listaUnidadeDemandante: string[],
+    listaNuOrc: string[],
     listaContrato: string[],
     listaTipo: string[],
     listaDigital: string[],
@@ -54,12 +56,15 @@ export interface ContratoPlanejamentosOrcamentario {
   cO_EXERCICIO: number,
   nU_CONTRATO: number,
   cO_CONTRATO: string,
+  cO_FILIAL: string;
   nO_OBJETO: string,
   nU_STATUS_PLANEJAMENTO: number,
   nU_TIPO_DEMANDA: number,
   dE_DEMANDA: string,
   nO_STATUS: string,
+  nO_STATUS_Original: string,
   nU_FILIAL: number,
   sG_FILIAL: string,
-  vR_PLANEJAMENTO: number
+  vR_PLANEJAMENTO: number,
+  sT_SELECIONADO: boolean
 }

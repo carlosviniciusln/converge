@@ -22,6 +22,14 @@ export interface LimitesRubricasUpdate {
     vrLimiteRubrica: number;
 }
 
+export interface LimitesRubricasUpdateV2 {
+    nuPlanejamento: number;
+    nuFilial: number;
+    nuRubrica: number;
+    novoLimite: number;
+    nuLimitePlanejamento: number;
+}
+
 export interface UsoLimitesRubricaResponse {
     nuAnoOrcamentario: number;
     nuRubrica: number;

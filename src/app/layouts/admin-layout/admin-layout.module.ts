@@ -90,6 +90,13 @@ import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/pl
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
 import { SharedLibraryModule } from 'src/app/shared/shared-library/shared-library.module';
 import { DetalheFinanceiroComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
+import { MatListModule } from '@angular/material/list';
+import { TimelineModule } from 'primeng/timeline';
+import { CardModule } from 'primeng/card';
+import { PaginatorModule } from 'primeng/paginator';
+import { PlanejamentoNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-novo.component';
+import { PlanejamentoOrcamentarioNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-lista/planejamento-orcamentario-novo.component';
+import { PlanejamentoCadastroNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-cadastro-novo/planejamento-cadastro-novo.component';
 
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
@@ -133,7 +140,14 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     MatTabsModule,
     CurrencyMaskModule,
     FileUploadModule,
-    SharedLibraryModule
+    SharedLibraryModule,
+        MatListModule,
+        TimelineModule,
+        CardModule,
+        TableModule,
+        DropdownModule,
+        FormsModule,
+        PaginatorModule
   ],
   declarations: [
     DashboardComponent,
@@ -185,6 +199,12 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     // NotificationsComponent,
     // MapComponent,
     // RtlComponent
+
+    /* MODULO PLANEJAMENTO NOVO */
+
+    PlanejamentoNovoComponent,
+    PlanejamentoOrcamentarioNovoComponent,
+    PlanejamentoCadastroNovoComponent
   ],
   providers: [
     CustomerService,

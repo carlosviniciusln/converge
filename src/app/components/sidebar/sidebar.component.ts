@@ -105,6 +105,7 @@ async getContratos(filtro: any): Promise<ApiResponse<ContratoApiResponse>>{
       || this.currentProfile === 'Pagadoria'
       || this.currentProfile === 'Torres GEGAT'
       || this.currentProfile === 'Gestor Operacional'
+      || this.currentProfile === PerfisEnum.Orcamento
     ){
       this.isPerfilPrivilegiado = true;
     }

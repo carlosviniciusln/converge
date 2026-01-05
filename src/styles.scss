@@ -42,3 +42,7 @@ $theme: mat.define-light-theme((
 button{
   cursor: pointer !important;
 }
+
+.modal-backdrop {
+  z-index: 1050 !important;
+}
