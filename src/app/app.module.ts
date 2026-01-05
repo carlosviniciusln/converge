@@ -52,6 +52,16 @@ import { AtesteComponent } from './pages/ateste/ateste.component';
 import { NavbarAtesteComponent } from './pages/ateste/navbar-ateste/navbar-ateste.component';
 import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar-ateste.component';
 import { RegistrarAtesteComponent } from './pages/ateste/registrar-ateste/registrar-ateste.component';
+import { LimitesComponent } from './pages/planejamento/limites/limites.component';
+import { ModalLimitesComponent } from "./pages/planejamento/limites/modal-limites/modal-limites.component";
+import { ModalUploadComponent } from './pages/planejamento/limites/modal-upload/modal-upload.component';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MessageService } from "primeng/api";
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { CargaGerais } from "src/assets/mock/Gcptb051CargaPlanejamentoItem";
+import { ModalPlanejamentoNovoComponent } from "./pages/planejamento-novo/planejamento-lista/modal-planejamento/modal-planejamento-novo.component";
+import { PlanejamentoGeralNovoComponent } from "./pages/planejamento-novo/planejamento-geral-novo/planejamento-geral-novo.component";
+import { RelatorioContratosComponent } from './pages/planejamento/relatorio/relatorio-contratos/relatorio-contratos.component';
 
 registerLocaleData(ptBr);
 
@@ -64,6 +74,7 @@ const maskConfig: Partial<IConfig> = {
     BrowserModule,
     MatMenuModule,
     CommonModule,
+    CheckboxModule,
     BrowserAnimationsModule,
     TooltipModule,
     TableModule,
@@ -74,6 +85,7 @@ const maskConfig: Partial<IConfig> = {
     RouterModule,
     AppRoutingModule,
     HttpClientModule,
+    SplitButtonModule,
     AdminLayoutModule,
     ReactiveFormsModule,
     FormsModule,
@@ -109,8 +121,17 @@ const maskConfig: Partial<IConfig> = {
     AtesteComponent,
     NavbarAtesteComponent,
     DetalharAtesteComponent,
-    RegistrarAtesteComponent
+    RegistrarAtesteComponent,
+    LimitesComponent,
+    ModalLimitesComponent,
+    ModalUploadComponent,
     //AuthLayoutComponent
+
+    /*PLANEJAMENTOS NOVO */
+
+    ModalPlanejamentoNovoComponent,
+    PlanejamentoGeralNovoComponent,
+    RelatorioContratosComponent
   ],
   providers: [
     AuthGuard,
@@ -121,6 +142,8 @@ const maskConfig: Partial<IConfig> = {
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService,
+    MessageService,
+    CargaGerais
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

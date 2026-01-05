@@ -1,19 +1,19 @@
-trigger:
-  branches:
-    include:
-      - develop
-      - master
+# trigger:
+#   branches:
+#     include:
+#       - develop
+#       - master
 
-pool:
-  name: 'Servidor025Pool'
+# pool:
+#   name: 'Servidor025Pool'
 
-variables:
-  environment: 'development'
-  siteName: '1002sigvc.des.caixa'
-  websitePath: 'E:\Websites\1002sigvc.des.caixa'
-  distFrontend: 'dist/front-gc-painel-gerencial'
+# variables:
+#   environment: 'development'
+#   siteName: '1002sigvc.des.caixa'
+#   websitePath: 'E:\Websites\1002sigvc.des.caixa'
+#   distFrontend: 'dist/front-gc-painel-gerencial'
 
-steps:
+# steps:
 # - script: |
 #     echo "Definindo variáveis de ambiente..."
 #     if "%Build_SourceBranchName%"=="master" (
@@ -68,10 +68,10 @@ steps:
 #     Contents: '**/*'
 #     TargetFolder: "$(websitePath)"
 #     OverWrite: true
-- script: |
-    echo "Iniciando instância do IIS..."
-    C:\Windows\System32\inetsrv\appcmd.exe start site /site.name:"$(siteName)"
-  displayName: 'Iniciando instância do IIS'
-- script: |
-    echo "DEPLOY FINALIZADO para $(environment)"
-  displayName: 'Finalização do Deploy'
+# - script: |
+#     echo "Iniciando instância do IIS..."
+#     C:\Windows\System32\inetsrv\appcmd.exe start site /site.name:"$(siteName)"
+#   displayName: 'Iniciando instância do IIS'
+# - script: |
+#     echo "DEPLOY FINALIZADO para $(environment)"
+#   displayName: 'Finalização do Deploy'

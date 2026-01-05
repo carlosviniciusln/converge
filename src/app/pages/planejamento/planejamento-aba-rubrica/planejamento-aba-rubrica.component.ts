@@ -29,7 +29,8 @@ import { PlanejamentoOrcamentarioModel } from 'src/app/models/planejamento-orcam
 })
 export class PlanejamentoAbaRubricaComponent implements OnInit {
 
-    @Input() nuPlanejamento : string;
+    @Input() nuPlanejamento? : number;
+    @Input() nuPlanejamentoOrcamentario? : number;
     @Input() anoExercio : number;
     @Input() tipoExercicio : string;
     permissions: ActionPolicies;
@@ -49,7 +50,7 @@ export class PlanejamentoAbaRubricaComponent implements OnInit {
 
 ngOnChanges(changes: SimpleChanges) {
   if (changes['nuPlanejamento'] && changes['nuPlanejamento'].currentValue) {
-    this.obterValores(this.nuPlanejamento);
+    this.obterValores(this.nuPlanejamento+"");
   }
 }
 
@@ -74,35 +75,16 @@ ngOnChanges(changes: SimpleChanges) {
         }
     }
 
-    exportExcel() {
-
-        const dadosFiltrados = this.listaPlanejamentoOrcamentario.map(item => {
-            return {
-                Ano: item.cO_EXERCICIO,
-                Contrato: item.cO_CONTRATO,
-                UD: item.sG_FILIAL,
-                Empresa: item.nO_EMPRESA,
-                "Limite": item.vR_LIMITE,
-                "Diferença": item.vR_DIFERENCA,
-                "% EP": item.pC_EP
-            }
-        })
-        import("xlsx").then(xlsx => {
-            const worksheet = xlsx.utils.json_to_sheet(dadosFiltrados);
-            const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-            const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            this.saveAsExcelFile(excelBuffer, "contratos");
-        });
+    
+    async exportExcel(nuPlanejamento: number) {
+        try {
+            const url = `${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_RELATORIO_RUBRICAS}?nuPlanejamento=${nuPlanejamento}`;
+            const response = await this.apiService.downloadfile(url);
+        } catch (error) {
+            console.error(error, 'exportExcel por rubrica');
+        }
     }
 
-    saveAsExcelFile(buffer: any, fileName: string): void {
-        let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-        let EXCEL_EXTENSION = '.xlsx';
-        const data: Blob = new Blob([buffer], {
-            type: EXCEL_TYPE
-        });
-        fileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
-    }
 
     public async obterValores(nuplanejamento: string) {
         try {

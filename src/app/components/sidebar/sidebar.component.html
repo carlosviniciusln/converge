@@ -84,22 +84,35 @@
               <p>Planejamento</p>
             </a>
           </li>
-          <li *ngIf="permissionsLimites?.Consultar ?? false" routerlinkactive="active" class="nav-item">
+
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/planejamento/limites">
               <p>Limites</p>
             </a>
           </li>
+
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento-orcamentario">
+              <p>Planejamento novo</p>
+            </a>
+          </li>
+
+            <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/orcamento/limites">
+              <p>Limites novo</p>
+            </a>
+          </li>
+
+          <!-- <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento-orcamentario-novo">
+              <p>Planejamento teste</p>
+            </a>
+          </li> -->
           <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/valores-executados">
               <p>Valores Executados</p>
             </a>
           </li>
-          <!-- <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/planejamento-orcamentario">
-              <p>Planejamento Orçamentário</p>
-            </a>
-          </li> -->
-
           <li *ngIf="isPerfilOrcamento" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/export-data-pagamento">
               <p>Extração de Pagamentos</p>
@@ -125,6 +138,12 @@
               <p>Relatório de Consumo</p>
             </a>
           </li>
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/relatorio-contratos">
+              <p>Relatório de Contratos</p>
+            </a>
+          </li>
+
           <!-- <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/consumo-arp">
               <p>Relatório de Consumo ARP</p>
@@ -148,12 +167,12 @@
         </ul>
       </div>
     </li>
-    <!-- <li routerlinkactive="active" class="nav-item">
+    <li routerlinkactive="active" class="nav-item">
       <a class="nav-link" href="#/ateste">
         <i class="tim-icons icon-single-copy-04"></i>
         <p>Ateste</p>
       </a>
-    </li> -->
+    </li>
     <li routerLinkActive="active" class="nav-item">
       <a class="nav-link" href="#/usuarios">
         <i class="tim-icons icon-single-02"></i>

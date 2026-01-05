@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { LazyLoadEvent } from 'primeng/api';
+import { TableLazyLoadEvent } from 'primeng/table';
 import { ApiService } from 'src/app/services/api.service';
 import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
 import { Endpoints } from 'src/app/shared/enums/endpoints';
@@ -73,7 +74,7 @@ export class ModalSimulacaoComponent implements OnInit {
     });
   }
 
-  loadPage(event: LazyLoadEvent) {
+  loadPage(event: TableLazyLoadEvent) {
     const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
     const pageSize = event.rows || this.filtroRegistros.pageSize;
 

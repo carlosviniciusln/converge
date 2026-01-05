@@ -26,7 +26,7 @@
               "raf",
               "core-js"
             ],
-            "outputPath": "dist/front-gc-painel-gerencial",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -120,6 +120,5 @@
         }
       }
     }
-  },
-  "defaultProject": "front-gc-painel-gerencial"
+  }
 }

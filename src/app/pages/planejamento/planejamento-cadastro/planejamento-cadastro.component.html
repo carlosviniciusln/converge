@@ -1,41 +1,59 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">
-    <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
-  </h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+
+  <button style="z-index: 10;" type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">×</span>
   </button>
 </div>
+
+<mat-tab-group>
+
+  <mat-tab label="Consulta">
+
+  <h4 style="padding: 10px 0px 0px 24px;" class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
+  </h4>
+
 <div class="modal-body">
   <form [formGroup]="form">
     <div class="row">
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-3 pr-0">
-            <label for="noCriador">Criado por:</label>
+            <label for="noCriador">Criado Por:</label>
             <input formControlName="noCriador" id="noCriador" readonly type="text" class="form-control" />
           </div>
           <div class="col-md-3 pr-0">
-            <label for="dhCadastro">Data de cria&ccedil;&atilde;o:</label>
+            <label for="dhCadastro">Data de Cria&ccedil;&atilde;o:</label>
             <input readonly formControlName="dhCadastro" id="dhCadastro" type="text" class="form-control" />
           </div>
-          <div class="col-md-3 pr-0">
-            <label for="coContrato">N&#186; Contrato:</label>
-            <select *ngIf="tipoModal === 'adicionar'" class="form-control" id="nuContrato" formControlName="nuContrato"
-              [ngClass]="{ 'is-invalid': submitted && f.nuContrato.invalid }" (change)="onContratoChange($event)">
-              <option value={{null}} selected>Selecione o Contrato</option>
-              <option *ngFor="let a of listaContratos" [value]="a.contrato">
-                {{ a.contrato }}
-              </option>
-            </select>
-            <select *ngIf="tipoModal !== 'adicionar'" class="form-control" id="nuContrato" formControlName="nuContrato"
-              [ngClass]="{ 'is-invalid': submitted && f.nuContrato.invalid }">
-              <option value={{null}} selected>Selecione o Contrato</option>
-              <option *ngFor="let a of listaContratos" [ngValue]="a.nuContrato">
-                {{ a.coContrato }}
-              </option>
-            </select>
-          </div>
+
+
+
+<div
+  class="col-md-3 pr-0"
+  style="display: flex; flex-direction: column;"
+  [ngClass]="isFlagStyle ? 'custom-dropdown-active' : 'custom-dropdown'"
+>
+  <label for="nuContrato">Nº Contrato:</label>
+
+  <p-dropdown
+    class="custom-dropdown"
+    [options]="listaContratos"
+    optionLabel="coContrato"
+    [disabled]="!isFlagStyle && isReadonly"
+    [readonly]="isFlagStyle && isReadonly"
+    optionValue="nuContrato"
+    formControlName="nuContrato"
+    placeholder="Selecione o Contrato"
+    [filter]="true"
+    [emptyMessage]="'Nenhum contrato cadastrado.'"
+    [ngClass]="{ 'is-invalid': submitted && f.nuContrato?.invalid }"
+    (onChange)="onContratoChange($event)"
+  >
+  </p-dropdown>
+</div>
+
+
           <div class="col-md-3 min-height-59">
             <label for="icServicoContinuo">Servi&ccedil;o Cont&iacute;nuo?</label>
             <div class="row">
@@ -49,23 +67,24 @@
           </div>
           <div class="col-md-6 pr-0">
             <label for="deObjeto">Objeto:</label>
-            <input formControlName="deObjeto" id="deObjeto" placeholder="Digite..." type="text" class="form-control" />
+            <input formControlName="deObjeto" id="deObjeto" placeholder="Digite..." type="text" class="form-control" maxlength="255"/>
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuPlanejamentoTipo">Tipo de Planejamento:</label>
-            <select class="form-control" id="nuPlanejamentoTipo" formControlName="nuPlanejamentoTipo" [ngClass]="{
+            <!-- <select class="form-control" id="nuPlanejamentoTipo" formControlName="nuPlanejamentoTipo" [ngClass]="{
                 'is-invalid': submitted && f.nuPlanejamentoTipo.invalid
               }">
               <option value="" disabled selected>Selecione o Tipo</option>
               <option *ngFor="let a of listaTiposPlanejamento" [ngValue]="a.nuPlanejamentoTipo">
                 {{ a.dePlanejamentoTipo }}
               </option>
-            </select>
+            </select> -->
+            <input type="text" formControlName="nuPlanejamentoTipo" class="form-control" id="nuPlanejamentoTipo" value="{{tipo}}" placeholder="{{tipo}}" [readonly]="isReadonly" />
           </div>
           <div class="col-md-3 pr-0">
-            <label for="nuDemandaTipo">Planejado Para:</label>
+            <label for="nuDemandaTipo">Planejado Para:<span class="span-red"> *</span></label>
             <select class="form-control" id="nuDemandaTipo" formControlName="nuDemandaTipo"
-              [ngClass]="{ 'is-invalid': submitted && f.nuDemandaTipo.invalid }" (change)="onPlanejadoParaChange()">
+              [ngClass]="{ 'is-invalid': submitted && f.nuDemandaTipo?.invalid }" (change)="onPlanejadoParaChange()">
               <option value="" disabled selected>
                 Selecione o Planejamento
               </option>
@@ -76,7 +95,7 @@
           </div>
           <div class="col-md-1 pr-0">
             <label for="nuAno">Exerc&iacute;cio:</label>
-            <select class="form-control" id="nuAno" formControlName="nuAno"
+            <select class="form-control" id="nuAno" formControlName="nuAno" [disabled]="isReadonly"
               [ngClass]="{ 'is-invalid': submitted && f.nuAno.invalid }">
               <option value="" disabled selected>
                 Selecione ano de exerc&iacute;cio
@@ -85,50 +104,67 @@
                 {{ a.nuAnoOrcamento }}
               </option>
             </select>
+            <!-- <input type="text" formControlName="nuAno" class="form-control" id="nuAno" value="{{ano}}" placeholder="{{ano}}" [readonly]="isReadonly" /> -->
           </div>
           <div class="col-md-2 pr-0">
             <label for="nuPlanejamentoStatus">Status:</label>
-            <select class="form-control" id="nuPlanejamentoStatus" formControlName="nuPlanejamentoStatus" [ngClass]="{
-                'is-invalid': submitted && f.nuPlanejamentoStatus.invalid
-              }">
+            <select
+              class="form-control"
+              id="nuPlanejamentoStatus"
+              formControlName="nuPlanejamentoStatus"
+              [ngClass]="{ 'is-invalid': submitted && f.nuPlanejamentoStatus.invalid }"
+            >
               <option value="" disabled selected>Selecione Status</option>
-              <option *ngFor="let a of listaStatusPlanejamento" [ngValue]="a.nuPlanejamentoStatus">
-                {{ a.noPlanejamentoStatus }}
-              </option>
+
+              <ng-container *ngIf="isCadastro; else edicao">
+                <ng-container *ngFor="let a of listaStatusPlanejamento">
+                  <option *ngIf="a.nuPlanejamentoStatus == 5" [ngValue]="a.nuPlanejamentoStatus">
+                    {{ a.noPlanejamentoStatus }}
+                  </option>
+                </ng-container>
+              </ng-container>
+
+              <ng-template #edicao>
+                <ng-container *ngFor="let a of visibleStatusList">
+                  <option [ngValue]="a.nuPlanejamentoStatus">
+                    {{ a.noPlanejamentoStatus }}
+                  </option>
+                </ng-container>
+              </ng-template>
             </select>
           </div>
           <div class="col-md-3 pr-0">
-            <label for="nuObjetivoEstrategicoPdti">Objetivo Estratégico PDTIC:</label>
-            <select class="form-control" id="nuObjetivoEstrategicoPdti" formControlName="nuObjetivoEstrategicoPdti"
+            <label for="nuObjetivoEstrategicoPdti">Objetivo Estratégico PDTIC:<span class="span-red"> *</span></label>
+            <select class="form-control cl-select-pdtic" id="nuObjetivoEstrategicoPdti" formControlName="nuObjetivoEstrategicoPdti"
               [ngClass]="{
-                'is-invalid': submitted && f.nuObjetivoEstrategicoPdti.invalid
+                'is-invalid': submitted && f.nuObjetivoEstrategicoPdti?.invalid
               }">
               <option value="" disabled selected>
                 Selecione Objetivo Estratégico
               </option>
-              <option *ngFor="let a of listaObjetivosEstrategicosPdti" [ngValue]="a.nuObjetivoEstrategico">
-                {{ a.coObjetivoEstrategico }} - {{ a.deObjetivoEstrategico }}
+              <option *ngFor="let a of listaObjetivosEstrategicosPdti" [value]="a?.nuObjetivoEstrategicoPdti">
+                {{ a?.coObjetivoEstrategico }} - {{ a?.deObjetivoEstrategico }}
               </option>
             </select>
           </div>
           <div class="col-md-3 pr-0">
-            <label for="nuObjetivoEstrategico">Objetivo Estratégico PEI:</label>
+            <label for="nuObjetivoEstrategico">Objetivo Estratégico PEI:<span class="span-red"> *</span></label>
             <select class="form-control" id="nuObjetivoEstrategicoPei" formControlName="nuObjetivoEstrategicoPei"
               [ngClass]="{
-                'is-invalid': submitted && f.nuObjetivoEstrategicoPei.invalid
+                'is-invalid': submitted && f.nuObjetivoEstrategicoPei?.invalid
               }">
               <option value="" disabled selected>
                 Selecione Objetivo Estratégico PEI
               </option>
-              <option *ngFor="let a of listaObjetivosEstrategicosPei" [ngValue]="a.nuObjetivoEstrategico">
+              <option *ngFor="let a of listaObjetivosEstrategicosPei" [value]="a?.nuObjetivoEstrategicoPei">
                 {{ a.coObjetivoEstrategico }} - {{ a.deObjetivoEstrategico }}
               </option>
             </select>
           </div>
           <div class="col-md-3 pr-0">
-            <label for="icDigital">Classifica&ccedil;&atilde;o Digital</label>
+            <label for="icDigital">Classifica&ccedil;&atilde;o Digital:<span class="span-red"> *</span></label>
             <select class="form-control" id="icDigital" formControlName="icDigital"
-              [ngClass]="{ 'is-invalid': submitted && f.icDigital.invalid }" (change)="onIsDigitalChange($event)">
+              [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" (change)="onIsDigitalChange($event)">
               <option value="" disabled selected>
                 Selecione a Classifica&ccedil;&atilde;o
               </option>
@@ -139,29 +175,30 @@
           </div>
           <div class="col-md-9 pr-0">
             <label for="deJustificativa">Justificativa para Or&ccedil;amento:</label>
-            <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text"
-              class="form-control" />
+            <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
+              class="form-control"
+               />
           </div>
-          <div class="col-md-3 pr-0">
+          <!-- <div class="col-md-3 pr-0">
             <div *ngIf="this.form.controls['icDigital'].value == 1 || this.form.controls['icDigital'].value == 2">
               <label for="nuClassificacaoPlanejamento">Categorias:</label>
               <select class="form-control" id="nuClassificacaoPlanejamento"
                 formControlName="nuClassificacaoPlanejamento" [ngClass]="{
                   'is-invalid':
-                    submitted && f.nuClassificacaoPlanejamento.invalid
+                    submitted && f.nuClassificacaoPlanejamento?.invalid
                 }"
                 [attr.required]="this.form.controls['icDigital'].value == 1 || this.form.controls['icDigital'].value == 2">
                 <option value="" disabled selected>Selecione a Categoria</option>
-                <option *ngFor="let a of listaClassificacoesPlanejamentoDigitalFiltrada" [ngValue]="a.nuClassificacao">
+                <option *ngFor="let a of listaClassificacoesPlanejamentoDigitalFiltrada" [ngValue]="a?.nuClassificacao">
                   {{ a.noClassificacao }}
                 </option>
               </select>
             </div>
-          </div>
+          </div> -->
           <div class="col-md-3 pr-0">
-            <label for="nuFilial">Unidade Demandante:</label>
+            <label for="nuFilial">Unidade Demandante:<span class="span-red"> *</span></label>
             <select class="form-control" id="nuFilial" formControlName="nuFilial"
-              [ngClass]="{ 'is-invalid': submitted && f.nuFilial.invalid }">
+              [ngClass]="{ 'is-invalid': submitted && f.nuFilial?.invalid }">
               <option value="" disabled selected>
                 Selecione Ger&ecirc;ncia Nacional
               </option>
@@ -174,134 +211,165 @@
       </div>
     </div>
     <br />
-    <div class="row">
-      <div class="col-md-6">
-        <h4 class="modal-title" id="modal-basic-title">
-          <b>Previs&otilde;es de Desembolso</b>
-        </h4>
+   <div class="row">
+  <div class="col-md-6">
+    <h4 class="modal-title" id="modal-basic-title">
+      <b>Previsões de Desembolso</b>
+    </h4>
+  </div>
+  <div class="col-md-6 text-right">
+    <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary"
+      (click)="adicionarPrevisaoDesembolso(false)">
+      <i class="tim-icons icon-simple-add"></i>
+    </button>
+  </div>
+</div>
+<br />
+<div formArrayName="previsoesDesembolso" *ngFor="
+    let previsaoDesembolso of previsoesDesembolso.controls;
+    let i = index
+  ">
+  <div class="row" [formGroupName]="i">
+    <div style="padding: 10px 0px 0px 14px;" class="row">
+
+      <!-- Campo Rubrica sempre visível -->
+      <div class="col-md-4 pr-0">
+        <label for="nuRubrica">Rubrica {{ i + 1 }} :<span class="span-red"> *</span></label>
+        <select class="form-control" id="nuRubrica" formControlName="nuRubrica" (change)="onRubricaChange($event)"
+          [ngClass]="{'is-invalid': submitted && previsaoDesembolso?.get('nuRubrica')?.invalid}">
+          <option value="" disabled selected>Selecione Rubrica</option>
+          <option *ngFor="let a of listaRubricas" [ngValue]="a.nuRubrica">
+            {{ a.coRubrica +' | ' +a.deRubrica }}
+          </option>
+        </select>
       </div>
-      <div class="col-md-6 text-right">
-        <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary"
-          (click)="adicionarPrevisaoDesembolso(false)">
-          <i class="tim-icons icon-simple-add"></i>
-        </button>
-      </div>
-    </div>
-    <br />
-    <div formArrayName="previsoesDesembolso" *ngFor="
-        let previsaoDesembolso of previsoesDesembolso.controls;
-        let i = index
-      ">
-      <div class="row" [formGroupName]="i">
-        <div class="row">
-          <div class="col-md-3 pr-0">
-            <label for="nuRubrica">Rubrica {{ i + 1 }} :</label>
-            <select class="form-control" id="nuRubrica" formControlName="nuRubrica" [ngClass]="{
-                'is-invalid':
-                  submitted && previsaoDesembolso.get('nuRubrica').invalid
-              }">
-              <option value=" " disabled selected>Selecione Rubrica</option>
-              <option *ngFor="let a of listaRubricas" [ngValue]="a.nuRubrica">
-                {{ a.coRubrica }}
-              </option>
-            </select>
-          </div>
-          <div class="col-md-3 pr-0">
-            <label for="nuPreComprometimento">Nº Pré-comprometimento:</label>
-            <input formControlName="nuPreComprometimento" id="nuPreComprometimento" type="number"
-              class="form-control" />
-          </div>
-          <div class="col-md-3 pr-0">
-            <label for="vrPreComprometimento">Valor Pré-comprometimento:</label>
-            <input formControlName="vrPreComprometimento" id="vrPreComprometimento" type="text"
-              class="form-control" mask="separator.2" [allowNegativeNumbers]="false" [thousandSeparator]="'.'"
-              [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true" placeholder="R$ 0,00" />
-          </div>
-          <div class="col-md-1 pr-0" style="margin-top: 25px;">
-            <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary"
-              (click)="excluirPrevisaoDesembolso(i)">
-              <i class="tim-icons icon-trash-simple"></i>
-            </button>
-          </div>
-          <div class="col-md-12">
-            <div class="div-vr-meses">
-              <div class="row">
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrJaneiro">Janeiro:</label>
-                  <input currencyMask class="form-control" id="vrJaneiro" formControlName="vrJaneiro"
-                    placeholder="R$ 0,00" [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrFevereiro">Fevereiro:</label>
-                  <input currencyMask class="form-control" id="vrFevereiro" formControlName="vrFevereiro"
-                    placeholder="R$ 0,00" [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrMarco">Mar&ccedil;o:</label>
-                  <input currencyMask class="form-control" id="vrMarco" formControlName="vrMarco" placeholder="R$ 0,00"
-                    [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrAbril">Abril:</label>
-                  <input currencyMask class="form-control" id="vrAbril" formControlName="vrAbril" placeholder="R$ 0,00"
-                    [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrMaio">Maio:</label>
-                  <input currencyMask class="form-control" id="vrMaio" formControlName="vrMaio" placeholder="R$ 0,00"
-                    [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrJunho">Junho:</label>
-                  <input currencyMask class="form-control" id="vrJunho" formControlName="vrJunho" placeholder="R$ 0,00"
-                    [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
+
+      <ng-container>
+        <div class="col-md-3 pr-0" style="display:none;">
+          <label for="nuPlanejamentoItem">Nº Planejamento Item:</label>
+          <input formControlName="nuPlanejamentoItem" id="nuPlanejamentoItem" type="number" class="form-control" />
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <label for="nuSap">Número SAP :</label>
+          <input formControlName="nuSap"
+                 type="text"
+                 class="form-control blockCampo"
+                 oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"/>
+        </div>
+
+        <div class="col-md-3 pr-0">
+          <label for="deSaP">Tipo SAP:</label>
+          <input type="text"
+                 class="form-control blockCampo"
+                 formControlName="deSap"/>
+        </div>
+
+        <div class="col-md-1 pr-0" style="margin-top: 25px;">
+          <button *ngIf="isEditable" type="button" class="btn-sm btn-secondary" (click)="excluirPrevisaoDesembolso(i)">
+            <i class="tim-icons icon-trash-simple"></i>
+          </button>
+        </div>
+
+        <!-- Campos dos meses -->
+        <div class="col-md-12">
+          <div class="div-vr-meses">
+            <div class="row">
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrJaneiro">Janeiro:</label>
+                <input currencyMask id="vrJaneiro" formControlName="vrJaneiro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
-              <div class="row">
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrJulho">Julho:</label>
-                  <input currencyMask class="form-control" id="vrJulho" formControlName="vrJulho" placeholder="R$ 0,00"
-                    [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrAgosto">Agosto:</label>
-                  <input currencyMask class="form-control" id="vrAgosto" formControlName="vrAgosto"
-                    placeholder="R$ 0,00" [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrSetembro">Setembro:</label>
-                  <input currencyMask class="form-control" id="vrSetembro" formControlName="vrSetembro"
-                    placeholder="R$ 0,00" [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrOutubro">Outubro:</label>
-                  <input currencyMask class="form-control" id="vrOutubro" formControlName="vrOutubro"
-                    placeholder="R$ 0,00" [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrNovembro">Novembro:</label>
-                  <input currencyMask class="form-control" id="vrNovembro" formControlName="vrNovembro"
-                    placeholder="R$ 0,00" [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
-                <div class="col-md-2 pl-[-1] pr-[-1]">
-                  <label for="vrDezembro">Dezembro:</label>
-                  <input currencyMask class="form-control" id="vrDezembro" formControlName="vrDezembro"
-                    placeholder="R$ 0,00" [options]="{ allowNegative: false }" (keyup)="onValorRubricaChange(i)" />
-                </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrFevereiro">Fevereiro:</label>
+                <input currencyMask id="vrFevereiro" formControlName="vrFevereiro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
-              <div class="row">
-                <div class="col-md-9 pr-0 text-right"></div>
-                <div class="col-md-3 pl-[-1] pr-[-1]">
-                  <label for="vrTotalRubrica"><b>Total da Rubrica {{ i + 1 }} :</b></label>
-                  <input currencyMask id="vrTotalRubrica" formControlName="vrTotalRubrica" placeholder="R$ 0,00"
-                    [options]="{ allowNegative: false }" />
-                </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrMarco">Março:</label>
+                <input currencyMask id="vrMarco" formControlName="vrMarco"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
               </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrAbril">Abril:</label>
+                <input currencyMask id="vrAbril" formControlName="vrAbril"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrMaio">Maio:</label>
+                <input currencyMask id="vrMaio" formControlName="vrMaio"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrJunho">Junho:</label>
+                <input currencyMask id="vrJunho" formControlName="vrJunho"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrJulho">Julho:</label>
+                <input currencyMask id="vrJulho" formControlName="vrJulho"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrAgosto">Agosto:</label>
+                <input currencyMask id="vrAgosto" formControlName="vrAgosto"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrSetembro">Setembro:</label>
+                <input currencyMask id="vrSetembro" formControlName="vrSetembro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrOutubro">Outubro:</label>
+                <input currencyMask id="vrOutubro" formControlName="vrOutubro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrNovembro">Novembro:</label>
+                <input currencyMask id="vrNovembro" formControlName="vrNovembro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+              <div class="col-md-2 pl-[-1] pr-[-1]">
+                <label for="vrDezembro">Dezembro:</label>
+                <input currencyMask id="vrDezembro" formControlName="vrDezembro"
+                  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', precision: 2, allowNegative: false }"
+                  placeholder="R$ 0,00" class="form-control" (keyup)="onValorRubricaChange(i)" maxlength="21" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3 pl-[-1] pr-[-1]">
+                <label for="vrTotalRubrica"><b>Total da Rubrica {{ i + 1 }}:</b></label>
+                <input currencyMask id="vrTotalRubrica" formControlName="vrTotalRubrica"
+                  placeholder="R$ 0,00" [options]="{ allowNegative: false }" class="form-control" readonly />
+              </div>
+              <div class="col-md-9 pr-0 text-right"></div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12"><br /></div>
             </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
+  </div>
+</div>
+
     <div class="row" style="margin-top: 30px;">
       <div class="col-md-12">
         <div class="row">
@@ -311,31 +379,47 @@
             <label for="vrTotalOrcamentoPlanejamento"><b>Total da Contratação:</b></label>
             <input currencyMask id="vrTotalOrcamentoPlanejamento" formControlName="vrTotalOrcamentoPlanejamento"
               placeholder="R$ 0,00" [options]="{ allowNegative: false }"
-              style="float: inline-end;margin-right: 10px;" />
+              style="float: inline-end;margin-right: 10px;" class="form-control"/>
           </div>
           <div class="col-md-9"></div>
           <div class="col-md-3">
             <div class="col-md-12 pr-0 text-right" style="padding-top: 26px; padding-left: 0px;">
-              <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" style="margin-right: 5px">
-                {{ actionButtonLabel }}
-              </button>
-              <button class="btn-sm btn-warning" *ngIf="permissions?.Alterar && currentPageAction != 'Cadastrar' && currentPageAction != 'Alterar'?? false" (click)="
-              openModalPlanejamento(
-                'editar',
-                true,
-                planejamento.nuPlanejamentoOrcamentario
-              )
-            " style="margin-right: 5px">
-                <i class="tim-icons icon-pencil"></i>
-                <span> Editar</span>
-              </button>
-              <button class="btn-sm btn-danger" *ngIf="permissions?.Alterar && currentPageAction != 'Cadastrar'?? false" (click)="Excluir(planejamento)" style="margin-right: 5px">
-                <i class="tim-icons icon-trash-simple"></i>
-                <span> Excluir</span>
-              </button>
+
+
+              <div *ngIf="!isEditable">
+                <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" style="margin-right: 5px">
+                  {{ actionButtonLabel }}
+                </button>
+
+                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="
+                 openModalPlanejamento(
+                  'editar',
+                  true,
+                  planejamento.nuPlanejamentoOrcamentario
+                )
+              " style="margin-right: 5px">
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Editar</span>
+                </button>
+                <button class="btn-sm btn-danger" *ngIf=" isPerfilPrivilegiado" (click)="Excluir(planejamento)" style="margin-right: 5px">
+                  <i class="tim-icons icon-trash-simple"></i>
+                  <span> Excluir</span>
+                </button>
+
+              </div>
+              <div *ngIf="isEditable">
+                <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" style="margin-right: 5px">
+                  {{ actionButtonLabel }}
+                </button>
+
+                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado && !isCadastro" (click)="Alterar()" style="margin-right: 5px">
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Salvar</span>
+                </button>
+              </div>
             </div>
           </div>
-          
+
           <!-- <div class="col-md-6" *ngIf="gcpvw008Mensalizacao.length > 0; else elseBlock">
             <h4 class="modal-title" id="modal-basic-title">
               <b>Valores estimados para o ano exercício</b>
@@ -406,14 +490,131 @@
           </div> -->
           <div class="col-md-12 pr-0">
             <h4 class="modal-title" id="modal-basic-title" for="deObservacao" style="margin-bottom: 8px;">
-              <b>Observa&ccedil;&otilde;es</b>
+              <b>Observa&ccedil;&otilde;es:<span class="span-red"> *</span></b>
             </h4>
             <textarea formControlName="deObservacao" id="deObservacao"
-              [ngClass]="{ 'is-invalid': submitted && f.deObservacao.invalid }" placeholder="Digite..."
-              class="form-control border border-light rounded" rows="4"></textarea>
+              [ngClass]="{ 'is-invalid': submitted && f.deObservacao?.invalid }" placeholder="Digite..."
+              class="form-control border border-light rounded" maxlength="255" rows="4"></textarea>
           </div>
         </div>
       </div>
     </div>
   </form>
 </div>
+
+
+</mat-tab>
+
+    <mat-tab label="Histórico" >
+
+
+
+      <p-card>
+
+      <h4 class="modal-title" style="padding: 0px 0px 24px 12px ;">
+        <b>Histórico</b> <br/> <small>Histórico Planejamento Orçamentário {{ this.planejamento?.coContrato }}</small>
+      </h4>
+
+      <mat-divider></mat-divider>
+
+        <div class="historico-container">
+
+          <div style="padding: 24px;">
+
+          <p-dropdown
+          [options]="filtros"
+          [(ngModel)]="filtrosSelecionado"
+          placeholder="Operação "
+          (onChange)="filtrarEventos($event, 1)"
+          >
+          </p-dropdown>
+
+          </div>
+
+          <p-timeline
+            *ngIf="ListaPlanejamentoItemHistorico.length > 0"
+            [value]="ListaPlanejamentoItemHistorico"
+            align="alternate"
+            class="c-p-timeline"
+          >
+
+            <ng-template pTemplate="marker" let-event>
+              <span
+                class="custom-marker p-p-2 p-shadow-2"
+                [ngStyle]="{
+                  'background-color':
+                    event.tpOperacao === 'INCLUSAO'
+                      ? '#4CAF50'
+                      : event.tpOperacao === 'ALTERACAO'
+                      ? '#2196F3'
+                      : '#F44336'
+                }"
+              >
+                <i [ngClass]="event.tpOperacao === 'INCLUSAO' ? 'pi pi-plus' : event.tpOperacao === 'ALTERACAO' ? 'pi pi-pencil' : 'pi pi-trash'" style="color: white"></i>
+              </span>
+            </ng-template>
+
+
+            <ng-template pTemplate="content" let-event>
+              <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
+                <div class="card-content">
+
+                  <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
+                  <small class="text-gray-500">
+                    {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
+                  </small>
+
+                  <div *ngIf="event.listaDiffs" class="mt-2">
+
+                    <button
+                      style="cursor: no-drop !important;"
+                      [disabled]="true"
+                      class="btn-sm btn-default"
+                      type="submit"
+                      (click)="verDetalhes(event.listaDiffs)"
+                    >
+                      Ver detalhes
+                    </button>
+                  </div>
+                </div>
+              </p-card>
+            </ng-template>
+          </p-timeline>
+
+
+
+          <p-paginator
+            [rows]="100"
+            [totalRecords]="ListaPlanejamentoItemHistorico.length"
+          ></p-paginator>
+        </div>
+      </p-card>
+
+      <!-- Modal Detalhes -->
+      <p-dialog
+        header="Detalhes da Alteração"
+        [(visible)]="dialogVisible"
+        [modal]="true"
+        [style]="{ width: '500px' }"
+        [closable]="true"
+      >
+        <p-table [value]="selectedDiff">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Campo</th>
+              <th>Antes</th>
+              <th>Depois</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-campo>
+            <tr>
+              <td>{{ campo.campo }}</td>
+              <td>{{ campo.antes }}</td>
+              <td>{{ campo.depois }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-dialog>
+  </mat-tab>
+
+</mat-tab-group>

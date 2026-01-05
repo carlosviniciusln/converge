@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LazyLoadEvent } from 'primeng/api';
+import { TableLazyLoadEvent } from 'primeng/table';
 import { ApiResponse } from 'src/app/models/api-response';
 import { ContratoApiResponse, ContratoItem, Gcptb001ContratoResponse } from 'src/app/models/Gcptb001ContratoResponse';
 import { ApiService } from 'src/app/services/api.service';
@@ -42,7 +43,7 @@ export class NovosContratosComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  loadPage(event: LazyLoadEvent) {
+  loadPage(event: TableLazyLoadEvent) {
     const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
     const pageSize = event.rows || this.filtroRegistros.pageSize;
 

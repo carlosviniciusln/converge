@@ -29,8 +29,14 @@ import { AtesteComponent } from 'src/app/pages/ateste/ateste.component';
 import { AuthGuard } from 'src/app/shared/interceptors/auth.guard';
 import { DetalharAtesteComponent } from 'src/app/pages/ateste/detalhar-ateste/detalhar-ateste.component';
 import { DevelopComponent } from 'src/app/components/develop/develop.component';
+import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
+import { PlanejamentoNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-novo.component';
+import { PlanejamentoOrcamentarioNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-lista/planejamento-orcamentario-novo.component';
+import { PlanejamentoGeralNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-geral-novo/planejamento-geral-novo.component';
+import { RelatorioContratosComponent } from 'src/app/pages/planejamento/relatorio/relatorio-contratos/relatorio-contratos.component';
 
 export const AdminLayoutRoutes: Routes = [
+  { path: 'develop', component: DevelopComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'contrato', component: ContratoComponent },
   { path: 'contrato/atas', component: ContratoComponent },
@@ -39,32 +45,28 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'contrato/detalhe/:voltar/:id', component: ContratoDetalheComponent },
   { path: 'contrato/evolucao-financeira/:id', component: EvolucaoFinanceiraComponent },
   { path: 'contrato/exec-orc-mensalizacao/:id', component: MensalizacaoComponent },
-  {
-    path: 'contrato/evolucao-financeira-aquisicao/:id',
-    component: EvolucaoFinanceiraAquisicaoComponent,
-  },
+  { path: 'contrato/evolucao-financeira-aquisicao/:id', component: EvolucaoFinanceiraAquisicaoComponent },
   { path: 'contrato/conciliacao', component: ContratoPendenteComponent },
   { path: 'contrato/artigos', component: ArtigoPagamentoComponent },
   { path: 'planejamento', component: PlanejamentoComponent },
   { path: 'planejamento/create', component: PlanejamentoCadastroComponent },
   { path: 'planejamento/limites', component: LimitesRubricasComponent },
   { path: 'valores-executados', component: ValoresExecutadosComponent },
-  {
-    path: 'planejamento/limites/create',
-    component: LimitesRubricasCadastroComponent,
-  },
-  // { path: 'planejamento-orcamentario', component: PlanejamentoOrcamentarioComponent },
+  { path: 'planejamento/limites/create', component: LimitesRubricasCadastroComponent },
+  { path: 'planejamento-orcamentario', component: PlanejamentoOrcamentarioComponent },
   { path: 'pagamento', component: PagamentoComponent },
   { path: 'consumo', component: ConsumoComponent },
   { path: 'consumo-arp', component: ConsumoArpComponent },
   { path: 'export-data-pagamento', component: ExportPagamentoComponent },
   { path: 'informe/analitico', component: AnaliticoComponent },
   { path: 'informe/sintetico', component: SinteticoComponent },
-  // { path: 'planejamento-orcamentario-detalhe', component: PlanejamentoGeralComponent },
+  { path: 'planejamento-orcamentario-detalhe', component: PlanejamentoGeralComponent },
   //{ path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'empenho', component: EmpenhoComponent },
   { path: 'mod-develop', component: DevelopComponent },
+  { path: 'orcamento/limites', component: LimitesComponent },
+
   //   { path: "icons", component: IconsComponent },
   //   { path: "maps", component: MapComponent },
   //   { path: "notifications", component: NotificationsComponent },
@@ -73,7 +75,19 @@ export const AdminLayoutRoutes: Routes = [
   //   { path: "typography", component: TypographyComponent },
   //   { path: "rtl", component: RtlComponent },
 
-  // { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
-  // { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
+  { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
+  { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
+
+
+
+  // *PLANEJAMENTO ORÇAMENTARIO NOVO */
+  { path: 'planejamento-novo', component: PlanejamentoNovoComponent },
+  { path: 'planejamento-orcamentario-novo', component: PlanejamentoOrcamentarioNovoComponent},
+   { path: 'planejamento-orcamentario-detalhe-novo', component: PlanejamentoGeralNovoComponent },
+
+
+  //Relatório de Contratos
+   { path: 'relatorio-contratos', component: RelatorioContratosComponent },
+
 
 ];
