@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="pl-1 pr-1 filtro">
-                <p-dropdown
+                  <p-dropdown
                     [options]="selectTiposStatus"
                     [(ngModel)]="selectedTipoStatus"
                     [filter]="true"
@@ -111,7 +111,12 @@
                     [style]="{ width: '160px' }"          
                     [panelStyle]="{ width: '160px' }"      
                     appendTo="body">
-                </p-dropdown>
+                  </p-dropdown>
+              </div>
+
+              <div>
+                <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+                (click)="limparFiltros()"></button>
               </div>
             </div>
           </div>
