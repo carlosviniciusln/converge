@@ -417,5 +417,30 @@ export class PlanejamentoComponent implements OnInit {
     );
   }
 
-  
+  limparFiltros(): void {
+    this.selectedTipoPlanejamento = null;
+    this.selectedAno = null;
+    this.selectedFilial = null;
+    this.selectedContrato = null;
+    this.selectedTipoDemanda = null;
+    this.selectedOpcaoIsDigital = null;
+    this.selectedStatusPlanejamento = null;
+    this.selectedObjeto = null;
+
+    this.filtroRegistros = {
+      pageNumber: 1,                                   
+      pageSize: this.filtroRegistros.pageSize ?? 12,   
+      NuAno: null,
+      NuFilial: null,
+      NuContrato: null,
+      NuPlanejamentoStatus: null,
+      NuPlanejamentoTipo: null,
+      NuDemandaTipo: null,
+      IsDigital: null,   
+      DeObjeto: ''       
+    };
+
+    this.loading = true;
+    this.obterPlanejamentos();
+  }
 }

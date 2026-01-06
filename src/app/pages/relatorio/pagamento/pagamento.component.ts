@@ -165,4 +165,25 @@ export class PagamentoComponent implements OnInit {
       //this.loading = true;
     }
   }
+
+  limparFiltros(): void {
+    this.selectedAno = null;
+    this.selectedFilial = null;
+    this.selectedRubrica = null;
+    this.selectedContrato = null;
+    this.selectedVigente = null;
+
+    this.filtroRegistros = {
+      pageNumber: 1,         
+      pageSize: this.filtroRegistros.pageSize ?? 12,
+      nuAno: null,
+      nuRubrica: null,
+      nuFilial: null,
+      nuContrato: null,
+      icAtivo: null,
+    };
+
+    this.loading = true;
+    this.obterPagamentos();
+  }
 }

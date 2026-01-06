@@ -261,4 +261,26 @@ exportExcel() {
       this.tituloPage = 'Relatório de Atas';
     }
   }
+
+  limparFiltros(): void {
+    this.selectedTipoContrato = null;
+    this.selectedTipoFornecedor = null;
+    this.selectedTipoTpContrato = null;
+    this.selectedTipoGestor = null;
+    this.selectedTipoStatus = null;
+
+    this.filtroRegistros = {
+      pageNumber: 1,                                   
+      pageSize: this.filtroRegistros.pageSize ?? 10,   
+      Contrato: null,
+      Fornecedor: null,
+      Tipo: null,
+      Gestor: null,
+      Status: null,
+      NoTipoArp: this.isRotaAtas ? 'ATA_DE_REGISTRO_DE_PRECOS' : null
+    };
+
+    this.loading = true;
+    this.obterContratos();
+  }
 }

@@ -14,7 +14,7 @@
         <ng-template pTemplate="caption">
           <div class="table-header">
             <div class="row">
-              <div class="col-md-3 pl-1 pr-1 table-header-title">
+              <div class="col-md-2 pl-1 pr-1 table-header-title">
                 {{ this.title }}
               </div>
               <div class="pl-1 pr-1">
@@ -99,6 +99,10 @@
                   [showClear]="true"
                   placeholder="Tipo Planejamento"
                 ></p-dropdown>
+              </div>
+              <div>
+                <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+                (click)="limparFiltros()"></button>
               </div>
             </div>
           </div>
