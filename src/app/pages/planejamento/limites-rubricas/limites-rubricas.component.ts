@@ -393,4 +393,28 @@ export class LimitesRubricasComponent implements OnInit {
       this.loading = false;
     }
   }
+
+  limparFiltros(): void {
+    this.selectedAnoOrcamentario = null;
+    this.selectedRubrica = null;
+    this.selectedGrupoRemanejamento = null;
+    this.selectedFilial = null;
+    this.selectedTipoPlanejamento = null;
+
+    this.filtroRegistros = {
+      pageNumber: 1,
+      pageSize: this.filtroRegistros.pageSize ?? 10, 
+
+      NuAno: null,
+      NuRubrica: null,
+      NuGrupoRemanejamento: null,
+      NuFilial: null,
+      NuPlanejamentoTipo: null, 
+      ...(this.filtroRegistros?.Field !== undefined && { Field: null }),
+      ...(this.filtroRegistros?.Order !== undefined && { Order: null }),
+    };
+
+    this.loading = true;
+    this.obterDados(); 
+  }
 }

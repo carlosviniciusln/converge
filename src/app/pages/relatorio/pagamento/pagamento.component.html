@@ -13,7 +13,7 @@
         <ng-template pTemplate="caption">
           <div class="table-header">
             <div class="row">
-              <div class="pl-3 pr-3 table-header-title">
+              <div class="col-md-1 pl-1 pr-1 table-header-title">
                 Relatório de Pagamentos
               </div>
               <div class="pl-1 pr-1 text-right">
@@ -107,6 +107,12 @@
                   placeholder="Vigente"
                 ></p-dropdown>
               </div>
+
+              <div>
+              <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+              (click)="limparFiltros()"></button>
+              </div>
+              
             </div>
           </div>
         </ng-template>
