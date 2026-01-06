@@ -199,20 +199,25 @@ export class RelatorioContratoComponent implements OnInit {
     }
   }
 
-  exportExcel() {
-      this.filtroExcel.coContrato = this.filtroRegistros.Contrato
-      this.filtroExcel.pageNumber = this.filtroRegistros.pageNumber
-      this.filtroExcel.pageSize = this.filtroRegistros.pageSize
-      this.filtroExcel.Fornecedor = this.filtroRegistros.Fornecedor
-      this.filtroExcel.Tipo = this.filtroRegistros.Tipo
-      this.filtroExcel.Gestor = this.filtroRegistros.Gestor
-      this.filtroExcel.Status = this.filtroRegistros.Status
-      this.filtroExcel.NoTipoArp = this.filtroRegistros.NoTipoArp
-  
-      return this.apiService.downloadfile(
-      `${Endpoints.URL_CONTRATOS}/relatorio-contratos`,
-       this.filtroExcel
+  async exportExcel(): Promise<void> {
+    try {
+      const filtrosExcel = this.limparFiltrosNulos({
+        coContrato: this.filtroRegistros.Contrato,
+        Fornecedor: this.filtroRegistros.Fornecedor,
+        Tipo: this.filtroRegistros.Tipo,
+        Gestor: this.filtroRegistros.Gestor,
+        Status: this.filtroRegistros.Status,
+        NoTipoArp: this.isRotaAtas ? 'ATA_DE_REGISTRO_DE_PRECOS' : this.filtroRegistros.NoTipoArp
+      });
+
+      this.apiService.downloadfile(
+        `${Endpoints.URL_CONTRATOS}/relatorio-contratos`,
+        filtrosExcel
       );
+
+    } catch (error) {
+      console.error('Erro ao exportar Excel', error);
+    }
   }
 
   saveAsExcelFile(buffer: any, fileName: string): void {
