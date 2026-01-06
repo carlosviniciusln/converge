@@ -53,6 +53,17 @@ export class RelatorioContratoComponent implements OnInit {
     NoTipoArp: null
   };
 
+  filtroExcel: any = {
+    pageNumber: 1,
+    pageSize: 10,
+    coContrato: null,
+    Fornecedor: null,
+    Tipo: null,
+    Gestor: null,
+    Status: null,
+    NoTipoArp: null
+  };
+
   quantidadeTotal: number = 0;
 
   constructor(
@@ -188,11 +199,20 @@ export class RelatorioContratoComponent implements OnInit {
     }
   }
 
-exportExcel() {
-    return this.apiService.downloadfile(
+  exportExcel() {
+      this.filtroExcel.coContrato = this.filtroRegistros.Contrato
+      this.filtroExcel.pageNumber = this.filtroRegistros.pageNumber
+      this.filtroExcel.pageSize = this.filtroRegistros.pageSize
+      this.filtroExcel.Fornecedor = this.filtroRegistros.Fornecedor
+      this.filtroExcel.Tipo = this.filtroRegistros.Tipo
+      this.filtroExcel.Gestor = this.filtroRegistros.Gestor
+      this.filtroExcel.Status = this.filtroRegistros.Status
+      this.filtroExcel.NoTipoArp = this.filtroRegistros.NoTipoArp
+  
+      return this.apiService.downloadfile(
       `${Endpoints.URL_CONTRATOS}/relatorio-contratos`,
-      this.filtroRegistros
-    );
+       this.filtroExcel
+      );
   }
 
   saveAsExcelFile(buffer: any, fileName: string): void {
