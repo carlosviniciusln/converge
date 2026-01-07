@@ -1,25 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Select2Data } from 'ng-select2-component';
-import {
-  ActionPolicies,
-  ModuleEnum,
-  TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import * as fileSaver from 'file-saver';
 import { TableLazyLoadEvent } from 'primeng/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ApiResponse } from 'src/app/models/api-response';
+import { ContratoItem, Gcptb001ContratoResponse, ContratoApiResponse } from 'src/app/models/Gcptb001ContratoResponse';
+import { ApiService } from 'src/app/services/api.service';
+import { ActionPolicies, TokenStorageService, ModuleEnum } from 'src/app/services/token-storage.service';
+import { Endpoints } from 'src/app/shared/enums/endpoints';
+import * as fileSaver from 'file-saver';
 
 @Component({
-  selector: 'app-relatorio-contratos',
-  templateUrl: './relatorio-contratos.component.html',
-  styleUrls: ['./relatorio-contratos.component.scss'],
+  selector: 'app-relatorio-contrato',
+  templateUrl: './relatorio-contrato.component.html',
+  styleUrls: ['./relatorio-contrato.component.scss']
 })
-export class RelatorioContratosComponent implements OnInit {
+export class RelatorioContratoComponent implements OnInit {
   permissions: ActionPolicies;
 
   contratosOrigem: ContratoItem[] = [];
@@ -50,6 +46,17 @@ export class RelatorioContratosComponent implements OnInit {
     pageNumber: 1,
     pageSize: 10,
     Contrato: null,
+    Fornecedor: null,
+    Tipo: null,
+    Gestor: null,
+    Status: null,
+    NoTipoArp: null
+  };
+
+  filtroExcel: any = {
+    pageNumber: 1,
+    pageSize: 10,
+    coContrato: null,
     Fornecedor: null,
     Tipo: null,
     Gestor: null,
@@ -192,38 +199,25 @@ export class RelatorioContratosComponent implements OnInit {
     }
   }
 
-  
-exportExcel() {
-  const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros); // já tem pageNumber e pageSize
-
-  this.apiService.get<ApiResponse<Gcptb001ContratoResponse[]>>(
-    `${Endpoints.URL_CONTRATOS}/filter-excel`,
-    filtrosLimpos
-  ).then(response => {
-    if (response.succeeded) {
-      const dadosFiltrados = (response.data || []).map(item => ({
-        'Nr. Contrato': item.coContrato,
-        'Fornecedor': item.noEmpresa,
-        'Unidade Demandante (Gestor)': this.composeUnidadeGestor(item),
-        'Status': item.icAtivo ? 'Ativo' : 'Encerrado',
-        'Vigência Atual - Início': this.formatDateExcel(item.dtInicioContrato),
-        'Vigência Atual - Fim': this.formatDateExcel(item.dtTerminoContrato),
-        ...(this.isRotaAtas ? {} : { 'Valor Pago': this.formatCurrencyExcel(this.getValorPago(item)) }),
-      }));
-
-      import('xlsx').then(xlsx => {
-        const worksheet = xlsx.utils.json_to_sheet(dadosFiltrados);
-        const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-        const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const nome = `relatorio-contratos_p${this.filtroRegistros.pageNumber}-r${this.filtroRegistros.pageSize}`;
-        this.saveAsExcelFile(excelBuffer, nome);
+  async exportExcel(): Promise<void> {
+    try {
+      const filtrosExcel = this.limparFiltrosNulos({
+        coContrato: this.filtroRegistros.Contrato,
+        Fornecedor: this.filtroRegistros.Fornecedor,
+        Tipo: this.filtroRegistros.Tipo,
+        Gestor: this.filtroRegistros.Gestor,
+        Status: this.filtroRegistros.Status,
+        NoTipoArp: this.isRotaAtas ? 'ATA_DE_REGISTRO_DE_PRECOS' : this.filtroRegistros.NoTipoArp
       });
-    } else {
-      console.error('Erro ao exportar dados: ', response.errors);
+
+      this.apiService.downloadfile(
+        `${Endpoints.URL_CONTRATOS}/relatorio-contratos`,
+        filtrosExcel
+      );
+
+    } catch (error) {
+      console.error('Erro ao exportar Excel', error);
     }
-  }).catch(error => {
-    console.error('Erro na requisição de exportação: ', error);
-   });
   }
 
   saveAsExcelFile(buffer: any, fileName: string): void {
@@ -284,3 +278,4 @@ exportExcel() {
     this.obterContratos();
   }
 }
+
