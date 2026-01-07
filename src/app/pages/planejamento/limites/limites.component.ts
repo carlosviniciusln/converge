@@ -323,7 +323,6 @@ export class LimitesComponent implements OnInit {
     this.selectedRubrica = null;
     this.selectedUnidadeDemandante = null;
 
-    //Resetar filtros na planilha
     this.filtroRegistros = {
       pageNumber: 1,
       pageSize: 10,
@@ -334,8 +333,6 @@ export class LimitesComponent implements OnInit {
     };
 
     this.renderGrid(this.listaCompletaMaster);
-
-    //Resetar filtros na tela
     this.listaExercicios = [...this.initialListaExercicios];
     this.selectTipo      = [...this.initialSelectTipo];
     this.selectRubrica   = [...this.initialSelectRubrica];
@@ -643,9 +640,9 @@ export class LimitesComponent implements OnInit {
             });
             return;
     }else{
-      // await this.apiService.get<ApiResponse<LimitesModel[]>>(
-      //   `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/relatorio-limites`
-      // );
+       await this.apiService.get<ApiResponse<LimitesModel[]>>(
+         `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/limites-exercicio`
+       );
     }
   }
 
