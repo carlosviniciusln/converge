@@ -14,6 +14,7 @@ import { ModalUploadComponent } from './modal-upload/modal-upload.component';
 
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { LimitesModel } from 'src/app/models/limites-model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-limites',
@@ -322,7 +323,6 @@ export class LimitesComponent implements OnInit {
     this.selectedRubrica = null;
     this.selectedUnidadeDemandante = null;
 
-    //Resetar filtros na planilha
     this.filtroRegistros = {
       pageNumber: 1,
       pageSize: 10,
@@ -333,8 +333,6 @@ export class LimitesComponent implements OnInit {
     };
 
     this.renderGrid(this.listaCompletaMaster);
-
-    //Resetar filtros na tela
     this.listaExercicios = [...this.initialListaExercicios];
     this.selectTipo      = [...this.initialSelectTipo];
     this.selectRubrica   = [...this.initialSelectRubrica];
@@ -630,6 +628,22 @@ export class LimitesComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
     });
+  }
+
+  async openModalDownload() {
+    if(this.selectedExercicio == null || this.selectedExercicio == undefined ){
+      await Swal.fire({
+              title: 'Atenção!',
+              text: 'Por favor, para fazer o download do arquivo com o layout de upload o filtro de Exercício precisa estar preenchido.',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+            });
+            return;
+    }else{
+       await this.apiService.get<ApiResponse<LimitesModel[]>>(
+         `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/limites-exercicio`
+       );
+    }
   }
 
   formatBRLDiffNoBreak(value: number | null | undefined): string {
