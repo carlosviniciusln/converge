@@ -8,10 +8,10 @@
         [(selection)]="selectedContratos"
         dataKey="id"
         styleClass="p-datatable-customers"
-        [rows]="filtroRegistros.pageSize"
+        [rows]="filtroRegistros.TamanhoPagina"
         [paginator]="true"
         [totalRecords]="quantidadeTotal"
-        [rowsPerPageOptions]="[10, 20, 50]"
+        [rowsPerPageOptions]="[10, 20, 50, quantidadeTotal]"
         [lazy]="true"
         (onLazyLoad)="loadPage($event)"
         [showCurrentPageReport]="true"
@@ -43,9 +43,9 @@
                     optionValue="value"
                     (onChange)="updateRelatorio($event, 1)"
                     [showClear]="true"
-                    placeholder="Contrato" 
-                    [style]="{ width: '160px' }"          
-                    [panelStyle]="{ width: '160px' }"      
+                    placeholder="Contrato"
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
                     appendTo="body">
                 </p-dropdown>
                 </div>
@@ -60,8 +60,8 @@
                     (onChange)="updateRelatorio($event, 2)"
                     [showClear]="true"
                     placeholder="Fornecedor"
-                    [style]="{ width: '160px' }"          
-                    [panelStyle]="{ width: '160px' }"      
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
                     appendTo="body">
                 </p-dropdown>
                 </div>
@@ -76,8 +76,8 @@
                     (onChange)="updateRelatorio($event, 3)"
                     [showClear]="true"
                     placeholder="Tipo de Contrato"
-                    [style]="{ width: '160px' }"          
-                    [panelStyle]="{ width: '160px' }"      
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
                     appendTo="body">
                 </p-dropdown>
                 </div>
@@ -92,8 +92,8 @@
                     (onChange)="updateRelatorio($event, 4)"
                     [showClear]="true"
                     placeholder="Unidade Demandante"
-                    [style]="{ width: '160px' }"          
-                    [panelStyle]="{ width: '160px' }"      
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
                     appendTo="body">
                 </p-dropdown>
                 </div>
@@ -108,8 +108,8 @@
                     (onChange)="updateRelatorio($event, 5)"
                     [showClear]="true"
                     placeholder="Status"
-                    [style]="{ width: '160px' }"          
-                    [panelStyle]="{ width: '160px' }"      
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
                     appendTo="body">
                   </p-dropdown>
               </div>
@@ -154,7 +154,7 @@
                 Vigência Atual - Fim
               </div>
             </th>
-            <th *ngIf="!isRotaAtas">
+            <th>
               <div class="p-d-flex p-jc-between p-ai-center">
                 Valor Pago
               </div>
@@ -163,7 +163,7 @@
         </ng-template>
 
         <ng-template pTemplate="body" let-contrato>
-          <tr class="p-selectable-row" (click)="navegarInfoContrato(contrato.coContrato, contrato.nuContrato)">
+          <tr class="p-selectable-row">
             <td>
               <span class="p-column-title">Nr. Contrato</span>
               {{ contrato.coContrato }}
@@ -181,7 +181,7 @@
 
             <td>
               <span class="p-column-title">Status</span>
-              {{ contrato.icAtivo == true ? 'Ativo' : 'Encerrado' }}
+              {{ contrato.icAtivo }}
             </td>
 
             <td>
@@ -194,7 +194,7 @@
               {{ contrato.dtTerminoContrato | date: 'dd/MM/yyyy' }}
             </td>
 
-            <td class="text-right" *ngIf="!isRotaAtas">
+            <td class="text-right">
               <span class="p-column-title">Valor Pago</span>
               {{ (contrato.vrPago ?? contrato.vrExecutado ?? 0) | currency : 'BRL' }}
             </td>
