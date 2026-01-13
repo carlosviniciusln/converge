@@ -85,7 +85,7 @@ export class RelatorioContratoComponent implements OnInit {
         ativo: this.filtroRegistros.Status});
 
       const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>(
-        `${Endpoints.URL_CONTRATOS}/relatorio-contratos`,
+        `v1/relatorio/contratos`,
         filtrosLimpos
       );
 
@@ -163,7 +163,7 @@ export class RelatorioContratoComponent implements OnInit {
       });
 
       this.apiService.downloadfile(
-        `${Endpoints.URL_CONTRATOS}/relatorio-contratos-excel`,
+        `v1/relatorio/contratos/excel`,
         filtrosExcel
       );
 
