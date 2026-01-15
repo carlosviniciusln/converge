@@ -1669,6 +1669,7 @@ async removerRubrica(nuRubrica: string) {
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
           NuStatusPlanejamentoItem: 10, //excluido
+          NuOrc: this.nuPlanejamento?.nU_ORC
         };
 
         lista.push(item);
