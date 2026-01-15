@@ -564,11 +564,10 @@
                     {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
                   </small>
 
-                  <div *ngIf="event.listaDiffs" class="mt-2">
+                  <div *ngIf="event.listaDiffs && event.tpOperacao != 'INCLUSAO' && event.tpOperacao != 'EXCLUSAO'" class="mt-2">
 
                     <button
-                      style="cursor: no-drop !important;"
-                      [disabled]="true"
+                      [disabled]="false"
                       class="btn-sm btn-default"
                       type="submit"
                       (click)="verDetalhes(event.listaDiffs)"
@@ -606,13 +605,21 @@
               <th>Depois</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-campo>
-            <tr>
-              <td>{{ campo.campo }}</td>
-              <td>{{ campo.antes }}</td>
-              <td>{{ campo.depois }}</td>
-            </tr>
-          </ng-template>
+
+      <ng-template pTemplate="body" let-campo>
+        <tr>
+          <td class="diff-row">
+            <strong>{{ campo.campo }}:</strong>
+          </td>
+          <td>
+              <span class="antes">{{ campo.antes }}</span>
+          </td>
+          <td>
+               <span class="depois">{{ campo.depois }}</span>
+          </td>
+        </tr>
+      </ng-template>
+
         </p-table>
       </p-dialog>
   </mat-tab>
