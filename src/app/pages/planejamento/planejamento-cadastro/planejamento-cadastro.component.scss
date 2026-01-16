@@ -1,3 +1,24 @@
+
+.diff-row {
+  padding: 6px 8px;
+}
+
+.antes {
+  color: #d9534f; /* vermelho */
+  font-weight: 500;
+}
+
+.depois {
+  color: #5cb85c; /* verde */
+  font-weight: 600;
+}
+
+.arrow {
+  margin: 0 6px;
+  opacity: 0.7;
+}
+
+
 label {
     margin-bottom: 0px !important;
 }

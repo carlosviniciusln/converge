@@ -304,7 +304,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
   atualizarStatusSelecionados() {
     const itensNaoSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO == false)
-     console.log("itensNaoSelecionados", itensNaoSelecionados)
+
       this.planejamentos.forEach(p1 => {
           const existe = itensNaoSelecionados.some(p2 => p2.nU_ORC === p1.nU_ORC);
           if (existe) {
