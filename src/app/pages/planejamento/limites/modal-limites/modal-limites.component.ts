@@ -82,13 +82,13 @@ export class ModalLimitesComponent implements OnInit {
         type: PageAction.Alterar,
         title: 'Edição',
         subTitle: 'Edição de limites rubrica',
-        actionButtonLabel: 'Alterar',
+        actionButtonLabel: 'Salvar',
       },
       {
         type: PageAction.Cadastrar,
         title: 'Cadastro',
         subTitle: 'Cadastro de limites rubrica',
-        actionButtonLabel: 'Cadastrar',
+        actionButtonLabel: 'Salvar',
       },
     ];
 
@@ -313,12 +313,12 @@ public async Alterar(): Promise<void> {
       nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
       nuFilial: this.formCadastro.controls['nuUnidadeDemandante'].value,
       nuRubrica: this.formCadastro.controls['nuRubrica'].value,
-      novoLimite: valorNumerico,
+      vrLimite: valorNumerico,
       nuLimitePlanejamento: this.formCadastro.controls['nuLimitePlanejamento'].value
     };
 
     await this.apiService.put<LimitesRubricasUpdateV2>(
-      `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/Atualizar-limite`,
+      `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/atualizar-limite`,
       updateRequest
     );
 

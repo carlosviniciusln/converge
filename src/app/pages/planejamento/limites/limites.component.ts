@@ -180,7 +180,7 @@ export class LimitesComponent implements OnInit {
   }
 
   private hydrateCombos(master: LimitesModel[]) {
-    
+
     const listaDistinta = Array.from(new Set(master.map(item => item.deOrdemProg)));
     listaDistinta.sort((a, b) => {
       const numA = parseFloat(a);
@@ -231,7 +231,7 @@ export class LimitesComponent implements OnInit {
     this.loading = false;
     this.cd.detectChanges();
   }
-  
+
   public async obterValores() {
     try {
       this.loading = true;
@@ -310,13 +310,13 @@ export class LimitesComponent implements OnInit {
 
     return base;
   }
-  
+
   filterItem() {
     const baseFiltrada = this.filtraLista();
     this.renderGrid(baseFiltrada);
     this.hydrateCombos(baseFiltrada);
   }
-  
+
   limparFiltros() {
     this.selectedExercicio = null as any;
     this.selectedTipo = null;
@@ -447,7 +447,7 @@ export class LimitesComponent implements OnInit {
       if (!acc[chave]) {
         acc[chave] = {
           nuLimitePlanejamento: item.nuLimitePlanejamento,
-          nuPlanejamento: item.nuPlanejamento, 
+          nuPlanejamento: item.nuPlanejamento,
           coExercicio: item.coExercicio,
           noRubricaTipo: item.noRubricaTipo,
           coRubrica: item.coRubrica,
@@ -581,6 +581,10 @@ export class LimitesComponent implements OnInit {
   }
 
   openModalPlanejamento(acao: string, ud?: any, registro?: any) {
+
+    console.log(acao, "PARAMETRO 1")
+    console.log(ud, "PARAMETRO 2")
+    console.log(registro, "PARAMETRO 3")
     if (acao === 'cadastro') {
       const modalRef = this.modalService.open(ModalLimitesComponent, {
         ariaLabelledBy: 'modal-basic-title', size: 'md',
