@@ -218,6 +218,21 @@ export class PlanejamentoGeralComponent implements OnInit {
     }));
   }
 
+  public  exportarExcelAtualizacaoSAP(){
+
+      const alert =  Swal.fire({
+        title: 'Aviso',
+        text:  `Para esta opção nenhum filtro será levado em consideração e o arquivo será gerado com todos os registros que foram atualizados.`,
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonText: 'Ok!',
+      }).then(() => {
+         return this.apiService.downloadfile(`v1/PlanejamentoOrcamentario/obter-atualizacao-planejamento-item-excel`);
+      });
+
+
+  }
+
 
 public async onSalvarMudancasStatus(): Promise<void> {
 
