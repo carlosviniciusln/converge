@@ -84,12 +84,14 @@
 
 
 
-          <p-paginator *ngIf="ListaLimitePlanejamentoHistorico.length > 10"
-            [rows]="100"
+          <p-paginator
+            [rows]="10"
             [totalRecords]="ListaLimitePlanejamentoHistorico.length"
           ></p-paginator>
         </div>
       </p-card>
+
+
 
       <!-- Modal Detalhes -->
       <p-dialog

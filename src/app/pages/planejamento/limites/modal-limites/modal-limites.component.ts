@@ -209,16 +209,16 @@ export class ModalLimitesComponent implements OnInit {
 
 
   public visualizaHistorico(noRubrica: string, noUnidadeDemandante: string){
-    console.log("TESTE 1", this.formCadastro.get('nuLimitePlanejamento').value)
+
       const modalRef = this.modalService.open(ModalHistoricoComponent, {
 
         ariaLabelledBy: 'modal-basic-title',
         size: 'lg',
-        fullscreen: 'xl',        // isso só afeta largura em breakpoints
+        fullscreen: 'xl',
         windowClass: 'modal-h-90',
         backdrop: 'static',
         keyboard: false,
-        scrollable: true,        // permite scroll no body
+        scrollable: true,
 
         });
 
@@ -226,20 +226,6 @@ export class ModalLimitesComponent implements OnInit {
         modalRef.componentInstance.nuLimitePlanejamento = this.formCadastro.get('nuLimitePlanejamento').value;
         modalRef.componentInstance.noRubrica = noRubrica;
         modalRef.componentInstance.noUnidadeDemandante = noUnidadeDemandante;
-        // modalRef.componentInstance.nuPlanejamentoOrcamento = nuPlanejamentoOrcamento;
-        // modalRef.componentInstance.isEditable = isEditable;
-        // modalRef.componentInstance.statusExercicio = this.statusExercio;
-        // modalRef.componentInstance.isCadastro = isCadastro;
-        // modalRef.componentInstance.tipoModal = tipoModal;
-        // modalRef.componentInstance.nuAno = (planejamento?.nU_EXERCICIO_ORCAMENTO != null? planejamento?.nU_EXERCICIO_ORCAMENTO : nuAno);
-        // modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
-        //   if (data) {
-        //     this.obterPlanejamentosOrc();
-        //   }
-        // });
-
-        // modalRef.componentInstance.ano = this.anoExercicio;
-        // modalRef.componentInstance.tipo = this.ordemTipoExercicio;
   }
 
   get f() {

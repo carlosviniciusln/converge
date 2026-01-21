@@ -53,8 +53,7 @@ export class ModalHistoricoComponent implements OnInit {
     tamanhoPagina: 10,
     nuPlanejamento: null,
     tpOperacao: null,
-    nuLimitePlanejamento: null,
-    nuLimitePlanejado: null
+    nuLimitePlanejamento: null
   };
 
 
@@ -95,9 +94,7 @@ export class ModalHistoricoComponent implements OnInit {
    public async obterLimitePlanejamentoHistorico(): Promise<void> {
       try {
 
-        console.log("TESTE 1", this.nuLimitePlanejamento)
         this.filtroRegistros.nuLimitePlanejamento = this.nuLimitePlanejamento;
-        this.filtroRegistros.nuLimitePlanejado = this.nuLimitePlanejamento;
 
         const response = await this.apiService.get<
           ApiResponse<Gcptb061LimitePlanejamentoHistoricoResponse>
@@ -109,8 +106,6 @@ export class ModalHistoricoComponent implements OnInit {
         if(response.data.listaHistorico.length == 0){
           this.toastr.warning(`Rubrica ${this.noRubrica} sem alterações.`, "Aviso")
         }
-
-        console.log(response, "TESTE 2")
 
         this.ListaLimitePlanejamentoHistorico = response.data.listaHistorico;
       } catch (error) {
