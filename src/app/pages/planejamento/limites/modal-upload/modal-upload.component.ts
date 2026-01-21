@@ -112,12 +112,12 @@ export class ModalUploadComponent implements OnInit {
               return false;
             }
           });
-      
+
           if(!alert){
             return;
           }
 
-          
+
       this.submitted = true;
       this.form.markAllAsTouched();
       const formData = this.toFormData(this.form);
@@ -133,7 +133,7 @@ export class ModalUploadComponent implements OnInit {
       }
 
         let response = await this.apiService.postFormData<any>(
-          `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-limite-planilha`,
+          `v1/Limites/cadastrar-limite-planilha`,
           formData
         );
       if (response.data.succeeded) {

@@ -82,19 +82,29 @@
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <div class="col-md-12">
-        <div class="row">
-          <div class="col-md-4 pr-0 text-right"></div>
-          <div class="col-md-8 pr-0 text-right">
+
+     <div style="
+     display: flex;
+     padding: 25px 0px 0px 0px;
+     justify-content: space-between;">
             <button
+              class="btn-sm btn-default"
+              type="submit"
+              (click)="visualizaHistorico(rubrica, unidadeDemandante)"
+            >
+             <span style="font-size: 0.9rem;" class="pi pi-search"></span> Visualizar Histórico
+            </button>
+
+      <div>
+              <button
               class="btn-sm btn-default"
               type="submit"
               (click)="onSubmit()"
             >
               {{actionButtonLabel}}
             </button>
-              <button
+
+             <button
                 style="margin-left: 10px;"
                 *ngIf="currentPageAction === PageAction.Alterar && registro"
                 class="btn-sm btn-danger mr-2"
@@ -103,9 +113,9 @@
                 (click)="onDelete()">
                 Excluir
             </button>
+
           </div>
-        </div>
-      </div>
+
     </div>
      </form>
 </ng-container>
@@ -214,5 +224,5 @@
 
 
 
- 
+
 </div>

@@ -138,13 +138,13 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     CurrencyMaskModule,
     FileUploadModule,
     SharedLibraryModule,
-        MatListModule,
-        TimelineModule,
-        CardModule,
-        TableModule,
-        DropdownModule,
-        FormsModule,
-        PaginatorModule
+    MatListModule,
+    TimelineModule,
+    CardModule,
+    TableModule,
+    DropdownModule,
+    FormsModule,
+    PaginatorModule
   ],
   declarations: [
     DashboardComponent,
