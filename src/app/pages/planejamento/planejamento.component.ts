@@ -368,6 +368,7 @@ export class PlanejamentoComponent implements OnInit {
     });
 
     modalRef.componentInstance.nuPlanejamento = nuPlanejamento;
+    modalRef.componentInstance.modeloAntigo = true;
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.tipoModal = tipoModal;
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
@@ -428,16 +429,16 @@ export class PlanejamentoComponent implements OnInit {
     this.selectedObjeto = null;
 
     this.filtroRegistros = {
-      pageNumber: 1,                                   
-      pageSize: this.filtroRegistros.pageSize ?? 12,   
+      pageNumber: 1,
+      pageSize: this.filtroRegistros.pageSize ?? 12,
       NuAno: null,
       NuFilial: null,
       NuContrato: null,
       NuPlanejamentoStatus: null,
       NuPlanejamentoTipo: null,
       NuDemandaTipo: null,
-      IsDigital: null,   
-      DeObjeto: ''       
+      IsDigital: null,
+      DeObjeto: ''
     };
 
     this.loading = true;

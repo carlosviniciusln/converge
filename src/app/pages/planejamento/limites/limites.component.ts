@@ -581,10 +581,6 @@ export class LimitesComponent implements OnInit {
   }
 
   openModalPlanejamento(acao: string, ud?: any, registro?: any) {
-
-    console.log(acao, "PARAMETRO 1")
-    console.log(ud, "PARAMETRO 2")
-    console.log(registro, "PARAMETRO 3")
     if (acao === 'cadastro') {
       const modalRef = this.modalService.open(ModalLimitesComponent, {
         ariaLabelledBy: 'modal-basic-title', size: 'md',

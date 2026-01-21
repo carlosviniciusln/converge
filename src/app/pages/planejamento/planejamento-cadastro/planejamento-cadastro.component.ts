@@ -60,6 +60,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
   @Input() public isEditable: boolean;
   @Input() public statusExercicio: string;
   @Input() public isCadastro: boolean;
+  @Input() public modeloAntigo: boolean;
+
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   gcpvw008Mensalizacao: Gcpvw008Mensalizacao[] = [];
   gcpvw008MensalizacaoAnoExercicio: Gcpvw008Mensalizacao[] = [];
@@ -237,7 +239,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
         this.isPerfilPrivilegiado = true;
       }
     }
+    if(this.modeloAntigo != true){
     this.obterPlanejamentoItemHistorico();
+    }
+
   }
 
   verDetalhes(event: any) {

@@ -194,6 +194,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.statusExercicio = this.statusExercio;
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
+    modalRef.componentInstance.modeloAntigo = false;
     modalRef.componentInstance.nuAno = (planejamento?.nU_EXERCICIO_ORCAMENTO != null? planejamento?.nU_EXERCICIO_ORCAMENTO : nuAno);
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
