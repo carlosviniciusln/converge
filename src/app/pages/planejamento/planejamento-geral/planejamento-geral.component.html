@@ -159,7 +159,7 @@
                   </th>
                   <th>
                     <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
-                    <div *ngIf="!(selectStatusPlanejamentoCompleto?.length > 0) || !isPerfilPrivilegiado" 
+                    <div *ngIf="!(selectStatusPlanejamentoCompleto?.length > 0) || !isPerfilPrivilegiado"
                       class="p-d-flex p-jc-between text-center">
                       Status
                     </div>
@@ -223,7 +223,7 @@
                   </td>
                   <td class="col-status" style="text-align: center" (click)="$event.stopPropagation()"
                     (dblclick)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()"
-                    (keydown.space)="$event.stopPropagation()">                    
+                    (keydown.space)="$event.stopPropagation()">
                     <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && (perfilOrcamento || perfilAdm || (perfilOperacional && planejamento.cO_FILIAL == perfilUnidade) || (perfilTorre && planejamento.cO_FILIAL == perfilUnidade))">
                       <p-checkbox [(ngModel)]="planejamento.sT_SELECIONADO" [binary]="true" *ngIf="isPerfilPrivilegiado"
                         (onChange)="onToggleItemSelecionado()" (click)="$event.stopPropagation()">

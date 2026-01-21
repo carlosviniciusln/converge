@@ -26,7 +26,7 @@ export interface LimitesRubricasUpdateV2 {
     nuPlanejamento: number;
     nuFilial: number;
     nuRubrica: number;
-    novoLimite: number;
+    vrLimite: number;
     nuLimitePlanejamento: number;
 }
 
@@ -37,7 +37,7 @@ export interface UsoLimitesRubricaResponse {
     vrLimiteRubricaDisponivelAgrupado : number;
     vrLimiteRubricaUtilizadoAgrupado : number;
     peUtilizado : number;
-    
+
     gcptb003Rubrica: RubricaGrupo;
     gcptb010Orcamento: Orcamento;
     gcptb019PlanejamentoTipo: PlanejamentoTipoResponse;
