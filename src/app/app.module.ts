@@ -15,7 +15,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
 
 import ptBr from '@angular/common/locales/pt';
-import { CommonModule, registerLocaleData } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe, registerLocaleData } from '@angular/common';
 import { LoaderInterceptor } from "./shared/interceptors/loader.interceptor";
 import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
 
@@ -142,6 +142,8 @@ const maskConfig: Partial<IConfig> = {
   ],
   providers: [
     AuthGuard,
+    CurrencyPipe,
+    DecimalPipe,
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },

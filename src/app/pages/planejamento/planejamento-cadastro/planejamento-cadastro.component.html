@@ -559,7 +559,6 @@
             <ng-template pTemplate="content" let-event>
               <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
                 <div class="card-content">
-
                   <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
                   <small class="text-gray-500">
                     {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
@@ -595,6 +594,7 @@
         header="Detalhes da Alteração"
         [(visible)]="dialogVisible"
         [modal]="true"
+        [draggable]="false"
         [style]="{ width: '500px' }"
         [closable]="true"
       >
@@ -607,16 +607,17 @@
             </tr>
           </ng-template>
 
+
       <ng-template pTemplate="body" let-campo>
         <tr>
           <td class="diff-row">
             <strong>{{ campo.campo }}:</strong>
           </td>
           <td>
-              <span class="antes">{{ campo.antes }}</span>
+              <span class="antes">{{ campo.antes | formatDiff }}</span>
           </td>
           <td>
-               <span class="depois">{{ campo.depois }}</span>
+               <span class="depois">{{ campo.depois | formatDiff }}</span>
           </td>
         </tr>
       </ng-template>

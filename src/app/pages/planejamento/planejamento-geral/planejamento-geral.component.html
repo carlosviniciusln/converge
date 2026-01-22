@@ -132,6 +132,13 @@
                       Salvar status
                     </button>
                   </div>
+
+                  <div class="pl-1 pr-1 me-3" *ngIf="perfilOrcamento || perfilAdm">
+                    <button type="button" class="btn-sm btn-add btn-save-status" (click)="exportarExcelAtualizacaoSAP()"
+                      title="Gerar Atualização SAP">
+                      Gerar Atualização SAP
+                    </button>
+                  </div>
                 </div>
               </ng-template>
               <ng-template pTemplate="header">
