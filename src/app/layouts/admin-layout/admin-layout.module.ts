@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe, registerLocaleData } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -94,10 +94,13 @@ import { MatListModule } from '@angular/material/list';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
 import { PaginatorModule } from 'primeng/paginator';
-import { PlanejamentoNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-novo.component';
-import { PlanejamentoOrcamentarioNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-lista/planejamento-orcamentario-novo.component';
-import { PlanejamentoCadastroNovoComponent } from 'src/app/pages/planejamento-novo/planejamento-cadastro-novo/planejamento-cadastro-novo.component';
+import ptBr from '@angular/common/locales/pt'
+import { FormatDiffPipe } from 'src/app/components/pipes/format-diff.pipe';
+import { MenuModule } from 'primeng/menu';
 
+
+
+registerLocaleData(ptBr);
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'right',
@@ -141,13 +144,14 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     CurrencyMaskModule,
     FileUploadModule,
     SharedLibraryModule,
-        MatListModule,
-        TimelineModule,
-        CardModule,
-        TableModule,
-        DropdownModule,
-        FormsModule,
-        PaginatorModule
+    MatListModule,
+    TimelineModule,
+    CardModule,
+    TableModule,
+    DropdownModule,
+    FormsModule,
+    PaginatorModule,
+    MenuModule
   ],
   declarations: [
     DashboardComponent,
@@ -192,6 +196,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     GraficoArtigoComponent,
     ConsumoArpComponent,
     DetalheFinanceiroComponent,
+    FormatDiffPipe
     // UserComponent,
     // TablesComponent,
     // IconsComponent,
@@ -199,18 +204,15 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     // NotificationsComponent,
     // MapComponent,
     // RtlComponent
-
-    /* MODULO PLANEJAMENTO NOVO */
-
-    PlanejamentoNovoComponent,
-    PlanejamentoOrcamentarioNovoComponent,
-    PlanejamentoCadastroNovoComponent
   ],
   providers: [
     CustomerService,
     ConfirmationService,
     NgbActiveModal,
     DatePipe,
+    CurrencyPipe,
+    DecimalPipe,
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig },
   ],
   bootstrap: [AdminLayoutComponent],

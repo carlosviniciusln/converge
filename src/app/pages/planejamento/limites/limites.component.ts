@@ -14,6 +14,8 @@ import { ModalUploadComponent } from './modal-upload/modal-upload.component';
 
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { LimitesModel } from 'src/app/models/limites-model';
+import Swal from 'sweetalert2';
+import { ModalHistoricoComponent } from './modal-historico/modal-historico.component';
 
 @Component({
   selector: 'app-limites',
@@ -97,6 +99,25 @@ export class LimitesComponent implements OnInit {
     );
   }
 
+    public visualizaHistorico(nuPlanejamento: any){
+
+        const modalRef = this.modalService.open(ModalHistoricoComponent, {
+
+          ariaLabelledBy: 'modal-basic-title',
+          size: 'lg',
+          fullscreen: 'xl',
+          windowClass: 'modal-h-90',
+          backdrop: 'static',
+          keyboard: false,
+          scrollable: true,
+
+          });
+
+          modalRef.componentInstance.nuPlanejamento = nuPlanejamento.nuPlanejamento;
+          modalRef.componentInstance.nuLimitePlanejamento = null;
+          modalRef.componentInstance.dePlanejamento = nuPlanejamento.deOrdemProg;
+    }
+
   private norm(sel: any): string {
     if (!sel) return '';
     const v = typeof sel === 'string' ? sel : (sel?.label ?? sel?.value ?? '').toString();
@@ -157,6 +178,7 @@ export class LimitesComponent implements OnInit {
 
       if (!acc[grupo]) {
         acc[grupo] = {
+          nuPlanejamento: item.nuPlanejamento,
           coExercicio: item.coExercicio,
           deOrdemProg: item.deOrdemProg,
           vrLimite: 0,
@@ -179,7 +201,7 @@ export class LimitesComponent implements OnInit {
   }
 
   private hydrateCombos(master: LimitesModel[]) {
-    
+
     const listaDistinta = Array.from(new Set(master.map(item => item.deOrdemProg)));
     listaDistinta.sort((a, b) => {
       const numA = parseFloat(a);
@@ -230,7 +252,7 @@ export class LimitesComponent implements OnInit {
     this.loading = false;
     this.cd.detectChanges();
   }
-  
+
   public async obterValores() {
     try {
       this.loading = true;
@@ -309,20 +331,19 @@ export class LimitesComponent implements OnInit {
 
     return base;
   }
-  
+
   filterItem() {
     const baseFiltrada = this.filtraLista();
     this.renderGrid(baseFiltrada);
     this.hydrateCombos(baseFiltrada);
   }
-  
+
   limparFiltros() {
     this.selectedExercicio = null as any;
     this.selectedTipo = null;
     this.selectedRubrica = null;
     this.selectedUnidadeDemandante = null;
 
-    //Resetar filtros na planilha
     this.filtroRegistros = {
       pageNumber: 1,
       pageSize: 10,
@@ -333,8 +354,6 @@ export class LimitesComponent implements OnInit {
     };
 
     this.renderGrid(this.listaCompletaMaster);
-
-    //Resetar filtros na tela
     this.listaExercicios = [...this.initialListaExercicios];
     this.selectTipo      = [...this.initialSelectTipo];
     this.selectRubrica   = [...this.initialSelectRubrica];
@@ -449,7 +468,7 @@ export class LimitesComponent implements OnInit {
       if (!acc[chave]) {
         acc[chave] = {
           nuLimitePlanejamento: item.nuLimitePlanejamento,
-          nuPlanejamento: item.nuPlanejamento, 
+          nuPlanejamento: item.nuPlanejamento,
           coExercicio: item.coExercicio,
           noRubricaTipo: item.noRubricaTipo,
           coRubrica: item.coRubrica,
@@ -630,6 +649,22 @@ export class LimitesComponent implements OnInit {
       backdrop: 'static',
       keyboard: false,
     });
+  }
+
+  async openModalDownload() {
+    if(this.selectedExercicio == null || this.selectedExercicio == undefined ){
+      await Swal.fire({
+              title: 'Atenção!',
+              text: 'Por favor, para fazer o download do arquivo com o layout de upload o filtro de Exercício precisa estar preenchido.',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+            });
+            return;
+    }else{
+       await this.apiService.get<ApiResponse<LimitesModel[]>>(
+         `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/limites-exercicio`
+       );
+    }
   }
 
   formatBRLDiffNoBreak(value: number | null | undefined): string {

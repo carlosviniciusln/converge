@@ -4,7 +4,7 @@ import {
   FormBuilder,
   Validators,
 } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/services/api.service';
 import { PageAction, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
@@ -28,6 +28,7 @@ import {
 } from 'src/app/models/limites-model';
 import { Select2Data } from 'ng-select2-component';
 import Swal from 'sweetalert2';
+import { ModalHistoricoComponent } from '../modal-historico/modal-historico.component';
 
 @Component({
   selector: 'app-modal-limites',
@@ -82,18 +83,19 @@ export class ModalLimitesComponent implements OnInit {
         type: PageAction.Alterar,
         title: 'Edição',
         subTitle: 'Edição de limites rubrica',
-        actionButtonLabel: 'Alterar',
+        actionButtonLabel: 'Salvar',
       },
       {
         type: PageAction.Cadastrar,
         title: 'Cadastro',
         subTitle: 'Cadastro de limites rubrica',
-        actionButtonLabel: 'Cadastrar',
+        actionButtonLabel: 'Salvar',
       },
     ];
 
   constructor(
     public activeModal: NgbActiveModal,
+    private modalService: NgbModal,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private toastr: ToastrService
@@ -205,6 +207,28 @@ export class ModalLimitesComponent implements OnInit {
     }
   }
 
+
+  public visualizaHistorico(noRubrica: string, noUnidadeDemandante: string){
+
+      const modalRef = this.modalService.open(ModalHistoricoComponent, {
+
+        ariaLabelledBy: 'modal-basic-title',
+        size: 'lg',
+        fullscreen: 'xl',
+        windowClass: 'modal-h-90',
+        backdrop: 'static',
+        keyboard: false,
+        scrollable: true,
+
+        });
+
+
+        modalRef.componentInstance.nuLimitePlanejamento = this.formCadastro.get('nuLimitePlanejamento').value;
+        modalRef.componentInstance.nuPlanejamento = null;
+        modalRef.componentInstance.noRubrica = noRubrica;
+        modalRef.componentInstance.noUnidadeDemandante = noUnidadeDemandante;
+  }
+
   get f() {
     return this.formCadastro.controls;
   }
@@ -241,7 +265,7 @@ export class ModalLimitesComponent implements OnInit {
       }
       if (nuRubricaNum > 0) {
         const response = await this.apiService.postFormData<any>(
-          `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/cadastrar-limite`,
+          `v1/Limites`,
           formData
         );
         if (response.data.succeeded) {
@@ -313,12 +337,12 @@ public async Alterar(): Promise<void> {
       nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
       nuFilial: this.formCadastro.controls['nuUnidadeDemandante'].value,
       nuRubrica: this.formCadastro.controls['nuRubrica'].value,
-      novoLimite: valorNumerico,
+      vrLimite: valorNumerico,
       nuLimitePlanejamento: this.formCadastro.controls['nuLimitePlanejamento'].value
     };
 
     await this.apiService.put<LimitesRubricasUpdateV2>(
-      `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/Atualizar-limite`,
+      `v1/Limites`,
       updateRequest
     );
 
@@ -364,7 +388,7 @@ public async onDelete(): Promise<void> {
   }
 
   try {
-    let urlDelete = `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/inativar-limite`;
+    let urlDelete = `v1/Limites/inativar`;
 
     const result = await this.apiService.put<LimitesRubricasUpdateV2>(
       `${urlDelete}`, id

@@ -344,4 +344,30 @@ rowsOptions = [
         return ' #FFA6A3';
     }
   }
+
+  limparFiltros(): void {
+    this.selectedTipoContrato = null;
+    this.selectedTipoFornecedor = null;
+    this.selectedTipoTpContrato = null;
+    this.selectedTipoGestor = null;
+    this.selectedTipoStatus = null;
+    this.selectedTipoAcuracia = null;
+
+    this.filtroRegistros = {
+      pageNumber: 1,                                     
+      pageSize: this.filtroRegistros.pageSize ?? 10,     
+      Contrato: null,
+      Fornecedor: null,
+      Tipo: null,
+      Gestor: null,
+      Status: null,
+      TipoAcuracia: null,
+      NoTipoArp: null,
+      Field: null,  
+      Order: null    
+    };
+
+    this.loading = true;
+    this.obterContratos();
+  }
 }

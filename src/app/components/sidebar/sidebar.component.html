@@ -79,45 +79,43 @@
       </a>
       <div [ngClass]="isOrcamentoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
         <ul class="nav">
-          <li routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/planejamento">
-              <p>Planejamento</p>
-            </a>
-          </li>
-
-          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/planejamento/limites">
-              <p>Limites</p>
-            </a>
-          </li>
 
           <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/planejamento-orcamentario">
-              <p>Planejamento novo</p>
+              <p>Planejamento</p>
             </a>
           </li>
 
             <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/orcamento/limites">
-              <p>Limites novo</p>
+              <p>Limites</p>
             </a>
           </li>
 
-          <!-- <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/planejamento-orcamentario-novo">
-              <p>Planejamento teste</p>
-            </a>
-          </li> -->
           <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/valores-executados">
               <p>Valores Executados</p>
             </a>
           </li>
+
           <li *ngIf="isPerfilOrcamento" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/export-data-pagamento">
               <p>Extração de Pagamentos</p>
             </a>
           </li>
+
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento">
+              <p>Planejamento Legado</p>
+            </a>
+          </li>
+
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento/limites">
+              <p>Limites Legado</p>
+            </a>
+          </li>
+
         </ul>
       </div>
     </li>
@@ -139,7 +137,7 @@
             </a>
           </li>
           <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/relatorio-contratos">
+            <a class="nav-link" href="#/relatorio-contrato">
               <p>Relatório de Contratos</p>
             </a>
           </li>

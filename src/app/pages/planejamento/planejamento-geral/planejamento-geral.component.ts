@@ -23,6 +23,7 @@ import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, Plane
 import { TableLazyLoadEvent } from 'primeng/table';
 import Swal from 'sweetalert2';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -113,6 +114,9 @@ export class PlanejamentoGeralComponent implements OnInit {
     tipoPlanejamento: ''
   };
 
+
+  items: MenuItem[];
+
   constructor(
     private apiService: ApiService,
     private modalService: NgbModal,
@@ -121,6 +125,38 @@ export class PlanejamentoGeralComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.obterPermissoes();
+     this.items = [
+
+            {
+                label: 'Novo Registro',
+                icon: 'pi pi-plus',
+                command: () => {
+                    this.openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio);
+                }
+            },
+            {
+                label: 'Salvar Status',
+                icon: "pi pi-pencil",
+                command: () => {
+                    this.onSalvarMudancasStatus();
+                }
+            },
+
+            {
+                label: 'Gerar Excel',
+                icon: 'tim-icons icon-cloud-download-93',
+                command: () => {
+                    this.downloadPlanejamentoDesembolso();
+                }
+            },
+            {
+                label: 'Gerar Atualização SAP',
+                icon: 'tim-icons icon-cloud-download-93',
+                command: () => {
+                    this.exportarExcelAtualizacaoSAP();
+                }
+            }
+        ];
   }
 
   async ngOnInit(): Promise<void> {
@@ -194,6 +230,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     modalRef.componentInstance.statusExercicio = this.statusExercio;
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
+    modalRef.componentInstance.modeloAntigo = false;
     modalRef.componentInstance.nuAno = (planejamento?.nU_EXERCICIO_ORCAMENTO != null? planejamento?.nU_EXERCICIO_ORCAMENTO : nuAno);
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
@@ -215,6 +252,21 @@ export class PlanejamentoGeralComponent implements OnInit {
       label: status.noPlanejamentoStatus,
       value: status.nuPlanejamentoStatus
     }));
+  }
+
+  public  exportarExcelAtualizacaoSAP(){
+
+      const alert =  Swal.fire({
+        title: 'Aviso',
+        text:  `Para esta opção nenhum filtro será levado em consideração e o arquivo será gerado com todos os registros que foram atualizados.`,
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonText: 'Ok!',
+      }).then(() => {
+         return this.apiService.downloadfile(`v1/PlanejamentoOrcamentario/obter-atualizacao-planejamento-item-excel`);
+      });
+
+
   }
 
 
@@ -304,7 +356,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
 
   atualizarStatusSelecionados() {
     const itensNaoSelecionados = this.planejamentos.filter(p => p.sT_SELECIONADO == false)
-     console.log("itensNaoSelecionados", itensNaoSelecionados)
+
       this.planejamentos.forEach(p1 => {
           const existe = itensNaoSelecionados.some(p2 => p2.nU_ORC === p1.nU_ORC);
           if (existe) {
@@ -435,7 +487,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
     this.loading = true;
     try {
       const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
-      (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO_NOVO}`, this.filtroRegistros);
+      (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
       this.planejamentos = response?.data?.contratos.map(p => ({...p,sT_SELECIONADO: false }));
       this.selectContratos = (response?.data?.listaContrato ?? []).map(c => ({ label: c, value: c }));
       this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));

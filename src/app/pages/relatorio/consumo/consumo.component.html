@@ -12,7 +12,7 @@
                             <div class="col-md-1 pl-1 pr-1 table-header-title">Relatório de Consumo
                             </div>
                             <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button> -->
-                            <div class="col-md-1 pl-1 pr-1 text-right">
+                            <div class=" pl-1 pr-1">
                                 <!-- *ngIf="isAllowedToExport" -->
                                 <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()"
                                     *ngIf="permissions?.Exportar ?? false">
@@ -64,6 +64,12 @@
                                    
                                 </p-dropdown>
                             </div>
+
+                            <div>
+                                <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+                                (click)="limparFiltros()"></button>
+                            </div>
+                            
                         </div>
                     </div>
                 </ng-template>

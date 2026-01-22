@@ -15,7 +15,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
 
 import ptBr from '@angular/common/locales/pt';
-import { CommonModule, registerLocaleData } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe, registerLocaleData } from '@angular/common';
 import { LoaderInterceptor } from "./shared/interceptors/loader.interceptor";
 import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
 
@@ -59,9 +59,15 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from "primeng/api";
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { CargaGerais } from "src/assets/mock/Gcptb051CargaPlanejamentoItem";
-import { ModalPlanejamentoNovoComponent } from "./pages/planejamento-novo/planejamento-lista/modal-planejamento/modal-planejamento-novo.component";
-import { PlanejamentoGeralNovoComponent } from "./pages/planejamento-novo/planejamento-geral-novo/planejamento-geral-novo.component";
-import { RelatorioContratosComponent } from './pages/planejamento/relatorio/relatorio-contratos/relatorio-contratos.component';
+import { RelatorioContratoComponent } from './pages/relatorio/relatorio-contrato/relatorio-contrato.component';
+import { ModalHistoricoComponent } from "./pages/planejamento/limites/modal-historico/modal-historico.component";
+import { MatListModule } from "@angular/material/list";
+import { CardModule } from "primeng/card";
+import { TimelineModule } from "primeng/timeline";
+import { DropdownModule } from "primeng/dropdown";
+import { PaginatorModule } from "primeng/paginator";
+import { DialogModule } from "primeng/dialog";
+import { MenuModule } from "primeng/menu";
 
 registerLocaleData(ptBr);
 
@@ -85,6 +91,7 @@ const maskConfig: Partial<IConfig> = {
     RouterModule,
     AppRoutingModule,
     HttpClientModule,
+    DialogModule,
     SplitButtonModule,
     AdminLayoutModule,
     ReactiveFormsModule,
@@ -93,8 +100,14 @@ const maskConfig: Partial<IConfig> = {
     HighchartsChartModule,
     MatIconModule,
     SharedLibraryModule,
+    MatListModule,
+    TimelineModule,
+    CardModule,
+    DropdownModule,
+    PaginatorModule,
     MatToolbarModule,MatTableModule,
     FileUploadModule,
+    MenuModule,
     NgxMaskModule.forRoot(maskConfig)
   ],
   exports: [
@@ -125,16 +138,14 @@ const maskConfig: Partial<IConfig> = {
     LimitesComponent,
     ModalLimitesComponent,
     ModalUploadComponent,
+    ModalHistoricoComponent,
     //AuthLayoutComponent
-
-    /*PLANEJAMENTOS NOVO */
-
-    ModalPlanejamentoNovoComponent,
-    PlanejamentoGeralNovoComponent,
-    RelatorioContratosComponent
+    RelatorioContratoComponent
   ],
   providers: [
     AuthGuard,
+    CurrencyPipe,
+    DecimalPipe,
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
