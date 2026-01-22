@@ -5,8 +5,11 @@ export interface Gcptb061LimitePlanejamentoHistoricoDTO{
         nuPlanejamento? : number;
         nuHistorico? : number;
         dhLog? : Date;
-        nUPlanejamentoItem? : number;
+        nuLimitePlanejamento? : number;
         deRegistroAntigo? : string;
+        deRubrica?: string;
+        noRubrica?: string;
+        sgFilial?: string;
         deRegistroNovo? : string;
         deObservacao? : string;
         nuUsuarioAlteracao? : number;

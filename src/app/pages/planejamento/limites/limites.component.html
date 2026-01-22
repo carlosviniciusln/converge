@@ -67,6 +67,7 @@
             <th style="width: 10%;font-size: 14px;  background-color: #499c70; color: white; text-align: right;">Solicitado</th>
             <th pSortableColumn="vrDiferenca"
               style="font-size: 14px; background-color:#499c70; color: white; text-align: right;">Diferença</th>
+            <th style="font-size: 14px; background-color:#499c70; color: white; text-align: right;"></th>
           </tr>
         </ng-template>
 
@@ -86,6 +87,12 @@
             <span class="diff__val">{{ formatBRLDiffNoBreak(visaoum.vrLimite - visaoum.vrPlanejamento) }}</span>
             <span *ngIf="(visaoum.vrLimite - visaoum.vrPlanejamento) !== 0" class="diff__alert">!</span></span>
             </td>
+
+            <td style="color: white; text-align: right;">
+            <i title="Visualizar Histórico" style="cursor: pointer;" class="pi pi-clock" (click)="visualizaHistorico(visaoum)"></i>
+            <i class="pi pi-history"></i>
+            </td>
+
           </tr>
         </ng-template>
 

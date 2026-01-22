@@ -67,6 +67,7 @@ import { TimelineModule } from "primeng/timeline";
 import { DropdownModule } from "primeng/dropdown";
 import { PaginatorModule } from "primeng/paginator";
 import { DialogModule } from "primeng/dialog";
+import { MenuModule } from "primeng/menu";
 
 registerLocaleData(ptBr);
 
@@ -106,6 +107,7 @@ const maskConfig: Partial<IConfig> = {
     PaginatorModule,
     MatToolbarModule,MatTableModule,
     FileUploadModule,
+    MenuModule,
     NgxMaskModule.forRoot(maskConfig)
   ],
   exports: [

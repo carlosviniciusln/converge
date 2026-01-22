@@ -96,6 +96,7 @@ import { CardModule } from 'primeng/card';
 import { PaginatorModule } from 'primeng/paginator';
 import ptBr from '@angular/common/locales/pt'
 import { FormatDiffPipe } from 'src/app/components/pipes/format-diff.pipe';
+import { MenuModule } from 'primeng/menu';
 
 
 
@@ -149,7 +150,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     TableModule,
     DropdownModule,
     FormsModule,
-    PaginatorModule
+    PaginatorModule,
+    MenuModule
   ],
   declarations: [
     DashboardComponent,
