@@ -1,7 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title" id="modal-basic-title">
     <b>{{ titulo }}</b
-    ><br /><small> Rubrica: {{ this.noRubrica }} - UD: {{this.noUnidadeDemandante}}</small>
+    ><br />
+    <small *ngIf="this.noRubrica != null"> Rubrica: {{ this.noRubrica }} - UD: {{this.noUnidadeDemandante}}</small>
+    <small *ngIf="this.dePlanejamento != null"> Planejamento: {{ this.dePlanejamento }} </small>
   </h4>
   <button
     type="button"
@@ -61,7 +63,9 @@
               <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
                 <div class="card-content">
 
-                  <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
+                  <strong *ngIf="event.deObservacao">{{ event.deObservacao }}</strong>
+                  <small>{{event.coRubrica}} - {{event.deRubrica}}</small>
+                  <small>{{event.sgFilial}}</small>
                   <small class="text-gray-500">
                     {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
                   </small>
@@ -86,7 +90,7 @@
 
           <p-paginator
             [rows]="10"
-            [totalRecords]="ListaLimitePlanejamentoHistorico.length"
+            [totalRecords]="ListaLimitePlanejamentoHistorico.length ? 1 : 1"
           ></p-paginator>
         </div>
       </p-card>

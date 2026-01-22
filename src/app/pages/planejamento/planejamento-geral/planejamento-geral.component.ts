@@ -23,6 +23,7 @@ import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, Plane
 import { TableLazyLoadEvent } from 'primeng/table';
 import Swal from 'sweetalert2';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -113,6 +114,9 @@ export class PlanejamentoGeralComponent implements OnInit {
     tipoPlanejamento: ''
   };
 
+
+  items: MenuItem[];
+
   constructor(
     private apiService: ApiService,
     private modalService: NgbModal,
@@ -121,6 +125,38 @@ export class PlanejamentoGeralComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.obterPermissoes();
+     this.items = [
+
+            {
+                label: 'Novo Registro',
+                icon: 'pi pi-plus',
+                command: () => {
+                    this.openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio);
+                }
+            },
+            {
+                label: 'Salvar Status',
+                icon: "pi pi-pencil",
+                command: () => {
+                    this.onSalvarMudancasStatus();
+                }
+            },
+
+            {
+                label: 'Gerar Excel',
+                icon: 'tim-icons icon-cloud-download-93',
+                command: () => {
+                    this.downloadPlanejamentoDesembolso();
+                }
+            },
+            {
+                label: 'Gerar Atualização SAP',
+                icon: 'tim-icons icon-cloud-download-93',
+                command: () => {
+                    this.exportarExcelAtualizacaoSAP();
+                }
+            }
+        ];
   }
 
   async ngOnInit(): Promise<void> {

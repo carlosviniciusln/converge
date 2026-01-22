@@ -224,6 +224,7 @@ export class ModalLimitesComponent implements OnInit {
 
 
         modalRef.componentInstance.nuLimitePlanejamento = this.formCadastro.get('nuLimitePlanejamento').value;
+        modalRef.componentInstance.nuPlanejamento = null;
         modalRef.componentInstance.noRubrica = noRubrica;
         modalRef.componentInstance.noUnidadeDemandante = noUnidadeDemandante;
   }

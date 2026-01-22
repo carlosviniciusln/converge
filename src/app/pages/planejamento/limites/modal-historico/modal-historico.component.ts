@@ -17,12 +17,14 @@ export class ModalHistoricoComponent implements OnInit {
 
 
   @Input() nuLimitePlanejamento : number;
-  @Input() noRubrica : string;
-  @Input() noUnidadeDemandante : string;
+  @Input() noRubrica : string = null;
+  @Input() noUnidadeDemandante : string = null;
+  @Input() dePlanejamento : string;
+  @Input() nuPlanejamento : number;
 
   public ListaLimitePlanejamentoHistorico: Gcptb061LimitePlanejamentoHistoricoDTO[] = [];
-  public titulo = "Histórico"
-  // public subTitulo = `${this.noRubrica} - ${this.noUnidadeDemandante}` ;
+  public titulo = "Histórico Limites"
+  public subTitulo = `${this.noRubrica} - ${this.noUnidadeDemandante}` ;
 
   public filtrosSelecionado: string | null = null;
   public loading: boolean = true;
@@ -95,6 +97,7 @@ export class ModalHistoricoComponent implements OnInit {
       try {
 
         this.filtroRegistros.nuLimitePlanejamento = this.nuLimitePlanejamento;
+        this.filtroRegistros.nuPlanejamento = this.nuPlanejamento;
 
         const response = await this.apiService.get<
           ApiResponse<Gcptb061LimitePlanejamentoHistoricoResponse>
@@ -104,7 +107,13 @@ export class ModalHistoricoComponent implements OnInit {
         );
 
         if(response.data.listaHistorico.length == 0){
-          this.toastr.warning(`Rubrica ${this.noRubrica} sem alterações.`, "Aviso")
+
+          if(this.noRubrica){
+              this.toastr.warning(`Rubrica ${this.noRubrica} sem histórico.`, "Aviso");
+          }else{
+             this.toastr.warning(`Planejamento ${this.dePlanejamento} sem histórico.`, "Aviso");
+          }
+
         }
 
         this.ListaLimitePlanejamentoHistorico = response.data.listaHistorico;

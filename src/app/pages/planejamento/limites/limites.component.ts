@@ -15,6 +15,7 @@ import { ModalUploadComponent } from './modal-upload/modal-upload.component';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { LimitesModel } from 'src/app/models/limites-model';
 import Swal from 'sweetalert2';
+import { ModalHistoricoComponent } from './modal-historico/modal-historico.component';
 
 @Component({
   selector: 'app-limites',
@@ -98,6 +99,25 @@ export class LimitesComponent implements OnInit {
     );
   }
 
+    public visualizaHistorico(nuPlanejamento: any){
+
+        const modalRef = this.modalService.open(ModalHistoricoComponent, {
+
+          ariaLabelledBy: 'modal-basic-title',
+          size: 'lg',
+          fullscreen: 'xl',
+          windowClass: 'modal-h-90',
+          backdrop: 'static',
+          keyboard: false,
+          scrollable: true,
+
+          });
+
+          modalRef.componentInstance.nuPlanejamento = nuPlanejamento.nuPlanejamento;
+          modalRef.componentInstance.nuLimitePlanejamento = null;
+          modalRef.componentInstance.dePlanejamento = nuPlanejamento.deOrdemProg;
+    }
+
   private norm(sel: any): string {
     if (!sel) return '';
     const v = typeof sel === 'string' ? sel : (sel?.label ?? sel?.value ?? '').toString();
@@ -158,6 +178,7 @@ export class LimitesComponent implements OnInit {
 
       if (!acc[grupo]) {
         acc[grupo] = {
+          nuPlanejamento: item.nuPlanejamento,
           coExercicio: item.coExercicio,
           deOrdemProg: item.deOrdemProg,
           vrLimite: 0,

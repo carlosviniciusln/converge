@@ -69,18 +69,31 @@
             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros">
               <ng-template pTemplate="caption">
                 <div class="c-menu">
+
+
                   <div class="pl-1 pr-1">
-                    <div class="text-right">
-                      <button type="button" class="btn-sm btn-add"
-                        (click)="openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio)"
-                        style="width: 131px;">
-                        Novo Registro
-                      </button>
-                    </div>
+
+                    <p-button
+                      label="Ações"
+                      icon="pi pi-list"
+                      class="acoes-btn"
+                      (onClick)="acoesMenu.toggle($event)"
+                    ></p-button>
+
+                    <p-menu
+                      #acoesMenu
+                      [popup]="true"
+                      [model]="items"
+                      appendTo="body"
+                      [baseZIndex]="1100"
+                    ></p-menu>
+
                   </div>
-                  <button type="button" class="btn-sm btn-secondary" (click)="downloadPlanejamentoDesembolso()">
+
+
+                  <!-- <button type="button" class="btn-sm btn-secondary" (click)="downloadPlanejamentoDesembolso()">
                     <i class="tim-icons icon-cloud-download-93"></i>
-                  </button>
+                  </button> -->
                   <!-- <div class="pl-1 pr-1">
                           <p-dropdown  [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
                             optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
@@ -126,7 +139,7 @@
                       [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)"
                       [showClear]="true" placeholder="Objeto"></p-dropdown>
                   </div>
-                  <div class="pl-1 pr-1 me-3" *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && isPerfilPrivilegiado">
+                  <!-- <div class="pl-1 pr-1 me-3" *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && isPerfilPrivilegiado">
                     <button type="button" class="btn-sm btn-add btn-save-status" (click)="onSalvarMudancasStatus()"
                       title="Salvar alterações de status">
                       Salvar status
@@ -138,7 +151,7 @@
                       title="Gerar Atualização SAP">
                       Gerar Atualização SAP
                     </button>
-                  </div>
+                  </div> -->
                 </div>
               </ng-template>
               <ng-template pTemplate="header">

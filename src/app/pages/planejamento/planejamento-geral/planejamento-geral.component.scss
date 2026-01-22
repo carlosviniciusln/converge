@@ -552,3 +552,47 @@ h3.card-title.text-center {
 }.p-datatable-customers{
   font-size: 11px !important;
 }
+
+
+// INICIO AÇÕES
+
+
+$btn-bg: #262666;
+$btn-bg-hover: #1e1f53;
+$btn-text: #ffffff;
+
+:host ::ng-deep .acoes-btn .p-button {
+  background: $btn-bg;
+  color: $btn-text;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  box-shadow: none;
+  transition: background-color .15s ease, color .15s ease, box-shadow .15s ease;
+
+  .p-button-icon {
+    font-size: 0.95rem;
+    margin-right: .5rem;
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: $btn-bg-hover;
+    color: $btn-text;
+    border-color: transparent;
+    box-shadow: none;
+  }
+}
+
+
+:host ::ng-deep .p-menu.p-component {
+  .p-menuitem-link {
+    .p-menuitem-text { font-weight: 500; }
+    .p-menuitem-icon { font-size: .95rem; }
+  }
+}
+
+// FIM AÇÕES
+
