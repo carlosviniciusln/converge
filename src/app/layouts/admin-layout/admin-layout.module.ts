@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe, registerLocaleData } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -94,7 +94,12 @@ import { MatListModule } from '@angular/material/list';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
 import { PaginatorModule } from 'primeng/paginator';
+import ptBr from '@angular/common/locales/pt'
+import { FormatDiffPipe } from 'src/app/components/pipes/format-diff.pipe';
 
+
+
+registerLocaleData(ptBr);
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'right',
@@ -189,6 +194,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     GraficoArtigoComponent,
     ConsumoArpComponent,
     DetalheFinanceiroComponent,
+    FormatDiffPipe
     // UserComponent,
     // TablesComponent,
     // IconsComponent,
@@ -202,6 +208,9 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ConfirmationService,
     NgbActiveModal,
     DatePipe,
+    CurrencyPipe,
+    DecimalPipe,
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig },
   ],
   bootstrap: [AdminLayoutComponent],
