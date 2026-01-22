@@ -1,0 +1,134 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b
+    ><br />
+    <small *ngIf="this.noRubrica != null"> Rubrica: {{ this.noRubrica }} - UD: {{this.noUnidadeDemandante}}</small>
+    <small *ngIf="this.dePlanejamento != null"> Planejamento: {{ this.dePlanejamento }} </small>
+  </h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+
+<div>
+   <p-card>
+
+      <!-- <mat-divider></mat-divider> -->
+
+        <div class="historico-container">
+
+          <div>
+
+          <p-dropdown
+          [options]="filtros"
+          [(ngModel)]="filtrosSelecionado"
+          placeholder="Operação "
+          (onChange)="filtrarEventos($event, 1)"
+          >
+          </p-dropdown>
+
+          </div>
+
+
+          <p-timeline
+            *ngIf="ListaLimitePlanejamentoHistorico.length > 0"
+            [value]="ListaLimitePlanejamentoHistorico"
+            align="alternate"
+            class="c-p-timeline"
+          >
+
+            <ng-template pTemplate="marker" let-event>
+              <span
+                class="custom-marker p-p-2 p-shadow-2"
+                [ngStyle]="{
+                  'background-color':
+                    event.tpOperacao === 'INCLUSAO'
+                      ? '#4CAF50'
+                      : event.tpOperacao === 'ALTERACAO'
+                      ? '#2196F3'
+                      : '#F44336'
+                }"
+              >
+                <i [ngClass]="event.tpOperacao === 'INCLUSAO' ? 'pi pi-plus' : event.tpOperacao === 'ALTERACAO' ? 'pi pi-pencil' : 'pi pi-trash'" style="color: white"></i>
+              </span>
+            </ng-template>
+
+
+            <ng-template pTemplate="content" let-event>
+              <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
+                <div class="card-content">
+
+                  <strong *ngIf="event.deObservacao">{{ event.deObservacao }}</strong>
+                  <small>{{event.coRubrica}} - {{event.deRubrica}}</small>
+                  <small>{{event.sgFilial}}</small>
+                  <small class="text-gray-500">
+                    {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
+                  </small>
+
+                  <div *ngIf="event.listaDiffs && event.tpOperacao != 'INCLUSAO' && event.tpOperacao != 'EXCLUSAO'" class="mt-2">
+
+                    <button
+                      [disabled]="false"
+                      class="btn-sm btn-default"
+                      type="submit"
+                      (click)="verDetalhes(event.listaDiffs)"
+                    >
+                      Ver detalhes
+                    </button>
+                  </div>
+                </div>
+              </p-card>
+            </ng-template>
+          </p-timeline>
+
+
+
+          <p-paginator
+            [rows]="10"
+            [totalRecords]="ListaLimitePlanejamentoHistorico.length ? 1 : 1"
+          ></p-paginator>
+        </div>
+      </p-card>
+
+
+
+      <!-- Modal Detalhes -->
+      <p-dialog
+        header="Detalhes da Alteração"
+        [(visible)]="dialogVisible"
+        [modal]="true"
+        [draggable]="false"
+        [style]="{ width: '500px' }"
+        [closable]="true"
+      >
+        <p-table [value]="selectedDiff">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Campo</th>
+              <th>Antes</th>
+              <th>Depois</th>
+            </tr>
+          </ng-template>
+
+      <ng-template pTemplate="body" let-campo>
+        <tr>
+          <td class="diff-row">
+            <strong>{{ campo.campo }}:</strong>
+          </td>
+          <td>
+              <span class="antes">R$ {{ campo.antes }}</span>
+          </td>
+          <td>
+               <span class="depois">R$ {{ campo.depois }}</span>
+          </td>
+        </tr>
+      </ng-template>
+
+        </p-table>
+      </p-dialog>
+</div>

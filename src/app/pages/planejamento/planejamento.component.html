@@ -9,7 +9,7 @@
               <div class="col-md-1 pl-1 pr-1 table-header-title">
                 {{ this.title }}
               </div>
-              <div class="col-md-1 pl-1 pr-1 text-right">
+              <div class="pl-1 pr-1">
                 <!-- *ngIf="isAllowedToExport" -->
                 <button type="button" class="btn-sm btn-secondary" (click)="downloadPlanejamentoDesembolso()"
                   *ngIf="permissions?.Exportar ?? false">
@@ -17,7 +17,7 @@
                 </button>
               </div>
               <div class="pl-1 pr-1">
-                <div class="col-md-1 pl-1 pr-1 text-right">
+                <div class=" pl-1 pr-1">
                   <button type="button" class="btn-sm btn-secondary" (click)="openModalPlanejamento('adicionar', true)"
                     *ngIf="permissions?.Cadastrar ?? false">
                     <i class="tim-icons icon-simple-add"></i>
@@ -64,6 +64,11 @@
                   optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)" [showClear]="true"
                   placeholder="Objeto"></p-dropdown>
               </div>
+
+              <div>
+                <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+                (click)="limparFiltros()"></button>
+              </div>
             </div>
           </div>
         </ng-template>
@@ -102,13 +107,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-planejamento>
-          <tr class="p-selectable-row"(click)="
-          openModalPlanejamento(
-            'consultar',
-            false,
-            planejamento
-          )
-        ">
+          <tr class="p-selectable-row">
             <td style="text-align: center">
               <span class="p-column-title">Código</span>
               {{ planejamento.coPlanejamentoOrcamentario }}
