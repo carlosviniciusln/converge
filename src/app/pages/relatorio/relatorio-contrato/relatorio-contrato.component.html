@@ -196,7 +196,7 @@
 
             <td class="text-right">
               <span class="p-column-title">Valor Pago</span>
-              {{ (contrato.vrPago ?? contrato.vrExecutado ?? 0) | currency : 'BRL' }}
+              {{ (contrato.vrGlobal ?? 0) | currency : 'BRL' }}
             </td>
           </tr>
         </ng-template>
