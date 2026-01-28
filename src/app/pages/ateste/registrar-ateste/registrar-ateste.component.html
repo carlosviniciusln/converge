@@ -184,7 +184,7 @@
           <ng-template pTemplate="body" let-faturamento let-i="rowIndex">
             <tr [formGroup]="faturamento">
               <td>
-                
+
                 <!---
                     ALTERAR PARA DROPDOWN PARTIR DE UMA LISTA EM BANCO SERVIÇO TIPO / DEVE PODE SER UMA LISTA
                 -->
@@ -196,16 +196,16 @@
                     optionValue="value"
                     formControlName="nuServicoTipo"
                     placeholder="Bens/Serviços"
-          
-                    appendTo="body"             
-                    scrollHeight="200px"         
-                    [autoZIndex]="true"          
-                    [baseZIndex]="1100"          
+
+                    appendTo="body"
+                    scrollHeight="200px"
+                    [autoZIndex]="true"
+                    [baseZIndex]="1100"
                   >
                   </p-dropdown>
                 </div>
               </td>
-          
+
               <td>
                  <!-- <input
                   formControlName="vrApurado"
@@ -221,7 +221,7 @@
                     maxlength="20"
                     (input)="formatarCampo(i)" />
               </td>
-          
+
               <td>
                 <button type="button" class="btn-sm btn-secondary" (click)="removerFaturamento(i)">
                   <i class="tim-icons icon-trash-simple"></i>
@@ -229,7 +229,7 @@
               </td>
             </tr>
           </ng-template>
-          
+
           <ng-template pTemplate="footer">
             <tr>
               <h5> VALOR TOTAL PARA PAGAMENTO <i class="fa fa-info-circle" pTooltip="Valor Total do Pagamento: valor a pagar considerando os descontos por eventuais ajustes de faturamento (não incluir valor de multa)." tooltipPosition="top" placeholder="Top"></i></h5>
@@ -272,7 +272,7 @@
                     placeholder="R$ 0,00" />
             </div>
           </div>
-
+<!--
           <div>
 
             <h5> Penalidades <i class="fa fa-info-circle" pTooltip="Multas Definitivas: São aplicadas de forma definitiva, após o processo de conciliação. É necessária a concordância da empresa Contratada.
@@ -296,7 +296,7 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
                     (input)="formatarCampo('vrMulta')"
                     placeholder="R$ 0,00" />
             </div>
-          </div>
+          </div> -->
 
         </div>
 
