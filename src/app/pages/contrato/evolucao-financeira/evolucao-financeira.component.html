@@ -7,7 +7,7 @@
     <div class="col-md-2"></div>
   </div>
   <div class="row mr-1 cl-consumo">
-    <div class="col-md-9">
+    <div class="col-md-10">
       <button type="button" class="btn-sm btn-secondary no-print" routerLink="/contrato/detalhe/v/{{nuContrato}}"
         mat-raised-button> Detalhar
       </button>
@@ -23,6 +23,15 @@
       </button>
       <label class="title-ata" *ngIf="isRotaAtas">Este instrumento é uma Ata de Registro de Preços (ARP).</label>
     </div>
+
+    <div style="display: flex;" *ngIf="vigenciasAnteriores?.length > 0 && showSelect" class="section-select">
+      <select class="form-control" [(ngModel)]="vigenciaAnteriorSelect" id="nuFilial">
+        <option value="" disabled selected>Selecione a vigência</option>
+        <option *ngFor="let a of vigenciasAnteriores" [ngValue]="a">
+          {{a.labeL_VIGENCIA}}
+        </option>
+      </select>
+    </div>
   </div>
   <div id="area-pdf">
     <mat-tab-group mat-align-tabs="left" (selectedTabChange)="onTabChange($event)">
@@ -36,15 +45,6 @@
           (abaSelecionada)="receberAbaAtiva($event)"></app-demais-tipos>
       </mat-tab>
     </mat-tab-group>
-
-    <div *ngIf="vigenciasAnteriores?.length > 0 && showSelect" class="section-select">
-      <select class="form-control" [(ngModel)]="vigenciaAnteriorSelect" id="nuFilial">
-        <option value="" disabled selected>Selecione a vigência</option>
-        <option *ngFor="let a of vigenciasAnteriores" [ngValue]="a">
-          {{a.labeL_VIGENCIA}}
-        </option>
-      </select>
-    </div>
   </div>
 
 </div>

@@ -77,10 +77,17 @@ export class EvolucaoFinanceiraComponent implements OnInit, AfterViewInit {
       const resp: any = response.data;
       this.todasVigencias = resp;
       this.vigenciaAtual = resp.find(item => item.iC_VIGENCIA_ATUAL == true && item.cO_RUBRICA == 'TOTAL');
-      this.vigenciasAnteriores = resp.filter(item => item.iC_VIGENCIA_ATUAL != true && item.cO_RUBRICA == 'TOTAL');
+      this.vigenciasAnteriores = resp.filter(item => item.iC_VIGENCIA_ATUAL == false && item.cO_RUBRICA == 'TOTAL');
+      if(!this.vigenciaAtual){
+         this.vigenciaAnterior = this.vigenciasAnteriores[0];
+         this.rubricaAtiva = this.vigenciaAnterior?.nU_RUBRICA
+         this.vigenciaAnteriorSelect = this.vigenciaAnterior;
+      }
+      else{
       this.vigenciaAnterior = this.vigenciasAnteriores[0];
       this.rubricaAtiva = this.vigenciaAtual?.nU_RUBRICA
       this.rubricaSelecionada(this.rubricaAtiva)
+      }
       this.loading = false;
     } catch (error) {
       console.error(error);
@@ -150,7 +157,7 @@ export class EvolucaoFinanceiraComponent implements OnInit, AfterViewInit {
       this.loading = false;
     }
   }
-  
+
   validarRotaAtas() {
     this.isRotaAtas = (this.contrato && this.contrato.no_Tipo_Arp == 'ATA_DE_REGISTRO_DE_PRECOS' && this.contrato.ic_Arp) ? true : false;
     this.isDerivadoAta = (this.contrato && this.contrato.no_Tipo_Arp == 'CONTRATO_DERIVADO_ATA_REGISTRO_PRECOS' && this.contrato.ic_Arp) ? true : false;
