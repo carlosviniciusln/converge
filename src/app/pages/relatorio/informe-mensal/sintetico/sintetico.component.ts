@@ -2,14 +2,14 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-sintetico',

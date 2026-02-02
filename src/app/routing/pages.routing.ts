@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { DashboardComponent } from '../../pages/dashboard/dashboard.component';
-import { ContratoComponent } from '../../pages/contrato/contrato.component';
+
 import { PagamentoComponent } from 'src/app/pages/relatorio/pagamento/pagamento.component';
 import { AnaliticoComponent } from 'src/app/pages/relatorio/informe-mensal/analitico/analitico.component';
 import { SinteticoComponent } from 'src/app/pages/relatorio/informe-mensal/sintetico/sintetico.component';
@@ -26,15 +25,17 @@ import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/pl
 import { PlanejamentoGeralComponent } from 'src/app/pages/planejamento/planejamento-geral/planejamento-geral.component';
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
 import { AtesteComponent } from 'src/app/pages/ateste/ateste.component';
-import { AuthGuard } from 'src/app/shared/interceptors/auth.guard';
+import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { DetalharAtesteComponent } from 'src/app/pages/ateste/detalhar-ateste/detalhar-ateste.component';
 import { DevelopComponent } from 'src/app/components/develop/develop.component';
 import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
 import { RelatorioContratoComponent } from 'src/app/pages/relatorio/relatorio-contrato/relatorio-contrato.component';
+import { DashboardComponent } from '../pages/dashboard/dashboard.component';
+import { ContratoComponent } from '../pages/contrato/contrato.component';
 
 
 
-export const AdminLayoutRoutes: Routes = [
+export const PagesRoutes: Routes = [
   { path: 'develop', component: DevelopComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'contrato', component: ContratoComponent },
@@ -65,14 +66,6 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'empenho', component: EmpenhoComponent },
   { path: 'mod-develop', component: DevelopComponent },
   { path: 'orcamento/limites', component: LimitesComponent },
-
-  //   { path: "icons", component: IconsComponent },
-  //   { path: "maps", component: MapComponent },
-  //   { path: "notifications", component: NotificationsComponent },
-  //   { path: "user", component: UserComponent },
-  //   { path: "tables", component: TablesComponent },
-  //   { path: "typography", component: TypographyComponent },
-  //   { path: "rtl", component: RtlComponent },
 
   { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
   { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},

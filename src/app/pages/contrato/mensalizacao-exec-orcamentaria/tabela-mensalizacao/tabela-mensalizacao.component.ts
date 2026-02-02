@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiResponse } from 'src/app/models/api-response';
-import { EvolucaoFinanceira } from 'src/app/models/evolucao-financeira';
-import { TotalPorRubrica } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiService } from 'src/app/services/api.service';
-import { TokenStorageService, ModuleEnum, ActionPolicies } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { EvolucaoFinanceira } from 'src/app/models/generics/evolucao-financeira';
+import { TotalPorRubrica } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { TokenStorageService, ModuleEnum, ActionPolicies } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { MensalizacaoEditarComponent } from '../mensalizacao-editar/mensalizacao-editar.component';
 import { ModalReiniciarComponent } from '../modal-reiniciar/modal-reiniciar.component';
 

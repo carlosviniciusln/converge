@@ -4,16 +4,16 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Table } from 'primeng/table';
 
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
 
 import { ModalLimitesComponent } from './modal-limites/modal-limites.component';
 import { ModalUploadComponent } from './modal-upload/modal-upload.component';
 
 import { Select2Data, Select2Option } from 'ng-select2-component';
-import { LimitesModel } from 'src/app/models/limites-model';
+import { LimitesModel } from 'src/app/models/generics/limites-model';
 import Swal from 'sweetalert2';
 import { ModalHistoricoComponent } from './modal-historico/modal-historico.component';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { IUser } from '../models/DTOs/IUser';
+import { IUser } from '../../models/DTOs/IUser';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';

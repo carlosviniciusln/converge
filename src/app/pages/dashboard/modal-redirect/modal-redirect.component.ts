@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router'
-import { ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
+import { ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { NovosContratosComponent } from '../novos-contratos/novos-contratos.component';
 
 @Component({

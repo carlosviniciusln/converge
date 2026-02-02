@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiResponse } from 'src/app/models/api-response';
+import { ApiResponse } from 'src/app/models/generics/api-response';
 import { Gcptb061LimitePlanejamentoHistoricoDTO } from 'src/app/models/DTOs/Gcptb061LimitePlanejamentoHistoricoDTO';
 import { Gcptb061LimitePlanejamentoHistoricoResponse } from 'src/app/models/response/Gcptb061LimitePlanejamentoHistoricoResponse';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiService } from 'src/app/shared/services/api.service';
 
 @Component({
   selector: 'app-modal-historico',

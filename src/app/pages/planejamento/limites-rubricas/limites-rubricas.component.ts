@@ -1,28 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from 'src/app/services/api.service';
-import { LimitesRubricaResponse } from 'src/app/models/limites-rubrica-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { LimitesRubricaResponse } from 'src/app/models/generics/limites-rubrica-response';
 import {
   ActionPolicies,
   ModuleEnum,
   PerfisEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { ApiResponse, ApiResponsePaginado } from 'src/app/models/api-response';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { ApiResponse, ApiResponsePaginado } from 'src/app/models/generics/api-response';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
-import { Filial } from 'src/app/models/filial';
-import { Orcamento } from 'src/app/models/orcamento';
+import { Filial } from 'src/app/models/generics/filial';
+import { Orcamento } from 'src/app/models/generics/orcamento';
 import {
   Gcptb028GrupoRemanejamento,
   RubricaGrupo,
-} from 'src/app/models/rubrica';
+} from 'src/app/models/generics/rubrica';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LimitesRubricasCadastroComponent } from './limites-rubricas-cadastro/limites-rubricas-cadastro.component';
-import { NavigationService } from 'src/app/services/navigation-service';
+import { NavigationService } from 'src/app/shared/services/navigation-service';
 import { LimitesRubricasUsoComponent } from './limites-rubricas-uso/limites-rubricas-uso.component';
-import { PlanejamentoTipoResponse } from 'src/app/models/planejamento-response';
+import { PlanejamentoTipoResponse } from 'src/app/models/generics/planejamento-response';
 
 @Component({
   selector: 'app-limites-rubricas',
@@ -403,18 +403,18 @@ export class LimitesRubricasComponent implements OnInit {
 
     this.filtroRegistros = {
       pageNumber: 1,
-      pageSize: this.filtroRegistros.pageSize ?? 10, 
+      pageSize: this.filtroRegistros.pageSize ?? 10,
 
       NuAno: null,
       NuRubrica: null,
       NuGrupoRemanejamento: null,
       NuFilial: null,
-      NuPlanejamentoTipo: null, 
+      NuPlanejamentoTipo: null,
       ...(this.filtroRegistros?.Field !== undefined && { Field: null }),
       ...(this.filtroRegistros?.Order !== undefined && { Order: null }),
     };
 
     this.loading = true;
-    this.obterDados(); 
+    this.obterDados();
   }
 }

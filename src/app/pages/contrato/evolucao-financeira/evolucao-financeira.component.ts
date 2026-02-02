@@ -1,18 +1,18 @@
 import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { DatePipe, Location } from '@angular/common';
-import { Gcptb002ContratoTipo } from 'src/app/models/Gcptb001ContratoResponse';
+import { Gcptb002ContratoTipo } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
+} from 'src/app/shared/services/token-storage.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalSimulacaoComponent } from '../modal-simulacao/modal-simulacao.component';
-import { ContratoResponse } from 'src/app/models/contrato-response';
+import { ContratoResponse } from 'src/app/models/generics/contrato-response';
 
 @Component({
   selector: 'app-evolucao-financeira',

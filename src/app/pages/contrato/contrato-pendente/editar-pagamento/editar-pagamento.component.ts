@@ -8,24 +8,24 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { PagamentoPendenteResponse } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiResponse } from 'src/app/models/api-response';
+import { PagamentoPendenteResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiResponse } from 'src/app/models/generics/api-response';
 import {
   Gcptb006Vigencia,
   Gcptb011Pagamento,
   Gcptb017VigenciaRubrica,
-} from 'src/app/models/contrato-response';
-import { ContratoVigencia } from 'src/app/models/contratoVigencia';
-import { Orcamento } from 'src/app/models/orcamento';
-import { PagamentoTipo } from 'src/app/models/pagamento-tipo';
-import { Rubrica } from 'src/app/models/rubrica';
-import { ApiService } from 'src/app/services/api.service';
+} from 'src/app/models/generics/contrato-response';
+import { ContratoVigencia } from 'src/app/models/generics/contratoVigencia';
+import { Orcamento } from 'src/app/models/generics/orcamento';
+import { PagamentoTipo } from 'src/app/models/generics/pagamento-tipo';
+import { Rubrica } from 'src/app/models/generics/rubrica';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-editar-pagamento',

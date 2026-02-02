@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { InterceptorSkipLoaderHeader } from 'src/app/shared/interceptors/loader.interceptor';
-import { InterceptorSkipErrorHeader } from 'src/app/shared/interceptors/error.interceptor';
+import { InterceptorSkipLoaderHeader } from 'src/app/core/interceptors/loader.interceptor';
+import { InterceptorSkipErrorHeader } from 'src/app/core/interceptors/error.interceptor';
 import { environment } from 'src/environments/environment';
 
 interface QueryParams {
@@ -87,17 +87,17 @@ export class ApiService {
   ): Promise<T> {
     const cfqu = this.correctFormatForQueryUrl(qp);
     const headers = this.obterHeaders(showEvents);
-  
+
     // Remover Content-Type se estiver presente, pois o FormData define automaticamente
     const cleanHeaders = headers.delete('Content-Type');
-  
+
     return this.http
       .post<T>(`${this.END_POINT}/${route}${cfqu}`, formData, {
         headers: cleanHeaders,
       })
       .toPromise();
   }
-  
+
 
   public async put<T>(
     route: string,
