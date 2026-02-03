@@ -9,7 +9,7 @@ import {
   RequiredValidator,
   Validators,
 } from '@angular/forms';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiService } from 'src/app/shared/services/api.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import {
@@ -22,14 +22,14 @@ import {
   PlanejamentoTipoResponse,
   //PlanejamentoItemResponse,
   PrevisaoDesembolsoResponse,
-} from 'src/app/models/planejamento-response';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Filial } from 'src/app/models/filial';
-import { Rubrica } from 'src/app/models/rubrica';
-import { ContratoResponse } from 'src/app/models/contrato-response';
-import { PlanejamentoOrcamentarioItemRequest } from 'src/app/models/planejamento-request';
-import { Orcamento } from 'src/app/models/orcamento';
+} from 'src/app/models/generics/planejamento-response';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Filial } from 'src/app/models/generics/filial';
+import { Rubrica } from 'src/app/models/generics/rubrica';
+import { ContratoResponse } from 'src/app/models/generics/contrato-response';
+import { PlanejamentoOrcamentarioItemRequest } from 'src/app/models/generics/planejamento-request';
+import { Orcamento } from 'src/app/models/generics/orcamento';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import {
@@ -38,8 +38,8 @@ import {
   PageAction,
   PerfisEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Gcpvw008Mensalizacao } from 'src/app/models/Gcptb001ContratoResponse';
+} from 'src/app/shared/services/token-storage.service';
+import { Gcpvw008Mensalizacao } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import Swal from 'sweetalert2';
 import { IUser } from 'src/app/models/DTOs/IUser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';

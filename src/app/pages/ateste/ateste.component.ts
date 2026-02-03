@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Select2Data } from 'ng-select2-component';
 import { ToastrService } from 'ngx-toastr';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Gcpvw030AtesteResponse, Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030AtesteResponse';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Gcpvw030AtesteResponse, Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/generics/Gcpvw030AtesteResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 
 
@@ -23,7 +23,7 @@ export class AtesteComponent implements OnInit {
 
     /* VARIAVEIS E PROPRIEDADES  */
 
-   
+
     public listaGcpvw030Ateste : Gcpvw030DetalhamentoDeContratosResponse[];
     public selectTiposContrato: Select2Data;
     public selectTiposFornecedor: Select2Data;
@@ -65,7 +65,7 @@ export class AtesteComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  
+
     public async obterContratosPorFilial(): Promise<void> {
       try {
 
@@ -73,8 +73,8 @@ export class AtesteComponent implements OnInit {
         const response = await this.apiService.get<ApiResponse<Gcpvw030AtesteResponse>>(
           `${Endpoints.URL_CONTRATOS}/contratos-filiais`,filtrosLimpos
         );
-        
-        
+
+
         if(response.data.totalRecords > 0){
           this.sgFilial = response.data?.contratos[0].sgFilial;
           this.listaGcpvw030Ateste = response.data.contratos || [];
@@ -85,7 +85,7 @@ export class AtesteComponent implements OnInit {
         }else{
           this.toastr.info('Usuário logado não possui contratos', 'Info');
         }
-    
+
       } catch (error) {
         console.error(error, 'obter GCPVW0030');
 
@@ -116,6 +116,6 @@ export class AtesteComponent implements OnInit {
       });
       return filtrosLimpos;
     }
-  
+
 
 }

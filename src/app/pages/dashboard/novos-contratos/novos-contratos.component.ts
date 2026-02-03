@@ -2,11 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LazyLoadEvent } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ContratoApiResponse, ContratoItem, Gcptb001ContratoResponse } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiService } from 'src/app/services/api.service';
-import {  TokenStorageService } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ContratoApiResponse, ContratoItem, Gcptb001ContratoResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import {  TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-novos-contratos',

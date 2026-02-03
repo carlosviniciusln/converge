@@ -1,30 +1,27 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from "@angular/core";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AppComponent } from "./app.component";
-import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 //import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import { AppRoutingModule } from "./app-routing.module";
-import { ComponentsModule } from "./components/components.module";
+import { AppRouting } from "./routing/app.routing";
 
 import ptBr from '@angular/common/locales/pt';
 import { CommonModule, CurrencyPipe, DecimalPipe, registerLocaleData } from '@angular/common';
-import { LoaderInterceptor } from "./shared/interceptors/loader.interceptor";
-import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
+import { LoaderInterceptor } from "./core/interceptors/loader.interceptor";
+import { ErrorInterceptor } from "./core/interceptors/error.interceptor";
 
 import { BrowserModule } from "@angular/platform-browser";
-import { AdminLayoutModule } from "./layouts/admin-layout/admin-layout.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { LoginComponent } from './pages/login/login.component';
-import { AuthInterceptor } from "./shared/interceptors/auth.interceptor";
-import { AuthGuard } from "./shared/interceptors/auth.guard";
+import { LoginComponent } from './components/login/login.component';
+import { AuthInterceptor } from "./core/interceptors/auth.interceptor";
+import { AuthGuard } from "./core/guards/auth.guard";
 import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { TooltipModule } from 'primeng/tooltip';
 import { TableModule } from 'primeng/table';
@@ -47,7 +44,7 @@ import { ModalPlanejamentoComponent } from "./pages/planejamento/planejamento-li
 import { PlanejamentoGeralComponent } from './pages/planejamento/planejamento-geral/planejamento-geral.component';
 import { PlanejamentoAbaRubricaComponent } from "./pages/planejamento/planejamento-aba-rubrica/planejamento-aba-rubrica.component";
 import {MatTableModule} from '@angular/material/table';
-import { SharedLibraryModule } from "./shared/shared-library/shared-library.module";
+import { SharedLibraryModule } from "./shared/lib/shared-library.module";
 import { AtesteComponent } from './pages/ateste/ateste.component';
 import { NavbarAtesteComponent } from './pages/ateste/navbar-ateste/navbar-ateste.component';
 import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar-ateste.component';
@@ -68,12 +65,23 @@ import { DropdownModule } from "primeng/dropdown";
 import { PaginatorModule } from "primeng/paginator";
 import { DialogModule } from "primeng/dialog";
 import { MenuModule } from "primeng/menu";
+import { PagesComponent } from "./pages/pages.component";
+import { SidebarComponent } from "./components/sidebar/sidebar.component";
+import { NavbarComponent } from "./components/navbar/navbar.component";
+import { DevelopComponent } from "./components/develop/develop.component";
+import { KeycloakInitService } from "../keycloak.init";
+import { KeycloakService } from "keycloak-angular";
+import { CustomKeycloakInterceptor } from "./core/interceptors/keycloak.interceptor";
 
 registerLocaleData(ptBr);
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
 };
+
+export function initializeKeycloak(keycloakInit: KeycloakInitService){
+  return () => keycloakInit.init();
+}
 
 @NgModule({
   imports: [
@@ -86,14 +94,12 @@ const maskConfig: Partial<IConfig> = {
     TableModule,
     MatTabsModule,
     NgxSpinnerModule,
-    ComponentsModule,
     NgbModule,
     RouterModule,
-    AppRoutingModule,
+    AppRouting,
     HttpClientModule,
     DialogModule,
     SplitButtonModule,
-    AdminLayoutModule,
     ReactiveFormsModule,
     FormsModule,
     ToastrModule.forRoot(),
@@ -117,7 +123,6 @@ const maskConfig: Partial<IConfig> = {
   ],
   declarations: [
     AppComponent,
-    AdminLayoutComponent,
     LoginComponent,
     MensalizacaoComponent,
     ValoresExecutadosComponent,
@@ -140,21 +145,38 @@ const maskConfig: Partial<IConfig> = {
     ModalUploadComponent,
     ModalHistoricoComponent,
     //AuthLayoutComponent
-    RelatorioContratoComponent
+    RelatorioContratoComponent,
+    PagesComponent,
+    SidebarComponent,
+    NavbarComponent,
+    DevelopComponent
   ],
   providers: [
     AuthGuard,
     CurrencyPipe,
     DecimalPipe,
+    JwtHelperService,
+    MessageService,
+    CargaGerais,
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
-    JwtHelperService,
-    MessageService,
-    CargaGerais
+    KeycloakInitService,
+    KeycloakService,
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: initializeKeycloak,
+    //   deps: [KeycloakInitService],
+    //   multi: true
+    // },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: CustomKeycloakInterceptor,
+    //   multi: true
+    // }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

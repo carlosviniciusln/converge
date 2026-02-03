@@ -7,15 +7,15 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Gcptb016Empenho } from 'src/app/models/contrato-response';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Gcptb016Empenho } from 'src/app/models/generics/contrato-response';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -105,7 +105,7 @@ export class EmpenhoCadastroComponent implements OnInit {
       if (this.form.invalid) {
         return;
       }
-     
+
       await this.apiService.post<any>(
         `${Endpoints.URL_EMPENHO}`,
         this.form.value

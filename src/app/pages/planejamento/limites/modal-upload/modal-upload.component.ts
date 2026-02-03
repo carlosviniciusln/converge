@@ -1,14 +1,14 @@
-import { StatusPlanejamentoModel, ExercicioModel } from './../../../../models/limites-model';
+import { StatusPlanejamentoModel, ExercicioModel } from '../../../../models/generics/limites-model';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiResponse } from 'src/app/models/api-response';
-import { listaErroUploadModel } from 'src/app/models/limites-model';
-import { LimitesRubricaResponse, LimitesRubricasUpdate } from 'src/app/models/limites-rubrica-response';
-import { ApiService } from 'src/app/services/api.service';
-import { PageAction } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { listaErroUploadModel } from 'src/app/models/generics/limites-model';
+import { LimitesRubricaResponse, LimitesRubricasUpdate } from 'src/app/models/generics/limites-rubrica-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { PageAction } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import Swal from 'sweetalert2';
 
 @Component({

@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ValoresRubricaDetalheResponse } from 'src/app/models/rubrica';
-import { ApiService } from 'src/app/services/api.service';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ValoresRubricaDetalheResponse } from 'src/app/models/generics/rubrica';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { ValoresRubricaDetalhadoContratoComponent } from '../valores-rubrica-detalhado-contrato/valores-rubrica-detalhado-contrato.component';
 
 @Component({

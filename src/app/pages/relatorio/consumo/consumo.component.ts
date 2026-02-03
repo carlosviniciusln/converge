@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { Select2Data } from 'ng-select2-component';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
+} from 'src/app/shared/services/token-storage.service';
 import * as fileSaver from 'file-saver';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SortEvent } from 'primeng/api';
@@ -27,7 +27,7 @@ export class ConsumoComponent implements OnInit {
   selectedContratos: Gcptb001ContratoResponse[];
 
   statuses: any[];
-  
+
   loading: boolean = true;
 
   activityValues: number[] = [0, 100];
@@ -65,14 +65,14 @@ export class ConsumoComponent implements OnInit {
     Order: null
   };
 
-  
+
 rowsOptions = [
     10,
-    20, 
+    20,
     50,
     { label: 'Todos', value: 0 }
   ];
-  
+
 
 
   quantidadeTotal: number = 0;
@@ -98,22 +98,22 @@ rowsOptions = [
 
   aoOrdenar(event : SortEvent){
 
-    const field = event.field; 
-    const order = event.order; 
-    
+    const field = event.field;
+    const order = event.order;
+
     this.contratos.sort((a, b) => {
       let valorA = a[field];
       let valorB = b[field];
- 
+
       if (valorA instanceof Date === false && field.includes('Data')) {
         valorA = new Date(valorA);
         valorB = new Date(valorB);
       }
-   
+
       if (typeof valorA === 'string') {
         return valorA.localeCompare(valorB) * order;
       }
-  
+
       return (valorA < valorB ? -1 : valorA > valorB ? 1 : 0) * order;
     });
   }
@@ -188,31 +188,31 @@ rowsOptions = [
        .replace(',', '.')
        )
        : c.saldoDisponivel,
-       pC_ACURACIA: typeof c.pC_ACURACIA === 'string' 
-       ? parseFloat(c.pC_ACURACIA) 
+       pC_ACURACIA: typeof c.pC_ACURACIA === 'string'
+       ? parseFloat(c.pC_ACURACIA)
         : c.pC_ACURACIA,
-        percVrExecutado: typeof c.percVrExecutado === 'string' ? 
+        percVrExecutado: typeof c.percVrExecutado === 'string' ?
          parseFloat(
           c.percVrExecutado
             .replace(/\./g, '')
             .replace(',', '.')
         ):
         c.percVrExecutado,
-        percDiasCorridos : typeof c.percDiasCorridos === 'string' ? 
+        percDiasCorridos : typeof c.percDiasCorridos === 'string' ?
         parseFloat(
          c.percDiasCorridos
            .replace(/\./g, '')
            .replace(',', '.')
        ):
        c.percDiasCorridos,
-       vrExecutadoFormatado: typeof c.vrExecutadoFormatado === 'string' ? 
+       vrExecutadoFormatado: typeof c.vrExecutadoFormatado === 'string' ?
        parseFloat(
         c.vrExecutadoFormatado
           .replace(/\./g, '')
           .replace(',', '.')
       ):
       c.vrExecutadoFormatado,
-      vrGlobalFormatado: typeof c.vrGlobalFormatado === 'string' ? 
+      vrGlobalFormatado: typeof c.vrGlobalFormatado === 'string' ?
       parseFloat(
        c.vrGlobalFormatado
          .replace(/\./g, '')
@@ -279,7 +279,7 @@ rowsOptions = [
         "% Executado Vigência": item.percVrExecutado,
         "% Consumo": item.percConsumo,
         "Saldo Disponível": item.saldoDisponivel,
-        "Acurácia": item.pC_ACURACIA ? item.pC_ACURACIA : 0 
+        "Acurácia": item.pC_ACURACIA ? item.pC_ACURACIA : 0
       }));
 
       import("xlsx").then(xlsx => {
@@ -354,8 +354,8 @@ rowsOptions = [
     this.selectedTipoAcuracia = null;
 
     this.filtroRegistros = {
-      pageNumber: 1,                                     
-      pageSize: this.filtroRegistros.pageSize ?? 10,     
+      pageNumber: 1,
+      pageSize: this.filtroRegistros.pageSize ?? 10,
       Contrato: null,
       Fornecedor: null,
       Tipo: null,
@@ -363,8 +363,8 @@ rowsOptions = [
       Status: null,
       TipoAcuracia: null,
       NoTipoArp: null,
-      Field: null,  
-      Order: null    
+      Field: null,
+      Order: null
     };
 
     this.loading = true;

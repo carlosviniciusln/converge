@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiResponse, ApiResponsePaginado } from 'src/app/models/api-response';
-import { Gcptb001ContratoResponse } from 'src/app/models/Gcptb001ContratoResponse';
-import { Filial } from 'src/app/models/filial';
-import { RelatorioEmpenho } from 'src/app/models/relatorio-empenho';
-import { RelatorioPagamento } from 'src/app/models/relatorio-pagamento';
-import { Rubrica } from 'src/app/models/rubrica';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse, ApiResponsePaginado } from 'src/app/models/generics/api-response';
+import { Gcptb001ContratoResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { Filial } from 'src/app/models/generics/filial';
+import { RelatorioEmpenho } from 'src/app/models/generics/relatorio-empenho';
+import { RelatorioPagamento } from 'src/app/models/generics/relatorio-pagamento';
+import { Rubrica } from 'src/app/models/generics/rubrica';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { Select2Data, Select2Option, Select2Group } from 'ng-select2-component';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
+} from 'src/app/shared/services/token-storage.service';
 
 @Component({
   selector: 'app-empenho',

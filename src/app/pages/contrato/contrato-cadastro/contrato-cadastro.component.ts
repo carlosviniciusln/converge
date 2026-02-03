@@ -9,29 +9,29 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Filial } from 'src/app/models/filial';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Filial } from 'src/app/models/generics/filial';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TipoVigencia } from 'src/app/models/tipo-vigencia';
-import { Sistema } from 'src/app/models/sistemas';
-import { TipoContrato } from 'src/app/models/tipo-contrato';
-import { Usuario } from 'src/app/models/usuario';
+import { TipoVigencia } from 'src/app/models/generics/tipo-vigencia';
+import { Sistema } from 'src/app/models/generics/sistemas';
+import { TipoContrato } from 'src/app/models/generics/tipo-contrato';
+import { Usuario } from 'src/app/models/generics/usuario';
 import {
   ContratoResponse,
   ContratoResponseV2,
   Gcptb006Vigencia,
   Gcptb017VigenciaRubrica,
-} from 'src/app/models/contrato-response';
+} from 'src/app/models/generics/contrato-response';
 import { ToastrService } from 'ngx-toastr';
-import { Rubrica } from 'src/app/models/rubrica';
-import { ServicoTipo } from 'src/app/models/servico-tipo';
-import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
-import { ContatoItem, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
-import { TipoAta } from 'src/app/models/tipo-ata';
+import { Rubrica } from 'src/app/models/generics/rubrica';
+import { ServicoTipo } from 'src/app/models/generics/servico-tipo';
+import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { ContatoItem, ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { TipoAta } from 'src/app/models/generics/tipo-ata';
 import Swal from 'sweetalert2';
-import { ProtocoloVigencia } from 'src/app/models/protocolo-vigencia';
+import { ProtocoloVigencia } from 'src/app/models/generics/protocolo-vigencia';
 
 @Component({
   selector: 'app-contrato-cadastro',
@@ -89,7 +89,7 @@ export class ContratoCadastroComponent implements OnInit {
   isRotaAtas: boolean = false;
   listaAtasResponse: ContratoItem[] = [];
   processoAta: string;
-  ataVinculada: string; 
+  ataVinculada: string;
 
   filtroRegistros: any = {
     pageNumber: 1,
@@ -151,7 +151,7 @@ export class ContratoCadastroComponent implements OnInit {
 
     this.currentProfile = this.token.getUserPerfil();
     this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
-    
+
     if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT' || this.currentProfile === PerfisEnum.Pagadoria){
       this.isPerfilPrivilegiado = true;
     }
@@ -318,14 +318,14 @@ export class ContratoCadastroComponent implements OnInit {
           return false;
         }
       });
-  
+
       if (alert) {
           this.removeContato(contato.value?.nuPreposto)
           this.contatos.removeAt(index);
           this.contatos.controls.forEach((group, index) => {
             group.get('sequencial')?.setValue(index + 1);
           });
-      
+
       }
 
     }
@@ -596,7 +596,7 @@ export class ContratoCadastroComponent implements OnInit {
           vigencia.get('coProtocoloVigencia').disable();
           this.listaProtocoloVigencia = [...this.listaProtocoloVigencia.filter(p => p.cO_PROTOCOLO_VIGENCIA !=  vigencia.get('coProtocoloVigencia').value)]
         }
-        
+
         this.vigencias.push(vigencia);
 
         vigencia.updateValueAndValidity({ onlySelf: false, emitEvent: true });
@@ -636,7 +636,7 @@ export class ContratoCadastroComponent implements OnInit {
             telefone:  [p.nU_TELEFONE || ''],
             cargo:  [p.dE_CARGO || '', [Validators.maxLength(30), Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)]]
           },{validators: [this.validador()]}))
-        
+
           this.sequencial++;
       })
       }
@@ -746,7 +746,7 @@ export class ContratoCadastroComponent implements OnInit {
       const response = await this.apiService.get<ApiResponse<ProtocoloVigencia[]>>(
         `${Endpoints.URL_CONTRATOS}/protocolo-vigencia/` + this.nuContrato
       );
-      
+
       this.listaProtocoloVigencia = response.data;
     }catch (erro) {
         console.error(erro, "Erro em obter protocolo SICLG");
@@ -873,12 +873,12 @@ export class ContratoCadastroComponent implements OnInit {
             // }
             Object.keys(contatoGroup.controls).forEach(campo => {
               const control = contatoGroup.get(campo);
-  
+
             if(control?.invalid){
               if(control.errors?.required){
                 this.toastr.error(`O campo ${this.formatarNomes(campo)} é obrigatório`, "Error");
               }
-                    
+
               if(control.errors?.pattern){
                       this.toastr.error(`O campo ${this.formatarNomes(campo)} está fora do padrão`, "Error");
               }
@@ -888,11 +888,11 @@ export class ContratoCadastroComponent implements OnInit {
               }
               if(control.errors?.mask){
                 this.toastr.error(`Telefone inválido`, "Error");
-              }        
+              }
             }
           });
         });
-        return 
+        return
       }
 
       const contatosAtuais = this.contatoForm.get('contatos')?.value || [];
@@ -905,13 +905,13 @@ export class ContratoCadastroComponent implements OnInit {
         if(!original) return false;
         return (
           original.nO_PREPOSTO !== c.nome || original.nU_TELEFONE !== c.telefone || original.dE_EMAIL !== c.email || original.dE_CARGO !== c.cargo
-        ) 
+        )
       })
 
-  
+
       if(novos.length){
         novos.forEach(cadastro => {
-          cadastro.nuContrato = this.nuContrato; 
+          cadastro.nuContrato = this.nuContrato;
           this.cadastrarContato(cadastro);
           this.atualizarPagina.emit(true);
         })
@@ -922,7 +922,7 @@ export class ContratoCadastroComponent implements OnInit {
           alterados.forEach(alterados => {
           this.alterarContato(alterados);
           this.atualizarPagina.emit(true);
-      
+
         })
       }
       this.toastr.success('Prepostos e Contatos Salvos com Sucesso.', 'Sucesso');
@@ -1043,7 +1043,7 @@ export class ContratoCadastroComponent implements OnInit {
       // this.activeModal.dismiss();
 
     }catch (error){
-      
+
     }
   }
 
@@ -1054,7 +1054,7 @@ export class ContratoCadastroComponent implements OnInit {
       this.obterContatos();
 
     }catch (error){
-      
+
     }
   }
 
@@ -1064,9 +1064,9 @@ export class ContratoCadastroComponent implements OnInit {
       this.obterContatos();
     }
     catch (error){
-      
+
     }
- 
+
   }
 
   public async Alterar(formValue: any): Promise<void> {

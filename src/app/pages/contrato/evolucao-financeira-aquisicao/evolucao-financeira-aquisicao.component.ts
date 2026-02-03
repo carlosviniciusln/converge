@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import * as html2pdf from 'html2pdf.js';
 import { Location } from '@angular/common';
-import { EvolucaoFinanceiraAquisicao } from 'src/app/models/evolucao-financeira-aquisicao';
+import { EvolucaoFinanceiraAquisicao } from 'src/app/models/generics/evolucao-financeira-aquisicao';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
+} from 'src/app/shared/services/token-storage.service';
 
 @Component({
   selector: 'app-evolucao-financeira-aquisicao',

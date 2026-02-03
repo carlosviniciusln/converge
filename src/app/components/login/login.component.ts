@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Login } from 'src/app/models/login';
-import { ApiService } from 'src/app/services/api.service';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Login } from 'src/app/models/generics/login';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-login',

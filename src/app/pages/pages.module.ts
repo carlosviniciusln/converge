@@ -21,14 +21,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { DropdownModule } from 'primeng/dropdown';
 
-import { AdminLayoutRoutes } from './admin-layout.routing';
-import { DashboardComponent } from '../../pages/dashboard/dashboard.component';
-import { ContratoComponent } from '../../pages/contrato/contrato.component';
-import { PagamentoComponent } from '../../pages/relatorio/pagamento/pagamento.component';
-import { AnaliticoComponent } from '../../pages/relatorio/informe-mensal/analitico/analitico.component';
 import { SinteticoComponent } from 'src/app/pages/relatorio/informe-mensal/sintetico/sintetico.component';
 import { UsuarioComponent } from 'src/app/pages/usuario/usuario.component';
-import { CustomerService } from '../../services/customer-service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Select2Module } from 'ng-select2-component';
 
@@ -39,23 +33,18 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { ContratoVigenciaComponent } from 'src/app/pages/dashboard/contrato-vigencia/contrato-vigencia.component';
 import { PlanejamentoComponent } from 'src/app/pages/planejamento/planejamento.component';
-import { KeysPipe } from 'src/app/components/pipes/key-pipe';
-import { SortByPipe } from 'src/app/components/pipes/sort-by-pipe';
+import { KeysPipe } from 'src/app/core/pipes/key-pipe';
+import { SortByPipe } from 'src/app/core/pipes/sort-by-pipe';
 import { EvolucaoFinanceiraComponent } from 'src/app/pages/contrato/evolucao-financeira/evolucao-financeira.component';
 import { GraficoComponent } from 'src/app/pages/contrato/evolucao-financeira/demais-tipos/grafico/grafico.component';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { EmpenhoComponent } from 'src/app/pages/relatorio/empenho/empenho.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { ContratoDetalheComponent } from 'src/app/pages/contrato/contrato-detalhe/contrato-detalhe.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from 'src/app/app.component';
-import { AdminLayoutComponent } from './admin-layout.component';
 import { ContratoCadastroComponent } from 'src/app/pages/contrato/contrato-cadastro/contrato-cadastro.component';
 import { RetencaoCadastroComponent } from 'src/app/pages/contrato/retencao/retencao-cadastro.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxMaskModule } from 'ngx-mask';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { PagamentoCadastroComponent } from 'src/app/pages/contrato/pagamento-cadastro/pagamento-cadastro.component';
 import { EditarPagamentoComponent } from 'src/app/pages/contrato/contrato-pendente/editar-pagamento/editar-pagamento.component';
 import { ValoresRubricaComponent } from 'src/app/pages/dashboard/valores-rubrica/valores-rubrica.component';
@@ -88,15 +77,20 @@ import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-p
 import { GraficoArtigoComponent } from 'src/app/pages/contrato/artigo/grafico-artigo/grafico-artigo.component';
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
-import { SharedLibraryModule } from 'src/app/shared/shared-library/shared-library.module';
 import { DetalheFinanceiroComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
 import { MatListModule } from '@angular/material/list';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
 import { PaginatorModule } from 'primeng/paginator';
 import ptBr from '@angular/common/locales/pt'
-import { FormatDiffPipe } from 'src/app/components/pipes/format-diff.pipe';
+import { FormatDiffPipe } from 'src/app/core/pipes/format-diff.pipe';
 import { MenuModule } from 'primeng/menu';
+import { PagesComponent } from './pages.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ContratoComponent } from './contrato/contrato.component';
+import { PagamentoComponent } from './relatorio/pagamento/pagamento.component';
+import { AnaliticoComponent } from './relatorio/informe-mensal/analitico/analitico.component';
+import { PagesRoutes } from '../routing/pages.routing';
 
 
 
@@ -117,7 +111,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forChild(AdminLayoutRoutes),
+    RouterModule.forChild(PagesRoutes),
     HttpClientModule,
     NgbModule,
     NgbPaginationModule,
@@ -143,7 +137,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     MatTabsModule,
     CurrencyMaskModule,
     FileUploadModule,
-    SharedLibraryModule,
     MatListModule,
     TimelineModule,
     CardModule,
@@ -197,16 +190,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ConsumoArpComponent,
     DetalheFinanceiroComponent,
     FormatDiffPipe
-    // UserComponent,
-    // TablesComponent,
-    // IconsComponent,
-    // TypographyComponent,
-    // NotificationsComponent,
-    // MapComponent,
-    // RtlComponent
   ],
   providers: [
-    CustomerService,
     ConfirmationService,
     NgbActiveModal,
     DatePipe,
@@ -215,6 +200,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig },
   ],
-  bootstrap: [AdminLayoutComponent],
+  bootstrap: [PagesComponent],
 })
-export class AdminLayoutModule { }
+export class PagesModule { }

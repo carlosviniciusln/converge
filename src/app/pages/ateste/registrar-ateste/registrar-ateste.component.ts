@@ -9,10 +9,10 @@ import {
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiService } from 'src/app/services/api.service';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030AtesteResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/generics/Gcpvw030AtesteResponse';
 
 @Component({
   selector: 'app-registrar-ateste',

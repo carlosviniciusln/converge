@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Select2Data } from 'ng-select2-component';
 import { ContratoCadastroComponent } from './contrato-cadastro/contrato-cadastro.component';
@@ -10,7 +10,7 @@ import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
+} from 'src/app/shared/services/token-storage.service';
 import * as fileSaver from 'file-saver';
 import { LazyLoadEvent } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
@@ -278,7 +278,7 @@ export class ContratoComponent implements OnInit {
     this.selectedTipoStatus = null;
     this.filtroRegistros = {
       pageNumber: 1,
-      pageSize: this.filtroRegistros.pageSize ?? 10, 
+      pageSize: this.filtroRegistros.pageSize ?? 10,
 
       Contrato: null,
       Fornecedor: null,
