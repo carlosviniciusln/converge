@@ -923,7 +923,7 @@ async removerRubrica(nuRubrica: string) {
         `${Endpoints.URL_FILIAL}/ativos`
       );
 
-      this.listaFiliais = response.data.filter((x) => x.nuFilialPai != null);
+      this.listaFiliais = response.data;
     } catch (error) {
       console.error(error);
     }

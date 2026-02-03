@@ -596,3 +596,12 @@ $btn-text: #ffffff;
 
 // FIM AÇÕES
 
+:host ::ng-deep .cef-status-em-lote{
+  display: flex;
+  label{
+    width: 100px;
+    text-align: left;
+    padding-left: 20px;
+  }
+}
+
