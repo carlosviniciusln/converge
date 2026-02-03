@@ -133,13 +133,13 @@ export class PlanejamentoGeralComponent implements OnInit {
                     this.openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio);
                 }
             },
-            {
-                label: 'Salvar Status',
-                icon: "pi pi-pencil",
-                command: () => {
-                    this.onSalvarMudancasStatus();
-                }
-            },
+            // {
+            //     label: 'Salvar Status',
+            //     icon: "pi pi-pencil",
+            //     command: () => {
+            //         this.onSalvarMudancasStatus();
+            //     }
+            // },
 
             {
                 label: 'Gerar Excel',
@@ -385,9 +385,11 @@ public async onSalvarMudancasStatus(): Promise<void> {
   }
 
 
-  onToggleItemSelecionado(): void {
-    this.atualizarStatusSelecionados();
-  }
+
+
+  // onToggleItemSelecionado(): void {
+  //   this.atualizarStatusSelecionados();
+  // }
 
  // mudança de endpoint
   public downloadPlanejamentoDesembolso() {
