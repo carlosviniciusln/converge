@@ -166,17 +166,17 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     KeycloakInitService,
     KeycloakService,
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: initializeKeycloak,
-    //   deps: [KeycloakInitService],
-    //   multi: true
-    // },
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: CustomKeycloakInterceptor,
-    //   multi: true
-    // }
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      deps: [KeycloakInitService],
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomKeycloakInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
