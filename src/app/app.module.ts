@@ -114,6 +114,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     MatToolbarModule,MatTableModule,
     FileUploadModule,
     MenuModule,
+    SharedLibraryModule,
     NgxMaskModule.forRoot(maskConfig)
   ],
   exports: [
@@ -149,7 +150,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     PagesComponent,
     SidebarComponent,
     NavbarComponent,
-    DevelopComponent
+    DevelopComponent,
   ],
   providers: [
     AuthGuard,

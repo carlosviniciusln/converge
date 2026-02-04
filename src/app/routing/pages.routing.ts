@@ -32,6 +32,7 @@ import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.com
 import { RelatorioContratoComponent } from 'src/app/pages/relatorio/relatorio-contrato/relatorio-contrato.component';
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
 import { ContratoComponent } from '../pages/contrato/contrato.component';
+import { DotacaoComponent } from '../pages/dotacao/dotacao.component';
 
 
 
@@ -66,9 +67,8 @@ export const PagesRoutes: Routes = [
   { path: 'empenho', component: EmpenhoComponent },
   { path: 'mod-develop', component: DevelopComponent },
   { path: 'orcamento/limites', component: LimitesComponent },
-
   { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
   { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
-
-{ path: 'relatorio-contrato', component: RelatorioContratoComponent },
+  { path: 'relatorio-contrato', component: RelatorioContratoComponent },
+  { path: 'dotacao', component: DotacaoComponent}
 ];

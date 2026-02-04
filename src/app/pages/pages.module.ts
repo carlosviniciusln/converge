@@ -91,6 +91,8 @@ import { ContratoComponent } from './contrato/contrato.component';
 import { PagamentoComponent } from './relatorio/pagamento/pagamento.component';
 import { AnaliticoComponent } from './relatorio/informe-mensal/analitico/analitico.component';
 import { PagesRoutes } from '../routing/pages.routing';
+import { DotacaoComponent } from './dotacao/dotacao.component';
+import { SharedLibraryModule } from '../shared/lib/shared-library.module';
 
 
 
@@ -144,7 +146,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DropdownModule,
     FormsModule,
     PaginatorModule,
-    MenuModule
+    MenuModule,
+    SharedLibraryModule
   ],
   declarations: [
     DashboardComponent,
@@ -189,7 +192,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     GraficoArtigoComponent,
     ConsumoArpComponent,
     DetalheFinanceiroComponent,
-    FormatDiffPipe
+    FormatDiffPipe,
+    DotacaoComponent
   ],
   providers: [
     ConfirmationService,
