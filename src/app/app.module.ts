@@ -72,6 +72,7 @@ import { DevelopComponent } from "./components/develop/develop.component";
 import { KeycloakInitService } from "../keycloak.init";
 import { KeycloakService } from "keycloak-angular";
 import { CustomKeycloakInterceptor } from "./core/interceptors/keycloak.interceptor";
+import { DialogService } from "primeng/dynamicdialog";
 
 registerLocaleData(ptBr);
 
@@ -159,6 +160,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     JwtHelperService,
     MessageService,
     CargaGerais,
+    DialogService,
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },

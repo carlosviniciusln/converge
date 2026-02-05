@@ -75,7 +75,7 @@
      <li routerlinkactive="active" class="nav-item">
       <a data-toggle="collapse" class="nav-link" (click)="isDotacaoCollapsed = !isDotacaoCollapsed">
         <i class="tim-icons icon-single-copy-04"></i>
-        <p>Execução<b class="caret"></b></p>
+        <p>DOTAÇÃO<b class="caret"></b></p>
       </a>
       <div [ngClass]="isDotacaoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
         <ul class="nav">
@@ -85,6 +85,8 @@
               <p>SUPLEMENTAÇÃO ORÇAMENTÁRIA</p>
             </a>
           </li>
+        </ul>
+      </div>
     <li routerlinkactive="active" class="nav-item">
       <a data-toggle="collapse" class="nav-link" (click)="isOrcamentoCollapsed = !isOrcamentoCollapsed">
         <i class="tim-icons icon-coins"></i>

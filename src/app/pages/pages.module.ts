@@ -8,7 +8,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CalendarModule } from 'primeng/calendar';
 import { SliderModule } from 'primeng/slider';
@@ -93,6 +93,8 @@ import { AnaliticoComponent } from './relatorio/informe-mensal/analitico/analiti
 import { PagesRoutes } from '../routing/pages.routing';
 import { DotacaoComponent } from './dotacao/dotacao.component';
 import { SharedLibraryModule } from '../shared/lib/shared-library.module';
+import { DotacaoDoadoresComponent } from './dotacao/dotacao-doadores/dotacao-doadores.component';
+import { DialogService } from 'primeng/dynamicdialog';
 
 
 
@@ -193,7 +195,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ConsumoArpComponent,
     DetalheFinanceiroComponent,
     FormatDiffPipe,
-    DotacaoComponent
+    DotacaoComponent,
+    DotacaoDoadoresComponent
   ],
   providers: [
     ConfirmationService,
@@ -201,6 +204,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DatePipe,
     CurrencyPipe,
     DecimalPipe,
+    MessageService,
+    DialogService,
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig },
   ],
