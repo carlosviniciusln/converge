@@ -1,0 +1,490 @@
+<div class="content">
+  <div class="row">
+    <div class="col-12">
+      <p-table
+        #dt
+        [value]="listaPedidos"
+        dataKey="codigo"
+        [rows]="10"
+        [paginator]="true"
+        [rowHover]="true"
+        [(selection)]="selectedPedidos"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+        [globalFilterFields]="['searchText']"
+      >
+        <!-- CAPTION -->
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row align-items-center">
+              <div class="col-md-7 table-header-title">
+                Pedidos de Suplementação Orçamentária
+              </div>
+
+              <div class="col-md-1 pl-1 pr-1 text-right">
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary"
+                  (click)="exportExcel()"
+                >
+                  <i class="tim-icons icon-cloud-download-93"></i>
+                </button>
+              </div>
+
+              <div class="col-md-4">
+                <input
+                  #myInput
+                  type="text"
+                  class="form-control"
+                  id="pPesquisar"
+                  placeholder="Digite para pesquisar"
+                  (input)="dt.filterGlobal(myInput.value, 'contains')"
+                />
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- HEADER PEDIDOS -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem"></th>
+            <th pSortableColumn="codigo" style="font-size: 14px">
+              Código
+              <p-sortIcon field="codigo"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="requerente" style="font-size: 14px">
+              Requerente
+              <p-sortIcon field="requerente"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="dataAbertura" style="font-size: 14px">
+              Abertura
+              <p-sortIcon field="dataAbertura"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="status" style="font-size: 14px">
+              Status
+              <p-sortIcon field="status"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="setor" style="font-size: 14px">
+              Setor
+              <p-sortIcon field="setor"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="justificativa" style="font-size: 14px">
+              Justificativa
+              <p-sortIcon field="justificativa"></p-sortIcon>
+            </th>
+
+            <th
+              pSortableColumn="vrTotalPedido"
+              style="font-size: 14px; text-align: right"
+            >
+              Total Pedido
+              <p-sortIcon field="vrTotalPedido"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+
+        <!-- BODY PEDIDOS -->
+        <ng-template pTemplate="body" let-pedido let-expanded="expanded">
+          <tr>
+            <td>
+              <button
+                type="button"
+                pButton
+                pRipple
+                [pRowToggler]="pedido"
+                class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"
+              >
+                <span
+                  [ngClass]="
+                    expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'
+                  "
+                ></span>
+              </button>
+            </td>
+
+            <td>{{ pedido.codigo }}</td>
+            <td>{{ pedido.requerente }}</td>
+            <td>{{ pedido.dataAbertura | date: "dd/MM/yyyy HH:mm " }}</td>
+
+            <td>
+              <span
+                class="badge"
+                [ngClass]="{
+                  'badge-success': pedido.status === 'concluido',
+                  'badge-warning': pedido.status === 'em_atendimento',
+                  'badge-info': pedido.status === 'aberto',
+                  'badge-secondary': !pedido.status,
+                }"
+              >
+                {{ pedido.status }}
+              </span>
+            </td>
+
+            <td>{{ pedido.setor }}</td>
+
+            <td>
+              <span
+                class="truncated-text"
+                pTooltip="{{ pedido.justificativa }}"
+                tooltipPosition="top"
+              >
+                {{ pedido.justificativa }}
+              </span>
+            </td>
+
+            <td style="text-align: right">
+              {{ pedido.vrTotalPedido | currency: "BRL" }}
+            </td>
+          </tr>
+        </ng-template>
+
+        <!-- EXPANSÃO 1: CONTRATOS -->
+        <ng-template pTemplate="rowexpansion" let-pedido>
+          <tr>
+            <td colspan="8">
+              <div class="p-p-3">
+                <p-table
+                  [value]="pedido.contratos"
+                  dataKey="coContrato"
+                  [rowHover]="true"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th style="width: 3rem"></th>
+                      <th pSortableColumn="coContrato">
+                        Contrato <p-sortIcon field="coContrato"></p-sortIcon>
+                      </th>
+
+                      <th pSortableColumn="classificacaoDigital">
+                        Classificação Digital
+                        <p-sortIcon field="classificacaoDigital"></p-sortIcon>
+                      </th>
+
+                      <th
+                        pSortableColumn="vrTotalContrato"
+                        style="text-align: right"
+                      >
+                        Total Contrato
+                        <p-sortIcon field="vrTotalContrato"></p-sortIcon>
+                      </th>
+                      <th style="text-align: center">Qtd. Rubricas</th>
+                    </tr>
+                  </ng-template>
+
+                  <ng-template
+                    pTemplate="body"
+                    let-contrato
+                    let-expanded="expanded"
+                  >
+                    <tr>
+                      <td>
+                        <button
+                          type="button"
+                          pButton
+                          pRipple
+                          [pRowToggler]="contrato"
+                          class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"
+                        >
+                          <span
+                            [ngClass]="
+                              expanded
+                                ? 'pi pi-chevron-down'
+                                : 'pi pi-chevron-right'
+                            "
+                          ></span>
+                        </button>
+                      </td>
+                      <td>{{ contrato.coContrato }}</td>
+
+                      <td>
+                        {{ contrato.classificacaoDigital || "-" }}
+                      </td>
+                      <td style="text-align: right">
+                        {{ contrato.vrTotalContrato | currency: "BRL" }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ contrato.rubrica?.length || 0 }}
+                      </td>
+                    </tr>
+                  </ng-template>
+
+                  <!-- EXPANSÃO 2: RUBRICAS -->
+                  <ng-template pTemplate="rowexpansion" let-contrato>
+                    <tr>
+                      <td colspan="5">
+                        <div class="p-p-3">
+                          <p-table
+                            [value]="contrato.rubrica"
+                            dataKey="coRubrica"
+                            [rowHover]="true"
+                          >
+                            <ng-template pTemplate="header">
+                              <tr>
+                                <th pSortableColumn="coRubrica">
+                                  Rubrica
+                                  <p-sortIcon field="coRubrica"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="deRubrica">
+                                  Descrição
+                                  <p-sortIcon field="deRubrica"></p-sortIcon>
+                                </th>
+                                <th
+                                  pSortableColumn="vrRubrica"
+                                  style="text-align: right"
+                                >
+                                  Valor
+                                  <p-sortIcon field="vrRubrica"></p-sortIcon>
+                                </th>
+                              </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-rub>
+                              <tr (click)="showDialog()">
+                                <td>{{ rub.coRubrica }}</td>
+                                <td>
+                                  <span
+                                    class="truncated-text"
+                                    pTooltip="{{ rub.deRubrica }}"
+                                    tooltipPosition="top"
+                                  >
+                                    {{ rub.deRubrica }}
+                                  </span>
+                                </td>
+                                <td style="text-align: right">
+                                  {{ rub.vrRubrica | currency: "BRL" }}
+                                </td>
+                              </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="emptymessage">
+                              <tr>
+                                <td colspan="3">Nenhuma rubrica encontrada.</td>
+                              </tr>
+                            </ng-template>
+                          </p-table>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-template>
+
+                  <ng-template pTemplate="emptymessage">
+                    <tr>
+                      <td colspan="5">Nenhum pedido encontrado.</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <!--após conferencia passar para component separado-->
+
+      <p-dialog
+        [(visible)]="visible"
+        [modal]="true"
+        [style]="{  height: '60vw', width: '70vw'}"
+        [draggable]="false"
+        [resizable]="false"
+      >
+        <!-- ✅ HEADER: apenas as tabs (labels) -->
+        <ng-template pTemplate="header">
+          <mat-tab-group [(selectedIndex)]="selectTab" mat-stretch-tabs="false">
+            <mat-tab label="Doadores Orçamentais"></mat-tab>
+            <mat-tab label="Doadores Selecionados"></mat-tab>
+            <mat-tab label="Histórico"></mat-tab>
+          </mat-tab-group>
+        </ng-template>
+
+        <!-- ✅ BODY/CONTENT: aqui vai o conteúdo das tabs -->
+
+        <ng-container *ngIf="selectTab === 0">
+          <p-table
+            #dtDoadores
+            [value]="listaDoadores"
+            dataKey="contrato"
+            [rows]="10"
+            [paginator]="true"
+            [(selection)]="selectedDoadores"
+            [rowHover]="true"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+            [globalFilterFields]="[
+              'contrato',
+              'objeto',
+              'classificacaoDigital',
+              'unidadeDemandante',
+              'rubrica',
+            ]"
+          >
+            <!-- CAPTION -->
+            <ng-template pTemplate="caption">
+              <div class="table-header">
+                <div
+                  class="row align-items-center"
+                  style="justify-content: end"
+                >
+                  <div class="col-md-1 pl-1 pr-1 text-right">
+                    <button
+                      type="button"
+                      class="btn-sm btn-secondary"
+                      (click)="exportExcel()"
+                    >
+                      <i class="tim-icons icon-cloud-download-93"></i>
+                    </button>
+                  </div>
+
+                  <div class="col-md-4">
+                    <input
+                      #inputDoador
+                      type="text"
+                      class="form-control"
+                      placeholder="Digite para pesquisar"
+                      (input)="
+                        dtDoadores.filterGlobal(inputDoador.value, 'contains')
+                      "
+                    />
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+
+            <!-- HEADER -->
+            <ng-template pTemplate="header">
+              <tr>
+                <!-- <th style="font-size: 14px">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th> -->
+                <th pSortableColumn="contrato" style="font-size: 14px">
+                  Contrato <p-sortIcon field="contrato"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="objeto" style="font-size: 14px">
+                  Objeto <p-sortIcon field="objeto"></p-sortIcon>
+                </th>
+
+                <th
+                  pSortableColumn="classificacaoDigital"
+                  style="font-size: 14px"
+                >
+                  Classificação
+                  <p-sortIcon field="classificacaoDigital"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="unidadeDemandante" style="font-size: 14px">
+                  Unidade <p-sortIcon field="unidadeDemandante"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="rubrica" style="font-size: 14px">
+                  Rubrica <p-sortIcon field="rubrica"></p-sortIcon>
+                </th>
+
+                <th
+                  pSortableColumn="vrPlanejamento"
+                  style="font-size: 14px; text-align: right"
+                >
+                  Planejamento <p-sortIcon field="vrPlanejamento"></p-sortIcon>
+                </th>
+
+                <th
+                  pSortableColumn="vrTotalReserva"
+                  style="font-size: 14px; text-align: right"
+                >
+                  Reserva <p-sortIcon field="vrTotalReserva"></p-sortIcon>
+                </th>
+
+                <th
+                  pSortableColumn="vrTotalPreComprementimento"
+                  style="font-size: 14px; text-align: right"
+                >
+                  Pré-Comp.
+                  <p-sortIcon field="vrTotalPreComprementimento"></p-sortIcon>
+                </th>
+
+                <th
+                  pSortableColumn="vrPedido"
+                  style="font-size: 14px; text-align: right"
+                >
+                  Pedido <p-sortIcon field="vrPedido"></p-sortIcon>
+                </th>
+
+                <th
+                  pSortableColumn="vrPagamentos"
+                  style="font-size: 14px; text-align: right"
+                >
+                  Pagamentos <p-sortIcon field="vrPagamentos"></p-sortIcon>
+                </th>
+
+                <th
+                  pSortableColumn="vrFaturamento"
+                  style="font-size: 14px; text-align: right"
+                >
+                  Faturamento <p-sortIcon field="vrFaturamento"></p-sortIcon>
+                </th>
+              </tr>
+            </ng-template>
+
+            <!-- BODY -->
+            <ng-template pTemplate="body" let-d>
+              <tr class="p-selectable-row">
+                <!-- <td>
+                    <p-tableCheckbox [value]="d"></p-tableCheckbox>
+                </td> -->
+                <td>{{ d.contrato }}</td>
+                <td>{{ d.objeto }}</td>
+                <td>{{ d.classificacaoDigital }}</td>
+                <td>{{ d.unidadeDemandante }}</td>
+                <td>{{ d.rubrica }}</td>
+
+                <td style="text-align: right">
+                  {{ d.vrPlanejamento | currency: "BRL" }}
+                </td>
+                <td style="text-align: right">
+                  {{ d.vrTotalReserva | currency: "BRL" }}
+                </td>
+                <td style="text-align: right">
+                  {{ d.vrTotalPreComprementimento | currency: "BRL" }}
+                </td>
+                <td style="text-align: right">
+                  {{ d.vrPedido | currency: "BRL" }}
+                </td>
+                <td style="text-align: right">
+                  {{ d.vrPagamentos | currency: "BRL" }}
+                </td>
+                <td style="text-align: right">
+                  {{ d.vrFaturamento | currency: "BRL" }}
+                </td>
+              </tr>
+            </ng-template>
+
+            <!-- EMPTY -->
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="11">
+                  Nenhum doador encontrado com os filtros informados.
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-container>
+
+        <!-- TAB 2: Selecionados -->
+        <ng-container *ngIf="selectTab === 1">
+          <p>Conteúdo de Doadores Selecionados</p>
+        </ng-container>
+
+        <!-- TAB 3: Histórico -->
+        <ng-container *ngIf="selectTab === 2">
+          <p>Conteúdo de Histórico</p>
+        </ng-container>
+      </p-dialog>
+    </div>
+  </div>
+</div>

@@ -72,6 +72,7 @@ import { DevelopComponent } from "./components/develop/develop.component";
 import { KeycloakInitService } from "../keycloak.init";
 import { KeycloakService } from "keycloak-angular";
 import { CustomKeycloakInterceptor } from "./core/interceptors/keycloak.interceptor";
+import { DialogService } from "primeng/dynamicdialog";
 
 registerLocaleData(ptBr);
 
@@ -114,6 +115,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     MatToolbarModule,MatTableModule,
     FileUploadModule,
     MenuModule,
+    SharedLibraryModule,
     NgxMaskModule.forRoot(maskConfig)
   ],
   exports: [
@@ -149,7 +151,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     PagesComponent,
     SidebarComponent,
     NavbarComponent,
-    DevelopComponent
+    DevelopComponent,
   ],
   providers: [
     AuthGuard,
@@ -158,6 +160,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     JwtHelperService,
     MessageService,
     CargaGerais,
+    DialogService,
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
@@ -166,17 +169,17 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     KeycloakInitService,
     KeycloakService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
-      deps: [KeycloakInitService],
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: CustomKeycloakInterceptor,
-      multi: true
-    }
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: initializeKeycloak,
+    //   deps: [KeycloakInitService],
+    //   multi: true
+    // },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: CustomKeycloakInterceptor,
+    //   multi: true
+    // }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
