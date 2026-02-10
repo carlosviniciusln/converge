@@ -13,6 +13,7 @@ export interface Gcptb062DotacaoDTO {
 
 export interface Contrato {
   coContrato?: string;
+  unidadeDemandante?: string;
   classificacaoDigital?: string;
   vrTotalContrato?: number;
   rubrica?: Rubrica[];

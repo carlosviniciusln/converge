@@ -46,6 +46,7 @@ export class DotacaoComponent implements OnInit {
           {
             coContrato: '0001/2025',
             vrTotalContrato: 15000,
+            unidadeDemandante: 'GEAUS',
             classificacaoDigital: 'DIGITAL',
             rubrica: [
               {
@@ -63,6 +64,7 @@ export class DotacaoComponent implements OnInit {
           {
             coContrato: '0001/2025',
             vrTotalContrato: 2000,
+            unidadeDemandante: 'GEAUS',
             classificacaoDigital: 'DIGITAL',
             rubrica: [
               {
@@ -92,6 +94,7 @@ export class DotacaoComponent implements OnInit {
         contratos: [
           {
             coContrato: '0012/2025',
+            unidadeDemandante: 'GEAUS',
             classificacaoDigital: 'DIGITAL',
             vrTotalContrato: 9800,
             rubrica: [
@@ -110,6 +113,7 @@ export class DotacaoComponent implements OnInit {
           {
             coContrato: '0018/2025',
             vrTotalContrato: 4200,
+            unidadeDemandante: 'GEAUS',
             classificacaoDigital: 'DIGITAL',
             rubrica: [
               {
@@ -140,6 +144,7 @@ export class DotacaoComponent implements OnInit {
           {
             coContrato: '0007/2024',
             classificacaoDigital: 'DIGITAL',
+            unidadeDemandante: 'GEAUS',
             vrTotalContrato: 25000,
             rubrica: [
               {
@@ -171,6 +176,7 @@ export class DotacaoComponent implements OnInit {
           {
             coContrato: '0021/2025',
             classificacaoDigital: 'DIGITAL',
+            unidadeDemandante: 'GEAUS',
             vrTotalContrato: 6300,
             rubrica: [
               {
@@ -188,6 +194,7 @@ export class DotacaoComponent implements OnInit {
           {
             coContrato: '0023/2025',
             classificacaoDigital: 'NÃO DIGITAL',
+            unidadeDemandante: 'GEAUS',
             vrTotalContrato: 3700,
             rubrica: [
               {
