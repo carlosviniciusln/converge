@@ -490,7 +490,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
       const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
       (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
       this.planejamentos = response?.data?.contratos.map(p => ({...p,sT_SELECIONADO: false }));
-      this.selectContratos = (response?.data?.listaContrato ?? []).map(c => ({ label: c, value: c }));
+      this.selectContratos = [{label: 'SEM CONTRATOS', value: 0}, ...(response?.data?.listaContrato ?? []).map(c => ({ label: c, value: c }))];
       this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
       this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: g, value: g }));
       this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: g, value: g }));
