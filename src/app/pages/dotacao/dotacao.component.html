@@ -147,7 +147,7 @@
         <!-- EXPANSÃO 1: CONTRATOS -->
         <ng-template pTemplate="rowexpansion" let-pedido>
           <tr>
-            <td colspan="8">
+            <td colspan="9">
               <div class="p-p-3">
                 <p-table
                   [value]="pedido.contratos"
@@ -164,6 +164,11 @@
                       <th pSortableColumn="classificacaoDigital">
                         Classificação Digital
                         <p-sortIcon field="classificacaoDigital"></p-sortIcon>
+                      </th>
+
+                      <th pSortableColumn="unidadeDemandante">
+                        GN
+                        <p-sortIcon field="unidadeDemandante"></p-sortIcon>
                       </th>
 
                       <th
@@ -205,6 +210,10 @@
                       <td>
                         {{ contrato.classificacaoDigital || "-" }}
                       </td>
+
+                      <td>
+                        {{ contrato.unidadeDemandante || "-" }}
+                      </td>
                       <td style="text-align: right">
                         {{ contrato.vrTotalContrato | currency: "BRL" }}
                       </td>
@@ -217,7 +226,7 @@
                   <!-- EXPANSÃO 2: RUBRICAS -->
                   <ng-template pTemplate="rowexpansion" let-contrato>
                     <tr>
-                      <td colspan="5">
+                      <td colspan="6">
                         <div class="p-p-3">
                           <p-table
                             [value]="contrato.rubrica"
@@ -275,7 +284,7 @@
 
                   <ng-template pTemplate="emptymessage">
                     <tr>
-                      <td colspan="5">Nenhum pedido encontrado.</td>
+                      <td colspan="6">Nenhum pedido encontrado.</td>
                     </tr>
                   </ng-template>
                 </p-table>
