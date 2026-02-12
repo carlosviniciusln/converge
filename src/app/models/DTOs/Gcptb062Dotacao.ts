@@ -26,7 +26,7 @@ export interface Rubrica {
 }
 
 
-export type PedidoStatus = 'aberto' | 'em_atendimento' | 'concluido' | 'cancelado';
+export type PedidoStatus = 'Aberta' | 'Em Atendimento' | 'Concluída' | 'cancelado';
 
 export interface DoadorOrcamental {                 // O QUE ESTÁ EM FATURAMENTO
 

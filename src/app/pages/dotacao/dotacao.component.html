@@ -5,12 +5,8 @@
         #dt
         [value]="listaPedidos"
         dataKey="codigo"
-        [rows]="10"
-        [paginator]="true"
         [rowHover]="true"
         [(selection)]="selectedPedidos"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
         [globalFilterFields]="['searchText']"
       >
         <!-- CAPTION -->
@@ -116,9 +112,9 @@
               <span
                 class="badge"
                 [ngClass]="{
-                  'badge-success': pedido.status === 'concluido',
-                  'badge-warning': pedido.status === 'em_atendimento',
-                  'badge-info': pedido.status === 'aberto',
+                  'badge-success': pedido.status === 'Concluída',
+                  'badge-warning': pedido.status === 'Em Atendimento',
+                  'badge-info': pedido.status === 'Aberta',
                   'badge-secondary': !pedido.status,
                 }"
               >
@@ -294,7 +290,9 @@
         </ng-template>
       </p-table>
 
-      <!--após conferencia passar para component separado-->
+           <div class="card flex justify-center">
+                    <p-paginator [showCurrentPageReport]="true" (onPageChange)="loadPage($event)" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"  [first]="1"  [rows]="10" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10, 20, 50]" ></p-paginator>
+            </div>
 
       <p-dialog
         [(visible)]="visible"
@@ -303,7 +301,7 @@
         [draggable]="false"
         [resizable]="false"
       >
-        <!-- ✅ HEADER: apenas as tabs (labels) -->
+
         <ng-template pTemplate="header">
           <mat-tab-group [(selectedIndex)]="selectTab" mat-stretch-tabs="false">
             <mat-tab label="Doadores Orçamentais"></mat-tab>
@@ -312,7 +310,7 @@
           </mat-tab-group>
         </ng-template>
 
-        <!-- ✅ BODY/CONTENT: aqui vai o conteúdo das tabs -->
+
 
         <ng-container *ngIf="selectTab === 0">
           <p-table
@@ -473,7 +471,6 @@
               </tr>
             </ng-template>
 
-            <!-- EMPTY -->
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="11">
