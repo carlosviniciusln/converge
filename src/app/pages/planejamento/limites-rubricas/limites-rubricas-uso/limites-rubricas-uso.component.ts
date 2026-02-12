@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ApiResponse } from 'src/app/models/api-response';
-import { UsoLimitesRubricaResponse } from 'src/app/models/limites-rubrica-response';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { UsoLimitesRubricaResponse } from 'src/app/models/generics/limites-rubrica-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({

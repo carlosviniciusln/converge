@@ -2,9 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiService } from 'src/app/services/api.service';
-import { ActionPolicies, TokenStorageService, ModuleEnum } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ActionPolicies, TokenStorageService, ModuleEnum } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import Swal from 'sweetalert2';
 
 @Component({

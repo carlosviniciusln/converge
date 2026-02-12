@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as Highcharts from 'highcharts';
-import { Series } from 'src/app/models/evolucao-financeira';
+import { Series } from 'src/app/models/generics/evolucao-financeira';
 
 @Component({
   selector: 'app-grafico',
@@ -8,10 +8,10 @@ import { Series } from 'src/app/models/evolucao-financeira';
   styleUrls: ['./grafico.component.scss']
 })
 export class GraficoComponent implements OnInit {
-  
+
   @Input()
   titulo: string = "";
-  
+
   @Input()
   categorias: string[] = [];
 
@@ -28,7 +28,7 @@ export class GraficoComponent implements OnInit {
       type: 'column',
       height: "300vh",
       zoomType: 'xy',
-      reflow: true,      
+      reflow: true,
     },
     title: {
       text: ""
@@ -56,7 +56,7 @@ export class GraficoComponent implements OnInit {
     },
     plotOptions: {
       column: {
-       
+
         grouping: true
       },
       series: {
@@ -91,14 +91,14 @@ export class GraficoComponent implements OnInit {
     this.chartOptions.xAxis["categories"] = this.categorias;
     const estimativaMensal = this.series[0];
     const valoresExecutados = this.series[1];
-    
+
     // this.chartOptions.series = this.series.map((m) => ({type: undefined, name: m.name, data: m.data }))
     this.chartOptions.series = [
       {
       type: 'line',
       name: 'Estimativa Mensal',
       data: estimativaMensal.data,
-      color: '#F9B200'  
+      color: '#F9B200'
       },
       {
         type: 'column',

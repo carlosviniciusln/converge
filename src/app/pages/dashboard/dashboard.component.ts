@@ -1,20 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiResponse, ApiResponsePaginado } from 'src/app/models/api-response';
-import { ContratoVigencia } from 'src/app/models/contratoVigencia';
-import { Dashboard, NumerosRapidosExecContratual } from 'src/app/models/dashboard';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiResponse, ApiResponsePaginado } from 'src/app/models/generics/api-response';
+import { ContratoVigencia } from 'src/app/models/generics/contratoVigencia';
+import { Dashboard, NumerosRapidosExecContratual } from 'src/app/models/generics/dashboard';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   PerfisEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { ContratoVigenciaComponent } from './contrato-vigencia/contrato-vigencia.component';
 import { ValoresRubricaComponent } from './valores-rubrica/valores-rubrica.component';
-import { ModalRedirectComponent } from './modal-redirect/modal-redirect.component';
-import { ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
+import { ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { NovosContratosComponent } from './novos-contratos/novos-contratos.component';
 
 @Component({
@@ -73,16 +72,6 @@ export class DashboardComponent implements OnInit {
     this.obterDashboard();
     this.obterContratos();
   }
-
-  // openModalRedirect(url: string) {
-  //   this.modalRef = this.modalService.open(ModalRedirectComponent, {
-  //     ariaLabelledBy: 'modal-basic-title',
-  //     windowClass: 'modal-dialog-custom-redirect-width',
-  //   });
-  //   this.modalRef.componentInstance.url = url;
-  //   this.modalRef.componentInstance.contratos = this.contratosOrigem;
-  //   this.modalRef.componentInstance.quantidadeTotal = this.quantidadeTotal;
-  // }
 
   public async obterDashboard() {
     try {

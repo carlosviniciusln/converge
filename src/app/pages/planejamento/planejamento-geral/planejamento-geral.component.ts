@@ -1,9 +1,9 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CheckboxModule } from 'primeng/checkbox';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
 import { ToastrService } from 'ngx-toastr';
 import {
   DemandaTipoResponse,
@@ -11,15 +11,14 @@ import {
   PlanejamentoStatusResponse,
   PlanejamentoTipoResponse,
   PlanejamentoObjetoResponse,
-} from 'src/app/models/planejamento-response';
-import { ApiResponse, ApiResponsePaginado } from 'src/app/models/api-response';
-import { Filial } from 'src/app/models/filial';
+} from 'src/app/models/generics/planejamento-response';
+import { ApiResponse, ApiResponsePaginado } from 'src/app/models/generics/api-response';
+import { Filial } from 'src/app/models/generics/filial';
 import { Select2Data, Select2Option } from 'ng-select2-component';
-import { ContratoResponse } from 'src/app/models/contrato-response';
+import { ContratoResponse } from 'src/app/models/generics/contrato-response';
 import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejamento-cadastro.component';
-import { ConfirmacaoModalComponent } from 'src/app/components/modal-confirmacao/confirmacao-modal';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/planejamento-orcamentario';
+import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/generics/planejamento-orcamentario';
 import { TableLazyLoadEvent } from 'primeng/table';
 import Swal from 'sweetalert2';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
@@ -134,13 +133,13 @@ export class PlanejamentoGeralComponent implements OnInit {
                     this.openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio);
                 }
             },
-            {
-                label: 'Salvar Status',
-                icon: "pi pi-pencil",
-                command: () => {
-                    this.onSalvarMudancasStatus();
-                }
-            },
+            // {
+            //     label: 'Salvar Status',
+            //     icon: "pi pi-pencil",
+            //     command: () => {
+            //         this.onSalvarMudancasStatus();
+            //     }
+            // },
 
             {
                 label: 'Gerar Excel',
@@ -386,9 +385,11 @@ public async onSalvarMudancasStatus(): Promise<void> {
   }
 
 
-  onToggleItemSelecionado(): void {
-    this.atualizarStatusSelecionados();
-  }
+
+
+  // onToggleItemSelecionado(): void {
+  //   this.atualizarStatusSelecionados();
+  // }
 
  // mudança de endpoint
   public downloadPlanejamentoDesembolso() {
@@ -489,7 +490,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
       const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
       (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
       this.planejamentos = response?.data?.contratos.map(p => ({...p,sT_SELECIONADO: false }));
-      this.selectContratos = (response?.data?.listaContrato ?? []).map(c => ({ label: c, value: c }));
+      this.selectContratos = [{label: 'SEM CONTRATOS', value: 0}, ...(response?.data?.listaContrato ?? []).map(c => ({ label: c, value: c }))];
       this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
       this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: g, value: g }));
       this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: g, value: g }));

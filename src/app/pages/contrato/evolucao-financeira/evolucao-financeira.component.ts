@@ -1,18 +1,18 @@
 import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { DatePipe, Location } from '@angular/common';
-import { Gcptb002ContratoTipo } from 'src/app/models/Gcptb001ContratoResponse';
+import { Gcptb002ContratoTipo } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
+} from 'src/app/shared/services/token-storage.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalSimulacaoComponent } from '../modal-simulacao/modal-simulacao.component';
-import { ContratoResponse } from 'src/app/models/contrato-response';
+import { ContratoResponse } from 'src/app/models/generics/contrato-response';
 
 @Component({
   selector: 'app-evolucao-financeira',
@@ -77,10 +77,17 @@ export class EvolucaoFinanceiraComponent implements OnInit, AfterViewInit {
       const resp: any = response.data;
       this.todasVigencias = resp;
       this.vigenciaAtual = resp.find(item => item.iC_VIGENCIA_ATUAL == true && item.cO_RUBRICA == 'TOTAL');
-      this.vigenciasAnteriores = resp.filter(item => item.iC_VIGENCIA_ATUAL != true && item.cO_RUBRICA == 'TOTAL');
+      this.vigenciasAnteriores = resp.filter(item => item.iC_VIGENCIA_ATUAL == false && item.cO_RUBRICA == 'TOTAL');
+      if(!this.vigenciaAtual){
+         this.vigenciaAnterior = this.vigenciasAnteriores[0];
+         this.rubricaAtiva = this.vigenciaAnterior?.nU_RUBRICA
+         this.vigenciaAnteriorSelect = this.vigenciaAnterior;
+      }
+      else{
       this.vigenciaAnterior = this.vigenciasAnteriores[0];
       this.rubricaAtiva = this.vigenciaAtual?.nU_RUBRICA
       this.rubricaSelecionada(this.rubricaAtiva)
+      }
       this.loading = false;
     } catch (error) {
       console.error(error);
@@ -150,7 +157,7 @@ export class EvolucaoFinanceiraComponent implements OnInit, AfterViewInit {
       this.loading = false;
     }
   }
-  
+
   validarRotaAtas() {
     this.isRotaAtas = (this.contrato && this.contrato.no_Tipo_Arp == 'ATA_DE_REGISTRO_DE_PRECOS' && this.contrato.ic_Arp) ? true : false;
     this.isDerivadoAta = (this.contrato && this.contrato.no_Tipo_Arp == 'CONTRATO_DERIVADO_ATA_REGISTRO_PRECOS' && this.contrato.ic_Arp) ? true : false;

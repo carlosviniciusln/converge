@@ -4,9 +4,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { LazyLoadEvent } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
-import { ApiService } from 'src/app/services/api.service';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import * as fileSaver from 'file-saver';
 
 @Component({

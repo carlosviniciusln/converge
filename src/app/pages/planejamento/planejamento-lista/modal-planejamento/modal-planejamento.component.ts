@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiService } from 'src/app/services/api.service';
-import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
-import { ResumoPlanejamentoModel } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiResponse } from 'src/app/models/api-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ActionPolicies, ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { ResumoPlanejamentoModel } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiResponse } from 'src/app/models/generics/api-response';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 

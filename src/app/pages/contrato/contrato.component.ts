@@ -1,8 +1,9 @@
+import { Gcpvw045ListarContratosResponse, Gcpvw045ListarContratosDTO } from './../../models/DTOs/Gcpvw045ListarContratos';
 import { Component, OnInit } from '@angular/core';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Gcptb001ContratoResponse, ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Select2Data } from 'ng-select2-component';
 import { ContratoCadastroComponent } from './contrato-cadastro/contrato-cadastro.component';
@@ -10,11 +11,10 @@ import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
+} from 'src/app/shared/services/token-storage.service';
 import * as fileSaver from 'file-saver';
-import { LazyLoadEvent } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-contrato',
@@ -22,12 +22,9 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./contrato.component.scss'],
 })
 export class ContratoComponent implements OnInit {
+
   permissions: ActionPolicies;
-
-  contratosOrigem: ContratoItem[];
-  contratos: ContratoItem[];
-
-  selectedContratos: Gcptb001ContratoResponse[];
+  contratos: Gcpvw045ListarContratosDTO[];
 
   statuses: any[];
 
@@ -53,14 +50,13 @@ export class ContratoComponent implements OnInit {
   tituloPage: string = 'Lista de Contratos';
   rota: string = '';
   filtroRegistros: any = {
-    pageNumber: 1,
-    pageSize: 10,
+    paginaAtual: 1,
+    tamanhoPagina: 10,
     Contrato: null,
     Fornecedor: null,
     Tipo: null,
     Gestor: null,
-    Status: null,
-    NoTipoArp: null
+    Status: null
   };
 
   quantidadeTotal: number = 0;
@@ -69,7 +65,6 @@ export class ContratoComponent implements OnInit {
     private apiService: ApiService,
     private modalService: NgbModal,
     private token: TokenStorageService,
-    private router: Router,
     private route: ActivatedRoute
   ) {
     this.obterPermissoes();
@@ -83,10 +78,6 @@ export class ContratoComponent implements OnInit {
   ngOnInit() {
     this.validarRotaAtas();
     this.obterContratos();
-  }
-
-  assignCopy() {
-    this.contratos = Object.assign([], this.contratosOrigem);
   }
 
   navegarInfoContrato(coContrato: string,nuContrato: number){
@@ -107,48 +98,25 @@ export class ContratoComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  filterItem(value) {
-    if (!value) {
-      this.assignCopy();
-    }
 
-    if (value == 'ativo') {
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) => item.icAtivo == true)
-    } else if (value == 'encerrado') {
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) => item.icAtivo == false)
-    } else {
-
-      this.contratos = Object.assign([], this.contratosOrigem).filter(
-        (item) =>
-          item.coContrato.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
-          item.noEmpresa.toLowerCase().includes(value) ||
-          item.noContratoTipo.toLowerCase().includes(value) ||
-          item.sgFilial.toLowerCase().includes(value)
-      );
-    }
-  }
-
-  public async obterContratos(): Promise<void> {
+   public async obterContratos(): Promise<void> {
 
     this.loading = true;
     try {
       const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
       if (this.isRotaAtas) {
-        filtrosLimpos.NoTipoArp = 'ATA_DE_REGISTRO_DE_PRECOS';
+        filtrosLimpos.Tipo = 'ATA_DE_REGISTRO_DE_PRECOS';
       }
-      const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
-        (`${Endpoints.URL_CONTRATOS}/filter-paginado`, filtrosLimpos);
+      const response = await this.apiService.get<ApiResponse<Gcpvw045ListarContratosResponse>>
+        (`${Endpoints.URL_CONTRATOS}/listar-contratos`, filtrosLimpos);
 
-      this.contratosOrigem = response?.data?.contratos;
+      this.contratos = response?.data?.contratos;
       this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
       this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
       this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
       this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
-      this.selectTiposStatus = response?.data?.listaStatus.map(s => ({ label: s, value: s }));
+      this.selectTiposStatus = response?.data?.listaStatus.sort((a, b) => Number(b) - Number(a)).map(s => ({ label: s ? 'Ativo' : 'Encerrado', value: s }));
       this.quantidadeTotal = response.data.totalRecords;
-      this.assignCopy();
       this.loading = false;
     } catch (error) {
       this.loading = false;
@@ -191,32 +159,18 @@ export class ContratoComponent implements OnInit {
   }
 
   loadPage(event: TableLazyLoadEvent) {
-    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
-    const pageSize = event.rows || this.filtroRegistros.pageSize;
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.tamanhoPagina) + 1;
+    const pageSize = event.rows || this.filtroRegistros.tamanhoPagina;
 
-    if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
-      this.filtroRegistros.pageNumber = page;
-      this.filtroRegistros.pageSize = pageSize;
+    if (page !== this.filtroRegistros.paginaAtual || pageSize !== this.filtroRegistros.tamanhoPagina) {
+      this.filtroRegistros.paginaAtual = page;
+      this.filtroRegistros.tamanhoPagina = pageSize;
       this.obterContratos();
     }
   }
 
-  openModalContrato(nuContrato?: number) {
-    const modalRef = this.modalService.open(ContratoCadastroComponent, {
-      ariaLabelledBy: 'modal-basic-title',
-      size: 'lg',
-      windowClass: 'custom-class',
-      backdrop: 'static',
-      keyboard: false,
-    });
 
-    modalRef.componentInstance.nuContrato = nuContrato;
-    modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
-      if (data) {
-        this.obterContratos();
-      }
-    });
-  }
+  // mudar export para backend
 
   exportExcel() {
     const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
@@ -260,6 +214,8 @@ export class ContratoComponent implements OnInit {
     fileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 
+  // VERIFICAR SE ESTÁ EM USO
+
   validarRotaAtas() {
     let rota = this.route.snapshot.url[1]?.path;
     this.rota = rota;
@@ -277,15 +233,13 @@ export class ContratoComponent implements OnInit {
     this.selectedTipoGestor = null;
     this.selectedTipoStatus = null;
     this.filtroRegistros = {
-      pageNumber: 1,
-      pageSize: this.filtroRegistros.pageSize ?? 10, 
-
+      paginaAtual: 1,
+      tamanhoPagina: this.filtroRegistros.tamanhoPagina ?? 10,
       Contrato: null,
       Fornecedor: null,
       Tipo: null,
       Gestor: null,
-      Status: null,
-      NoTipoArp: this.isRotaAtas ? 'ATA_DE_REGISTRO_DE_PRECOS' : null
+      Status: null
     };
 
     this.loading = true;

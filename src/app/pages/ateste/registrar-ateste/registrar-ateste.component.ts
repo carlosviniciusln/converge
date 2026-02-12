@@ -9,10 +9,10 @@ import {
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiService } from 'src/app/services/api.service';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/Gcpvw030AtesteResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { Gcpvw030DetalhamentoDeContratosResponse } from 'src/app/models/generics/Gcpvw030AtesteResponse';
 
 @Component({
   selector: 'app-registrar-ateste',
@@ -51,16 +51,16 @@ export class RegistrarAtesteComponent implements OnInit {
 
 
   public totalFormatado: string = '';
-  
+
   calcularTotal(values: any[]): void {
     let somaCentavos = 0;
     for (const curr of values) {
       let valorStr = (curr.vrApurado ?? '').toString()
-        .replace(/R\$\s?/g, '') 
-        .replace(/\./g, '')     
-        .replace(',', '')       
+        .replace(/R\$\s?/g, '')
+        .replace(/\./g, '')
+        .replace(',', '')
         .trim();
-    
+
       if (!valorStr) continue;
 
       const centavos = parseInt(valorStr);
@@ -105,17 +105,17 @@ export class RegistrarAtesteComponent implements OnInit {
         Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
       ]),
       deObservacao: new FormControl('', [Validators.required]),
-  
+
       // Aqui você adiciona os valores iniciais:
       vrPagamento: new FormControl(''),
       vrRetencao: new FormControl(''),
-      vrMulta: new FormControl(''),
-  
-      dePenalidade: new FormControl('', [
-        Validators.required,
-        Validators.maxLength(100),
-        Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
-      ]),
+      // vrMulta: new FormControl(''),
+
+      // dePenalidade: new FormControl('', [
+      //   Validators.required,
+      //   Validators.maxLength(100),
+      //   Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/),
+      // ]),
       arquivoAnexado: new FormControl(null),
       faturamentos: new FormArray([]),
     });
@@ -217,18 +217,22 @@ export class RegistrarAtesteComponent implements OnInit {
       return;
     }
 
-    this.form.get('vrPagamento')?.setValue(this.total);
-    const vrApurado = this.form.get('vrApurado')?.value.replace('R$', '').trim();
-    const vrMulta = this.form.get('vrMulta')?.value.replace('R$', '').trim();
-    const vrRetencao = this.form.get('vrRetencao')?.value.replace('R$', '').trim();
-    this.form.get('vrApurado')?.setValue(vrApurado);
-    this.form.get('vrMulta')?.setValue(vrMulta);
-    this.form.get('vrRetencao')?.setValue(vrRetencao);
-    const formData = this.toFormData(this.form);
+    this.faturamentos.setValue(this.faturamentos.getRawValue().map((x: any) =>
+    {
+      return {
+        ...x,
+        vrApurado : x.vrApurado.replace('R$', '').trim()
+      }
 
-    // formData.forEach((value, key) => {
-    //   console.log(key, value);
-    // });
+    }));
+
+    this.form.get('vrPagamento')?.setValue(this.total);
+    const vrRetencao = this.form.get('vrRetencao')?.value.replace('R$', '').trim();
+    this.form.get('vrRetencao')?.setValue(vrRetencao);
+    // const vrMulta = this.form.get('vrMulta')?.value.replace('R$', '').trim();
+    // this.form.get('vrMulta')?.setValue(vrMulta);
+
+    const formData = this.toFormData(this.form);
 
     this.Cadastrar(formData);
   }

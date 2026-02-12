@@ -1,12 +1,12 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { ContratoResponse, ContratoResponseV2 } from 'src/app/models/contrato-response';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { ApiResponse } from 'src/app/models/api-response';
-import { EvolucaoFinanceira } from 'src/app/models/evolucao-financeira';
-import { Gcptb002ContratoTipo } from 'src/app/models/Gcptb001ContratoResponse';
+import { ContratoResponse, ContratoResponseV2 } from 'src/app/models/generics/contrato-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { EvolucaoFinanceira } from 'src/app/models/generics/evolucao-financeira';
+import { Gcptb002ContratoTipo } from 'src/app/models/generics/Gcptb001ContratoResponse';
 
 
 @Component({
@@ -42,7 +42,7 @@ listaResumoPagamentos: any[] = [];
 
 
   }
-  
+
   ngOnInit(): void {
 
    if(this.nuContrato){
@@ -65,7 +65,7 @@ listaResumoPagamentos: any[] = [];
         this.obterDadosGraficosVigencias(vigenciaAtual)
         this.obterDadosVigenciaAtual();
         this.listaNova = this.todasVigencias.filter( f => f.nU_VIGENCIA === vigenciaAtual.nU_VIGENCIA);
-        
+
         this.listaNova.forEach(element => {
           this.obterDadosGraficosVigencias(element).then(valor => {
             const teste = {
@@ -76,32 +76,32 @@ listaResumoPagamentos: any[] = [];
 
             this.ListaVigenciasRubricas.push(teste)
         })
-       
-        
+
+
       });
       } catch (error) {
         console.error(error);
-      
+
       }
     }
 
-    
+
 
     public async obterContrato(): Promise<void> {
       try {
         const response = await this.apiService.get<ApiResponse<ContratoResponse>>(
           `${Endpoints.URL_CONTRATOS}/` + this.nuContrato
         );
-  
+
         const responseV2 = await this.apiService.get<ApiResponse<ContratoResponseV2>>(
           `${Endpoints.URL_CONTRATOS}/detalhe-contrato?nuContrato=` + this.nuContrato
         );
-  
+
         this.Contrato = response.data;
         this.ContratoV2 = responseV2.data;
 
         this.isRotaAtas = (this.Contrato && this.Contrato.no_Tipo_Arp == 'ATA_DE_REGISTRO_DE_PRECOS' && this.Contrato.ic_Arp) ? true : false;
-   
+
       } catch (error) {
         console.error(error, 'obterContrato');
       }
@@ -115,38 +115,38 @@ listaResumoPagamentos: any[] = [];
           scale: 2,
           useCORS: true
         };
-    
+
         const canvas = await html2canvas(element, options);
         const imgData = canvas.toDataURL('image/png');
-    
+
         const imgProps = pdf.getImageProperties(imgData);
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    
+
         let heightLeft = pdfHeight;
         let position = 0;
         const pageHeight = pdf.internal.pageSize.getHeight();
         const margin = 10;
-    
+
         pdf.addImage(imgData, 'PNG', 0, position + margin, pdfWidth, pdfHeight);
         heightLeft -= pageHeight;
-    
+
         while (heightLeft > -pageHeight) {
           position = position - pageHeight;
           pdf.addPage();
           pdf.addImage(imgData, 'PNG', 0, position + margin, pdfWidth, pdfHeight);
           heightLeft -= pageHeight;
         }
-    
+
         pdf.save('Evolucao_Financeira_Geral.pdf');
         return true;
-    
+
       } catch (error) {
         console.error('Erro ao gerar PDF:', error);
         return false;
       }
     }
-    
+
 
   somaVigencias(vigencias: any[]): number{
     let vrGlobalTotal = 0;
@@ -182,18 +182,18 @@ listaResumoPagamentos: any[] = [];
           `${Endpoints.URL_CONTRATOS}/valores-vigencia-atual?nuContrato=${this.nuContrato}`
         );
         const resp: any[] = response.data;
-  
+
         this.dadosVigenciaAtual = resp;
         const totalItem = resp.find(item => item.nO_RUBRICA === 'TOTAL');
         this.totalCurrentVigencia = totalItem?.vR_GLOBAL || 0;
         this.inicioVigencia = totalItem?.dT_INICIO;
         this.fimVigencia = totalItem?.dT_TERMINO;
-  
+
         this.currentVigenciaRubricas = resp.filter(item => item.nO_RUBRICA !== 'TOTAL');
-  
+
       } catch (error) {
         console.error(error, 'error');
-  
+
       }
     }
 
@@ -206,7 +206,7 @@ listaResumoPagamentos: any[] = [];
       return lista;
     }
 
-  
+
 
   public async obterDadosGraficosVigencias(params): Promise<any> {
     try {
@@ -214,7 +214,7 @@ listaResumoPagamentos: any[] = [];
         ApiResponse<EvolucaoFinanceira[]>
       >(`${Endpoints.URL_CONTRATOS}/grafico-vigencias-contrato?nuContrato=${params.nU_CONTRATO}&nuVigencia=${params.nU_VIGENCIA}`);
       const resp: any = response.data
-      
+
       this.rubricas = this.agruparDadosPorRubrica(resp);
 
       this.rubricas = this.rubricas.map(item => {
@@ -272,10 +272,10 @@ listaResumoPagamentos: any[] = [];
       const listaResumo = response.data
 
       return listaResumo;
-    
+
     } catch (error) {
       console.error('Error fetching data', error);
-     
+
     }
   }
 

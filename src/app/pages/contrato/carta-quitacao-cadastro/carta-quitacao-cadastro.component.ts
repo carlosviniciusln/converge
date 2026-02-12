@@ -7,18 +7,18 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiResponse } from 'src/app/models/api-response';
+import { ApiResponse } from 'src/app/models/generics/api-response';
 import {
   Gcptb021CartaQuitacao,
   Gcptb021CartaQuitacaoResponse,
-} from 'src/app/models/Gcptb021CartaQuitacaoResponse';
-import { ApiService } from 'src/app/services/api.service';
+} from 'src/app/models/generics/Gcptb021CartaQuitacaoResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import Swal from 'sweetalert2';
 
 @Component({

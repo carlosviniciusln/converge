@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ContratoVigencia } from 'src/app/models/contratoVigencia';
-import { Dashboard, NumerosRapidosExecContratual } from 'src/app/models/dashboard';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ContratoVigencia } from 'src/app/models/generics/contratoVigencia';
+import { Dashboard, NumerosRapidosExecContratual } from 'src/app/models/generics/dashboard';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { ContratoItem, ResumoPlanejamentoModel } from 'src/app/models/Gcptb001ContratoResponse';
+} from 'src/app/shared/services/token-storage.service';
+import { ContratoItem, ResumoPlanejamentoModel } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { ModalPlanejamentoComponent } from './modal-planejamento/modal-planejamento.component';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
@@ -115,7 +115,7 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
                  }).then((result) => {
                    console.log(result, "Result")
                  });
-               
+
       return;
     }
     this.toastr.warning('Aguarde, gerando o exercício ' + (this.anoAtual + 1) + ', isso pode levar alguns minutos...');

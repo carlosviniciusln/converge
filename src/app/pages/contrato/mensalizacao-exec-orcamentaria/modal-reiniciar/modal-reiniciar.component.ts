@@ -2,9 +2,9 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiService } from 'src/app/services/api.service';
-import { TokenStorageService } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-modal-reiniciar',
@@ -59,7 +59,7 @@ export class ModalReiniciarComponent implements OnInit {
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
       setTimeout(() => {
-        location.reload(); 
+        location.reload();
      }, 2000);
     } catch (error) {
       this.atualizarPagina.emit(false);
