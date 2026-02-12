@@ -13,7 +13,6 @@ import {
 import { Endpoints } from 'src/app/models/enums/endpoints';
 import { ContratoVigenciaComponent } from './contrato-vigencia/contrato-vigencia.component';
 import { ValoresRubricaComponent } from './valores-rubrica/valores-rubrica.component';
-import { ModalRedirectComponent } from './modal-redirect/modal-redirect.component';
 import { ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { NovosContratosComponent } from './novos-contratos/novos-contratos.component';
 
@@ -73,16 +72,6 @@ export class DashboardComponent implements OnInit {
     this.obterDashboard();
     this.obterContratos();
   }
-
-  // openModalRedirect(url: string) {
-  //   this.modalRef = this.modalService.open(ModalRedirectComponent, {
-  //     ariaLabelledBy: 'modal-basic-title',
-  //     windowClass: 'modal-dialog-custom-redirect-width',
-  //   });
-  //   this.modalRef.componentInstance.url = url;
-  //   this.modalRef.componentInstance.contratos = this.contratosOrigem;
-  //   this.modalRef.componentInstance.quantidadeTotal = this.quantidadeTotal;
-  // }
 
   public async obterDashboard() {
     try {

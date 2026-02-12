@@ -33,7 +33,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { HighchartsChartModule } from "highcharts-angular";
 import { MatIconModule } from '@angular/material/icon';
 import { MensalizacaoEditarComponent } from './pages/contrato/mensalizacao-exec-orcamentaria/mensalizacao-editar/mensalizacao-editar.component';
-import { ModalRedirectComponent } from './pages/dashboard/modal-redirect/modal-redirect.component';
 import { TabelaMensalizacaoComponent } from './pages/contrato/mensalizacao-exec-orcamentaria/tabela-mensalizacao/tabela-mensalizacao.component';
 import { ModalReiniciarComponent } from './pages/contrato/mensalizacao-exec-orcamentaria/modal-reiniciar/modal-reiniciar.component';
 import { ModalSimulacaoComponent } from './pages/contrato/modal-simulacao/modal-simulacao.component';
@@ -129,7 +128,6 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     MensalizacaoComponent,
     ValoresExecutadosComponent,
     ContratoPendenteComponent,
-    ModalRedirectComponent,
     TabelaMensalizacaoComponent,
     ModalReiniciarComponent,
     ModalSimulacaoComponent,
