@@ -8,21 +8,21 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiResponse } from 'src/app/models/api-response';
+import { ApiResponse } from 'src/app/models/generics/api-response';
 import {
   Gcptb006Vigencia,
   Gcptb011Pagamento,
   Gcptb017VigenciaRubrica,
-} from 'src/app/models/contrato-response';
-import { Orcamento } from 'src/app/models/orcamento';
-import { PagamentoTipo } from 'src/app/models/pagamento-tipo';
-import { ApiService } from 'src/app/services/api.service';
+} from 'src/app/models/generics/contrato-response';
+import { Orcamento } from 'src/app/models/generics/orcamento';
+import { PagamentoTipo } from 'src/app/models/generics/pagamento-tipo';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 @Component({
@@ -193,9 +193,9 @@ export class PagamentoCadastroComponent implements OnInit {
       this.form.controls['nuPagamentoTipo'].setValue(response.data.nuPagamentoTipo);
       this.form.controls['nuContrato'].setValue(response.data.nuContrato);
       this.form.controls['nuVigencia'].setValue(response.data.nuVigencia);
-   
+
       await this.obterRubricas();
-   
+
       this.form.controls['nuVigenciaRubrica'].setValue(response.data.nuVigenciaRubrica);
       this.form.controls['nuOrcamento'].setValue(response.data.nuOrcamento);
       this.form.controls['dePeriodo'].setValue(response.data.dePeriodo);
@@ -216,7 +216,7 @@ export class PagamentoCadastroComponent implements OnInit {
       this.form.controls['dtPagamentoEfetivo'].setValue(
         response.data.dtPagamentoEfetivo?.toString().substring(0, 10)
       );
-   
+
       this.form.controls['qtdItens'].setValue(response.data.qtdItens);
       this.form.controls['qtdTradeIn'].setValue(response.data.qtdTradeIn);
       this.form.controls['nuSap'].setValue(response.data.nuSap);
@@ -224,7 +224,7 @@ export class PagamentoCadastroComponent implements OnInit {
 
       let paymentDateStr = response.data.dtPagamentoEfetivo?.toString().substring(0, 10);
       let paymentDate: Date | null = null;
-   
+
       if (paymentDateStr) {
         paymentDate = new Date(paymentDateStr);
       }
@@ -237,16 +237,16 @@ export class PagamentoCadastroComponent implements OnInit {
         //se for conciliação, permitir edição de campos competencia e ateste
         if(this.isConciliacao){
           Object.keys(this.form.controls).forEach((controlName) => {
-              this.form.get(controlName).disable();     
+              this.form.get(controlName).disable();
             });
-            this.form.get('dePeriodo').enable();     
-            this.form.get('coNumeroAteste').enable();     
+            this.form.get('dePeriodo').enable();
+            this.form.get('coNumeroAteste').enable();
         } else{
           //cenario 1: o fiscal cegti deve poder alterar somente a competencia.
           Object.keys(this.form.controls).forEach((controlName) => {
             if (controlName !== 'dePeriodo') {
               this.form.get(controlName).disable();
-            }          
+            }
           });
         }
       }

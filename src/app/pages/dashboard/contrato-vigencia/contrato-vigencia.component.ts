@@ -1,14 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ContratoVigencia } from 'src/app/models/contratoVigencia';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ContratoVigencia } from 'src/app/models/generics/contratoVigencia';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-contrato-vigencia',

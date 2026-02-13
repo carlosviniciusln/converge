@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
-import { RetornoArtigo } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { RetornoArtigo } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-grafico-artigo',

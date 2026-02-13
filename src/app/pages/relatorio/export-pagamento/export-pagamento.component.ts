@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiResponsePaginado } from 'src/app/models/api-response';
-import { ApiService } from 'src/app/services/api.service';
-import { ActionPolicies, TokenStorageService, ModuleEnum } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponsePaginado } from 'src/app/models/generics/api-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ActionPolicies, TokenStorageService, ModuleEnum } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import * as fileSaver from 'file-saver';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 

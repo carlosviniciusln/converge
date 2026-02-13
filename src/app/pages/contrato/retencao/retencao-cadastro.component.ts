@@ -7,10 +7,10 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiService } from 'src/app/services/api.service';
-import { Retencao } from 'src/app/models/contrato-response';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Retencao } from 'src/app/models/generics/contrato-response';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
 
 @Component({
   selector: 'app-retencao-cadastro',

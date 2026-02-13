@@ -6,26 +6,26 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiService } from 'src/app/services/api.service';
-import { PageAction, PerfisEnum, TokenStorageService } from 'src/app/services/token-storage.service';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Filial } from 'src/app/models/filial';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { PageAction, PerfisEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Filial } from 'src/app/models/generics/filial';
 import {
   LimitesRubricasUpdateV2,
-} from 'src/app/models/limites-rubrica-response';
-import { PlanejamentoTipoResponse } from 'src/app/models/planejamento-response';
+} from 'src/app/models/generics/limites-rubrica-response';
+import { PlanejamentoTipoResponse } from 'src/app/models/generics/planejamento-response';
 import {
   RubricaGrupo,
   Gcptb028GrupoRemanejamento,
   Rubrica,
-} from 'src/app/models/rubrica';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/models/generics/rubrica';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import {
   ExercicioModel,
   LimitesModel,
   listaErroUploadModel,
   StatusPlanejamentoModel,
-} from 'src/app/models/limites-model';
+} from 'src/app/models/generics/limites-model';
 import { Select2Data } from 'ng-select2-component';
 import Swal from 'sweetalert2';
 import { ModalHistoricoComponent } from '../modal-historico/modal-historico.component';

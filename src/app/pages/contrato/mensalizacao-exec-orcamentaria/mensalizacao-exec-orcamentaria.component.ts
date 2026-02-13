@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Gcptb002ContratoTipo, Gcpvw008Mensalizacao, Gcpvw018EexcucaoOrcamentaria, TotalPorRubrica } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ContratoResponse, Gcptb006Vigencia } from 'src/app/models/contrato-response';
-import { ApiService } from 'src/app/services/api.service';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { Gcptb002ContratoTipo, Gcpvw008Mensalizacao, Gcpvw018EexcucaoOrcamentaria, TotalPorRubrica } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ContratoResponse, Gcptb006Vigencia } from 'src/app/models/generics/contrato-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { DatePipe, Location } from '@angular/common';
 import { ModalSimulacaoComponent } from '../modal-simulacao/modal-simulacao.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -59,7 +59,7 @@ export class MensalizacaoComponent implements OnInit {
     this.currentUser = this.token.getUser();
     this.nuContrato = this.route.snapshot.paramMap.get('id');
   }
-  
+
   ngOnInit(): void {
     this.nuContrato = this.route.snapshot.paramMap.get('id');
     this.obterContrato(this.nuContrato);
@@ -96,14 +96,14 @@ export class MensalizacaoComponent implements OnInit {
   public async obterContrato(nuContrato: string): Promise<void> {
     try {
       const response = await this.apiService.get<ApiResponse<ContratoResponse>>(`${Endpoints.URL_CONTRATOS}/` + nuContrato);
-      this.contrato = response.data;      
+      this.contrato = response.data;
       await this.obterMensalizacaoContrato(this.contrato);
     } catch (error) {
     }
   }
 
   public async obterMensalizacaoContrato(contrato: ContratoResponse): Promise<void> {
-    
+
     try {
       const response = await this.apiService.get<
         ApiResponse<Gcpvw008Mensalizacao[]>
@@ -124,10 +124,10 @@ export class MensalizacaoComponent implements OnInit {
       }
       this.rubricas.unshift(totalTab);
       this.gcpvw008Mensalizacao.unshift(totalTab);
-      
+
       if(this.gcpvw008Mensalizacao.length > 0){
         this.semMensalizacao = false;
-      }      
+      }
 
       contrato.gcptb006Vigencias.forEach(contr => {
         const dataInicioVigenciaContrato = new Date (contr.dtInicio)
@@ -165,7 +165,7 @@ export class MensalizacaoComponent implements OnInit {
     nuPerfil: null,
     filtro: '',
   };
-  
+
   goBackToPrevPage(): void {
     this.location.back();
   }
@@ -186,10 +186,10 @@ export class MensalizacaoComponent implements OnInit {
   getCompetencias(startDate: any, endDate: any): number {
     const start = new Date(startDate);
     const end = new Date(endDate);
-   
+
     const yearsDifference = end.getFullYear() - start.getFullYear();
     const monthsDifference = end.getMonth() - start.getMonth();
-   
+
     return yearsDifference * 12 + monthsDifference;
   }
 

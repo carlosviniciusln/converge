@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Select2Data } from 'ng-select2-component';
 import { TableLazyLoadEvent } from 'primeng/table';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ContratoItem, Gcptb001ContratoResponse, ContratoApiResponse } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiService } from 'src/app/services/api.service';
-import { ActionPolicies, TokenStorageService, ModuleEnum } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ContratoItem, Gcptb001ContratoResponse, ContratoApiResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ActionPolicies, TokenStorageService, ModuleEnum } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-relatorio-contrato',

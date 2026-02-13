@@ -1,8 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+@use "sass:meta";
 @use '@angular/material' as mat;
 
-// @import "primeng/resources/themes/lara-light-blue/theme.css";
-// @import "primeng/resources/primeng.css";
+/* Base global (estrutura) */
+@include meta.load-css("primeng/resources/primeng.css");
+// @include meta.load-css("primeicons/primeicons.css");
+
+/* Tema escopado */
+.primeng-scope {
+  @include meta.load-css("primeng/resources/themes/lara-light-blue/theme.css");
+}
+
+
+/* You can add global styles to this file, and also import other style files */
+
 
 // Plus imports for other components in your app.
 

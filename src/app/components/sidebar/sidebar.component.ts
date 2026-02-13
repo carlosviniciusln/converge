@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ContratoApiResponse } from 'src/app/models/Gcptb001ContratoResponse';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ContratoApiResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   PerfisEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 declare interface RouteInfo {
   path: string;
@@ -57,6 +57,7 @@ export class SidebarComponent implements OnInit {
   isRelatoriosCollapsed: boolean = false;
   isOrcamentoCollapsed: boolean = false;
   isContratoCollapsed: boolean = false;
+  isDotacaoCollapsed: boolean = false;
   isContratoCollapsedArt81: boolean = false;
   isPerfilOrcamento = false;
   isPerfilPrivilegiado = false;

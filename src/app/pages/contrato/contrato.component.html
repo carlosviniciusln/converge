@@ -1,8 +1,8 @@
 <div class="content">
     <div class=" row">
         <div class=" col-12">
-            <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
-                styleClass="p-datatable-customers" [rows]="filtroRegistros.pageSize" [paginator]="true"
+            <p-table #dt [value]="contratos" dataKey="id"
+                styleClass="p-datatable-customers" [rows]="filtroRegistros.tamanhoPagina" [paginator]="true"
                 [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50]" [lazy]="true"
                 (onLazyLoad)="loadPage($event)" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"
@@ -50,8 +50,8 @@
                                     (onChange)="updateRelatorio($event, 5)" [showClear]="true"
                                     placeholder="Status"></p-dropdown>
                             </div>
-                            
-                            <div> 
+
+                            <div>
                                 <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
               (click)="limparFiltros()"></button>
                             </div>
@@ -127,7 +127,7 @@
                         </td>
                         <td *ngIf="isRotaAtas">
                             <span class="p-column-title">Processo</span>
-                            {{contrato.co_Processo}}
+                            {{contrato.coProcesso}}
                         </td>
                         <td style="width: 200px;">
                             <span class="p-column-title">NoEmpresa</span>

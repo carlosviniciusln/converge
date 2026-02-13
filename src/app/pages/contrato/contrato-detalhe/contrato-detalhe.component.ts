@@ -1,28 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ContratoResponse, RetencaoResponse, Retencao, Gcptb002ContratoTipo, ContratoResponseV2 } from 'src/app/models/contrato-response';
-import { ApiService } from 'src/app/services/api.service';
-import { EvolucaoFinanceira } from 'src/app/models/evolucao-financeira';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ContratoResponse, RetencaoResponse, Retencao, Gcptb002ContratoTipo, ContratoResponseV2 } from 'src/app/models/generics/contrato-response';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { EvolucaoFinanceira } from 'src/app/models/generics/evolucao-financeira';
 import {
   ActionPolicies,
   ModuleEnum,
   PerfisEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { ContratoCadastroComponent } from '../contrato-cadastro/contrato-cadastro.component';
 import { RetencaoCadastroComponent } from '../retencao/retencao-cadastro.component'
 import { PagamentoCadastroComponent } from '../pagamento-cadastro/pagamento-cadastro.component';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { ToastrService } from 'ngx-toastr';
 import { Location } from '@angular/common';
-import { Gcptb016EmpenhoResponse } from 'src/app/models/Gcptb016EmpenhoResponse';
-import { NavigationService } from 'src/app/services/navigation-service';
-import { Gcptb021CartaQuitacaoResponse } from 'src/app/models/Gcptb021CartaQuitacaoResponse';
+import { Gcptb016EmpenhoResponse } from 'src/app/models/generics/Gcptb016EmpenhoResponse';
+import { NavigationService } from 'src/app/shared/services/navigation-service';
+import { Gcptb021CartaQuitacaoResponse } from 'src/app/models/generics/Gcptb021CartaQuitacaoResponse';
 import { ModalSimulacaoComponent } from '../modal-simulacao/modal-simulacao.component';
-import { ContratoApiResponse, ContratoItem } from 'src/app/models/Gcptb001ContratoResponse';
+import { ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
 
 @Component({
   selector: 'app-contrato-detalhe',
@@ -334,7 +334,7 @@ export class ContratoDetalheComponent implements OnInit {
     modalRef.componentInstance.nuContrato = nuContrato;
     modalRef.componentInstance.nuPagamento = nuPagamento;
     modalRef.componentInstance.isConciliacao = icConciliacao;
-    
+
 
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {

@@ -7,18 +7,18 @@ import {
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { ApiResponse } from 'src/app/models/api-response';
-import { Filial } from 'src/app/models/filial';
-import { LimitesRubricaResponse, LimitesRubricasUpdate } from 'src/app/models/limites-rubrica-response';
-import { Orcamento } from 'src/app/models/orcamento';
-import { PlanejamentoTipoResponse } from 'src/app/models/planejamento-response';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { Filial } from 'src/app/models/generics/filial';
+import { LimitesRubricaResponse, LimitesRubricasUpdate } from 'src/app/models/generics/limites-rubrica-response';
+import { Orcamento } from 'src/app/models/generics/orcamento';
+import { PlanejamentoTipoResponse } from 'src/app/models/generics/planejamento-response';
 import {
   Gcptb028GrupoRemanejamento,
   RubricaGrupo,
-} from 'src/app/models/rubrica';
-import { ApiService } from 'src/app/services/api.service';
-import { PageAction } from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/models/generics/rubrica';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { PageAction } from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 
 @Component({
   selector: 'app-limites-rubricas-cadastro',

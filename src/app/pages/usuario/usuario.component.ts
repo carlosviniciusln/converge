@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiResponsePaginado } from 'src/app/models/api-response';
-import { Usuario } from 'src/app/models/usuario';
-import { ApiService } from 'src/app/services/api.service';
+import { ApiResponsePaginado } from 'src/app/models/generics/api-response';
+import { Usuario } from 'src/app/models/generics/usuario';
+import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
   ModuleEnum,
   PerfisEnum,
   TokenStorageService,
-} from 'src/app/services/token-storage.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import { PrimeNGConfig } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
-import { NavigationService } from 'src/app/services/navigation-service';
+import { NavigationService } from 'src/app/shared/services/navigation-service';
 import { ConfirmationService } from 'primeng/api';
 
 @Component({

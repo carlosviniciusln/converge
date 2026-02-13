@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ApiService } from 'src/app/services/api.service';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
 import { ToastrService } from 'ngx-toastr';
 import { PlanejamentoCadastroComponent } from './planejamento-cadastro/planejamento-cadastro.component';
 import {
@@ -11,11 +11,11 @@ import {
   PlanejamentoStatusResponse,
   PlanejamentoTipoResponse,
   PlanejamentoObjetoResponse,
-} from 'src/app/models/planejamento-response';
-import { ApiResponse, ApiResponsePaginado } from 'src/app/models/api-response';
-import { Filial } from 'src/app/models/filial';
+} from 'src/app/models/generics/planejamento-response';
+import { ApiResponse, ApiResponsePaginado } from 'src/app/models/generics/api-response';
+import { Filial } from 'src/app/models/generics/filial';
 import { Select2Data, Select2Option } from 'ng-select2-component';
-import { ContratoResponse } from 'src/app/models/contrato-response';
+import { ContratoResponse } from 'src/app/models/generics/contrato-response';
 import Swal from 'sweetalert2';
 
 @Component({

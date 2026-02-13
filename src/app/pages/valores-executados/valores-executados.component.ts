@@ -1,11 +1,11 @@
 import { Component, OnInit} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { ApiService } from 'src/app/services/api.service';
-import { ApiResponse } from 'src/app/models/api-response';
-import { ValoresExecutadosResponse } from 'src/app/models/Gcptb001ContratoResponse';
-import { Endpoints } from 'src/app/shared/enums/endpoints';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ValoresExecutadosResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { Endpoints } from 'src/app/models/enums/endpoints';
 import * as fileSaver from 'file-saver';
-import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/services/token-storage.service';
+import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
 
 @Component({
     selector: 'app-valores-executados',

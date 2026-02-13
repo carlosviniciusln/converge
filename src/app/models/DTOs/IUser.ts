@@ -1,4 +1,4 @@
-import { Claim } from "../login";
+import { Claim } from "../generics/login";
 
 export interface IUser {
     accessToken: string;

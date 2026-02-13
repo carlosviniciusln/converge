@@ -3,8 +3,9 @@ import { ROUTES } from "../sidebar/sidebar.component";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { LoginComponent } from "src/app/pages/login/login.component";
-import { TokenStorageService } from "src/app/services/token-storage.service";
+import { LoginComponent } from "src/app/components/login/login.component";
+import { TokenStorageService } from "src/app/shared/services/token-storage.service";
+import { KeycloakService } from "keycloak-angular";
 
 @Component({
   selector: "app-navbar",
@@ -31,7 +32,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private element: ElementRef,
     private router: Router,
     private modalService: NgbModal,
-    private token: TokenStorageService
+    private token: TokenStorageService,
+    private keycloak: KeycloakService
   ) {
     this.location = location;
     this.sidebarVisible = false;
@@ -189,18 +191,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
   openModalLogin(){
     this.modalService.open(LoginComponent, {ariaLabelledBy: 'modal-basic-title', size: 'sm', windowClass: 'custom-class'}).result.then((result) => {
       //this.closeResult = `Closed with: ${result}`;
-      
+
     }, (reason) => {
       //this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
-  
+
   ngOnDestroy(){
      window.removeEventListener("resize", this.updateColor);
   }
 
   signOut(){
     this.token.signOut();
+    this.keycloak.logout();
     window.location.reload();
   }
 }
