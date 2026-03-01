@@ -96,7 +96,7 @@
           </div>
           <div class="col-md-1 pr-0">
             <label for="nuAno">Exerc&iacute;cio:</label>
-            <select class="form-control" id="nuAno" formControlName="nuAno" [disabled]="isReadonly"
+            <!-- <select class="form-control" id="nuAno" formControlName="nuAno" [disabled]="isReadonly"
               [ngClass]="{ 'is-invalid': submitted && f.nuAno.invalid }">
               <option value="" disabled selected>
                 Selecione ano de exerc&iacute;cio
@@ -104,8 +104,9 @@
               <option *ngFor="let a of listaExercicios" [ngValue]="a.nuOrcamento">
                 {{ a.nuAnoOrcamento }}
               </option>
-            </select>
-            <!-- <input type="text" formControlName="nuAno" class="form-control" id="nuAno" value="{{ano}}" placeholder="{{ano}}" [readonly]="isReadonly" /> -->
+            </select> -->
+
+            <input type="text" formControlName="nuAno" class="form-control" id="nuAno" value="{{ano}}" placeholder="{{ano}}" [readonly]="isReadonly" />
           </div>
           <div class="col-md-2 pr-0">
             <label for="nuPlanejamentoStatus">Status:</label>
@@ -196,17 +197,24 @@
               </select>
             </div>
           </div> -->
+
+
+
           <div class="col-md-3 pr-0">
             <label for="nuFilial">Unidade Demandante:<span class="span-red"> *</span></label>
-            <select class="form-control" id="nuFilial" formControlName="nuFilial"
+             <p-dropdown
+              class="custom-dropdown"
+              id="nuFilial"
+              [options]="listaFiliais"
+              optionLabel="nuFilialEcoFilial"
+              optionValue="nuFilial"
+              [style]="{ width: '100%' }"
+              formControlName="nuFilial"
+              placeholder="Selecione Ger&ecirc;ncia Nacional"
+              [filter]="true"
+              [emptyMessage]="'Nenhum contrato cadastrado.'"
               [ngClass]="{ 'is-invalid': submitted && f.nuFilial?.invalid }">
-              <option value="" disabled selected>
-                Selecione Ger&ecirc;ncia Nacional
-              </option>
-              <option *ngFor="let a of listaFiliais" [ngValue]="a.nuFilial">
-                {{ a.coFilial }} - {{ a.sgFilial }}
-              </option>
-            </select>
+              </p-dropdown>
           </div>
         </div>
       </div>

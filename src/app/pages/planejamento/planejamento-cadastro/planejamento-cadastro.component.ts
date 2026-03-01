@@ -350,7 +350,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.form = this.formBuilder.group({
       nuPlanejamentoOrcamentario: [0],
       coPlanejamentoOrcamentario: [''],
-      nuAno: new FormControl({ value: '', disabled: !this.isEditable }, [
+      nuAno: new FormControl({ value: this.ano, disabled: !this.isEditable }, [
         Validators.required,
       ]),
       nuFilial: new FormControl({ value: '', disabled: !this.isEditable }, [
@@ -923,7 +923,15 @@ async removerRubrica(nuRubrica: string) {
         `${Endpoints.URL_FILIAL}/ativos`
       );
 
-      this.listaFiliais = response.data;
+    this.listaFiliais = (response.data ?? [])
+    .sort((a, b) => a.sgFilial.localeCompare(b.sgFilial))
+    .map(f => ({
+      ...f,
+      nuFilialEcoFilial: `${f.coFilial} - ${f.sgFilial}`
+    }));
+
+    console.log('Filiais obtidas (mapeadas):', this.listaFiliais);
+
     } catch (error) {
       console.error(error);
     }
@@ -1279,6 +1287,8 @@ async removerRubrica(nuRubrica: string) {
     // const nuAno = this.listaExercicios.filter(x => x.nuAnoOrcamento == this.ano)[0].nuOrcamento
     // this.form.controls['nuAno'].setValue(nuAno)
     try {
+
+      console.log('Formulário enviado:', this.form);
       this.submitted = true;
       if (this.form.invalid) {
         const invalids = [];
