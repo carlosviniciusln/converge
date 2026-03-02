@@ -152,7 +152,7 @@ export class PlanejamentoGeralComponent implements OnInit {
                 label: 'Gerar Atualização SAP',
                 icon: 'tim-icons icon-cloud-download-93',
                 command: () => {
-                    this.exportarExcelAtualizacaoSAP();
+                    this.exportarExcelAtualizacaoSAP(this.anoExercicio);
                 }
             }
         ];
@@ -253,7 +253,9 @@ export class PlanejamentoGeralComponent implements OnInit {
     }));
   }
 
-  public  exportarExcelAtualizacaoSAP(){
+  public  exportarExcelAtualizacaoSAP(coExercicio: number){
+
+      const ex = "2027";
 
       const alert =  Swal.fire({
         title: 'Aviso',
@@ -262,7 +264,7 @@ export class PlanejamentoGeralComponent implements OnInit {
         showCancelButton: false,
         confirmButtonText: 'Ok!',
       }).then(() => {
-         return this.apiService.downloadfile(`v1/PlanejamentoOrcamentario/obter-atualizacao-planejamento-item-excel`);
+         return this.apiService.downloadfile(`v1/PlanejamentoOrcamentario/obter-atualizacao-planejamento-item-excel`, { coExercicio: coExercicio });
       });
 
 
@@ -292,11 +294,11 @@ public async onSalvarMudancasStatus(): Promise<void> {
       return;
     }
 
-    const isUltimaReprogramacao = await this.verificarUltimaReprogramacao();
-    if (!isUltimaReprogramacao) {
-      this.toastr.warning('Não é permitido alterar status em reprogramações que não sejam as últimas.', 'Aviso');
-      return;
-    }
+    // const isUltimaReprogramacao = await this.verificarUltimaReprogramacao();
+    // if (!isUltimaReprogramacao) {
+    //   this.toastr.warning('Não é permitido alterar status em reprogramações que não sejam as últimas.', 'Aviso');
+    //   return;
+    // }
 
      const alert = await Swal.fire({
        text: `Deseja realmente alterar o Status de todos os registros selecionados desta página para o Status ${novoStatusObj?.noPlanejamentoStatus} `,

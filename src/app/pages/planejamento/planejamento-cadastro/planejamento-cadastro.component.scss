@@ -178,3 +178,10 @@ label {
 .span-red {
   color: red;
 }
+
+
+/* chegar no SVG dentro do trigger e reduzir */
+:host ::ng-deep .p-dropdown .p-dropdown-trigger svg {
+  width: 12px !important;     /* largura do svg */
+  height: 12px !important;    /* altura do svg */
+}
