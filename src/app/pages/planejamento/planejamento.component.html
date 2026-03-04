@@ -107,7 +107,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-planejamento>
-          <tr class="p-selectable-row">
+          <tr class="p-selectable-row" (click)=" openModalPlanejamento('consultar', false, planejamento)">
             <td style="text-align: center">
               <span class="p-column-title">Código</span>
               {{ planejamento.coPlanejamentoOrcamentario }}

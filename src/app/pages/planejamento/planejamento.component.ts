@@ -358,7 +358,7 @@ export class PlanejamentoComponent implements OnInit {
     }
   }
 
-  openModalPlanejamento(tipoModal: string, isEditable: boolean, nuPlanejamento?: number) {
+  openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: any) {
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -367,7 +367,8 @@ export class PlanejamentoComponent implements OnInit {
       keyboard: false,
     });
 
-    modalRef.componentInstance.nuPlanejamento = nuPlanejamento;
+    modalRef.componentInstance.nuPlanejamento = planejamento;
+    modalRef.componentInstance.nuPlanejamentoTipo = this.filtroRegistros.NuPlanejamentoTipo;
     modalRef.componentInstance.modeloAntigo = true;
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.tipoModal = tipoModal;

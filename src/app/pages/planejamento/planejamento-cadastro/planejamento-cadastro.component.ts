@@ -53,6 +53,7 @@ import { Gcptb060PlanejamentoItemHistoricoResponse } from 'src/app/models/respon
 export class PlanejamentoCadastroComponent implements OnInit {
   @Input() public nuPlanejamento: any;
   @Input() public nuPlanejamentoOrcamento: any;
+  @Input() public nuPlanejamentoTipo: any;
   @Input() public ano: any;
   @Input() public nuAno: number | null;
   @Input() public tipo: any;
@@ -212,15 +213,15 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.obterObjetivosEstrategicosPei();
 
     if (this.nuPlanejamentoOrcamento == null) {
-      this.nuPlanejamentoOrcamento = this.nuPlanejamento?.nU_PLANEJAMENTO;
+      this.nuPlanejamentoOrcamento = this.nuPlanejamento?.nuPlanejamentoOrcamentario;
     }
 
-    const nU_ORC = this.nuPlanejamento?.nU_ORC;
+    const nuPlanejamentoOrcamentario = this.nuPlanejamento?.nuPlanejamentoOrcamentario;
 
-    if (nU_ORC != null) {
+    if (nuPlanejamentoOrcamentario != null) {
       this.obterPlanejamento();
     } else {
-      //this.nuPlanejamento.nU_ORC = 0;
+      //this.nuPlanejamento.nuPlanejamentoOrcamentario = 0;
       this.editarTextos();
     }
     this.loading = false;
@@ -332,7 +333,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.subTitulo =
       this.currentPageAction == PageAction.Cadastrar
         ? element.subTitle
-        : `${element.subTitle} ${this.nuPlanejamento?.nU_ORC}`;
+        : `${element.subTitle} ${this.nuPlanejamento?.nuPlanejamentoOrcamentario}`;
     this.actionButtonLabel = element.actionButtonLabel;
   }
 
@@ -664,9 +665,8 @@ async removerRubrica(nuRubrica: string) {
         ApiResponse<PlanejamentoOrcamentarioResponse>
       >(
         `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/ObterConsultaGeral?nuOrc=` +
-          this.nuPlanejamento.nU_ORC +
-          `&nuPlanejamento=` +
-          this.nuPlanejamento.nU_PLANEJAMENTO
+          this.nuPlanejamento.nuPlanejamentoOrcamentario +
+          `&nuPlanejamento=` + this.nuPlanejamentoTipo
       );
 
       this.planejamento = response.data[0];
@@ -691,7 +691,7 @@ async removerRubrica(nuRubrica: string) {
 
         this.isContratoForaDaLista();
         this.form.controls['nuPlanejamentoOrcamentario'].setValue(
-          this.nuPlanejamento.nU_PLANEJAMENTO
+          this.nuPlanejamento.nuPlanejamentoOrcamentario
         );
         this.form.controls['coPlanejamentoOrcamentario'].setValue(
           this.nuPlanejamento.coPlanejamentoOrcamentario
@@ -767,9 +767,9 @@ async removerRubrica(nuRubrica: string) {
             ApiResponse<PrevisaoDesembolsoResponse[]>
           >(
             `${Endpoints.URL_PLANEJAMENTO_ORCAMENTO}/ObterConsultaPorRubrica?nuOrc=` +
-              this.nuPlanejamento.nU_ORC +
+              this.nuPlanejamento.nuPlanejamentoOrcamentario +
               `&nuPlanejamento=` +
-              this.nuPlanejamento.nU_PLANEJAMENTO
+              this.nuPlanejamento.nuPlanejamentoOrcamentario
           );
           if (responseVlr.data) {
             this.planejamento.gcptb027PrevisoesDesembolso = responseVlr.data;
@@ -782,7 +782,7 @@ async removerRubrica(nuRubrica: string) {
                 nuPrevisaoDesembolso: new FormControl(x.nuPrevisaoDesembolso),
                 nuPlanejamentoOrcamentario: new FormControl(
                   //x.nuPlanejamentoOrcamentario,
-                  this.nuPlanejamento.nU_ORC,
+                  this.nuPlanejamento.nuPlanejamentoOrcamentario,
                   [Validators.required]
                 ),
                 nuRubrica: new FormControl(
@@ -929,8 +929,6 @@ async removerRubrica(nuRubrica: string) {
       ...f,
       nuFilialEcoFilial: `${f.coFilial} - ${f.sgFilial}`
     }));
-
-    console.log('Filiais obtidas (mapeadas):', this.listaFiliais);
 
     } catch (error) {
       console.error(error);
@@ -1157,13 +1155,13 @@ async removerRubrica(nuRubrica: string) {
       // });
 
       //   const response = await this.apiService.get<ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>>(
-      //   `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item?NuPlanejamento=${this.nuPlanejamento.nU_PLANEJAMENTO}&NuContrato=${this.nuPlanejamento.nU_CONTRATO}&NuTipoDemanda=${this.nuPlanejamento.nU_TIPO_DEMANDA}`
+      //   `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item?NuPlanejamento=${this.nuPlanejamento.nuPlanejamentoOrcamentario}&NuContrato=${this.nuPlanejamento.nuContrato}&NuTipoDemanda=${this.nuPlanejamento.nuDemandaTipo}`
       // );
 
-      this.filtroRegistros.NuContrato = this.nuPlanejamento?.nU_CONTRATO;
-      this.filtroRegistros.NuPlanejamento =this.nuPlanejamento?.nU_PLANEJAMENTO;
-      this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento?.nU_TIPO_DEMANDA;
-      this.filtroRegistros.NuOrc = this.nuPlanejamento.nU_ORC;
+      this.filtroRegistros.NuContrato = this.nuPlanejamento?.nuContrato;
+      this.filtroRegistros.NuPlanejamento =this.nuPlanejamento?.nuPlanejamentoOrcamentario;
+      this.filtroRegistros.NuTipoDemanda = this.nuPlanejamento?.nuDemandaTipo;
+      this.filtroRegistros.NuOrc = this.nuPlanejamento.nuPlanejamentoOrcamentario;
 
       const response = await this.apiService.get<
         ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>
@@ -1360,7 +1358,7 @@ async removerRubrica(nuRubrica: string) {
             DeObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
             DeObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
-            NuOrc: this.nuPlanejamento?.nU_ORC,
+            NuOrc: this.nuPlanejamento?.nuPlanejamentoOrcamentario,
             NuSap: Number(previsoes[p].nuSap),
             DeSap: String(previsoes[p].deSap),
 
@@ -1554,7 +1552,7 @@ async removerRubrica(nuRubrica: string) {
           DeObservacao: obj.deObservacao,
           NuSap: Number(previsoes[p].nuSap),
           DeSap: String(previsoes[p].deSap),
-          NuOrc: this.nuPlanejamento?.nU_ORC,
+          NuOrc: this.nuPlanejamento?.nuPlanejamentoOrcamentario,
           VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
           VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
           VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
@@ -1684,7 +1682,7 @@ async removerRubrica(nuRubrica: string) {
         var item: PlanejamentoOrcamentarioItemRequest = {
           NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
           NuStatusPlanejamentoItem: 10, //excluido
-          NuOrc: this.nuPlanejamento?.nU_ORC
+          NuOrc: this.nuPlanejamento?.nuPlanejamentoOrcamentario
         };
 
         lista.push(item);
@@ -1794,7 +1792,7 @@ async removerRubrica(nuRubrica: string) {
   async Excluir(planejamentoOrcamentario: PlanejamentoOrcamentarioResponse) {
     const alert = await Swal.fire({
       title: '',
-      text: `Deseja realmente excluir Planejamento Orçamentário Cód: ${this.nuPlanejamento?.nU_ORC}?`,
+      text: `Deseja realmente excluir Planejamento Orçamentário Cód: ${this.nuPlanejamento?.nuPlanejamentoOrcamentario}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim, deletar!',
