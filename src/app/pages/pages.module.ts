@@ -95,6 +95,7 @@ import { DotacaoComponent } from './dotacao/dotacao.component';
 import { SharedLibraryModule } from '../shared/lib/shared-library.module';
 import { DotacaoDoadoresComponent } from './dotacao/dotacao-doadores/dotacao-doadores.component';
 import { DialogService } from 'primeng/dynamicdialog';
+import { PlanejamentoCadastroLegadoComponent } from './planejamento/planejamento-cadastro-legado/planejamento-cadastro-legado.component';
 
 
 
@@ -196,7 +197,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DetalheFinanceiroComponent,
     FormatDiffPipe,
     DotacaoComponent,
-    DotacaoDoadoresComponent
+    DotacaoDoadoresComponent,
+    PlanejamentoCadastroLegadoComponent
   ],
   providers: [
     ConfirmationService,
