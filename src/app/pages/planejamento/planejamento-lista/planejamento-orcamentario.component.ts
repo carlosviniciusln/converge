@@ -106,11 +106,21 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
     }
 
     if(!ultimoItem){
-      this.toastr.warning('Aguarde, gerando o exercício ' + (this.anoAtual) + ', isso pode levar alguns minutos...');
+
+      const toastRef = this.toastr.warning(
+      `Aguarde, gerando o exercício ${this.anoAtual}, isso pode levar alguns minutos...`,
+      '',
+      {
+        disableTimeOut: true,
+        closeButton: true,
+        tapToDismiss: false
+      }
+      );
+
       const result = this.apiService.post<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/novo-exercicio','')
       result.then(response => {
         this.planejamentos = response.data;
-        this.toastr.clear();
+        this.toastr.clear(toastRef.toastId);
         this.toastr.success('Exercício ' + this.anoAtual + ' gerado com sucesso.')
       });
       return;
