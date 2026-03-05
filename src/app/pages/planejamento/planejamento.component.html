@@ -16,14 +16,14 @@
                   <i class="tim-icons icon-cloud-download-93"></i>
                 </button>
               </div>
-              <div class="pl-1 pr-1">
+              <!-- <div class="pl-1 pr-1">
                 <div class=" pl-1 pr-1">
                   <button type="button" class="btn-sm btn-secondary" (click)="openModalPlanejamento('adicionar', true)"
                     *ngIf="permissions?.Cadastrar ?? false">
                     <i class="tim-icons icon-simple-add"></i>
                   </button>
                 </div>
-              </div>
+              </div> -->
               <div class="pl-1 pr-1">
                 <p-dropdown [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
                   optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 5)" [showClear]="true"

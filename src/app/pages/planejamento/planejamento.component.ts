@@ -17,6 +17,7 @@ import { Filial } from 'src/app/models/generics/filial';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { ContratoResponse } from 'src/app/models/generics/contrato-response';
 import Swal from 'sweetalert2';
+import { PlanejamentoCadastroLegadoComponent } from './planejamento-cadastro-legado/planejamento-cadastro-legado.component';
 
 @Component({
   selector: 'app-planejamento',
@@ -360,7 +361,7 @@ export class PlanejamentoComponent implements OnInit {
 
   openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: any) {
     console.log(planejamento)
-    const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
+    const modalRef = this.modalService.open(PlanejamentoCadastroLegadoComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
       windowClass: 'custom-class',
