@@ -359,6 +359,7 @@ export class PlanejamentoComponent implements OnInit {
   }
 
   openModalPlanejamento(tipoModal: string, isEditable: boolean, planejamento?: any) {
+    console.log(planejamento)
     const modalRef = this.modalService.open(PlanejamentoCadastroComponent, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
