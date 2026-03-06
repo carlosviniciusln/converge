@@ -134,20 +134,20 @@ export class ModalPlanejamentoComponent implements OnInit {
             };
             break;
 
-          case "Em Avaliação":
-            this.labelButtonsLeft = {
-              label: 'Encerrar Programação',
-              value: 'encerrar',
-              message: 'Tem certeza que deseja encerrar o planejamento',
-              position: 'left'
-            };
-            this.labelButtonsRight = {
-              label: 'Cancelar Programação',
-              value: 'cancelar',
-              message: 'Tem certeza que deseja cancelar o planejamento',
-              position: 'right'
-            };
-            break;
+          // case "Em Avaliação":
+          //   this.labelButtonsLeft = {
+          //     label: 'Encerrar Programação',
+          //     value: 'encerrar',
+          //     message: 'Tem certeza que deseja encerrar o planejamento',
+          //     position: 'left'
+          //   };
+          //   this.labelButtonsRight = {
+          //     label: 'Cancelar Programação',
+          //     value: 'cancelar',
+          //     message: 'Tem certeza que deseja cancelar o planejamento',
+          //     position: 'right'
+          //   };
+          //   break;
 
           case "Encerrado":
             this.labelButtonsLeft = {
@@ -156,12 +156,13 @@ export class ModalPlanejamentoComponent implements OnInit {
               message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
               position: 'left'
             };
-            this.labelButtonsRight = {
-              label: 'Reabrir Programação',
-              value: 'reabrir',
-              message: 'Tem certeza que deseja reabrir o planejamento',
-              position: 'left'
-            };
+            // this.labelButtonsRight = {
+            //   label: 'Reabrir Programação',
+            //   value: 'reabrir',
+            //   message: 'Tem certeza que deseja reabrir o planejamento',
+            //   position: 'left'
+            // };
+            this.labelButtonsRight = null;
             break;
 
           default:
@@ -203,20 +204,20 @@ export class ModalPlanejamentoComponent implements OnInit {
             };
             break;
 
-          case "Em Avaliação":
-            this.labelButtonsLeft = {
-              label: 'Encerrar Reprogramação',
-              value: 'encerrar',
-              message: 'Tem certeza que deseja encerrar o planejamento',
-              position: 'left'
-            };
-            this.labelButtonsRight = {
-              label: 'Cancelar Reprogramação',
-              value: 'cancelar',
-              message: 'Tem certeza que deseja cancelar o planejamento',
-              position: 'right'
-            };
-            break;
+          // case "Em Avaliação":
+          //   this.labelButtonsLeft = {
+          //     label: 'Encerrar Reprogramação',
+          //     value: 'encerrar',
+          //     message: 'Tem certeza que deseja encerrar o planejamento',
+          //     position: 'left'
+          //   };
+          //   this.labelButtonsRight = {
+          //     label: 'Cancelar Reprogramação',
+          //     value: 'cancelar',
+          //     message: 'Tem certeza que deseja cancelar o planejamento',
+          //     position: 'right'
+          //   };
+          //   break;
 
           case "Encerrado":
             this.labelButtonsLeft = {
@@ -225,12 +226,13 @@ export class ModalPlanejamentoComponent implements OnInit {
               message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
               position: 'left'
             };
-            this.labelButtonsRight = {
-              label: 'Reabrir Reprogramação',
-              value: 'reabrir',
-              message: 'Tem certeza que deseja reabrir o planejamento',
-              position: 'left'
-            };
+            // this.labelButtonsRight = {
+            //   label: 'Reabrir Reprogramação',
+            //   value: 'reabrir',
+            //   message: 'Tem certeza que deseja reabrir o planejamento',
+            //   position: 'left'
+            // };
+            this.labelButtonsRight = null;
             break;
 
           case "Cancelado":
