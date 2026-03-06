@@ -10,7 +10,23 @@
     <mat-tab-group>
 
       <mat-tab label="Contrato">
+        <!-- <div style="display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;">
+           <button
+            style="margin-right: 10px;"
+            type="button" class="btn-sm btn-add btn-save-status"
+            routerLink="/planejamento-orcamentario">
+            <i class="pi pi-arrow-left"></i>
+            Voltar
+          </button>
+
         <p class="c-p">Planejamento Orçamentário - Exercício <span
+            style="color: black; font-weight: 700;">{{anoExercicio}}</span> - {{ordemTipoExercicio}} - <span
+            style="color: green;">{{statusExercio}}</span></p>
+        </div> -->
+
+           <p class="c-p">Planejamento Orçamentário - Exercício <span
             style="color: black; font-weight: 700;">{{anoExercicio}}</span> - {{ordemTipoExercicio}} - <span
             style="color: green;">{{statusExercio}}</span></p>
 
@@ -23,7 +39,7 @@
               <td style="font-weight: bold;">Solicitado <p style="color:blue; font-weight: bold;">
                   {{dadosDashboard[0]?.vR_PLANEJADO_MES | currency : "BRL" }}</p>
               </td>
-              <td style="font-weight: bold;">Limite/Planejado <p style="color:blue; font-weight: bold;">
+              <td style="font-weight: bold;">Limite <p style="color:blue; font-weight: bold;">
                   {{dadosDashboard[0]?.vR_LIMITE | currency : "BRL" }}</p>
               </td>
               <td style="font-weight: bold;">Diferença <p style="color:blue; font-weight: bold;">
@@ -32,8 +48,8 @@
               <td style="font-weight: bold;">Executado <p style="color:blue; font-weight: bold;">
                   {{dadosDashboard[0]?.vR_EXECUTADO | currency : "BRL" }}</p>
               </td>
-              <td style="font-weight: bold;">%EP <p style="color:blue; font-weight: bold;">{{dadosDashboard[0]?.pC_EP
-                  }}%</p>
+              <td style="font-weight: bold;">%ExL <p style="color:blue; font-weight: bold;">{{dadosDashboard[0]?.pC_EP
+                  | number:'1.2-2' }}%</p>
               </td>
             </tr>
             <tr>
@@ -42,7 +58,7 @@
               <td style="font-weight: bold;">Solicitado <p style="color:orange; font-weight: bold;">
                   {{dadosDashboard[1]?.vR_PLANEJADO_MES | currency : "BRL" }}</p>
               </td>
-              <td style="font-weight: bold;">Limite/Planejado <p style="color:orange; font-weight: bold;">
+              <td style="font-weight: bold;">Limite <p style="color:orange; font-weight: bold;">
                   {{dadosDashboard[1]?.vR_LIMITE | currency : "BRL" }}</p>
               </td>
               <td style="font-weight: bold;">Diferença <p style="color:orange; font-weight: bold;">
@@ -51,8 +67,8 @@
               <td style="font-weight: bold;">Executado <p style="color:orange; font-weight: bold;">
                   {{dadosDashboard[1]?.vR_EXECUTADO | currency : "BRL" }}</p>
               </td>
-              <td style="font-weight: bold;">%EP <p style="color:orange; font-weight: bold;">{{dadosDashboard[1]?.pC_EP
-                  }}%</p>
+              <td style="font-weight: bold;">%ExL <p style="color:orange; font-weight: bold;">{{dadosDashboard[1]?.pC_EP
+                  | number:'1.2-2'}}%</p>
               </td>
             </tr>
           </table>

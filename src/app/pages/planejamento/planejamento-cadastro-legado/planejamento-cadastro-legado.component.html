@@ -400,11 +400,11 @@
                   {{ actionButtonLabel }}
                 </button>
 
-                <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="
+                <!-- <button class="btn-sm btn-warning" *ngIf="isPerfilPrivilegiado" (click)="
                  openModalPlanejamento(
-                  'editar',
+                  'consultar',
                   true,
-                  planejamento?.nuPlanejamentoOrcamentario
+                  planejamento.nuPlanejamentoOrcamentario
                 )
               " style="margin-right: 5px">
                   <i class="tim-icons icon-pencil"></i>
@@ -413,7 +413,7 @@
                 <button class="btn-sm btn-danger" *ngIf=" isPerfilPrivilegiado" (click)="Excluir(planejamento)" style="margin-right: 5px">
                   <i class="tim-icons icon-trash-simple"></i>
                   <span> Excluir</span>
-                </button>
+                </button> -->
 
               </div>
               <div *ngIf="isEditable">

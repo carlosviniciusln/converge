@@ -85,10 +85,10 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
   async novoExercicio(){
     const ultimoItem: ResumoPlanejamentoModel = this.planejamentos[this.planejamentos.length - 1];
     const dataAtual = new Date();
-    this.anoAtual = dataAtual.getFullYear();
+    this.anoAtual = ultimoItem ? ultimoItem.cO_EXERCICIO + 1 : dataAtual.getFullYear();
     const alert = await Swal.fire({
       title: '',
-      text: 'Tem Certeza de que deseja gerar o Planejamento Orçamentário do exercício ' + (this.anoAtual + 1) + '?',
+      text: 'Tem certeza de que deseja gerar o Planejamento Orçamentário do exercício ' + (this.anoAtual) + '?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim!',
@@ -105,7 +105,28 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
       return;
     }
 
-    if(ultimoItem.cO_EXERCICIO === this.anoAtual + 1){
+    if(!ultimoItem){
+
+      const toastRef = this.toastr.warning(
+      `Aguarde, gerando o exercício ${this.anoAtual}, isso pode levar alguns minutos...`,
+      '',
+      {
+        disableTimeOut: true,
+        closeButton: true,
+        tapToDismiss: false
+      }
+      );
+
+      const result = this.apiService.post<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/novo-exercicio','')
+      result.then(response => {
+        this.planejamentos = response.data;
+        this.toastr.clear(toastRef.toastId);
+        this.toastr.success('Exercício ' + this.anoAtual + ' gerado com sucesso.')
+      });
+      return;
+    }
+
+    if(ultimoItem.cO_EXERCICIO === this.anoAtual){
       const alert = await Swal.fire({
                    title: '',
                    text:  `Exercício ${ultimoItem.cO_EXERCICIO} já foi gerado o Planejamento, por segurança, não é possível ser gerado novamente.`,
@@ -118,12 +139,12 @@ export class PlanejamentoOrcamentarioComponent implements OnInit {
 
       return;
     }
-    this.toastr.warning('Aguarde, gerando o exercício ' + (this.anoAtual + 1) + ', isso pode levar alguns minutos...');
+    this.toastr.warning('Aguarde, gerando o exercício ' + (this.anoAtual) + ', isso pode levar alguns minutos...');
     const result = this.apiService.post<ApiResponse<ResumoPlanejamentoModel[]>>('v1/Exercicio/novo-exercicio','')
     result.then(response => {
       this.planejamentos = response.data;
       this.toastr.clear();
-      this.toastr.success('Exercício ' + this.planejamentos[this.planejamentos. length - 1].cO_EXERCICIO + ' gerado com sucesso.')
+      this.toastr.success('Exercício ' + this.anoAtual + ' gerado com sucesso.')
     });
   }
 

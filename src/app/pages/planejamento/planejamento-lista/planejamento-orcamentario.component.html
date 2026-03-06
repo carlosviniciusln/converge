@@ -15,10 +15,10 @@
             <tr class="bordered-orange">
               <th>Planejado</th>
               <th>Executado</th>
-              <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
+              <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%ExL</th>
               <th>Planejado</th>
               <th>Executado</th>
-              <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%EP</th>
+              <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%ExL</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
@@ -54,7 +54,7 @@
     </mat-tab-group>
     <div class="row">
       <div class="col-2" style="margin-top: 30px; align-items: center;">
-        <button class="btn-sm btn-default" style="margin-left: 20px; margin-bottom: 20px;" 
+        <button class="btn-sm btn-default" style="margin-left: 20px; margin-bottom: 20px;"
         (click)="novoExercicio()" *ngIf="perfil == 'Administrador' || perfil == 'Orçamento'">
           Novo Exercício
         </button>
