@@ -31,31 +31,7 @@ export class ModalUploadComponent implements OnInit {
   public form: FormGroup;
   submitted = false;
   public selectFile: File | null = null;
-  private readonly actionList: {
-    type: PageAction;
-    title: string;
-    subTitle: string;
-    actionButtonLabel: string;
-  }[] = [
-    {
-      type: PageAction.Consultar,
-      title: 'Consulta',
-      subTitle: 'Consulta limites rubrica',
-      actionButtonLabel: 'Fechar',
-    },
-    {
-      type: PageAction.Alterar,
-      title: 'Edição',
-      subTitle: 'Edição de limites rubrica',
-      actionButtonLabel: 'Alterar',
-    },
-    {
-      type: PageAction.Cadastrar,
-      title: 'Cadastro',
-      subTitle: 'Cadastro de limites rubrica',
-      actionButtonLabel: 'Cadastrar',
-    },
-  ];
+
   constructor(
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
@@ -64,7 +40,6 @@ export class ModalUploadComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.definirPageAction();
     this.formulario();
     this.obterOrcamentos();
   }
@@ -78,14 +53,6 @@ export class ModalUploadComponent implements OnInit {
     } catch (error) {}
   }
 
-  definirPageAction() {
-    if (this.nuPlanejamento) {
-      this.currentPageAction = PageAction.Alterar;
-    } else {
-      this.currentPageAction = PageAction.Cadastrar;
-    }
-  }
-
   get f() {
     return this.form.controls;
   }
@@ -95,8 +62,11 @@ export class ModalUploadComponent implements OnInit {
     this.form.reset();
   }
 
-  public async Cadastrar(): Promise<void> {
-    try {
+
+  public async onSubmit(): Promise<void> {
+
+        try {
+
 
       const alert = await Swal.fire({
             title: '',
@@ -154,64 +124,53 @@ export class ModalUploadComponent implements OnInit {
         console.log(this.listaErros)
       this.atualizarPagina.emit(false);
     }
+
   }
 
-  public async onSubmit(): Promise<void> {
-    switch (this.currentPageAction) {
-      case PageAction.Cadastrar:
-        this.Cadastrar();
-        break;
-      case PageAction.Alterar:
-        this.Alterar();
-        break;
-      case PageAction.Consultar:
-      default:
-        this.activeModal.dismiss('Cross click');
-        break;
-    }
-  }
+  // public async Alterar(): Promise<void> {
+  //   try {
 
-  public async Alterar(): Promise<void> {
-    try {
-      this.submitted = true;
 
-      if (this.form.invalid) {
-        const invalids = [];
-        const controls = this.form.controls;
-        for (const name in controls) {
-          if (controls[name].invalid) invalids.push(name);
-        }
-        console.log(invalids);
-        return;
-      }
+  //     console.log('Alterar limite rubrica:', this.form.value);
+  //     this.submitted = true;
 
-      const updateRequest: LimitesRubricasUpdate = {
-        nuAnoOrcamentario: this.limiteRubrica.nuAnoOrcamentario,
-        nuRubrica: this.limiteRubrica.nuRubrica,
-        nuFilial: this.limiteRubrica.nuFilial,
-        nuPlanejamentoTipo: this.limiteRubrica.nuPlanejamentoTipo,
-        vrLimiteRubrica: this.form.controls['vrLimiteRubrica'].value,
-      };
+  //     if (this.form.invalid) {
+  //       const invalids = [];
+  //       const controls = this.form.controls;
+  //       for (const name in controls) {
+  //         if (controls[name].invalid) invalids.push(name);
+  //       }
+  //       console.log(invalids);
+  //       return;
+  //     }
 
-      await this.apiService.put<LimitesRubricasUpdate>(
-        `${Endpoints.URL_ORCAMENTO}/limite-orcamentario`,
-        updateRequest
-      );
+  //     const updateRequest: LimitesRubricasUpdate = {
+  //       nuAnoOrcamentario: this.limiteRubrica.nuAnoOrcamentario,
+  //       nuRubrica: this.limiteRubrica.nuRubrica,
+  //       nuFilial: this.limiteRubrica.nuFilial,
+  //       nuPlanejamentoTipo: this.limiteRubrica.nuPlanejamentoTipo,
+  //       vrLimiteRubrica: this.form.controls['vrLimiteRubrica'].value,
+  //     };
 
-      this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
-      this.atualizarPagina.emit(true);
-      this.activeModal.dismiss();
-      setTimeout(() => {
-        window.location.reload()
-      }, 3000);
-    } catch (error) {
-      this.atualizarPagina.emit(false);
-    }
-  }
+  //     await this.apiService.put<LimitesRubricasUpdate>(
+  //       `${Endpoints.URL_ORCAMENTO}/limite-orcamentario`,
+  //       updateRequest
+  //     );
+
+  //     this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
+  //     this.atualizarPagina.emit(true);
+  //     this.activeModal.dismiss();
+  //     setTimeout(() => {
+  //       window.location.reload()
+  //     }, 3000);
+  //   } catch (error) {
+  //     this.atualizarPagina.emit(false);
+  //   }
+  // }
 
   formulario() {
     this.form = this.formBuilder.group({
-      nuPlanejamento: [null, Validators.required],
+      nuPlanejamento: [this.nuPlanejamento, Validators.required],
       arquivoAnexado: new FormControl(null),
     });
   }
