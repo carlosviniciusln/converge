@@ -49,6 +49,7 @@
     "rxjs": "~6.6.0",
     "sass": "~1.32.11",
     "select2": "^4.1.0-rc.0",
+    "sidsc-components": "^16.2.5",
     "sweetalert2": "^11.4.13",
     "tslib": "^2.3.0",
     "xlsx": "^0.18.5",

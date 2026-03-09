@@ -83,7 +83,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
   public planejamento: PlanejamentoOrcamentarioResponse;
   public planejamentoEditar: PlanejamentoOrcamentarioResponse;
-  public isFlagStyle : boolean = false;
+  public isFlagContrato : boolean = false;
+  public isFlagObjeto : boolean = false;
   public listaDigital: any[] = [
     { id: 1, tipo: 'Digital' },
     { id: 2, tipo: 'Digital - TD' },
@@ -357,7 +358,7 @@ export class PlanejamentoCadastroComponent implements OnInit {
         Validators.required,
       ]),
       deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
-      // Validators.maxLength(255)
+      Validators.required
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
@@ -489,8 +490,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
   onIsServicoContinuoChange($event: MatSlideToggleChange) {
     if ($event.checked) {
       this.form.controls['icServicoContinuo'].setValue(1);
+      this.form.controls['nuDemandaTipo'].setValue(4)
     } else {
       this.form.controls['icServicoContinuo'].setValue(0);
+      this.form.controls['nuDemandaTipo'].setValue(6)
     }
   }
 
@@ -669,6 +672,7 @@ async removerRubrica(nuRubrica: string) {
           this.nuPlanejamento.nU_PLANEJAMENTO
       );
 
+
       this.planejamento = response.data[0];
 
       const digital = this.listaDigitalBanco.find(
@@ -680,7 +684,7 @@ async removerRubrica(nuRubrica: string) {
 
         if (this.planejamento.nuContrato != 0)
           {
-            this.isFlagStyle = true;
+            this.isFlagContrato = true;
           }
          this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
 
@@ -721,7 +725,13 @@ async removerRubrica(nuRubrica: string) {
         }
 
         this.form.controls['nuFilial'].setValue(this.planejamento.nuFilial);
-        this.form.controls['deObjeto'].setValue(this.planejamento.deObjeto);
+
+        if(this.planejamento.deObjeto != null){
+          this.form.controls['deObjeto'].setValue(this.planejamento.deObjeto);
+          this.isFlagObjeto = true;
+        }
+
+
         this.form.controls['deJustificativa'].setValue(
           this.planejamento.deJustificativa
         );
@@ -929,8 +939,6 @@ async removerRubrica(nuRubrica: string) {
       ...f,
       nuFilialEcoFilial: `${f.coFilial} - ${f.sgFilial}`
     }));
-
-    console.log('Filiais obtidas (mapeadas):', this.listaFiliais);
 
     } catch (error) {
       console.error(error);

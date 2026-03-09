@@ -17,6 +17,7 @@ import { Filial } from 'src/app/models/generics/filial';
 import { Select2Data, Select2Option } from 'ng-select2-component';
 import { ContratoResponse } from 'src/app/models/generics/contrato-response';
 import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejamento-cadastro.component';
+import { ModalUploadComponent } from '../limites/modal-upload/modal-upload.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/generics/planejamento-orcamentario';
 import { TableLazyLoadEvent } from 'primeng/table';
@@ -153,6 +154,13 @@ export class PlanejamentoGeralComponent implements OnInit {
                 icon: 'tim-icons icon-cloud-download-93',
                 command: () => {
                     this.exportarExcelAtualizacaoSAP(this.anoExercicio);
+                }
+            },
+             {
+                label: 'Upload de Limites',
+                icon: 'tim-icons icon-upload',
+                command: () => {
+                    this.openModalUpload();
                 }
             }
         ];
@@ -514,5 +522,23 @@ public async onSalvarMudancasStatus(): Promise<void> {
     const lista = response.data || [];
     const ultimaAberta = lista.filter(p => p.dT_FECHAMENTO === null).sort((a, b) => (b.ordem ?? 0) - (a.ordem ?? 0))[0];
     return ultimaAberta && Number(this.nuPlanejamentoExercicio) === Number(ultimaAberta.nU_PLANEJAMENTO);
+  }
+
+  openModalUpload(): void {
+    const modalRef = this.modalService.open(ModalUploadComponent, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'md',
+      backdrop: 'static',
+      keyboard: false,
+    });
+
+    modalRef.componentInstance.nuPlanejamento = this.nuPlanejamentoExercicio;
+    modalRef.componentInstance.tipoModal = 'planejamento-geral';
+
+    modalRef.componentInstance.atualizarPagina.subscribe(() => {
+      this.obterPlanejamentosOrc();
+      this.toastr.success('Arquivo carregado com sucesso!', 'Sucesso');
+      modalRef.close();
+    });
   }
 }
