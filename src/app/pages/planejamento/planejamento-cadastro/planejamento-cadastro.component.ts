@@ -362,10 +362,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.maxLength(255)]
+        [Validators.required, Validators.maxLength(255)]
       ),
       deObservacao: new FormControl({ value: '', disabled: !this.isEditable }, [
-        Validators.required,
         Validators.maxLength(255)
       ]),
       nuPlanejamentoStatus: new FormControl(

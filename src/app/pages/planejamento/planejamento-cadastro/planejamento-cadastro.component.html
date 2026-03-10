@@ -161,8 +161,9 @@
               </option>
             </select>
           </div>
-          <div class="col-md-9 pr-0">
-            <label for="deJustificativa">Justificativa para Or&ccedil;amento:</label>
+          <div class="col-md-9 pr-0"
+          [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }">
+            <label for="deJustificativa">Justificativa para Or&ccedil;amento:<span class="span-red"> *</span></label>
             <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
               class="form-control"
                />
@@ -418,7 +419,7 @@
 
           <div class="col-md-12 pr-0">
             <h4 class="modal-title" id="modal-basic-title" for="deObservacao" style="margin-bottom: 8px;">
-              <b>Observa&ccedil;&otilde;es:<span class="span-red"> *</span></b>
+              <b>Observa&ccedil;&otilde;es:</b>
             </h4>
             <textarea formControlName="deObservacao" id="deObservacao"
               [ngClass]="{ 'is-invalid': submitted && f.deObservacao?.invalid }" placeholder="Digite..."
