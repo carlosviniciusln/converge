@@ -125,45 +125,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.obterPermissoes();
-     this.items = [
 
-            {
-                label: 'Novo Registro',
-                icon: 'pi pi-plus',
-                command: () => {
-                    this.openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio);
-                }
-            },
-            // {
-            //     label: 'Salvar Status',
-            //     icon: "pi pi-pencil",
-            //     command: () => {
-            //         this.onSalvarMudancasStatus();
-            //     }
-            // },
-
-            {
-                label: 'Gerar Excel',
-                icon: 'tim-icons icon-cloud-download-93',
-                command: () => {
-                    this.downloadPlanejamentoDesembolso();
-                }
-            },
-            {
-                label: 'Gerar Atualização SAP',
-                icon: 'tim-icons icon-cloud-download-93',
-                command: () => {
-                    this.exportarExcelAtualizacaoSAP(this.anoExercicio);
-                }
-            },
-             {
-                label: 'Upload de Limites',
-                icon: 'tim-icons icon-upload',
-                command: () => {
-                    this.openModalUpload();
-                }
-            }
-        ];
   }
 
   async ngOnInit(): Promise<void> {
@@ -203,6 +165,53 @@ export class PlanejamentoGeralComponent implements OnInit {
 
     this.currentUser = this.token.getUser();
     this.perfilUnidade = this.currentUser?.coUnidade;
+
+     this.items = [
+
+            {
+                label: 'Novo Registro',
+                icon: 'pi pi-plus',
+                command: () => {
+                    this.openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio);
+                }
+            },
+            // {
+            //     label: 'Salvar Status',
+            //     icon: "pi pi-pencil",
+            //     command: () => {
+            //         this.onSalvarMudancasStatus();
+            //     }
+            // },
+
+            {
+                label: 'Gerar Excel',
+                icon: 'tim-icons icon-cloud-download-93',
+                command: () => {
+                    this.downloadPlanejamentoDesembolso();
+                }
+            },
+            {
+                label: 'Gerar Atualização SAP',
+                icon: 'tim-icons icon-cloud-download-93',
+                command: () => {
+                    this.exportarExcelAtualizacaoSAP(this.anoExercicio);
+                }
+            },
+             {
+                label: 'Upload de Limites',
+                icon: 'tim-icons icon-upload',
+                command: () => {
+                    const tipo = this.ordemTipoExercicio.split('-')[1].trim();
+                    if(tipo === 'Programação') {
+                      this.toastr.info('Planejamento do tipo Programação não possui limites.', 'Informação');
+                    }
+                    else{
+                      this.openModalUpload();
+                    }
+
+                }
+            }
+        ];
   }
 
   obterPermissoes() {
