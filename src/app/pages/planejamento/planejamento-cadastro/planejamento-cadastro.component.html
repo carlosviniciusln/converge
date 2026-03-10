@@ -162,9 +162,9 @@
             </select>
           </div>
           <div class="col-md-9 pr-0"
-          [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }">
+        >
             <label for="deJustificativa">Justificativa para Or&ccedil;amento:<span class="span-red"> *</span></label>
-            <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
+            <input [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
               class="form-control"
                />
           </div>

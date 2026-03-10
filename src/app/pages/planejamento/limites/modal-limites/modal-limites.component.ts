@@ -296,12 +296,11 @@ export class ModalLimitesComponent implements OnInit {
           window.location.reload();
         }, 2000);
       } else {
-        this.toastr.error(response.data?.message || 'Erro ao cadastrar registro', 'Erro');
+        this.toastr.info(response.data?.message || 'Erro ao cadastrar registro', 'Erro');
         this.atualizarPagina.emit(false);
       }
     } catch (error) {
       console.error(error);
-      this.toastr.error('Erro ao cadastrar limite', 'Erro');
       this.atualizarPagina.emit(false);
     }
   }

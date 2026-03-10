@@ -929,7 +929,7 @@ async removerRubrica(nuRubrica: string) {
   public async obterFiliais(): Promise<void> {
     try {
       const response = await this.apiService.get<ApiResponse<Filial[]>>(
-        `${Endpoints.URL_FILIAL}/ativos`
+        `${Endpoints.URL_FILIAL}/unidade-demandante`
       );
 
     this.listaFiliais = (response.data ?? [])
