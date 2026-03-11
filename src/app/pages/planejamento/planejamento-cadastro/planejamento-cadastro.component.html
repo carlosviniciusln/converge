@@ -164,7 +164,7 @@
           <div class="col-md-9 pr-0"
         >
             <label for="deJustificativa">Justificativa para Or&ccedil;amento:<span class="span-red"> *</span></label>
-            <input [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
+            <input [ngClass]="{ 'is-invalid': submitted && f.deJustificativa?.invalid }" formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
               class="form-control"
                />
           </div>
@@ -488,6 +488,8 @@
               <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
                 <div class="card-content">
                   <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
+                  <small *ngIf="event.coRubrica">{{event.coRubrica}} - {{event.deRubrica}}</small>
+                  <small  *ngIf="event.sgFilial">{{event.sgFilial}}</small>
                   <small class="text-gray-500">
                     {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
                   </small>

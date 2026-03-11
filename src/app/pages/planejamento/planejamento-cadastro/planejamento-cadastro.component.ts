@@ -1295,7 +1295,6 @@ async removerRubrica(nuRubrica: string) {
     // this.form.controls['nuAno'].setValue(nuAno)
     try {
 
-      console.log('Formulário enviado:', this.form);
       this.submitted = true;
       if (this.form.invalid) {
         const invalids = [];
@@ -1423,6 +1422,10 @@ async removerRubrica(nuRubrica: string) {
 
         for (const name in controls) {
           if (controls[name].invalid) itemErro.push(name);
+        }
+        if (itemErro.length > 0) {
+          this.toastr.error('Preencha todos os campos obrigatórios.', 'Erro');
+          console.warn('Campos inválidos:', itemErro);
         }
         this.isReadonly = true;
         if (itemErro.find((item) => item === 'previsoesDesembolso')) {

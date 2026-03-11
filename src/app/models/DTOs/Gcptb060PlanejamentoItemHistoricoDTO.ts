@@ -5,12 +5,15 @@ export interface Gcptb060PlanejamentoItemHistoricoDTO{
         nuPlanejamento? : number;
         nuHistorico? : number;
         dhLog? : Date;
-        nUPlanejamentoItem? : number;
+        nuPlanejamentoItem? : number;
         deRegistroAntigo? : string;
         deRegistroNovo? : string;
+        deRubrica?: string;
+        noRubrica?: string;
+        nuUsuarioAlteracao? : number;
+        noUsuarioAlteracao? : string;
+        sgFilial?: string;
         deObservacao? : string;
-        nUUsuarioAlteracao? : number;
-        nOUsuarioAlteracao? : string;
         tpOperacao? : string;
         listaDiffs? : Gcptb060DiffRegistros[];
 }
