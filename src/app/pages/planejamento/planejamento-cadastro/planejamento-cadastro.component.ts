@@ -167,8 +167,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
    */
 
   public filtroRegistros: any = {
-    pageNumber: 1,
-    pageSize: 10,
+    paginaAtual: 1,
+    tamanhoPagina: 5,
+    coRubrica: null,
     NuContrato: null,
     NuTipoDemanda: null,
     NuPlanejamento: null,
@@ -176,11 +177,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
     NuOrc: null
   };
 
-  ListaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoDTO[] = [];
+  listaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoResponse = new Gcptb060PlanejamentoItemHistoricoResponse();
   dialogVisible = false;
   selectedDiff: any = null;
   filtrosSelecionado: string | null = null;
-  eventosFiltrados = [...this.ListaPlanejamentoItemHistorico];
 
   /**
    * FIM HISTORICO
@@ -260,6 +260,14 @@ export class PlanejamentoCadastroComponent implements OnInit {
     switch (op) {
       case 1: {
         this.filtroRegistros.TpOperacao = e.value;
+        if (e.value == null || this.filtros.length > 1) {
+          await this.obterPlanejamentoItemHistorico();
+        }
+        break;
+      }
+
+      case 1: {
+        this.filtroRegistros.coRubrica = e.value;
         if (e.value == null || this.filtros.length > 1) {
           await this.obterPlanejamentoItemHistorico();
         }
@@ -1179,9 +1187,22 @@ async removerRubrica(nuRubrica: string) {
         this.filtroRegistros
       );
 
-      this.ListaPlanejamentoItemHistorico = response.data.listaHistorico;
+      this.listaPlanejamentoItemHistorico.listaHistorico = response.data.listaHistorico;
+      this.listaPlanejamentoItemHistorico.totalRegistros = response.data.totalRegistros;
+
     } catch (error) {
       console.error(error);
+    }
+  }
+
+    loadPage(event: any) {
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.tamanhoPagina) + 1;
+    const pageSize = event.rows || this.filtroRegistros.tamanhoPagina;
+
+    if (page !== this.filtroRegistros.paginaAtual || pageSize !== this.filtroRegistros.tamanhoPagina) {
+      this.filtroRegistros.paginaAtual = page;
+      this.filtroRegistros.tamanhoPagina = pageSize;
+      this.obterPlanejamentoItemHistorico();
     }
   }
 

@@ -1,6 +1,6 @@
 import { Gcptb060DiffRegistros } from "./Gcptb060DiffRegistros"
 
-export interface Gcptb060PlanejamentoItemHistoricoDTO{
+export class Gcptb060PlanejamentoItemHistoricoDTO{
 
         nuPlanejamento? : number;
         nuHistorico? : number;
@@ -15,5 +15,5 @@ export interface Gcptb060PlanejamentoItemHistoricoDTO{
         sgFilial?: string;
         deObservacao? : string;
         tpOperacao? : string;
-        listaDiffs? : Gcptb060DiffRegistros[];
+        listaDiffs? : Gcptb060DiffRegistros[] = [];
 }

@@ -458,11 +458,19 @@
           >
           </p-dropdown>
 
+          <!-- <p-dropdown
+          [options]="filtros"
+          [(ngModel)]="filtrosSelecionado"
+          placeholder="Rubrica "
+          (onChange)="filtrarEventos($event, 1)"
+          >
+          </p-dropdown> -->
+
           </div>
 
           <p-timeline
-            *ngIf="ListaPlanejamentoItemHistorico.length > 0"
-            [value]="ListaPlanejamentoItemHistorico"
+            *ngIf="listaPlanejamentoItemHistorico.totalRegistros > 0"
+            [value]="listaPlanejamentoItemHistorico.listaHistorico"
             align="alternate"
             class="c-p-timeline"
           >
@@ -513,8 +521,13 @@
 
 
           <p-paginator
-            [rows]="10"
-            [totalRecords]="ListaPlanejamentoItemHistorico.length"
+            [rows]="filtroRegistros.tamanhoPagina"
+            [first]="0"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            (onPageChange)="loadPage($event)"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+            [totalRecords]="listaPlanejamentoItemHistorico.totalRegistros"
           ></p-paginator>
         </div>
       </p-card>

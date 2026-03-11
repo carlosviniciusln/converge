@@ -1,8 +1,9 @@
 import { Gcptb060PlanejamentoItemHistoricoDTO } from "../DTOs/Gcptb060PlanejamentoItemHistoricoDTO";
 
-export interface Gcptb060PlanejamentoItemHistoricoResponse{
+export class Gcptb060PlanejamentoItemHistoricoResponse{
 
-  listaHistorico : Gcptb060PlanejamentoItemHistoricoDTO[];
+  listaHistorico : Gcptb060PlanejamentoItemHistoricoDTO[] = [];
+  totalRegistros: number;
 }
 
 
