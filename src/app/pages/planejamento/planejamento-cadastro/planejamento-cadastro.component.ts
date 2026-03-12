@@ -83,7 +83,8 @@ export class PlanejamentoCadastroComponent implements OnInit {
   public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
   public planejamento: PlanejamentoOrcamentarioResponse;
   public planejamentoEditar: PlanejamentoOrcamentarioResponse;
-  public isFlagStyle : boolean = false;
+  public isFlagContrato : boolean = false;
+  public isFlagObjeto : boolean = false;
   public listaDigital: any[] = [
     { id: 1, tipo: 'Digital' },
     { id: 2, tipo: 'Digital - TD' },
@@ -166,8 +167,9 @@ export class PlanejamentoCadastroComponent implements OnInit {
    */
 
   public filtroRegistros: any = {
-    pageNumber: 1,
-    pageSize: 10,
+    paginaAtual: 1,
+    tamanhoPagina: 5,
+    coRubrica: null,
     NuContrato: null,
     NuTipoDemanda: null,
     NuPlanejamento: null,
@@ -175,11 +177,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
     NuOrc: null
   };
 
-  ListaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoDTO[] = [];
+  listaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoResponse = new Gcptb060PlanejamentoItemHistoricoResponse();
   dialogVisible = false;
   selectedDiff: any = null;
   filtrosSelecionado: string | null = null;
-  eventosFiltrados = [...this.ListaPlanejamentoItemHistorico];
 
   /**
    * FIM HISTORICO
@@ -259,6 +260,14 @@ export class PlanejamentoCadastroComponent implements OnInit {
     switch (op) {
       case 1: {
         this.filtroRegistros.TpOperacao = e.value;
+        if (e.value == null || this.filtros.length > 1) {
+          await this.obterPlanejamentoItemHistorico();
+        }
+        break;
+      }
+
+      case 1: {
+        this.filtroRegistros.coRubrica = e.value;
         if (e.value == null || this.filtros.length > 1) {
           await this.obterPlanejamentoItemHistorico();
         }
@@ -357,14 +366,13 @@ export class PlanejamentoCadastroComponent implements OnInit {
         Validators.required,
       ]),
       deObjeto: new FormControl({ value: '', disabled: !this.isEditable }, [
-      // Validators.maxLength(255)
+      Validators.required
       ]),
       deJustificativa: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.maxLength(255)]
+        [Validators.required, Validators.maxLength(255)]
       ),
       deObservacao: new FormControl({ value: '', disabled: !this.isEditable }, [
-        Validators.required,
         Validators.maxLength(255)
       ]),
       nuPlanejamentoStatus: new FormControl(
@@ -489,8 +497,10 @@ export class PlanejamentoCadastroComponent implements OnInit {
   onIsServicoContinuoChange($event: MatSlideToggleChange) {
     if ($event.checked) {
       this.form.controls['icServicoContinuo'].setValue(1);
+      this.form.controls['nuDemandaTipo'].setValue(4)
     } else {
       this.form.controls['icServicoContinuo'].setValue(0);
+      this.form.controls['nuDemandaTipo'].setValue(6)
     }
   }
 
@@ -669,6 +679,7 @@ async removerRubrica(nuRubrica: string) {
           this.nuPlanejamento.nU_PLANEJAMENTO
       );
 
+
       this.planejamento = response.data[0];
 
       const digital = this.listaDigitalBanco.find(
@@ -680,7 +691,7 @@ async removerRubrica(nuRubrica: string) {
 
         if (this.planejamento.nuContrato != 0)
           {
-            this.isFlagStyle = true;
+            this.isFlagContrato = true;
           }
          this.form.controls['nuContrato'].setValue(this.planejamento.nuContrato);
 
@@ -721,7 +732,13 @@ async removerRubrica(nuRubrica: string) {
         }
 
         this.form.controls['nuFilial'].setValue(this.planejamento.nuFilial);
-        this.form.controls['deObjeto'].setValue(this.planejamento.deObjeto);
+
+        if(this.planejamento.deObjeto != null){
+          this.form.controls['deObjeto'].setValue(this.planejamento.deObjeto);
+          this.isFlagObjeto = true;
+        }
+
+
         this.form.controls['deJustificativa'].setValue(
           this.planejamento.deJustificativa
         );
@@ -920,7 +937,7 @@ async removerRubrica(nuRubrica: string) {
   public async obterFiliais(): Promise<void> {
     try {
       const response = await this.apiService.get<ApiResponse<Filial[]>>(
-        `${Endpoints.URL_FILIAL}/ativos`
+        `${Endpoints.URL_FILIAL}/unidade-demandante`
       );
 
     this.listaFiliais = (response.data ?? [])
@@ -929,8 +946,6 @@ async removerRubrica(nuRubrica: string) {
       ...f,
       nuFilialEcoFilial: `${f.coFilial} - ${f.sgFilial}`
     }));
-
-    console.log('Filiais obtidas (mapeadas):', this.listaFiliais);
 
     } catch (error) {
       console.error(error);
@@ -1172,9 +1187,22 @@ async removerRubrica(nuRubrica: string) {
         this.filtroRegistros
       );
 
-      this.ListaPlanejamentoItemHistorico = response.data.listaHistorico;
+      this.listaPlanejamentoItemHistorico.listaHistorico = response.data.listaHistorico;
+      this.listaPlanejamentoItemHistorico.totalRegistros = response.data.totalRegistros;
+
     } catch (error) {
       console.error(error);
+    }
+  }
+
+    loadPage(event: any) {
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.tamanhoPagina) + 1;
+    const pageSize = event.rows || this.filtroRegistros.tamanhoPagina;
+
+    if (page !== this.filtroRegistros.paginaAtual || pageSize !== this.filtroRegistros.tamanhoPagina) {
+      this.filtroRegistros.paginaAtual = page;
+      this.filtroRegistros.tamanhoPagina = pageSize;
+      this.obterPlanejamentoItemHistorico();
     }
   }
 
@@ -1288,7 +1316,6 @@ async removerRubrica(nuRubrica: string) {
     // this.form.controls['nuAno'].setValue(nuAno)
     try {
 
-      console.log('Formulário enviado:', this.form);
       this.submitted = true;
       if (this.form.invalid) {
         const invalids = [];
@@ -1416,6 +1443,10 @@ async removerRubrica(nuRubrica: string) {
 
         for (const name in controls) {
           if (controls[name].invalid) itemErro.push(name);
+        }
+        if (itemErro.length > 0) {
+          this.toastr.error('Preencha todos os campos obrigatórios.', 'Erro');
+          console.warn('Campos inválidos:', itemErro);
         }
         this.isReadonly = true;
         if (itemErro.find((item) => item === 'previsoesDesembolso')) {

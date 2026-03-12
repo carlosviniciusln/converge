@@ -45,11 +45,21 @@ export class FormatDiffPipe implements PipeTransform {
    * Suporta:
    *   - "1234,56", "1.234,56", "100,0", "-1.234,5"
    *   - "1234.56", "100.0", "-1234.5"
-   *   - Com "R$", espaços, e outros caracteres não numéricos espalhados
-   * Retorna null se não parecer número.
+   *   - Com "R$", espaços, e outros caracteres numéricos
+   * Retorna null se não parecer número (ex: "ABC123").
    */
   private parseToNumber(input: string): number | null {
     if (!input) return null;
+
+    // Verifica se a string tem PRINCIPALMENTE números/separadores/moeda
+    // Se tiver muitos caracteres alfabéticos espalhados, não é número
+    const onlyNumericChars = input.replace(/[^0-9,.\-]/g, '').length;
+    const cleanLength = input.replace(/\s+/g, '').length;
+
+    // Se menos de 50% da string são dígitos/separadores, não é número
+    if (onlyNumericChars / cleanLength < 0.5) {
+      return null;
+    }
 
     // Remove moeda e espaços
     let s = input

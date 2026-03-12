@@ -105,7 +105,6 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     ToastrModule.forRoot(),
     HighchartsChartModule,
     MatIconModule,
-    SharedLibraryModule,
     MatListModule,
     TimelineModule,
     CardModule,

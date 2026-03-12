@@ -7,7 +7,7 @@
 
 <mat-tab-group>
 
-  <mat-tab label="Consulta">
+  <mat-tab label="Planejamento">
 
   <h4 style="padding: 10px 0px 0px 24px;" class="modal-title" id="modal-basic-title">
     <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
@@ -32,7 +32,7 @@
 <div
   class="col-md-3 pr-0"
   style="display: flex; flex-direction: column;"
-  [ngClass]="isFlagStyle ? 'custom-dropdown-active' : 'custom-dropdown'"
+  [ngClass]="isFlagContrato ? 'custom-dropdown-active' : 'custom-dropdown'"
 >
   <label for="nuContrato">Nº Contrato:</label>
 
@@ -40,8 +40,8 @@
     class="custom-dropdown"
     [options]="listaContratos"
     optionLabel="coContrato"
-    [disabled]="!isFlagStyle && isReadonly"
-    [readonly]="isFlagStyle && isReadonly"
+    [disabled]="!isFlagContrato && isReadonly"
+    [readonly]="isFlagContrato && isReadonly"
     optionValue="nuContrato"
     formControlName="nuContrato"
     placeholder="Selecione o Contrato"
@@ -66,20 +66,15 @@
             </div>
           </div>
           <div class="col-md-6 pr-0">
-            <label for="deObjeto">Objeto:</label>
-            <input  [disabled]="!isFlagStyle && isReadonly"
-              [readonly]="isFlagStyle && isReadonly" formControlName="deObjeto" id="deObjeto" placeholder="Digite..." type="text" class="form-control"/>
+            <label for="deObjeto">Objeto:<span class="span-red"> *</span></label>
+            <textarea rows="4"
+             [disabled]="!isFlagObjeto && isReadonly"
+             [readonly]="isFlagObjeto && isReadonly"
+              [ngClass]="{ 'is-invalid': submitted && f.deObjeto.invalid }"
+              formControlName="deObjeto" id="deObjeto" placeholder="Digite..." type="text" class="form-control"></textarea>
           </div>
           <div class="col-md-3 pr-0">
             <label for="nuPlanejamentoTipo">Tipo de Planejamento:</label>
-            <!-- <select class="form-control" id="nuPlanejamentoTipo" formControlName="nuPlanejamentoTipo" [ngClass]="{
-                'is-invalid': submitted && f.nuPlanejamentoTipo.invalid
-              }">
-              <option value="" disabled selected>Selecione o Tipo</option>
-              <option *ngFor="let a of listaTiposPlanejamento" [ngValue]="a.nuPlanejamentoTipo">
-                {{ a.dePlanejamentoTipo }}
-              </option>
-            </select> -->
             <input type="text" formControlName="nuPlanejamentoTipo" class="form-control" id="nuPlanejamentoTipo" value="{{tipo}}" placeholder="{{tipo}}" [readonly]="isReadonly" />
           </div>
           <div class="col-md-3 pr-0">
@@ -96,15 +91,6 @@
           </div>
           <div class="col-md-1 pr-0">
             <label for="nuAno">Exerc&iacute;cio:</label>
-            <!-- <select class="form-control" id="nuAno" formControlName="nuAno" [disabled]="isReadonly"
-              [ngClass]="{ 'is-invalid': submitted && f.nuAno.invalid }">
-              <option value="" disabled selected>
-                Selecione ano de exerc&iacute;cio
-              </option>
-              <option *ngFor="let a of listaExercicios" [ngValue]="a.nuOrcamento">
-                {{ a.nuAnoOrcamento }}
-              </option>
-            </select> -->
 
             <input type="text" formControlName="nuAno" class="form-control" id="nuAno" value="{{ano}}" placeholder="{{ano}}" [readonly]="isReadonly" />
           </div>
@@ -175,9 +161,10 @@
               </option>
             </select>
           </div>
-          <div class="col-md-9 pr-0">
-            <label for="deJustificativa">Justificativa para Or&ccedil;amento:</label>
-            <input formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
+          <div class="col-md-9 pr-0"
+        >
+            <label for="deJustificativa">Justificativa para Or&ccedil;amento:<span class="span-red"> *</span></label>
+            <input [ngClass]="{ 'is-invalid': submitted && f.deJustificativa?.invalid }" formControlName="deJustificativa" id="deJustificativa" placeholder="Digite..." type="text" maxlength="255"
               class="form-control"
                />
           </div>
@@ -429,77 +416,10 @@
             </div>
           </div>
 
-          <!-- <div class="col-md-6" *ngIf="gcpvw008Mensalizacao.length > 0; else elseBlock">
-            <h4 class="modal-title" id="modal-basic-title">
-              <b>Valores estimados para o ano exercício</b>
-            </h4>
-          </div>
-          <ng-template #elseBlock>
-            <h4 class="modal-title" id="modal-basic-title" style="margin-bottom: 8px; margin-left: 15px;">
-              <b>Este contrato não possui mensalização.</b>
-            </h4>
-          </ng-template>
-          <div class="col-md-12 pr-0" style="margin-bottom: 20px;" *ngIf="gcpvw008Mensalizacao.length > 0">
-            <mat-tab-group>
-              <mat-tab *ngFor="let rubrica of rubricas" label="{{ rubrica.dE_RUBRICA }}">
-                <div class="col-md-12">
-                  <p-table [value]="filtraRubrica(rubrica.dE_RUBRICA)" styleClass="p-datatable-customers"
-                    [responsive]="true" [rowHover]="true">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>
-                          <div class="p-d-flex p-jc-between p-ai-center">
-                            Competência
-                          </div>
-                        </th>
-                        <th>
-                          <div class="p-d-flex p-jc-between p-ai-center">
-                            Valor Planejado
-                          </div>
-                        </th>
-                        <th>
-                          <div class="p-d-flex p-jc-between p-ai-center">
-                            Observação
-                          </div>
-                        </th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-mensalizacao>
-                      <tr class="p-selectable-row">
-                        <td>
-                          <span class="p-column-title">Competência</span>
-                          {{ mensalizacao.dE_PERIODO | date: 'MM/yyyy' }}
-                        </td>
-                        <td>
-                          <span class="p-column-title">Valor Planejado</span>
-                          {{ mensalizacao.vR_PLANEJADO | currency: 'BRL' }}
-                        </td>
-                        <td>
-                          <span class="p-column-title">Observação</span>
-                          {{ mensalizacao.obS_PARCELA }}
-                        </td>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="emptymessage">
-                      <tr>
-                        <td colspan="4">Nenhuma mensalização encontrada para a rubrica.</td>
-                      </tr>
-                    </ng-template>
-                  </p-table>
-                  <div class="row total-rubrica">
-                    <div class="text-right">Total da Rubrica:</div>
-                    <div class="col-md-6">
-                      <b>{{totalRubrica | currency: 'BRL' }}</b>
-                    </div>
-                  </div>
-                </div>
-              </mat-tab>
 
-            </mat-tab-group>
-          </div> -->
           <div class="col-md-12 pr-0">
             <h4 class="modal-title" id="modal-basic-title" for="deObservacao" style="margin-bottom: 8px;">
-              <b>Observa&ccedil;&otilde;es:<span class="span-red"> *</span></b>
+              <b>Observa&ccedil;&otilde;es:</b>
             </h4>
             <textarea formControlName="deObservacao" id="deObservacao"
               [ngClass]="{ 'is-invalid': submitted && f.deObservacao?.invalid }" placeholder="Digite..."
@@ -538,11 +458,19 @@
           >
           </p-dropdown>
 
+          <!-- <p-dropdown
+          [options]="filtros"
+          [(ngModel)]="filtrosSelecionado"
+          placeholder="Rubrica "
+          (onChange)="filtrarEventos($event, 1)"
+          >
+          </p-dropdown> -->
+
           </div>
 
           <p-timeline
-            *ngIf="ListaPlanejamentoItemHistorico.length > 0"
-            [value]="ListaPlanejamentoItemHistorico"
+            *ngIf="listaPlanejamentoItemHistorico.totalRegistros > 0"
+            [value]="listaPlanejamentoItemHistorico.listaHistorico"
             align="alternate"
             class="c-p-timeline"
           >
@@ -568,6 +496,8 @@
               <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
                 <div class="card-content">
                   <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
+                  <small *ngIf="event.coRubrica">{{event.coRubrica}} - {{event.deRubrica}}</small>
+                  <small  *ngIf="event.sgFilial">{{event.sgFilial}}</small>
                   <small class="text-gray-500">
                     {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
                   </small>
@@ -591,8 +521,13 @@
 
 
           <p-paginator
-            [rows]="100"
-            [totalRecords]="ListaPlanejamentoItemHistorico.length"
+            [rows]="filtroRegistros.tamanhoPagina"
+            [first]="0"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            (onPageChange)="loadPage($event)"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+            [totalRecords]="listaPlanejamentoItemHistorico.totalRegistros"
           ></p-paginator>
         </div>
       </p-card>

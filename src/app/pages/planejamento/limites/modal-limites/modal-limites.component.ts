@@ -187,8 +187,12 @@ export class ModalLimitesComponent implements OnInit {
   }
 
   public fillRubrica(e: any): void {
-    this.descricaoRubrica = e.value.split('-')[1];
-    this.nuRubrica = Number(e.value.split('-')[0]);
+    const [nuRubricaStr, descricao] = e.value.split('-');
+    const nuRubricaNum = Number(nuRubricaStr);
+
+    this.descricaoRubrica = descricao;
+    this.nuRubrica = nuRubricaNum;
+    this.formCadastro.controls['nuRubrica'].setValue(nuRubricaNum);
   }
 
   public async onSubmit(): Promise<void> {
@@ -237,12 +241,8 @@ export class ModalLimitesComponent implements OnInit {
     try {
       this.submitted = true;
       this.formCadastro.markAllAsTouched();
-      const nuRubricaNum = Number(this.nuRubrica);
-      this.formCadastro.controls['nuRubrica'].setValue(nuRubricaNum);
-      const valorAtual = this.formCadastro.controls['vrLimite'].value;
-      const valorSemPrefixo = valorAtual.replace('R$ ', '');
-      this.formCadastro.controls['vrLimite'].setValue(valorSemPrefixo);
-      const formData = this.toFormData(this.formCadastro);
+
+
 
       if (this.formCadastro.invalid) {
         const invalids = [];
@@ -253,32 +253,51 @@ export class ModalLimitesComponent implements OnInit {
         this.toastr.error('Todos os campos são obrigatórios.', 'Campo Obrigatório');
         console.error(invalids);
         return;
-
       }
 
-
-      const validaJaCadastrado = false;
-
-      if (validaJaCadastrado) {
-        this.toastr.error('Por favor, nesse caso o valor deverá ser alterado.', 'Registro já Cadastro');
+      const nuRubricaNum = Number(this.nuRubrica);
+      if (nuRubricaNum <= 0) {
+        this.toastr.error('Selecione uma rúbrica válida.', 'Campo Obrigatório');
         return;
       }
-      if (nuRubricaNum > 0) {
-        const response = await this.apiService.postFormData<any>(
-          `v1/Limites`,
-          formData
-        );
-        if (response.data.succeeded) {
-          this.toastr.success(response.data.data, 'Sucesso');
-          this.atualizarPagina.emit(true);
-          this.activeModal.dismiss();
-          setTimeout(() => {
-            window.location.reload();
-          }, 3000);
-        } else {
-          this.toastr.error(response.data, 'Registro já Cadastro');
-          this.atualizarPagina.emit(false);
-        }
+
+      // Processar valor monetário
+      let valorAtual = this.formCadastro.controls['vrLimite'].value;
+      let valorSemPrefixo = valorAtual.replace('R$ ', '').trim();
+      valorSemPrefixo = valorSemPrefixo.replace(/\./g, '');
+      valorSemPrefixo = valorSemPrefixo.replace(',', '.');
+      const valorNumerico = parseFloat(valorSemPrefixo);
+
+      if (isNaN(valorNumerico)) {
+        this.toastr.error('Valor informado em formato inválido. Informe novamente o novo limite', 'Erro');
+        this.formCadastro.controls['vrLimite'].setValue('');
+        return;
+      }
+
+      // Criar objeto estruturado para envio
+      const createRequest: LimitesRubricasUpdateV2 = {
+        nuPlanejamento: this.formCadastro.controls['nuPlanejamento'].value,
+        nuFilial: this.formCadastro.controls['nuUnidadeDemandante'].value,
+        nuRubrica: nuRubricaNum,
+        vrLimite: valorNumerico,
+        nuLimitePlanejamento: 0
+      };
+
+      const response = await this.apiService.post<any>(
+        `v1/Limites`,
+        createRequest
+      );
+
+      if (response.data?.succeeded) {
+        this.toastr.success(response.data.data || 'Registro cadastrado com sucesso!', 'Sucesso');
+        this.atualizarPagina.emit(true);
+        this.activeModal.dismiss();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        this.toastr.info(response.data?.message || 'Erro ao cadastrar registro', 'Erro');
+        this.atualizarPagina.emit(false);
       }
     } catch (error) {
       console.error(error);
