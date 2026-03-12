@@ -722,7 +722,7 @@ async removerRubrica(nuRubrica: string) {
           // Aguarda o próximo ciclo para garantir que a lista foi atualizada
           Promise.resolve().then(() => {
             this.form.patchValue({
-              nuAno: anoSelecionado.nuOrcamento,
+              nuAno: this.ano,
               nuPlanejamentoTipo: this.tipo,
             });
 
@@ -975,12 +975,12 @@ async removerRubrica(nuRubrica: string) {
           f.nuAnoOrcamento >= new Date().getFullYear() &&
           f.nuAnoOrcamento == this.ano
       );
-      if (this.isCadastro) {
-        this.form.controls['nuAno'].setValue(
-          this.listaExercicios[0].nuOrcamento
-        );
-      }
-      this.form.controls['nuAno'].disable();
+      // if (this.isCadastro) {
+      //   this.form.controls['nuAno'].setValue(
+      //     this.listaExercicios[0].nuOrcamento
+      //   );
+      // }
+      // this.form.controls['nuAno'].disable();
     } catch (error) {
       console.error(error);
     }
