@@ -452,9 +452,29 @@ export class PlanejamentoCadastroComponent implements OnInit {
     this.previsoesDesembolso.push(this.novaPrevisaoDesembolso(desabilitar));
   }
 
-  excluirPrevisaoDesembolso(i: number) {
-    this.previsoesDesembolso.removeAt(i);
-    this.somaValorTotalPlanejamentoOrcamentario();
+  async excluirPrevisaoDesembolso(i: number) {
+
+      const alert = await Swal.fire({
+      title: '',
+      text: `Deseja realmente excluir rubrica: ${i + 1}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, deletar!',
+      cancelButtonText: 'Não, cancelar!',
+    }).then((result) => {
+      if (result.value) {
+        return true;
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        return false;
+      }
+    });
+
+    if (alert) {
+      this.previsoesDesembolso.removeAt(i);
+      this.somaValorTotalPlanejamentoOrcamentario();
+    }
+
+    return;
   }
 
   novaPrevisaoDesembolso(desabilitar: boolean): FormGroup {
@@ -1324,8 +1344,13 @@ async removerRubrica(nuRubrica: string) {
           if (controls[name].invalid) invalids.push(name);
         }
         if (invalids.length > 0) {
-          this.toastr.error('Preencha todos os campos obrigatórios.', 'Erro');
-          console.warn('Campos inválidos:', invalids);
+             await Swal.fire({
+              title: 'Atenção!',
+              text: 'Preencha todos os campos obrigatórios.',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+              });
+            return;
         }
         // if (this.form.controls['deObjeto'].value == '') {
         //   this.toastr.error('Informe o objeto.', 'Erro');
@@ -1340,11 +1365,13 @@ async removerRubrica(nuRubrica: string) {
         (this.form.controls['icDigital'].value == 1 ||
           this.form.controls['icDigital'].value == 2)
       ) {
-        this.toastr.error(
-          'Informe a categoria da classificação digital.',
-          'Erro'
-        );
-        return;
+              await Swal.fire({
+              title: 'Atenção!',
+              text: 'Preencha todos os campos obrigatórios.',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+              });
+            return;
       }
       // else if (this.form.controls['deObjeto'].value == null) {
       //   this.toastr.error('Informe o objeto.', 'Erro');
@@ -1445,15 +1472,23 @@ async removerRubrica(nuRubrica: string) {
           if (controls[name].invalid) itemErro.push(name);
         }
         if (itemErro.length > 0) {
-          this.toastr.error('Preencha todos os campos obrigatórios.', 'Erro');
-          console.warn('Campos inválidos:', itemErro);
+            await Swal.fire({
+            title: 'Atenção!',
+            text: 'Preencha todos os campos obrigatórios.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+            });
+            return;
         }
         this.isReadonly = true;
         if (itemErro.find((item) => item === 'previsoesDesembolso')) {
-          this.toastr.error(
-            'Informe a previsão de desembolso por completo.',
-            'Erro'
-          );
+              await Swal.fire({
+              title: 'Atenção!',
+              text: 'Preencha todos os campos obrigatórios.',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+              });
+            return;
           this.habilitarCampoRubrica(false);
           return;
         }
@@ -1478,10 +1513,13 @@ async removerRubrica(nuRubrica: string) {
         (this.form.controls['icDigital'].value == 1 ||
           this.form.controls['icDigital'].value == 2)
       ) {
-        this.toastr.error(
-          'Informe a categoria da classificação digital.',
-          'Erro'
-        );
+          await Swal.fire({
+          title: 'Atenção!',
+          text: 'Preencha todos os campos obrigatórios.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+          });
+
         this.habilitarCampoRubrica(false);
         return;
       // } else if (this.form.controls['deObjeto'].value == null) {
@@ -1496,10 +1534,13 @@ async removerRubrica(nuRubrica: string) {
         this.form.value.nuClassificacaoPlanejamento === 1 &&
         (this.form.value.icDigital === 1 || this.form.value.icDigital === 2)
       ) {
-        this.toastr.error(
-          'Informe a categoria da classificação digital.',
-          'Erro'
-        );
+          await Swal.fire({
+          title: 'Atenção!',
+          text: 'Preencha todos os campos obrigatórios.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+          });
+
         this.habilitarCampoRubrica(false);
         return;
       }
@@ -1515,22 +1556,34 @@ async removerRubrica(nuRubrica: string) {
           this.form.value.nuPlanejamentoStatus != 7 && this.form.value.nuPlanejamentoStatus != 5
         ) {
           //Criado para Revisado
-          this.toastr.error(
-            'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
-            'Erro'
-          );
+
+          await Swal.fire({
+          title: 'Atenção!',
+          text: 'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+          });
           this.habilitarCampoRubrica(false);
           return;
         }
+
+        //MENSAGEM IGUAL PARA CONDIÇÕES DIFERENTES, REGRA APLICADA NÃO ENTENDIDA
         if (
           this.nuPlanejamento.nU_STATUS_PLANEJAMENTO == 7 &&
           this.form.value.nuPlanejamentoStatus != 9 && this.form.value.nuPlanejamentoStatus != 7
         ) {
           //Revisado e de Avaliado
-          this.toastr.error(
-            'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
-            'Erro'
-          );
+           await Swal.fire({
+          title: 'Atenção!',
+          text: 'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+          });
+
+          // this.toastr.error(
+          //   'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+          //   'Erro'
+          // );
           this.habilitarCampoRubrica(false);
           return;
         }
@@ -1539,6 +1592,13 @@ async removerRubrica(nuRubrica: string) {
           this.form.value.nuPlanejamentoStatus != 9
         ) {
           //Revisado e de Avaliado
+
+           await Swal.fire({
+          title: 'Atenção!',
+          text: 'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+          });
           this.toastr.error(
             'Status só poderá ser atualizado de Criado para Revisado e de Avaliado para Ajustado. Favor ajustar e tentar novamente.',
             'Erro'
@@ -1553,10 +1613,16 @@ async removerRubrica(nuRubrica: string) {
         this.form.value.nuPlanejamentoStatus != 4
       ) {
         //Revisado e de Avaliado
-        this.toastr.error(
-          'O status "Cancelado" não pode sofre alteração de status.',
-          'Erro'
-        );
+         await Swal.fire({
+          title: 'Atenção!',
+          text: 'O status "Cancelado" não pode sofre alteração de status.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+          });
+        // this.toastr.error(
+        //   'O status "Cancelado" não pode sofre alteração de status.',
+        //   'Erro'
+        // );
         this.habilitarCampoRubrica(false);
         return;
       }
@@ -1728,13 +1794,26 @@ async removerRubrica(nuRubrica: string) {
         lista
       );
 
-      this.toastr.success('Exclusão efetuada com sucesso.', 'Sucesso');
+       await Swal.fire({
+          title: 'Sucesso!',
+          text: 'Exclusão efetuada com sucesso.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+          });
+
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
+      return
     } catch (error) {
-      console.error('Erro ao excluir planejamento:', error);
-      this.toastr.error('Erro ao salvar alterações.', 'Erro');
+
+      await Swal.fire({
+      title: 'Error!',
+      text: 'Erro ao salvar alterações.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+      });
       this.atualizarPagina.emit(false);
+      return
     }
   }
 
