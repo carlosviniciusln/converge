@@ -169,49 +169,30 @@ export class ContratoComponent implements OnInit {
     }
   }
 
+    async exportExcel(): Promise<void> {
+    try {
+      const filtrosExcel = this.limparFiltrosNulos({
+        // PaginaAtual: this.filtroRegistros.PaginaAtual,
+        // TamanhoPagina: this.filtroRegistros.TamanhoPagina,
+        Contrato: this.filtroRegistros.Contrato,
+        Fornecedor: this.filtroRegistros.Fornecedor,
+        Tipo: this.filtroRegistros.Tipo,
+        Gestor: this.filtroRegistros.Gestor,
+        Status: this.filtroRegistros.Status
+      });
 
-  // mudar export para backend
-
-  exportExcel() {
-    const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
-    this.apiService.get<ApiResponse<Gcptb001ContratoResponse[]>>(
-      `${Endpoints.URL_CONTRATOS}/filter-excel`,
-      filtrosLimpos
-    ).then(response => {
-      if (response.succeeded) {
-        const dadosFiltrados = response.data.map(item => ({
-          "Número do Contrato": item.coContrato,
-          Empresa: item.noEmpresa,
-          "Tipo de Contrato": item.noContratoTipo,
-          "Unidade Demandante": item.sgFilial,
-          Status: item.icAtivo ? 'Ativo' : 'Encerrado',
-          "Data de Início": new Date(item.dtInicioContrato).toLocaleDateString('pt-BR'),
-          "Data de Término": new Date(item.dtTerminoContrato).toLocaleDateString('pt-BR'),
-          "Valor Global": item.vrGlobal,
-          "Valor Executado": item.vrExecutado
-        }));
-
-        import("xlsx").then(xlsx => {
-          const worksheet = xlsx.utils.json_to_sheet(dadosFiltrados);
-          const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-          const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-          this.saveAsExcelFile(excelBuffer, "contratos_filtrados");
-        });
-      } else {
-        console.error('Erro ao exportar dados: ', response.errors);
+      if (this.isRotaAtas) {
+        filtrosExcel.Tipo = 'ATA_DE_REGISTRO_DE_PRECOS';
       }
-    }).catch(error => {
-      console.error('Erro na requisição de exportação: ', error);
-    });
-  }
 
-  saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE
-    });
-    fileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+      this.apiService.downloadfile(
+        `v1/Contrato/obter-contratos-excel`,
+        filtrosExcel
+      );
+
+    } catch (error) {
+      console.error('Erro ao exportar Excel', error);
+    }
   }
 
   // VERIFICAR SE ESTÁ EM USO
