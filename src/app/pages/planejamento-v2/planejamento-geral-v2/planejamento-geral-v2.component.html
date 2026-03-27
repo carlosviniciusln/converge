@@ -1,0 +1,431 @@
+<div class="content">
+  <div>
+    <button
+      type="button"
+      class="btn-sm btn-secondary no-print"
+      routerLink="/planejamento-orcamentario-novo"
+      mat-raised-button
+    >
+      Voltar
+    </button>
+    <p class="card-title date-info">
+      <b>Atualizado em: 09/06/2025 18:29</b>
+    </p>
+  </div>
+
+  <div class="card">
+    <mat-tab-group>
+      <mat-tab label="Contrato">
+        <p class="c-p">
+          Planejamento Orçamentário - Exercício
+          <span style="color: black; font-weight: 700">{{ anoExercicio }}</span>
+          - {{ ordemTipoExercicio }} -
+          <span style="color: green">{{ statusExercio }}</span>
+        </p>
+
+        <div style="margin: 14px">
+          <table
+            border="1"
+            width="100%"
+            style="text-align: center; border-color: rgb(231, 231, 231)"
+            *ngFor="let item of dadosDashboard"
+          >
+            <tr>
+              <th colspan="5">{{ item.noRubricaTipo }}</th>
+            </tr>
+
+            <tr style="background-color: rgb(245, 245, 245)">
+              <td style="font-weight: bold">
+                Solicitado
+                <p
+                  [ngStyle]="{
+                    color: item.noRubricaTipo === 'CAPEX' ? 'blue' : 'orange',
+                    'font-weight': 'bold',
+                  }"
+                >
+                  {{ item.vrSolicitado | currency: "BRL" }}
+                </p>
+              </td>
+
+              <td style="font-weight: bold">
+                Limite
+                <p
+                  [ngStyle]="{
+                    color: item.noRubricaTipo === 'CAPEX' ? 'blue' : 'orange',
+                    'font-weight': 'bold',
+                  }"
+                >
+                  {{ item.vrLimite | currency: "BRL" }}
+                </p>
+              </td>
+
+              <td style="font-weight: bold">
+                Diferença
+                <p
+                  [ngStyle]="{
+                    color: item.noRubricaTipo === 'CAPEX' ? 'blue' : 'orange',
+                    'font-weight': 'bold',
+                  }"
+                >
+                  {{ item.vrDiferenca | currency: "BRL" }}
+                </p>
+              </td>
+
+              <td style="font-weight: bold">
+                Executado
+                <p
+                  [ngStyle]="{
+                    color: item.noRubricaTipo === 'CAPEX' ? 'blue' : 'orange',
+                    'font-weight': 'bold',
+                  }"
+                >
+                  {{ item.vrExecutado | currency: "BRL" }}
+                </p>
+              </td>
+
+              <td style="font-weight: bold">
+                %ExL
+                <p
+                  [ngStyle]="{
+                    color: item.noRubricaTipo === 'CAPEX' ? 'blue' : 'orange',
+                    'font-weight': 'bold',
+                  }"
+                >
+                  {{ item.pcEp | number: "1.2-2" }}%
+                </p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!--  TABELA 2 REGISTROS -->
+
+        <!-- <div class="row">
+          <div class="col-12">
+            <p-table
+              id="table-contrato"
+              #dt
+              [value]="planejamentos"
+              dataKey="id"
+              styleClass="p-datatable-customers"
+              [totalRecords]="quantidadeTotal"
+              [lazy]="true"
+              [rowHover]="true"
+              [showCurrentPageReport]="true"
+              [loading]="loading"
+              [filterDelay]="0"
+              (onLazyLoad)="loadPage($event)"
+              [paginator]="true"
+              [rows]="filtroRegistros.pageSize"
+              [rowsPerPageOptions]="[10, 20, 50, quantidadeTotal]"
+              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+            >
+              <ng-template pTemplate="caption">
+                <div class="c-menu">
+                  <div class="pl-1 pr-1">
+                    <p-button
+                      label="Ações"
+                      icon="pi pi-list"
+                      class="acoes-btn"
+                      (onClick)="acoesMenu.toggle($event)"
+                    ></p-button>
+
+                    <p-menu
+                      #acoesMenu
+                      [popup]="true"
+                      [model]="items"
+                      appendTo="body"
+                      [baseZIndex]="1100"
+                    ></p-menu>
+                  </div> -->
+
+        <!-- <button type="button" class="btn-sm btn-secondary" (click)="downloadPlanejamentoDesembolso()">
+                    <i class="tim-icons icon-cloud-download-93"></i>
+                  </button> -->
+        <!-- <div class="pl-1 pr-1">
+                          <p-dropdown  [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
+                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
+                            placeholder="Planejamento" *ngIf="!loading"></p-dropdown>
+                        </div>
+                        <div class="pl-1 pr-1">
+                          <p-dropdown  [options]="selectAnos" [(ngModel)]="selectedAno" [filter]="true" optionLabel="label"
+                            optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
+                            placeholder="Exercício"></p-dropdown>
+                        </div> -->
+        <!-- <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="selectNuOrcs"
+                      [(ngModel)]="selectedNuOrc"
+                      [filter]="true"
+                      optionLabel="label"
+                      optionValue="value"
+                      (onChange)="updateRelatorio($event, 2)"
+                      [showClear]="true"
+                      placeholder="NUORC"
+                    ></p-dropdown>
+                  </div>
+                  <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="selectFiliais"
+                      [(ngModel)]="selectedFilial"
+                      [filter]="true"
+                      optionLabel="label"
+                      optionValue="value"
+                      (onChange)="updateRelatorio($event, 3)"
+                      [showClear]="true"
+                      placeholder="UD"
+                    ></p-dropdown>
+                  </div>
+                  <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="selectContratos"
+                      [(ngModel)]="selectedContrato"
+                      [filter]="true"
+                      optionLabel="label"
+                      optionValue="value"
+                      (onChange)="updateRelatorio($event, 4)"
+                      [showClear]="true"
+                      placeholder="Contrato"
+                    ></p-dropdown>
+                  </div>
+                  <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="selectTiposDemanda"
+                      [(ngModel)]="selectedTipoDemanda"
+                      [filter]="true"
+                      optionLabel="label"
+                      optionValue="value"
+                      (onChange)="updateRelatorio($event, 5)"
+                      [showClear]="true"
+                      placeholder="Tipo"
+                    ></p-dropdown>
+                  </div> -->
+        <!-- <div class="pl-1 pr-1">
+                    <p-dropdown [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
+                      optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 6)" [showClear]="true"
+                      placeholder="Digital"></p-dropdown>
+                  </div> -->
+        <!-- <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="selectStatusPlanejamento"
+                      [(ngModel)]="selectedStatusPlanejamento"
+                      [filter]="true"
+                      optionLabel="label"
+                      optionValue="value"
+                      (onChange)="updateRelatorio($event, 7)"
+                      [showClear]="true"
+                      placeholder="Status"
+                    ></p-dropdown>
+                  </div>
+                  <div class="pl-1 pr-1">
+                    <p-dropdown
+                      class="objet-dropdown"
+                      [options]="selectObjeto"
+                      [(ngModel)]="selectedObjeto"
+                      [filter]="true"
+                      optionLabel="label"
+                      optionValue="value"
+                      (onChange)="updateRelatorio($event, 8)"
+                      [showClear]="true"
+                      placeholder="Objeto"
+                    ></p-dropdown>
+                  </div> -->
+        <!-- <div
+                    class="pl-1 pr-1 me-3"
+                    *ngIf="
+                      selectStatusPlanejamentoCompleto?.length > 0 &&
+                      isPerfilPrivilegiado
+                    "
+                  >
+                    <button
+                      type="button"
+                      class="btn-sm btn-add btn-save-status"
+                      (click)="onSalvarMudancasStatus()"
+                      title="Salvar alterações de status"
+                    >
+                      Salvar status
+                    </button>
+                  </div> -->
+
+        <!--
+                  <div class="pl-1 pr-1 me-3" *ngIf="perfilOrcamento || perfilAdm">
+                    <button type="button" class="btn-sm btn-add btn-save-status" (click)="exportarExcelAtualizacaoSAP()"
+                      title="Gerar Atualização SAP">
+                      Gerar Atualização SAP
+                    </button>
+                  </div> -->
+        <!-- </div>
+              </ng-template> -->
+        <!-- <ng-template pTemplate="header">
+                <tr>
+                  <th>
+                    <div class="p-d-flex p-jc-between text-center">NUORC</div>
+                  </th> -->
+        <!-- <th>
+                        <div class="p-d-flex p-jc-between text-center">Planejamento</div>
+                      </th>
+                      <th>
+                        <div class="p-d-flex p-jc-between text-center">Exercício</div>
+                      </th> -->
+        <!-- <th>
+                    <div class="p-d-flex p-jc-between text-center">UD</div>
+                  </th>
+                  <th>
+                    <div class="p-d-flex p-jc-between text-center">
+                      Contrato
+                    </div>
+                  </th> -->
+        <!-- <th>
+                    <div class="p-d-flex p-jc-between text-center">Objeto</div>
+                  </th> -->
+        <!-- <th>
+                    <div class="p-d-flex p-jc-between text-center">Tipo</div>
+                  </th> -->
+        <!-- <th> -->
+        <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
+        <!-- <div
+                      *ngIf="
+                        !(selectStatusPlanejamentoCompleto?.length > 0) ||
+                        !isPerfilPrivilegiado
+                      "
+                      class="p-d-flex p-jc-between text-center"
+                    >
+                      Status
+                    </div> -->
+
+        <!-- Exibe checkbox + dropdown SOMENTE quando houver opções -->
+        <!-- <ng-container
+                      *ngIf="
+                        selectStatusPlanejamentoCompleto?.length > 0 &&
+                        isPerfilPrivilegiado
+                      "
+                    > -->
+        <!-- <div class="c-dropdown-status">
+                        <p-checkbox
+                          [(ngModel)]="selecionarTodos"
+                          (onChange)="selecionarTodosItens()"
+                          [binary]="true"
+                        >
+                        </p-checkbox>
+                        <p-dropdown
+                          [showClear]="true"
+                          [options]="selectStatusPlanejamentoCompleto"
+                          [(ngModel)]="statusSelecionados[0]"
+                          placeholder="Status"
+                          optionLabel="label"
+                          optionValue="value"
+                        >
+                        </p-dropdown>
+                      </div> -->
+        <!-- </ng-container> -->
+        <!-- </th> -->
+        <!-- <th>
+                    <div class="p-d-flex p-jc-between text-center">Valor</div>
+                  </th> -->
+        <!-- <th>
+                        <div class="p-d-flex p-jc-between text-center">Diferença</div>
+                      </th> -->
+        <!-- </tr>
+              </ng-template> -->
+        <!-- <ng-template pTemplate="body" let-planejamento>
+                <tr
+                  class="p-selectable-row"
+                  (click)="
+                    openModalPlanejamento(
+                      'consultar',
+                      false,
+                      false,
+                      planejamento
+                    )
+                  "
+                > -->
+        <!-- <td style="text-align: center">
+                    <span class="p-column-title">Código</span>
+                    {{ planejamento.nU_ORC }}
+                  </td> -->
+        <!-- <td style="text-align: center">
+                        <span class="p-column-title">Planejamento</span>
+                        {{ planejamento.gcptb019PlanejamentoTipo.dePlanejamentoTipo }}
+                      </td>
+                      <td style="text-align: center">
+                        <span class="p-column-title">Exercício</span>
+                        {{ planejamento.gcptb010Orcamento.nuAnoOrcamento }}
+                      </td> -->
+        <!-- <td style="text-align: center">
+                    <span class="p-column-title">UD</span>
+                    {{ planejamento.sG_FILIAL }}
+                  </td>
+                  <td style="text-align: center">
+                    <span class="p-column-title">Contrato</span>
+                    {{ planejamento.cO_CONTRATO }}
+                  </td> -->
+        <!-- <td style="width: 40%">
+                    <span class="p-column-title">Objeto</span>
+                    {{ planejamento.nO_OBJETO }}
+                  </td> -->
+        <!-- <td>
+                    <span class="p-column-title">Tipo</span>
+                    {{ planejamento.dE_DEMANDA }}
+                  </td> -->
+        <!-- <td
+                    class="col-status"
+                    style="text-align: center"
+                    (click)="$event.stopPropagation()"
+                    (dblclick)="$event.stopPropagation()"
+                    (keydown.enter)="$event.stopPropagation()"
+                    (keydown.space)="$event.stopPropagation()"
+                  > -->
+        <!-- <div class="cef-status-em-lote">
+                      <ng-container
+                        *ngIf="
+                          selectStatusPlanejamentoCompleto?.length > 0 &&
+                          (perfilOrcamento ||
+                            perfilAdm ||
+                            (perfilOperacional &&
+                              planejamento.cO_FILIAL == perfilUnidade) ||
+                            (perfilTorre &&
+                              planejamento.cO_FILIAL == perfilUnidade))
+                        "
+                      >
+                        <p-checkbox
+                          [(ngModel)]="planejamento.sT_SELECIONADO"
+                          [binary]="true"
+                          *ngIf="isPerfilPrivilegiado"
+                          (click)="$event.stopPropagation()"
+                        >
+                        </p-checkbox>
+                      </ng-container>
+                      <label>{{ planejamento.nO_STATUS }}</label>
+                    </div>
+                  </td> -->
+
+        <!-- <td style="text-align: right">
+                    <span class="p-column-title">Valor</span>
+                    {{ planejamento.vR_PLANEJAMENTO | currency: "BRL" }}
+                  </td> -->
+        <!-- <td style="text-align: right">
+                        <span class="p-column-title">Valor</span>
+                        {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
+                      </td> -->
+        <!-- </tr> -->
+        <!-- </ng-template> -->
+        <!-- <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="12">Nenhum planejamento cadastrado.</td>
+                </tr>
+              </ng-template> -->
+        <!-- </p-table>
+          </div>
+        </div> -->
+      </mat-tab>
+
+      <!-- <mat-tab label="Rubrica">
+        <app-planejamento-aba-rubrica
+          [nuPlanejamento]="nuPlanejamentoExercicio"
+          [anoExercio]="anoExercicio"
+          [tipoExercicio]="ordemTipoExercicio"
+        ></app-planejamento-aba-rubrica>
+      </mat-tab> -->
+    </mat-tab-group>
+  </div>
+</div>

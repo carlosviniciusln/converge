@@ -8,6 +8,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 //DSC CAIXA
 import { DscBreadcrumbComponent, DscBreadcrumbItem } from 'sidsc-components/dsc-breadcrumb';
+import { TableModule } from 'primeng/table';
 
 
 //PASSAR TODAS AS BIBLIOTECAS IMPORTAS NO PROJETO PARA ESSA LIB
@@ -33,6 +34,7 @@ exports:[
     InputTextModule,
     DynamicDialogModule,
     BreadcrumbModule,
+    TableModule,
 
   // ANGULAR MATERIAL
 
