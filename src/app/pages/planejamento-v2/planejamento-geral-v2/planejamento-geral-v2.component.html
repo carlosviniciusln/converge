@@ -100,15 +100,15 @@
 
         <!--  TABELA 2 REGISTROS -->
 
-        <!-- <div class="row">
+        <div class="row">
           <div class="col-12">
             <p-table
               id="table-contrato"
               #dt
-              [value]="planejamentos"
+              [value]="planejamentos.contratos"
               dataKey="id"
               styleClass="p-datatable-customers"
-              [totalRecords]="quantidadeTotal"
+              [totalRecords]="planejamentos.totalRegistros"
               [lazy]="true"
               [rowHover]="true"
               [showCurrentPageReport]="true"
@@ -116,8 +116,8 @@
               [filterDelay]="0"
               (onLazyLoad)="loadPage($event)"
               [paginator]="true"
-              [rows]="filtroRegistros.pageSize"
-              [rowsPerPageOptions]="[10, 20, 50, quantidadeTotal]"
+              [rows]="filtroRegistros.tamanhoPagina"
+              [rowsPerPageOptions]="[10, 20, 50, planejamentos.totalRegistros]"
               currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
             >
               <ng-template pTemplate="caption">
@@ -137,82 +137,50 @@
                       appendTo="body"
                       [baseZIndex]="1100"
                     ></p-menu>
-                  </div> -->
+                  </div>
 
-        <!-- <button type="button" class="btn-sm btn-secondary" (click)="downloadPlanejamentoDesembolso()">
-                    <i class="tim-icons icon-cloud-download-93"></i>
-                  </button> -->
-        <!-- <div class="pl-1 pr-1">
-                          <p-dropdown  [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento" [filter]="true"
-                            optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 1)" [showClear]="true"
-                            placeholder="Planejamento" *ngIf="!loading"></p-dropdown>
-                        </div>
-                        <div class="pl-1 pr-1">
-                          <p-dropdown  [options]="selectAnos" [(ngModel)]="selectedAno" [filter]="true" optionLabel="label"
-                            optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
-                            placeholder="Exercício"></p-dropdown>
-                        </div> -->
-        <!-- <div class="pl-1 pr-1">
+                  <div class="pl-1 pr-1">
                     <p-dropdown
-                      [options]="selectNuOrcs"
-                      [(ngModel)]="selectedNuOrc"
+                      [options]="planejamentos.listaNuOrc"
                       [filter]="true"
-                      optionLabel="label"
-                      optionValue="value"
-                      (onChange)="updateRelatorio($event, 2)"
+                      (onChange)="updateRelatorio($event.value, 1)"
                       [showClear]="true"
                       placeholder="NUORC"
                     ></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
                     <p-dropdown
-                      [options]="selectFiliais"
-                      [(ngModel)]="selectedFilial"
+                      [options]="planejamentos.listaUnidadeDemandante"
                       [filter]="true"
-                      optionLabel="label"
-                      optionValue="value"
-                      (onChange)="updateRelatorio($event, 3)"
+                      (onChange)="updateRelatorio($event.value, 2)"
                       [showClear]="true"
                       placeholder="UD"
                     ></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
                     <p-dropdown
-                      [options]="selectContratos"
-                      [(ngModel)]="selectedContrato"
+                      [options]="planejamentos.listaContrato"
                       [filter]="true"
-                      optionLabel="label"
-                      optionValue="value"
-                      (onChange)="updateRelatorio($event, 4)"
+                      (onChange)="updateRelatorio($event.value, 3)"
                       [showClear]="true"
                       placeholder="Contrato"
                     ></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
                     <p-dropdown
-                      [options]="selectTiposDemanda"
-                      [(ngModel)]="selectedTipoDemanda"
+                      [options]="planejamentos.listaTipo"
                       [filter]="true"
-                      optionLabel="label"
-                      optionValue="value"
-                      (onChange)="updateRelatorio($event, 5)"
+                      (onChange)="updateRelatorio($event.value, 4)"
                       [showClear]="true"
                       placeholder="Tipo"
                     ></p-dropdown>
-                  </div> -->
-        <!-- <div class="pl-1 pr-1">
-                    <p-dropdown [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
-                      optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 6)" [showClear]="true"
-                      placeholder="Digital"></p-dropdown>
-                  </div> -->
-        <!-- <div class="pl-1 pr-1">
+                  </div>
+
+                  <div class="pl-1 pr-1">
                     <p-dropdown
-                      [options]="selectStatusPlanejamento"
-                      [(ngModel)]="selectedStatusPlanejamento"
+                      [options]="planejamentos.listaStatus"
                       [filter]="true"
-                      optionLabel="label"
-                      optionValue="value"
-                      (onChange)="updateRelatorio($event, 7)"
+                      (onChange)="updateRelatorio($event.value, 5)"
                       [showClear]="true"
                       placeholder="Status"
                     ></p-dropdown>
@@ -220,17 +188,14 @@
                   <div class="pl-1 pr-1">
                     <p-dropdown
                       class="objet-dropdown"
-                      [options]="selectObjeto"
-                      [(ngModel)]="selectedObjeto"
+                      [options]="planejamentos.listaObjeto"
                       [filter]="true"
-                      optionLabel="label"
-                      optionValue="value"
-                      (onChange)="updateRelatorio($event, 8)"
+                      (onChange)="updateRelatorio($event.value, 6)"
                       [showClear]="true"
                       placeholder="Objeto"
                     ></p-dropdown>
-                  </div> -->
-        <!-- <div
+                  </div>
+                  <div
                     class="pl-1 pr-1 me-3"
                     *ngIf="
                       selectStatusPlanejamentoCompleto?.length > 0 &&
@@ -245,45 +210,34 @@
                     >
                       Salvar status
                     </button>
-                  </div> -->
+                  </div>
 
-        <!--
-                  <div class="pl-1 pr-1 me-3" *ngIf="perfilOrcamento || perfilAdm">
-                    <button type="button" class="btn-sm btn-add btn-save-status" (click)="exportarExcelAtualizacaoSAP()"
-                      title="Gerar Atualização SAP">
-                      Gerar Atualização SAP
-                    </button>
-                  </div> -->
-        <!-- </div>
-              </ng-template> -->
-        <!-- <ng-template pTemplate="header">
+
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
                 <tr>
                   <th>
                     <div class="p-d-flex p-jc-between text-center">NUORC</div>
-                  </th> -->
-        <!-- <th>
-                        <div class="p-d-flex p-jc-between text-center">Planejamento</div>
-                      </th>
-                      <th>
-                        <div class="p-d-flex p-jc-between text-center">Exercício</div>
-                      </th> -->
-        <!-- <th>
+                  </th>
+
+                  <th>
                     <div class="p-d-flex p-jc-between text-center">UD</div>
                   </th>
                   <th>
                     <div class="p-d-flex p-jc-between text-center">
                       Contrato
                     </div>
-                  </th> -->
-        <!-- <th>
+                  </th>
+                  <th>
                     <div class="p-d-flex p-jc-between text-center">Objeto</div>
-                  </th> -->
-        <!-- <th>
+                  </th>
+                  <th>
                     <div class="p-d-flex p-jc-between text-center">Tipo</div>
-                  </th> -->
-        <!-- <th> -->
-        <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
-        <!-- <div
+                  </th>
+                  <th>
+                    <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
+                    <div
                       *ngIf="
                         !(selectStatusPlanejamentoCompleto?.length > 0) ||
                         !isPerfilPrivilegiado
@@ -291,16 +245,16 @@
                       class="p-d-flex p-jc-between text-center"
                     >
                       Status
-                    </div> -->
+                    </div>
 
-        <!-- Exibe checkbox + dropdown SOMENTE quando houver opções -->
-        <!-- <ng-container
+                    <!--  Exibe checkbox + dropdown SOMENTE quando houver opções -->
+                    <ng-container
                       *ngIf="
                         selectStatusPlanejamentoCompleto?.length > 0 &&
                         isPerfilPrivilegiado
                       "
-                    > -->
-        <!-- <div class="c-dropdown-status">
+                    >
+                      <div class="c-dropdown-status">
                         <p-checkbox
                           [(ngModel)]="selecionarTodos"
                           (onChange)="selecionarTodosItens()"
@@ -316,21 +270,18 @@
                           optionValue="value"
                         >
                         </p-dropdown>
-                      </div> -->
-        <!-- </ng-container> -->
-        <!-- </th> -->
-        <!-- <th>
+                      </div>
+                    </ng-container>
+                  </th>
+                  <th>
                     <div class="p-d-flex p-jc-between text-center">Valor</div>
-                  </th> -->
-        <!-- <th>
-                        <div class="p-d-flex p-jc-between text-center">Diferença</div>
-                      </th> -->
-        <!-- </tr>
-              </ng-template> -->
-        <!-- <ng-template pTemplate="body" let-planejamento>
-                <tr
-                  class="p-selectable-row"
-                  (click)="
+                  </th>
+
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-planejamento>
+                <tr class="p-selectable-row"
+                        (click)="
                     openModalPlanejamento(
                       'consultar',
                       false,
@@ -338,85 +289,76 @@
                       planejamento
                     )
                   "
-                > -->
-        <!-- <td style="text-align: center">
+                >
+
+
+                  <td style="text-align: center">
                     <span class="p-column-title">Código</span>
-                    {{ planejamento.nU_ORC }}
-                  </td> -->
-        <!-- <td style="text-align: center">
-                        <span class="p-column-title">Planejamento</span>
-                        {{ planejamento.gcptb019PlanejamentoTipo.dePlanejamentoTipo }}
-                      </td>
-                      <td style="text-align: center">
-                        <span class="p-column-title">Exercício</span>
-                        {{ planejamento.gcptb010Orcamento.nuAnoOrcamento }}
-                      </td> -->
-        <!-- <td style="text-align: center">
+                    {{ planejamento.nuOrc }}
+                  </td>
+
+                  <td style="text-align: center">
                     <span class="p-column-title">UD</span>
-                    {{ planejamento.sG_FILIAL }}
+                    {{ planejamento.sgFilial }}
                   </td>
                   <td style="text-align: center">
                     <span class="p-column-title">Contrato</span>
-                    {{ planejamento.cO_CONTRATO }}
-                  </td> -->
-        <!-- <td style="width: 40%">
+                    {{ planejamento.coContrato }}
+                  </td>
+                  <td style="width: 40%">
                     <span class="p-column-title">Objeto</span>
-                    {{ planejamento.nO_OBJETO }}
-                  </td> -->
-        <!-- <td>
+                    {{ planejamento.noObjeto }}
+                  </td>
+                  <td>
                     <span class="p-column-title">Tipo</span>
-                    {{ planejamento.dE_DEMANDA }}
-                  </td> -->
-        <!-- <td
+                    {{ planejamento.deDemanda }}
+                  </td>
+                  <td
                     class="col-status"
                     style="text-align: center"
                     (click)="$event.stopPropagation()"
                     (dblclick)="$event.stopPropagation()"
                     (keydown.enter)="$event.stopPropagation()"
                     (keydown.space)="$event.stopPropagation()"
-                  > -->
-        <!-- <div class="cef-status-em-lote">
+                  >
+                    <div class="cef-status-em-lote">
                       <ng-container
                         *ngIf="
                           selectStatusPlanejamentoCompleto?.length > 0 &&
                           (perfilOrcamento ||
                             perfilAdm ||
                             (perfilOperacional &&
-                              planejamento.cO_FILIAL == perfilUnidade) ||
+                              planejamento.coFilial == perfilUnidade) ||
                             (perfilTorre &&
-                              planejamento.cO_FILIAL == perfilUnidade))
+                              planejamento.coFilial == perfilUnidade))
                         "
                       >
                         <p-checkbox
-                          [(ngModel)]="planejamento.sT_SELECIONADO"
+                          [(ngModel)]="planejamento.stSelecionado"
                           [binary]="true"
                           *ngIf="isPerfilPrivilegiado"
                           (click)="$event.stopPropagation()"
                         >
                         </p-checkbox>
                       </ng-container>
-                      <label>{{ planejamento.nO_STATUS }}</label>
+                      <label>{{ planejamento.noStatus }}</label>
                     </div>
-                  </td> -->
-
-        <!-- <td style="text-align: right">
+                  </td>
+                  <td style="text-align: right">
                     <span class="p-column-title">Valor</span>
-                    {{ planejamento.vR_PLANEJAMENTO | currency: "BRL" }}
-                  </td> -->
-        <!-- <td style="text-align: right">
-                        <span class="p-column-title">Valor</span>
-                        {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
-                      </td> -->
-        <!-- </tr> -->
-        <!-- </ng-template> -->
-        <!-- <ng-template pTemplate="emptymessage">
+                    {{ planejamento.vrPlanejamento | currency: "BRL" }}
+                  </td>
+
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
                 <tr>
                   <td colspan="12">Nenhum planejamento cadastrado.</td>
                 </tr>
-              </ng-template> -->
-        <!-- </p-table>
+              </ng-template>
+            </p-table>
           </div>
-        </div> -->
+        </div>
       </mat-tab>
 
       <!-- <mat-tab label="Rubrica">

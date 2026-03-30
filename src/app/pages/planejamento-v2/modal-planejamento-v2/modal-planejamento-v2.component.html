@@ -70,14 +70,14 @@
 
           <div *ngIf="labelButtonsLeft && isPerfilPrivilegiado">
             <button class="btn btn-sm btn-default padding-buttons"
-                    (click)="mensagemBotaoClick(labelButtonsLeft)">
+                    (click)="executarCenario(labelButtonsLeft)">
               {{ labelButtonsLeft.label }}
             </button>
           </div>
 
           <div *ngIf="labelButtonsRight && isPerfilPrivilegiado">
             <button class="btn btn-sm btn-default padding-buttons"
-                    (click)="mensagemBotaoClick(labelButtonsRight)">
+                    (click)="executarCenario(labelButtonsRight)">
               {{ labelButtonsRight.label }}
             </button>
           </div>

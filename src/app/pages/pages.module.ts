@@ -99,6 +99,7 @@ import { PlanejamentoCadastroLegadoComponent } from './planejamento/planejamento
 import { PlanejamentoV2Component } from './planejamento-v2/planejamento-v2.component';
 import { ModalPlanejamentoV2Component } from './planejamento-v2/modal-planejamento-v2/modal-planejamento-v2.component';
 import { PlanejamentoGeralV2Component } from './planejamento-v2/planejamento-geral-v2/planejamento-geral-v2.component';
+import { PlanejamentoCadastroV2Component } from './planejamento-v2/planejamento-cadastro-v2/planejamento-cadastro-v2.component';
 
 
 
@@ -204,7 +205,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     PlanejamentoCadastroLegadoComponent,
     PlanejamentoV2Component,
     ModalPlanejamentoV2Component,
-    PlanejamentoGeralV2Component
+    PlanejamentoGeralV2Component,
+    PlanejamentoCadastroV2Component
   ],
   providers: [
     ConfirmationService,

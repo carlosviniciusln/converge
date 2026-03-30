@@ -32,17 +32,17 @@ export class PlanejamentoV2Component implements OnInit {
   }
 
   async novoExercicio() {
-    const ultimoItem: Gcpvw049ResumoPlanejamento =
-      this.gcpvw049ResumoPlanejamento[this.gcpvw049ResumoPlanejamento.length - 1];
-    const dataAtual = new Date();
-    const anoAtual = this.gcpvw049ResumoPlanejamento[this.gcpvw049ResumoPlanejamento.length - 1]
-      ? ultimoItem.coExercicio + 1
-      : dataAtual.getFullYear();
+
+    const anoAtual = new Date();
+    const exercicio = this.gcpvw049ResumoPlanejamento.length ?
+     this.gcpvw049ResumoPlanejamento[this.gcpvw049ResumoPlanejamento.length - 1]?.coExercicio + 1
+      : anoAtual.getFullYear();
+
     const alert = await Swal.fire({
       title: '',
       text:
         'Tem certeza de que deseja gerar o Planejamento Orçamentário do exercício ' +
-        anoAtual +
+        exercicio +
         '?',
       icon: 'warning',
       showCancelButton: true,
@@ -60,63 +60,61 @@ export class PlanejamentoV2Component implements OnInit {
       return;
     }
 
-    if (!ultimoItem) {
-      const toastRef = this.toastr.warning(
-        `Aguarde, gerando o exercício ${anoAtual}, isso pode levar alguns minutos...`,
-        '',
-        {
-          disableTimeOut: true,
-          closeButton: true,
-          tapToDismiss: false,
-        },
-      );
+    // if (exercicio === anoAtual.getFullYear()) {
+    //   const alert = await Swal.fire({
+    //     title: '',
+    //     text: `Exercício ${exercicio} já foi gerado o Planejamento, por segurança, não é possível ser gerado novamente.`,
+    //     icon: 'warning',
+    //     showCancelButton: false,
+    //     confirmButtonText: 'Ok!',
+    //   }).then((result) => {
+    //     console.log(result, 'Result');
+    //   });
 
-      const result = this.apiService.post<
-        ApiResponse<Gcpvw049ResumoPlanejamento[]>
-      >('v1/Exercicio/novo-exercicio', '');
-      result.then((response) => {
+    //   return;
+    // }
+
+    await this.gerarNovoExercicio(exercicio);
+
+  }
+
+
+  async gerarNovoExercicio(exercicio : number){
+
+     const toastRef = this.toastr.warning(
+      `Aguarde, gerando o exercício ${exercicio}, isso pode levar alguns minutos...`,
+      '',
+      {
+        disableTimeOut: true,
+        closeButton: true,
+        tapToDismiss: false,
+      },
+    );
+
+
+    try{
+
+    const response = await this.apiService.post<ApiResponse<Gcpvw049ResumoPlanejamento[]>>(
+          'v1/PlanejamentoOrcamentarioV/novo-exercicio', {coExercicio : exercicio});
+
+      if (!response?.succeeded) {
+        console.error('Erro da API:', response?.errors);
+        this.gcpvw049ResumoPlanejamento = [];
+        return;
+      }
+
         this.gcpvw049ResumoPlanejamento = response.data;
         this.toastr.clear(toastRef.toastId);
-        this.toastr.success(
-          'Exercício ' + anoAtual + ' gerado com sucesso.',
-        );
-      });
-      return;
-    }
-
-    if (ultimoItem.coExercicio === anoAtual) {
-      const alert = await Swal.fire({
-        title: '',
-        text: `Exercício ${ultimoItem.coExercicio} já foi gerado o Planejamento, por segurança, não é possível ser gerado novamente.`,
-        icon: 'warning',
-        showCancelButton: false,
-        confirmButtonText: 'Ok!',
-      }).then((result) => {
-        console.log(result, 'Result');
-      });
-
-      return;
-    }
-    this.toastr.warning(
-      'Aguarde, gerando o exercício ' +
-        anoAtual +
-        ', isso pode levar alguns minutos...',
-    );
-    const result = this.apiService.post<ApiResponse<Gcpvw049ResumoPlanejamento[]>>(
-      'v1/Exercicio/novo-exercicio',
-      '',
-    );
-    result.then((response) => {
-      this.gcpvw049ResumoPlanejamento = response.data;
-      this.toastr.clear();
-      this.toastr.success(
-        'Exercício ' + anoAtual + ' gerado com sucesso.',
-      );
-    });
+        this.toastr.success('Exercício ' + exercicio + ' gerado com sucesso.');
+      }
+      catch (error){
+        console.error('Erro ao consumir API', error);
+        this.gcpvw049ResumoPlanejamento = [];
+      }
   }
 
   openModalPlanejamento(anoSelecionado: string) {
-    console.log(anoSelecionado, 'ANO');
+
     const modalRef = this.modalService.open(ModalPlanejamentoV2Component, {
       ariaLabelledBy: 'modal-basic-title',
      windowClass: 'modal-80',

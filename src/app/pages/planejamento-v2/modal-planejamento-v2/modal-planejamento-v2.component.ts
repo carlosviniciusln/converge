@@ -32,7 +32,6 @@ export class ModalPlanejamentoV2Component implements OnInit {
   public ultimoPlanejamento: Gcpvw049ResumoPlanejamento;
   public isPerfilPrivilegiado : boolean = false;
   public currentProfile: PerfisEnum;
-  public anoAtual : number;
 
 
   constructor(
@@ -40,8 +39,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
       private toastr: ToastrService,
       public activeModal: NgbActiveModal,
       private router : Router,
-      public token: TokenStorageService,
-      private formBuilder: FormBuilder
+      public token: TokenStorageService
   ){
 
   }
@@ -52,7 +50,6 @@ export class ModalPlanejamentoV2Component implements OnInit {
     if(this.currentProfile === 'Administrador' || this.currentProfile === 'Orçamento'){
       this.isPerfilPrivilegiado = true;
     }
-    this.anoAtual = new Date().getFullYear();
 
   }
 
@@ -70,9 +67,9 @@ export class ModalPlanejamentoV2Component implements OnInit {
 
       this.gcpvw049ResumoPlanejamento = response.data ?? [];
 
-
-      console.log(this.gcpvw049ResumoPlanejamento, "TESTE")
-      this.montarPlanejamentosModal(this.gcpvw049ResumoPlanejamento);
+      if(this.gcpvw049ResumoPlanejamento.length){
+        this.montarPlanejamentosModal(this.gcpvw049ResumoPlanejamento);
+      }
 
     } catch (error) {
       console.error('Erro ao consumir API', error);
@@ -82,7 +79,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
 
 
     montarPlanejamentosModal(lista: Gcpvw049ResumoPlanejamento[]) {
-      // this.validarAno()
+
       if (lista.length > 0) {
         this.ultimoPlanejamento = lista[this.gcpvw049ResumoPlanejamento.length - 1];
         this.validarBotoes(this.ultimoPlanejamento);
@@ -91,7 +88,6 @@ export class ModalPlanejamentoV2Component implements OnInit {
         this.validarBotoes(lista[0]);
       }
 
-      console.log(this.ultimoPlanejamento, "TESTE 1")
     }
 
      validarBotoes(ultimoPlanejamento: Gcpvw049ResumoPlanejamento): void {
@@ -130,20 +126,6 @@ export class ModalPlanejamentoV2Component implements OnInit {
                 };
                 break;
 
-              // case "Em Avaliação":
-              //   this.labelButtonsLeft = {
-              //     label: 'Encerrar Programação',
-              //     value: 'encerrar',
-              //     message: 'Tem certeza que deseja encerrar o planejamento',
-              //     position: 'left'
-              //   };
-              //   this.labelButtonsRight = {
-              //     label: 'Cancelar Programação',
-              //     value: 'cancelar',
-              //     message: 'Tem certeza que deseja cancelar o planejamento',
-              //     position: 'right'
-              //   };
-              //   break;
 
               case "Encerrado":
                 this.labelButtonsLeft = {
@@ -152,12 +134,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
                   message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
                   position: 'left'
                 };
-                // this.labelButtonsRight = {
-                //   label: 'Reabrir Programação',
-                //   value: 'reabrir',
-                //   message: 'Tem certeza que deseja reabrir o planejamento',
-                //   position: 'left'
-                // };
+
                 this.labelButtonsRight = null;
                 break;
 
@@ -200,21 +177,6 @@ export class ModalPlanejamentoV2Component implements OnInit {
                 };
                 break;
 
-              // case "Em Avaliação":
-              //   this.labelButtonsLeft = {
-              //     label: 'Encerrar Reprogramação',
-              //     value: 'encerrar',
-              //     message: 'Tem certeza que deseja encerrar o planejamento',
-              //     position: 'left'
-              //   };
-              //   this.labelButtonsRight = {
-              //     label: 'Cancelar Reprogramação',
-              //     value: 'cancelar',
-              //     message: 'Tem certeza que deseja cancelar o planejamento',
-              //     position: 'right'
-              //   };
-              //   break;
-
               case "Encerrado":
                 this.labelButtonsLeft = {
                   label: 'Nova Reprogramação',
@@ -222,12 +184,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
                   message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
                   position: 'left'
                 };
-                // this.labelButtonsRight = {
-                //   label: 'Reabrir Reprogramação',
-                //   value: 'reabrir',
-                //   message: 'Tem certeza que deseja reabrir o planejamento',
-                //   position: 'left'
-                // };
+
                 this.labelButtonsRight = null;
                 break;
 
@@ -258,7 +215,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
         }
       }
 
- async mensagemBotaoClick(cenario: any) {
+ async executarCenario(cenario: any) {
 
     const alert = await Swal.fire({
       title: `Exercício ${this.anoSelecionado}`,
@@ -281,21 +238,45 @@ export class ModalPlanejamentoV2Component implements OnInit {
     this.atualizarPlanejamento(cenario.value);
   }
 
-    atualizarPlanejamento(botaoClicado) {
-      this.form = this.formBuilder.group({
-        ano: [this.anoSelecionado],
-        acao: [botaoClicado],
-        NuPlanejamento: [this.ultimoPlanejamento.nuPlanejamento]
-      });
-      const result = this.apiService.post<ApiResponse<Gcpvw049ResumoPlanejamento[]>>('v1/Exercicio/planejamento', this.form.value)
+    async atualizarPlanejamento(cenario : any) {
 
-      result.then(response => {
-        if (response && response.data) {
-          this.gcpvw049ResumoPlanejamento = response.data;
-          this.obterPlanejamentosPorExercicio();
-          this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
-        }
+
+      try{
+      const toastRef = this.toastr.warning(
+      `Aguarde, gerando a nova programação, isso pode levar alguns minutos...`,
+      '',
+      {
+        disableTimeOut: true,
+        closeButton: true,
+        tapToDismiss: false,
+      },
+    );
+
+      const response = await this.apiService.post<ApiResponse<Gcpvw049ResumoPlanejamento[]>>('v1/PlanejamentoOrcamentarioV/atualizar-planejamento', {
+        coExercicio : this.anoSelecionado,
+        acao: cenario,
+        ordem: this.ultimoPlanejamento.ordem,
+        dePlanejamentoTipo: this.ultimoPlanejamento.dePlanejamentoTipo,
+        nuPlanejamento: this.ultimoPlanejamento.nuPlanejamento
       });
+
+
+      if (!response?.succeeded) {
+        console.error('Erro da API:', response?.errors);
+        this.gcpvw049ResumoPlanejamento = [];
+        return;
+        }
+
+      this.gcpvw049ResumoPlanejamento = response.data; // OBS
+      this.toastr.clear(toastRef.toastId);
+      this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
+      this.obterPlanejamentosPorExercicio();
+    }
+    catch (error){
+        console.error('Erro da API:', error);
+        this.gcpvw049ResumoPlanejamento = [];
+    }
+
     }
 
   onRowClick(item: Gcpvw049ResumoPlanejamento) {
@@ -304,7 +285,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
     {
       queryParams: {
         coExercicio: item.coExercicio,
-        tipo: item.nuPlanejamentoTipo,
+        tipo: item.dePlanejamentoTipo,
         statusPlanejamento: item.statusPlanejamento,
         nuPlanejamento: item.nuPlanejamento
       }

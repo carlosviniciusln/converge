@@ -9,6 +9,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 //DSC CAIXA
 import { DscBreadcrumbComponent, DscBreadcrumbItem } from 'sidsc-components/dsc-breadcrumb';
 import { TableModule } from 'primeng/table';
+import { CheckboxModule } from 'primeng/checkbox';
 
 
 //PASSAR TODAS AS BIBLIOTECAS IMPORTAS NO PROJETO PARA ESSA LIB
@@ -35,6 +36,7 @@ exports:[
     DynamicDialogModule,
     BreadcrumbModule,
     TableModule,
+    CheckboxModule,
 
   // ANGULAR MATERIAL
 
