@@ -106,10 +106,12 @@ export class PlanejamentoV2Component implements OnInit {
         this.gcpvw049ResumoPlanejamento = response.data;
         this.toastr.clear(toastRef.toastId);
         this.toastr.success('Exercício ' + exercicio + ' gerado com sucesso.');
+        this.obterPlanejamentos();
       }
       catch (error){
         console.error('Erro ao consumir API', error);
-        this.gcpvw049ResumoPlanejamento = [];
+        this.toastr.clear(toastRef.toastId);
+        this.obterPlanejamentos();
       }
   }
 
