@@ -708,11 +708,10 @@
                     <button
                       class="btn-sm btn-danger"
                       *ngIf="isPerfilPrivilegiado"
-
+                      (click)="Excluir(planejamento)"
                       style="margin-right: 5px"
                     >
-                    <!-- Adicionar ao botão em cima -->
-                    <!-- (click)="Excluir(planejamento)" -->
+
                       <i class="tim-icons icon-trash-simple"></i>
                       <span> Excluir</span>
                     </button>

@@ -63,6 +63,10 @@ export class PlanejamentoCadastroV2Component implements OnInit {
 
 
   public listaContratos: ListarContratoPlanejamentoOrcamentarioResponse[] = [];
+  public previsoesExcluidas: {
+  nuPlanejamentoItem: number;
+  nuPrevisaoDesembolso: number;
+}[] = [];
   public listaFiliais: Filial[] = [];
   public listaRubricas: Rubrica[] = [];
   public listaTiposPlanejamento: PlanejamentoTipoResponse[] = [];
@@ -300,8 +304,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
 
   formulario() {
     this.form = this.formBuilder.group({
-      nuPlanejamentoOrcamentario: new FormControl(0),
-      coPlanejamentoOrcamentario: [''],
+      nuPlanejamentoItem: new FormControl(0),
       nuAno: new FormControl({ value: this.nuAno, disabled: !this.isEditable }, [
         Validators.required,
       ]),
@@ -389,30 +392,30 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.previsoesDesembolso.push(this.novaPrevisaoDesembolso());
   }
 
-  async excluirPrevisaoDesembolso(i: number) {
+  // async excluirPrevisaoDesembolso(i: number) {
 
-      const alert = await Swal.fire({
-      title: '',
-      text: `Deseja realmente excluir rubrica: ${i + 1}?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sim, deletar!',
-      cancelButtonText: 'Não, cancelar!',
-    }).then((result) => {
-      if (result.value) {
-        return true;
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        return false;
-      }
-    });
+  //     const alert = await Swal.fire({
+  //     title: '',
+  //     text: `Deseja realmente excluir rubrica: ${i + 1}?`,
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonText: 'Sim, deletar!',
+  //     cancelButtonText: 'Não, cancelar!',
+  //   }).then((result) => {
+  //     if (result.value) {
+  //       return true;
+  //     } else if (result.dismiss === Swal.DismissReason.cancel) {
+  //       return false;
+  //     }
+  //   });
 
-    if (alert) {
-      this.previsoesDesembolso.removeAt(i);
-      this.somaValorTotalPlanejamentoOrcamentario();
-    }
+  //   if (alert) {
+  //     this.previsoesDesembolso.removeAt(i);
+  //     this.somaValorTotalPlanejamentoOrcamentario();
+  //   }
 
-    return;
-  }
+  //   return;
+  // }
 
   novaPrevisaoDesembolso(): FormGroup {
     return new FormGroup({
@@ -716,6 +719,42 @@ private criarFormGroupPrevisao(
 }
 
 
+async excluirPrevisaoDesembolso(i: number) {
+
+  const grupo = this.previsoesDesembolso.at(i) as FormGroup;
+
+  console.log(grupo.value, "VALORES DO GRUPO");
+
+  const nuPlanejamentoItem = grupo.get('nuPlanejamentoItem')?.value;
+  const nuPrevisaoDesembolso = grupo.get('nuPrevisaoDesembolso')?.value;
+
+  const confirm = await Swal.fire({
+    text: `Deseja realmente excluir a rubrica ${i + 1}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Não',
+  });
+
+  if (!confirm.isConfirmed) return;
+
+
+
+  console.log(nuPlanejamentoItem, nuPrevisaoDesembolso, "TESTE");
+
+  // ✅ guarda para o backend
+  if (nuPlanejamentoItem && nuPrevisaoDesembolso) {
+    this.previsoesExcluidas.push({
+      nuPlanejamentoItem,
+      nuPrevisaoDesembolso
+    });
+  }
+
+  this.previsoesDesembolso.removeAt(i);
+  this.somaValorTotalPlanejamentoOrcamentario();
+}
+
+
   //alterar para ativos - ### inviabiliza visualizar os não ativos #### pediu ta feito
   public async obterContratos(): Promise<void> {
     try {
@@ -975,6 +1014,11 @@ private criarFormGroupPrevisao(
   public async onSubmit(): Promise<void> {
     const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
 
+    console.log(totalContratacao,  "TESTE1000");
+    console.log(this.form,  "TESTE1000");
+
+    console.log()
+
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
 
@@ -1021,7 +1065,11 @@ private criarFormGroupPrevisao(
   }
   public async ValidarValores(obj: any): Promise<boolean> {
     /**** nova validação de valores *********/
+
+       const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
           const previsoes = obj.previsoesDesembolso;
+
+          console.log('TESTE 12', previsoes)
           for (var p in previsoes) {
             var item: Gcptb063PrevisaoDesembolsoDTO = {
 
@@ -1043,8 +1091,9 @@ private criarFormGroupPrevisao(
             if (item.vrPlanejado == null || Number.isNaN(item.vrPlanejado)) {
               item.vrPlanejado = await this.calcularPlanejamento(item);
             }
-            if(item.vrPlanejado == 0) return true;
+            if(totalContratacao == 0) return true;
           }
+
           return false;
         /**** nova validação de valores *********/
   }
@@ -1145,8 +1194,11 @@ private criarFormGroupPrevisao(
       this.submitted = true;
       this.isReadonly = false;
       await this.habilitarCampoRubrica(true);
-      var obj = this.form.value;
+      var obj = this.form.getRawValue();
+
+
       var totalRubrica = await this.ValidarValores(obj);
+
       if(totalRubrica){
         await Swal.fire({
           title: 'Atenção!',
@@ -1275,13 +1327,7 @@ private criarFormGroupPrevisao(
         return;
       }
 
-      const previsoes = obj.previsoesDesembolso;
-
-      // const digital = this.listaDigitalBanco.find(
-      //   (x) => x.id == obj?.icDigital
-      // );
-
-       var request : Gcptb051AtualizarPlanejamentoItemRequest = {
+        var request: Gcptb051AtualizarPlanejamentoItemRequest = {
 
             NuPlanejamentoItem: obj.nuPlanejamentoItem,
             NuPlanejamento: this.tipoModal == 'adicionar' ? this.planejamento : this.planejamento?.nuPlanejamento ?? 0,
@@ -1294,11 +1340,12 @@ private criarFormGroupPrevisao(
             NuObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
             NuObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
-            previsaoDesembolso: obj.previsoesDesembolso.map(p => ({
-            NuPrevisaoDesembolso: p.nuPrevisaoDesembolso,
-            NuPlanejamentoItem: p.nuPlanejamentoItem ?? 0,
+
+          previsaoDesembolso: obj.previsoesDesembolso.map(p => ({
+            NuPrevisaoDesembolso: p.nuPrevisaoDesembolso ?? 0,
+            NuPlanejamentoItem: obj.nuPlanejamentoItem,
             NuRubrica: p.nuRubrica,
-            VrPlanejado: p.vrPlanejado,
+            VrPlanejado: this.parseDecimal(p.vrTotalRubrica),
             VrJaneiro: this.parseDecimal(p.vrJaneiro),
             VrFevereiro: this.parseDecimal(p.vrFevereiro),
             VrMarco: this.parseDecimal(p.vrMarco),
@@ -1311,17 +1358,14 @@ private criarFormGroupPrevisao(
             VrOutubro: this.parseDecimal(p.vrOutubro),
             VrNovembro: this.parseDecimal(p.vrNovembro),
             VrDezembro: this.parseDecimal(p.vrDezembro),
-            }))
-
-          };
+          })),
 
 
-
-        // if (request.VrPlanejamentoItem == null || Number.isNaN(request.VrPlanejamentoItem)) {
-        //   request.VrPlanejamentoItem = await this.calcularPlanejamento(request.previsaoDesembolso);
-        // }
-
-
+          previsaoDesembolsoExclusao: this.previsoesExcluidas.map(x => ({
+            NuPlanejamentoItem: x.nuPlanejamentoItem,
+            NuPrevisaoDesembolso: x.nuPrevisaoDesembolso
+          }))
+        };
 
       await this.habilitarCampoRubrica(false);
       const response = await this.apiService.put<ApiResponse<any>>(
@@ -1420,60 +1464,28 @@ private criarFormGroupPrevisao(
   }
 
   public async ExcluirItens(
-    planejamento: Gcpvw055DetalheTelaConsultaV2DTO
+    planejamento: any
   ): Promise<void> {
-    try {
-      this.submitted = true;
 
-      var lista: PlanejamentoOrcamentarioItemRequest[] = [];
 
-      const previsoes = planejamento.previsoesDesembolso;
+    console.log(planejamento, "TESTE EXCLUSÃO");
+    // try {
 
-      for (var p in previsoes) {
-        var item: PlanejamentoOrcamentarioItemRequest = {
-          NuPlanejamentoItem: previsoes[p].nuPlanejamentoItem,
-          NuStatusPlanejamentoItem: 10, //excluido
-          NuOrc: this.planejamento?.nuOrc
-        };
 
-        lista.push(item);
-      }
 
-      // duplicar response igual alterar e cadastrar
-
-      await this.apiService.post<any>(
-        `${Endpoints.URL_ORCAMENTO_EDITA}`,
-        lista
-      );
-
-       await Swal.fire({
-          title: 'Sucesso!',
-          text: 'Exclusão efetuada com sucesso.',
-          icon: 'success',
-          confirmButtonText: 'OK'
-          });
-
-      this.atualizarPagina.emit(true);
-      this.activeModal.dismiss();
-      return
-    } catch (error) {
-
-      await Swal.fire({
-      title: 'Error!',
-      text: 'Erro ao salvar alterações.',
-      icon: 'error',
-      confirmButtonText: 'OK'
-      });
-      this.atualizarPagina.emit(false);
-      return
-    }
+    //   return
+    // } catch (error) {
+    //   console.error('Erro ao excluir planejamento item:', error);
+    //   this.atualizarPagina.emit(false);
+    //   return
+    // }
   }
 
 
-  async Excluir(planejamentoOrcamentario: Gcpvw055DetalheTelaConsultaV2DTO) {
+  async Excluir(planejamento: any) {
     const alert = await Swal.fire({
       title: '',
-      text: `Deseja realmente excluir Planejamento Orçamentário Cód: ${this.planejamento?.nuOrc}?`,
+      text: `Deseja realmente excluir Planejamento Orçamentário Cód: ${planejamento?.nuPlanejamentoItem}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim, deletar!',
@@ -1488,14 +1500,39 @@ private criarFormGroupPrevisao(
 
     if (alert) {
       this.loading = true;
+
       try {
-        this.ExcluirItens(planejamentoOrcamentario);
-        setTimeout(() => {
-          location.reload();
-        }, 2000);
+
+      this.submitted = true;
+
+      const response = await this.apiService.put<any>(
+        `v1/PlanejamentoOrcamentarioV/inativar-planejamento-item`,
+        planejamento.nuPlanejamentoItem
+      );
+
+      if(!response?.succeeded){
+          await Swal.fire({
+          title: 'Erro!',
+          text: 'Erro ao Excluir planejamento item.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+          });
+      }
+
+       await Swal.fire({
+          title: 'Sucesso!',
+          text: 'Exclusão efetuada com sucesso.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+          });
+
+        this.atualizarPagina.emit(true);
+        this.activeModal.dismiss();
+
       } catch (error) {
         console.error(error, 'aquirsd');
       }
+
       this.loading = false;
     }
   }

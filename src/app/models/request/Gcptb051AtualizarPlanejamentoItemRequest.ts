@@ -17,6 +17,10 @@ export interface Gcptb051AtualizarPlanejamentoItemRequest {
     NuSap?: number;
     DeSap?: string;
     previsaoDesembolso?: Gcptb063CriarPrevisaoDesembolsoRequest[];
+    previsaoDesembolsoExclusao?: {
+        NuPlanejamentoItem: number;
+        NuPrevisaoDesembolso: number;
+    }[];
 
 
   }
