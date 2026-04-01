@@ -1373,17 +1373,8 @@ async excluirPrevisaoDesembolso(i: number) {
         request
       );
 
-      if (response?.succeeded && response.data?.succeeded) {
-        const resultado = response.data.resultados?.[0];
-        if (resultado?.succeeded) {
-          await Swal.fire({
-            title: 'Sucesso!',
-            text: `Item do Planejamento Orçamentário alterado com sucesso.`,
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
-        } else {
-          console.warn('Falha ao alterar item:', resultado?.message);
+      if (!response?.succeeded) {
+
           await Swal.fire({
             title: 'Erro!',
             text: 'Falha ao alterar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
@@ -1391,15 +1382,13 @@ async excluirPrevisaoDesembolso(i: number) {
             confirmButtonText: 'OK',
           });
         }
-      } else {
-        console.error('Erro na resposta da API:', response.errors);
-        await Swal.fire({
-          title: 'Erro!',
-          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
-      }
+
+      await Swal.fire({
+        title: 'Sucesso!',
+        text: `Item do Planejamento Orçamentário alterado com sucesso.`,
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
 
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
