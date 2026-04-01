@@ -50,13 +50,14 @@ import { Gcptb051AtualizarPlanejamentoItemRequest } from 'src/app/models/request
   styleUrls: ['./planejamento-cadastro-v2.component.scss']
 })
 export class PlanejamentoCadastroV2Component implements OnInit {
-  @Input() public planejamento: Gcpvw051VisaoContratoPlanejamentoOrcamentario; //PLANEJAMENTO ENVIADO PELO MODAL GERAL VW051
+  @Input() public planejamento: any; //PLANEJAMENTO ENVIADO PELO MODAL GERAL VW051
   @Input() public tipo: any;
+  @Input() public nuAno: number;
   @Input() public tipoModal: string;
   @Input() public isEditable: boolean;
   @Input() public statusExercicio: string;
   @Input() public isCadastro: boolean;
-  @Input() public modeloAntigo: boolean;
+
 
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
@@ -69,7 +70,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   public listaStatusPlanejamento: PlanejamentoStatusResponse[] = [];
   public listaObjetivosEstrategicosPdti: ObjetivoEstrategicoResponse[] = [];
   public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
-  // public planejamento: Gcpvw055DetalheTelaConsultaV2DTO;
+
   public form: FormGroup;
 
 
@@ -173,13 +174,11 @@ export class PlanejamentoCadastroV2Component implements OnInit {
    */
 
   constructor(
-    private http: HttpClient,
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private toastr: ToastrService,
-    public token: TokenStorageService,
-    private modalService: NgbModal
+    public token: TokenStorageService
   ) {}
 
   ngOnInit(): void {
@@ -275,7 +274,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     if (!this.isEditable) {
       this.currentPageAction = PageAction.Consultar;
     } else {
-      if (this.planejamento) {
+      if (this.planejamento && this.tipoModal != 'adicionar') {
         this.currentPageAction = PageAction.Alterar;
       } else {
         this.currentPageAction = PageAction.Cadastrar;
@@ -303,7 +302,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.form = this.formBuilder.group({
       nuPlanejamentoOrcamentario: new FormControl(0),
       coPlanejamentoOrcamentario: [''],
-      nuAno: new FormControl({ value: this.planejamento.coExercicio, disabled: !this.isEditable }, [
+      nuAno: new FormControl({ value: this.nuAno, disabled: !this.isEditable }, [
         Validators.required,
       ]),
       nuFilial: new FormControl({ value: '', disabled: !this.isEditable }, [
@@ -475,18 +474,6 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       }
     });
 
-    const limparValor = (valor: string): number => {
-      if (!valor) return 0;
-      return (
-        parseFloat(
-          valor
-            ?.toString()
-            .replace('R$ ', '')
-            .replace(/\./g, '')
-            .replace(',', '.')
-        ) || 0
-      );
-    };
 
     const total =
       this.limparValor(prevDes.get('vrJaneiro')?.value) +
@@ -532,30 +519,6 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.form.controls['vrTotalOrcamentoPlanejamento'].setValue(totalFormatado);
   }
 
-  ajustarCentavos(index: number, campo: string): void {
-    const grupo = this.previsoesDesembolso.at(index) as FormGroup;
-    const valor = grupo.get(campo)?.value;
-
-    if (!valor || typeof valor !== 'string') return;
-
-    // Remove prefixo e separadores para verificar se é número
-    const valorLimpo = valor
-      .replace('R$ ', '')
-      .replace(/\./g, '')
-      .replace(',', '.');
-    const numero = parseFloat(valorLimpo);
-
-    if (!isNaN(numero)) {
-      const partes = valorLimpo.split('.');
-      const temCentavos = partes.length > 1;
-
-      if (!temCentavos || partes[1].length < 2) {
-        // Garante que o número tenha sempre duas casas decimais
-        const valorFormatado = numero.toFixed(2).replace('.', ',');
-        grupo.get(campo)?.setValue(valorFormatado, { emitEvent: true });
-      }
-    }
-  }
 
   onContratoChange(event: any) {
     const nuContrato = event?.value;
@@ -576,7 +539,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
           this.rubricasSelecionadas.push(controlValue+"");
         }
       }
-      const jaExiste = this.rubricasSelecionadas.includes(nuRubrica);
+
       this.removerRubrica(nuRubrica);
       const jaExiste2 = this.rubricasSelecionadas.includes(nuRubrica);
       if (jaExiste2) {
@@ -636,7 +599,7 @@ async removerRubrica(nuRubrica: string) {
     >(
       `v1/PlanejamentoOrcamentarioV/detalhar-itens-planejados-novo`, {
         nuOrc: this.planejamento?.nuOrc,
-        planejamento: this.planejamento?.nuPlanejamento
+        nuPlanejamento  : this.planejamento?.nuPlanejamento
       }
     );
 
@@ -938,10 +901,7 @@ private criarFormGroupPrevisao(
   }
 
   public get visibleStatusList(): PlanejamentoStatusResponse[] {
-    const isAdmin = this.isAdmin_();
-    const isOrc = this.isOrcamento_();
-    const currentId = this.getCurrentStatusId_();
-    const currentRank = currentId == null ? -1 : this.rank_(currentId);
+
     if (!this.listaStatusPlanejamento?.length) return [];
 
       return this.listaStatusPlanejamento;
@@ -1063,26 +1023,27 @@ private criarFormGroupPrevisao(
     /**** nova validação de valores *********/
           const previsoes = obj.previsoesDesembolso;
           for (var p in previsoes) {
-            var item: PlanejamentoOrcamentarioItemRequest = {
-              NuPlanejamentoItem: 0,
-              VrPlanejamentoItem: this.parseDecimal(previsoes[p].vrTotalRubrica),
-              VrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
-              VrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
-              VrMarco: this.parseDecimal(previsoes[p].vrMarco),
-              VrAbril: this.parseDecimal(previsoes[p].vrAbril),
-              VrMaio: this.parseDecimal(previsoes[p].vrMaio),
-              VrJunho: this.parseDecimal(previsoes[p].vrJunho),
-              VrJulho: this.parseDecimal(previsoes[p].vrJulho),
-              VrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
-              VrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
-              VrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
-              VrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
-              VrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
+            var item: Gcptb063PrevisaoDesembolsoDTO = {
+
+              nuPlanejamentoItem: 0,
+              vrPlanejado: this.parseDecimal(previsoes[p].vrTotalRubrica),
+              vrJaneiro: this.parseDecimal(previsoes[p].vrJaneiro),
+              vrFevereiro: this.parseDecimal(previsoes[p].vrFevereiro),
+              vrMarco: this.parseDecimal(previsoes[p].vrMarco),
+              vrAbril: this.parseDecimal(previsoes[p].vrAbril),
+              vrMaio: this.parseDecimal(previsoes[p].vrMaio),
+              vrJunho: this.parseDecimal(previsoes[p].vrJunho),
+              vrJulho: this.parseDecimal(previsoes[p].vrJulho),
+              vrAgosto: this.parseDecimal(previsoes[p].vrAgosto),
+              vrSetembro: this.parseDecimal(previsoes[p].vrSetembro),
+              vrOutubro: this.parseDecimal(previsoes[p].vrOutubro),
+              vrNovembro: this.parseDecimal(previsoes[p].vrNovembro),
+              vrDezembro: this.parseDecimal(previsoes[p].vrDezembro),
             };
-            if (item.VrPlanejamentoItem == null || Number.isNaN(item.VrPlanejamentoItem)) {
-              item.VrPlanejamentoItem = await this.calcularPlanejamento(item);
+            if (item.vrPlanejado == null || Number.isNaN(item.vrPlanejado)) {
+              item.vrPlanejado = await this.calcularPlanejamento(item);
             }
-            if(item.VrPlanejamentoItem == 0) return true;
+            if(item.vrPlanejado == 0) return true;
           }
           return false;
         /**** nova validação de valores *********/
@@ -1108,34 +1069,10 @@ private criarFormGroupPrevisao(
               });
             return;
         }
-        // if (this.form.controls['deObjeto'].value == '') {
-        //   this.toastr.error('Informe o objeto.', 'Erro');
-        // }
-        // if (this.form.controls['deJustificativa'].value == '') {
-        //   this.toastr.error('Informe a justificativa.', 'Erro');
-        // }
 
         return;
       }
-      //  else if (
-      //   this.form.controls['nuClassificacaoPlanejamento'].value == 1 &&
-      //   (this.form.controls['icDigital'].value == 1 ||
-      //     this.form.controls['icDigital'].value == 2)
-      // ) {
-      //         await Swal.fire({
-      //         title: 'Atenção!',
-      //         text: 'Preencha todos os campos obrigatórios.',
-      //         icon: 'warning',
-      //         confirmButtonText: 'OK'
-      //         });
-      //       return;
-      // }
-      // else if (this.form.controls['deObjeto'].value == null) {
-      //   this.toastr.error('Informe o objeto.', 'Erro');
-      // }
 
-      // var codigoContrato = this.form.controls['coContrato'].value;
-      // this.form.controls['nuContrato'].setValue(codigoContrato);
 
       var obj = this.form.getRawValue();
       var totalRubrica = await this.ValidarValores(obj);
@@ -1156,7 +1093,7 @@ private criarFormGroupPrevisao(
 
           var request : Gcptb051CriarPlanejamentoItemRequest = {
 
-            NuPlanejamento: this.planejamento?.nuPlanejamento ?? 0,
+            NuPlanejamento: this.tipoModal == 'adicionar' ? this.planejamento : this.planejamento?.nuPlanejamento ?? 0,
             NuContrato: obj.nuContrato,
             NuFilial: obj.nuFilial,
 
@@ -1176,6 +1113,7 @@ private criarFormGroupPrevisao(
             previsaoDesembolso: obj.previsoesDesembolso.map(p => ({
             NuPlanejamentoItem: p.nuPlanejamentoItem ?? 0,
             NuRubrica: p.nuRubrica,
+            VrPlanejado: this.parseDecimal(p.vrTotalRubrica),
             VrJaneiro: this.parseDecimal(p.vrJaneiro),
             VrFevereiro: this.parseDecimal(p.vrFevereiro),
             VrMarco: this.parseDecimal(p.vrMarco),
@@ -1244,9 +1182,9 @@ private criarFormGroupPrevisao(
               icon: 'warning',
               confirmButtonText: 'OK'
               });
+
             return;
-          this.habilitarCampoRubrica(false);
-          return;
+
         }
 
         this.habilitarCampoRubrica(false);
@@ -1346,7 +1284,7 @@ private criarFormGroupPrevisao(
        var request : Gcptb051AtualizarPlanejamentoItemRequest = {
 
             NuPlanejamentoItem: obj.nuPlanejamentoItem,
-            NuPlanejamento: this.planejamento?.nuPlanejamento ?? 0,
+            NuPlanejamento: this.tipoModal == 'adicionar' ? this.planejamento : this.planejamento?.nuPlanejamento ?? 0,
             NuContrato: obj.nuContrato,
             NuFilial: obj.nuFilial,
             NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus,
@@ -1577,45 +1515,35 @@ private criarFormGroupPrevisao(
   async cadastrarItem(lista: any): Promise<void> {
     try {
 
-      const response = await this.apiService.post<any>(
+      const response = await this.apiService.post<ApiResponse<any>>(
         `v1/PlanejamentoOrcamentarioV/novo-planejamento-item`,
         lista
       );
 
-      if (response?.succeeded && response.data?.succeeded) {
-        const resultado = response.data.resultados?.[0];
-        if (resultado?.succeeded) {
-          // Aqui você pode exibir um toast, atualizar a UI, etc.
-          await Swal.fire({
-            title: 'Sucesso!',
-            text: `Item do Planejamento Orçamentário cadastrado com sucesso.`,
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
-        } else {
-          console.warn('Falha ao cadastrar item:', resultado?.message);
-          await Swal.fire({
+      if (!response?.succeeded) {
+
+         await Swal.fire({
             title: 'Erro!',
             text: 'Falha ao cadastrar item. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
             icon: 'error',
             confirmButtonText: 'OK',
           });
+
+
         }
-      } else {
-        console.error('Erro na resposta da API:', response.errors);
-        await Swal.fire({
-          title: 'Erro!',
-          text: 'Erro na resposta da API. Não foi possível concluir a operação. Verifique sua conexão ou tente novamente.',
-          icon: 'error',
+
+         await Swal.fire({
+          title: 'Sucesso!',
+          text: `Item do Planejamento Orçamentário cadastrado com sucesso.`,
+          icon: 'success',
           confirmButtonText: 'OK',
         });
-      }
 
       this.atualizarPagina.emit(true);
       this.activeModal.dismiss();
     } catch (error) {
       console.error('Erro na requisição:', error);
-      // Tratar erro de rede ou exceção
+
     }
   }
 }

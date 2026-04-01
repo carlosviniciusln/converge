@@ -375,6 +375,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
     modalRef.componentInstance.statusExercicio = this.statusExercio;
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
+    modalRef.componentInstance.nuAno = this.anoExercicio;
     modalRef.componentInstance.tipo = this.ordemTipoExercicio;
 
 
@@ -403,11 +404,12 @@ export class PlanejamentoGeralV2Component implements OnInit {
       keyboard: false,
     });
 
-    modalRef.componentInstance.nuPlanejamento = nuPlanejamentoExercicio;
+    modalRef.componentInstance.planejamento = nuPlanejamentoExercicio;
     modalRef.componentInstance.isEditable = isEditable;
     modalRef.componentInstance.isCadastro = isCadastro;
     modalRef.componentInstance.tipoModal = tipoModal;
-    modalRef.componentInstance.nuAno = nuAno;
+    modalRef.componentInstance.nuAno = this.anoExercicio;
+    modalRef.componentInstance.tipo = this.ordemTipoExercicio;
 
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {

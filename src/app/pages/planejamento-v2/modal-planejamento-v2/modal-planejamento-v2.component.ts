@@ -274,6 +274,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
     }
     catch (error){
         console.error('Erro da API:', error);
+        this.toastr.clear();
         this.gcpvw049ResumoPlanejamento = [];
     }
 

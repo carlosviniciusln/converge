@@ -1,8 +1,8 @@
 export interface Gcptb063PrevisaoDesembolsoDTO {
-  nuPrevisaoDesembolso: number;
-  nuPlanejamentoItem: number;
+  nuPrevisaoDesembolso?: number;
+  nuPlanejamentoItem?: number;
 
-  nuRubrica: number;
+  nuRubrica?: number;
 
   vrJaneiro: number;
   vrFevereiro: number;
@@ -19,9 +19,9 @@ export interface Gcptb063PrevisaoDesembolsoDTO {
 
   vrPlanejado: number;
 
-  icInclusaoManual: boolean;
-  dhCadastro: string; // ISO Date
-  dhExclusao: string | null;
+  icInclusaoManual?: boolean;
+  dhCadastro?: string; // ISO Date
+  dhExclusao?: string | null;
 
-  nuUsuario: number;
+  nuUsuario?: number;
 }
