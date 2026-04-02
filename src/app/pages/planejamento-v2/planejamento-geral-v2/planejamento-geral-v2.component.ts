@@ -114,28 +114,28 @@ export class PlanejamentoGeralV2Component implements OnInit {
           this.downloadPlanejamentoDesembolso();
         },
       },
-      {
-        label: 'Gerar Atualização SAP',
-        icon: 'tim-icons icon-cloud-download-93',
-        command: () => {
-          // this.exportarExcelAtualizacaoSAP(this.anoExercicio);
-        },
-      },
-      {
-        label: 'Upload de Limites',
-        icon: 'tim-icons icon-upload',
-        command: () => {
-          const tipo = this.ordemTipoExercicio.split('-')[1].trim();
-          if (tipo === 'Programação') {
-            this.toastr.info(
-              'Planejamento do tipo Programação não possui limites.',
-              'Informação',
-            );
-          } else {
-            // this.openModalUpload();
-          }
-        },
-      },
+      // {
+      //   label: 'Gerar Atualização SAP',
+      //   icon: 'tim-icons icon-cloud-download-93',
+      //   command: () => {
+      //     this.exportarExcelAtualizacaoSAP(this.anoExercicio);
+      //   },
+      // },
+      // {
+      //   label: 'Upload de Limites',
+      //   icon: 'tim-icons icon-upload',
+      //   command: () => {
+      //     const tipo = this.ordemTipoExercicio.split('-')[1].trim();
+      //     if (tipo === 'Programação') {
+      //       this.toastr.info(
+      //         'Planejamento do tipo Programação não possui limites.',
+      //         'Informação',
+      //       );
+      //     } else {
+      //       this.openModalUpload();
+      //     }
+      //   },
+      // },
     ];
   }
 
