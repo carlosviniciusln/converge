@@ -21,6 +21,7 @@ import {
 import Swal from 'sweetalert2';
 import { PlanejamentoCadastroV2Component } from '../planejamento-cadastro-v2/planejamento-cadastro-v2.component';
 import { Gcpvw051VisaoContratoPlanejamentoOrcamentario } from 'src/app/models/generics/Gcpvw051VisaoContratoPlanejamentoOrcamentario';
+import { Gcptb051AtualizarStatusEmLoteRequest } from 'src/app/models/request/Gcptb051AtualizarStatusEmLoteRequest';
 
 @Component({
   selector: 'app-planejamento-geral-v2',
@@ -223,38 +224,44 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
       if (!novoStatusObj) return;
 
-      const statusNovo: AlterarStatusPlanejamento = {
-        nuPlanejamento: Number(this.nuPlanejamentoExercicio),
+      const statusNovo: Gcptb051AtualizarStatusEmLoteRequest = {
         status: novoStatusObj.nuPlanejamentoStatus,
-        nuPlanejamentoItem: itensSelecionados.map((item) => ({
-          NuTipoDemanda: item.nuTipoDemanda,
-          NuContrato: item.nuContrato,
-          NuOrc: item.nuOrc,
-        })),
+        nuPlanejamento: this.nuPlanejamentoExercicio,
+        nuPlanejamentoItens: itensSelecionados.map((item) => item.nuPlanejamentoItem)
       };
 
-      var response: any;
+
       try {
-        response = await this.apiService.put(
-          `${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS}`,
+
+          console.log(statusNovo, 'Resposta da alteração de status');
+
+
+       const response = await this.apiService.put<ApiResponse<any>>(
+          `v1/PlanejamentoOrcamentarioV/alterar-status-lote-planejamento-item`,
           statusNovo,
         );
-      } catch (error: any) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      }
 
-      if (response.length > 0) {
+
+
+        if (!response?.succeeded) {
+           this.toastr.error('Ocorreu um erro ao salvar', 'Error');
+        }
+
         this.toastr.success('Alterações de status confirmadas.', 'Confirmação');
         await this.obterPlanejamentosOrc();
         this.selecionarTodos = false;
         this.planejamentos.contratos.forEach((p) => (p.stSelecionado = false));
         this.statusSelecionados[0] = null;
-      } else {
+
+      }
+
+      catch (error) {
+        console.error(error, 'Erro ao salvar alterações de status');
         this.toastr.error('Ocorreu um erro ao salvar', 'Error');
       }
-    } catch (error) {
+    }
+
+    catch (error) {
       console.error(error, 'Erro na requisição');
     }
   }
@@ -328,47 +335,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
       keyboard: false,
     });
 
-    //EXEMPLO DE DADO DO PLANEJAMENTO ENVIADO COM O ATRIBUTO  'nuPlanejamento'
-// {
-//     "nuOrc": "99",
-//     "nuPlanejamento": 5,
-//     "nuExercicioOrcamento": 2,
-//     "coExercicio": 2026,
-//     "nuContrato": 8183,
-//     "coFilial": "5229",
-//     "coContrato": "08685/2025",
-//     "noObjeto": "FORNECIMENTO DE SOLUÇÃO DE TECNOLOGIA DA INFORMAÇÃO COM O OBJETIVO DE REALIZAR UMA GESTÃO COMPLETA DOS RECURSOS E PROJETOS DO FUNDO SOCIOAMBIENTAL CAIXA PELO PRAZO DE 36 MESES, EM TODO TERRITÓRIO NACIONAL",
-//     "nuStatusPlanejamento": 5,
-//     "nuTipoDemanda": 7,
-//     "deDemanda": "Escopo",
-//     "noStatus": "Criado",
-//     "nuFilial": 7,
-//     "sgFilial": "GECPA",
-//     "vrPlanejamento": 0,
-//     "nuPlanejamentoItem": 99,
-//     "nuContratoOriginal": null,
-//     "coContratoOriginal": null,
-//     "nuSap": null,
-//     "deSap": null,
-//     "deUnidadeDemandante": "5229 - GECPA",
-//     "nuPlanejamentoTipo": 1,
-//     "dePlanejamentoTipo": "Programação",
-//     "nuObjetivoPdtic": 5,
-//     "deObjetivoPdtic": "Disponibilizar ambiente tecnológico moderno e seguro visando ampliar a qualidade de entregas de novas funcionalidades para as áreas de negócio",
-//     "nuObjetivoPei": 14,
-//     "deObjetivoPei": "Gerar valor nos relacionamentos, ofertando soluções inovadoras em negócios, tecnologia e ambiência",
-//     "deJustificativa": null,
-//     "deObservacao": null,
-//     "deServicoContinuo": "NÃO",
-//     "nuUsuario": 322541,
-//     "coMatricula": "S000000",
-//     "dhCadastro": "2026-03-31T00:00:00",
-//     "icInclusaoManual": false,
-//     "stSelecionado": false,
-//     "noStatusOriginal": "Criado"
-// }
-
-// 'adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio
 
     modalRef.componentInstance.planejamento = planejamento;
     modalRef.componentInstance.isEditable = isEditable;
@@ -379,7 +345,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
     modalRef.componentInstance.tipo = this.ordemTipoExercicio;
 
 
-    //FUNÇÃO OUTPUT PARA ATUALIZAR A TELA APÓS INSERT E UPDATE NO MODAL DE CADASTRO
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
         this.obterPlanejamentosOrc();
