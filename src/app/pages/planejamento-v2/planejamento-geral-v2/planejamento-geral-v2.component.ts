@@ -348,6 +348,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
         this.obterPlanejamentosOrc();
+        this.obterdadosDashboard();
       }
     });
 
@@ -379,6 +380,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
     modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
       if (data) {
         this.obterPlanejamentosOrc();
+        this.obterdadosDashboard();
       }
     });
 

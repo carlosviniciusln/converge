@@ -1,5 +1,4 @@
 import { ListarContratoPlanejamentoOrcamentarioResponse } from './../../../models/response/ListarContratoPlanejamentoOrcamentarioResponse';
-import { Gcptb060PlanejamentoItemHistoricoDTO } from './../../../models/DTOs/Gcptb060PlanejamentoItemHistoricoDTO';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
@@ -43,6 +42,7 @@ import { Gcpvw055DetalheTelaConsultaV2DTO } from 'src/app/models/DTOs/Gcpvw055De
 import { Gcpvw051VisaoContratoPlanejamentoOrcamentario } from 'src/app/models/generics/Gcpvw051VisaoContratoPlanejamentoOrcamentario';
 import { Gcptb051CriarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051CriarPlanejamentoItemRequest';
 import { Gcptb051AtualizarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051AtualizarPlanejamentoItemRequest';
+import { Gcptb060PlanejamentoItemHistoricoV2Response } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoV2Response';
 
 @Component({
   selector: 'app-planejamento-cadastro-v2',
@@ -168,7 +168,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     },
   ];
 
-  listaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoResponse = new Gcptb060PlanejamentoItemHistoricoResponse();
+  listaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoV2Response = new Gcptb060PlanejamentoItemHistoricoV2Response();
   dialogVisible = false;
   selectedDiff: any = null;
   filtrosSelecionado: string | null = null;
@@ -738,11 +738,6 @@ async excluirPrevisaoDesembolso(i: number) {
 
   if (!confirm.isConfirmed) return;
 
-
-
-  console.log(nuPlanejamentoItem, nuPrevisaoDesembolso, "TESTE");
-
-  // ✅ guarda para o backend
   if (nuPlanejamentoItem && nuPrevisaoDesembolso) {
     this.previsoesExcluidas.push({
       nuPlanejamentoItem,
@@ -956,9 +951,9 @@ async excluirPrevisaoDesembolso(i: number) {
       this.filtroRegistros.NuOrc = this.planejamento.nuOrc;
 
       const response = await this.apiService.get<
-        ApiResponse<Gcptb060PlanejamentoItemHistoricoResponse>
+        ApiResponse<Gcptb060PlanejamentoItemHistoricoV2Response>
       >(
-        `v1/PlanejamentoOrcamentario/obter-historico-planejamento-item`,
+        `v1/PlanejamentoOrcamentarioV/obter-historico-planejamento-item`,
         this.filtroRegistros
       );
 

@@ -769,7 +769,7 @@
     </div>
   </mat-tab>
 
-  <!-- <mat-tab label="Histórico" >
+  <mat-tab label="Histórico" >
 
 
 
@@ -827,7 +827,7 @@
                   <small *ngIf="event.coRubrica">{{event.coRubrica}} - {{event.deRubrica}}</small>
                   <small  *ngIf="event.sgFilial">{{event.sgFilial}}</small>
                   <small class="text-gray-500">
-                    {{ event.dhLog | date : "short" }} - {{ event.noUsuarioAlteracao }}
+                    {{ event.dhCadastro | date : "short" }} - {{ event.noUsuarioAlteracao }}
                   </small>
 
                   <div *ngIf="event.listaDiffs && event.tpOperacao != 'INCLUSAO' && event.tpOperacao != 'EXCLUSAO'" class="mt-2">
@@ -895,5 +895,5 @@
 
         </p-table>
       </p-dialog>
-  </mat-tab> -->
+  </mat-tab>
 </mat-tab-group>
