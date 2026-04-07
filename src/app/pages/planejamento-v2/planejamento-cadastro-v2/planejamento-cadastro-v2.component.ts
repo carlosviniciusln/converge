@@ -209,8 +209,9 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.loading = false;
 
 
-
+    if(this.tipoModal != 'adicionar'){
     this.obterPlanejamentoItemHistorico();
+    }
 
   }
 
