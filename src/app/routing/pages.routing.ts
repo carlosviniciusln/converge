@@ -33,6 +33,8 @@ import { RelatorioContratoComponent } from 'src/app/pages/relatorio/relatorio-co
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
 import { ContratoComponent } from '../pages/contrato/contrato.component';
 import { DotacaoComponent } from '../pages/dotacao/dotacao.component';
+import { PlanejamentoV2Component } from '../pages/planejamento-v2/planejamento-v2.component';
+import { PlanejamentoGeralV2Component } from '../pages/planejamento-v2/planejamento-geral-v2/planejamento-geral-v2.component';
 
 
 
@@ -55,6 +57,7 @@ export const PagesRoutes: Routes = [
   { path: 'valores-executados', component: ValoresExecutadosComponent },
   { path: 'planejamento/limites/create', component: LimitesRubricasCadastroComponent },
   { path: 'planejamento-orcamentario', component: PlanejamentoOrcamentarioComponent },
+  { path: 'planejamento-orcamentario-novo', component: PlanejamentoV2Component },
   { path: 'pagamento', component: PagamentoComponent },
   { path: 'consumo', component: ConsumoComponent },
   { path: 'consumo-arp', component: ConsumoArpComponent },
@@ -62,6 +65,7 @@ export const PagesRoutes: Routes = [
   { path: 'informe/analitico', component: AnaliticoComponent },
   { path: 'informe/sintetico', component: SinteticoComponent },
   { path: 'planejamento-orcamentario-detalhe', component: PlanejamentoGeralComponent },
+  { path: 'planejamento-orcamentario-detalhe-novo', component: PlanejamentoGeralV2Component },
   //{ path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'empenho', component: EmpenhoComponent },
