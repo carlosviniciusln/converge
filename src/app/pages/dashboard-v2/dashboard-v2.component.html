@@ -13,7 +13,6 @@
               (onChange)="goToContratoFromDropdown($event)"
               (onShow)="loadContratosIfNeeded()"
               [showClear]="true"
-              [loading]="contratosLoading"
               placeholder="Contrato"
             ></p-dropdown>
           <div class="dropdown-loading" *ngIf="contratosLoading">
