@@ -1,0 +1,95 @@
+<div class="content" *ngIf="!loading">
+  <div *ngIf="ultimaAtualizacao || contratos?.length">
+    <div class="top-row">
+      <div class="contract-search">
+        <label class="contract-label">Pesquise aqui um contrato</label>
+        <div class="contract-field">
+            <p-dropdown
+              [options]="selectContratos"
+              [(ngModel)]="selectedContrato"
+              [filter]="true"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="goToContratoFromDropdown($event)"
+              (onShow)="loadContratosIfNeeded()"
+              [showClear]="true"
+              [loading]="contratosLoading"
+              placeholder="Contrato"
+            ></p-dropdown>
+          <div class="dropdown-loading" *ngIf="contratosLoading">
+            <i class="pi pi-spin pi-spinner"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="updated">
+        <span class="updated-text">Atualizado em: {{ ultimaAtualizacao }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-v2-container">
+    <div class="column left">
+      <h3>Execução Contratual</h3>
+      <div class="cards">
+        <div class="value-box">
+          <h4>Contratos Vigentes - Quantidade</h4>
+          <p>{{ numerosRapidos?.qT_CONTRATO_VIGENTE }}</p>
+        </div>
+        <div class="value-box">
+          <h4>Contratos Vigentes - Total Global</h4>
+          <p>{{ numerosRapidos?.vR_GLOBAL_VIGENTE | currency: 'BRL' }}</p>
+        </div>
+        <div class="value-box">
+          <h4>Pagamentos do Ano - Qtde. Total</h4>
+          <p>{{ numerosRapidos?.qT_PAGAMENTO_ANO | number:'1.0-0' }}</p>
+        </div>
+        <div class="value-box">
+          <h4>Contratos Vigentes - Total Executado</h4>
+          <p>{{ numerosRapidos?.vR_EXECUTADO_VIGENTE | currency: 'BRL' }}</p>
+        </div>
+        <div class="value-box">
+          <h4>Contratos Vigentes - Total Retido</h4>
+          <p>{{ numerosRapidos?.vR_RETIDO_VIGENTE | currency: 'BRL' }}</p>
+        </div>
+        <div class="value-box">
+          <h4>Pagamentos do Ano - Valor Total</h4>
+          <p>{{ numerosRapidos?.vR_EXECUTADO_ANO | currency: 'BRL' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="column right">
+      <h3>Orçamento</h3>
+      <div class="cards">
+        <div class="value-box">
+          <h4>Dotação CAPEX</h4>
+          <p>{{ filial1885Data?.vR_INVESTIMENTO_PLANEJADO | currency: 'BRL' }}</p>
+        </div>
+        <div class="value-box">
+          <h4>CAPEX Executado</h4>
+          <p>{{ filial1885Data?.vR_INVESTIMENTO_EXECUTADO | currency: 'BRL' }}</p>
+        </div>
+        <div class="value-box">
+          <h4>CAPEX - % DOT x EXEC</h4>
+          <p>{{ filial1885Data?.pC_INVESTIMENTO_REALIZADO }}%</p>
+        </div>
+        <div class="value-box">
+          <h4>Dotação OPEX</h4>
+          <p>{{ filial1885Data?.vR_CUSTEIO_PLANEJADO | currency: 'BRL' }}</p>
+        </div>
+        <div class="value-box">
+          <h4>OPEX Executado</h4>
+          <p>{{ filial1885Data?.vR_CUSTEIO_EXECUTADO | currency: 'BRL' }}</p>
+        </div>
+        <div class="value-box">
+          <h4>OPEX - % DOT x EXEC</h4>
+          <p>{{ filial1885Data?.pC_CUSTEIO_REALIZADO }}%</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
