@@ -29,6 +29,8 @@ export interface DashboardOrcamentoExecucaoContratualResponse {
   dashboardOrcamento: Gcptb043ResumoExecucaoContratualDTO;
   dashboardExecucaoContratual: Gcpvw024RelatorioOrcamentoDTO;
   contratos: Record<number, string>;
+  contratosDropdown: { label: string; value: number }[];
+  dhUltimaAtualizacao: string;
 }
 
 export type DashboardOrcamentoExecucaoContratualApiResponse = DashboardOrcamentoExecucaoContratualResponse;
