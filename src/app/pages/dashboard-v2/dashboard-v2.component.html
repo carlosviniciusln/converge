@@ -1,94 +1,97 @@
-<div class="content" *ngIf="!loading">
-  <div *ngIf="ultimaAtualizacao || contratos?.length">
-    <div class="top-row">
-      <div class="contract-search">
-        <label class="contract-label">Pesquise aqui um contrato</label>
-        <div class="contract-field">
-            <p-dropdown
-              [options]="selectContratos"
-              [(ngModel)]="selectedContrato"
-              [filter]="true"
-              optionLabel="label"
-              optionValue="value"
-              (onChange)="goToContratoFromDropdown($event)"
-              (onShow)="loadContratosIfNeeded()"
-              [showClear]="true"
-              placeholder="Contrato"
-            ></p-dropdown>
-          <div class="dropdown-loading" *ngIf="contratosLoading">
-            <i class="pi pi-spin pi-spinner"></i>
-          </div>
-        </div>
-      </div>
+<div class="content">
+<div class="dash-wrapper" *ngIf="!loading">
 
-      <div class="updated">
-        <span class="updated-text">Atualizado em: {{ ultimaAtualizacao }}</span>
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <div class="dash-header">
+    <div class="dash-header__search">
+      <label class="search-label">Pesquise aqui um contrato</label>
+      <div class="search-field">
+        <p-dropdown
+          [options]="selectContratos"
+          [(ngModel)]="selectedContrato"
+          [filter]="true"
+          filterPlaceholder="Digite para filtrar..."
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="goToContratoFromDropdown($event)"
+          (onShow)="loadContratosIfNeeded()"
+          [showClear]="true"
+          placeholder="Contrato"
+        ></p-dropdown>
+        <i class="pi pi-spin pi-spinner search-spinner" *ngIf="contratosLoading"></i>
       </div>
+    </div>
+
+    <div class="dash-timestamp" *ngIf="ultimaAtualizacao">
+      Atualizado em: <strong>{{ ultimaAtualizacao }}</strong>
     </div>
   </div>
 
-  <div class="dashboard-v2-container">
-    <div class="column left">
-      <h3>Execução Contratual</h3>
-      <div class="cards">
-        <div class="value-box">
-          <h4>Contratos Vigentes - Quantidade</h4>
-          <p>{{ numerosRapidos?.qT_CONTRATO_VIGENTE }}</p>
+  <!-- ── BODY ───────────────────────────────────────────── -->
+  <div class="dash-body">
+
+    <!-- EXECUÇÃO CONTRATUAL -->
+    <section class="dash-section">
+      <h2 class="section-title">Execução Contratual</h2>
+      <div class="cards-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Contratos Vigentes — Quantidade</span>
+          <span class="kpi-value">{{ numerosRapidos?.qT_CONTRATO_VIGENTE }}</span>
         </div>
-        <div class="value-box">
-          <h4>Contratos Vigentes - Total Global</h4>
-          <p>{{ numerosRapidos?.vR_GLOBAL_VIGENTE | currency: 'BRL' }}</p>
+        <div class="kpi-card">
+          <span class="kpi-label">Contratos Vigentes — Total Global</span>
+          <span class="kpi-value">{{ numerosRapidos?.vR_GLOBAL_VIGENTE | currency:'BRL' }}</span>
         </div>
-        <div class="value-box">
-          <h4>Pagamentos do Ano - Qtde. Total</h4>
-          <p>{{ numerosRapidos?.qT_PAGAMENTO_ANO | number:'1.0-0' }}</p>
+        <div class="kpi-card">
+          <span class="kpi-label">Contratos Vigentes — Total Executado</span>
+          <span class="kpi-value">{{ numerosRapidos?.vR_EXECUTADO_VIGENTE | currency:'BRL' }}</span>
         </div>
-        <div class="value-box">
-          <h4>Contratos Vigentes - Total Executado</h4>
-          <p>{{ numerosRapidos?.vR_EXECUTADO_VIGENTE | currency: 'BRL' }}</p>
+        <div class="kpi-card">
+          <span class="kpi-label">Contratos Vigentes — Total Retido</span>
+          <span class="kpi-value">{{ numerosRapidos?.vR_RETIDO_VIGENTE | currency:'BRL' }}</span>
         </div>
-        <div class="value-box">
-          <h4>Contratos Vigentes - Total Retido</h4>
-          <p>{{ numerosRapidos?.vR_RETIDO_VIGENTE | currency: 'BRL' }}</p>
+        <div class="kpi-card">
+          <span class="kpi-label">Pagamentos do Ano — Quantidade</span>
+          <span class="kpi-value">{{ numerosRapidos?.qT_PAGAMENTO_ANO | number:'1.0-0' }}</span>
         </div>
-        <div class="value-box">
-          <h4>Pagamentos do Ano - Valor Total</h4>
-          <p>{{ numerosRapidos?.vR_EXECUTADO_ANO | currency: 'BRL' }}</p>
+        <div class="kpi-card">
+          <span class="kpi-label">Pagamentos do Ano — Valor Total</span>
+          <span class="kpi-value">{{ numerosRapidos?.vR_EXECUTADO_ANO | currency:'BRL' }}</span>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="divider"></div>
-
-    <div class="column right">
-      <h3>Orçamento</h3>
-      <div class="cards">
-        <div class="value-box">
-          <h4>Dotação CAPEX</h4>
-          <p>{{ filial1885Data?.vR_INVESTIMENTO_PLANEJADO | currency: 'BRL' }}</p>
+    <!-- ORÇAMENTO -->
+    <section class="dash-section">
+      <h2 class="section-title">Orçamento</h2>
+      <div class="cards-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Dotação CAPEX</span>
+          <span class="kpi-value">{{ filial1885Data?.vR_INVESTIMENTO_PLANEJADO | currency:'BRL' }}</span>
         </div>
-        <div class="value-box">
-          <h4>CAPEX Executado</h4>
-          <p>{{ filial1885Data?.vR_INVESTIMENTO_EXECUTADO | currency: 'BRL' }}</p>
+        <div class="kpi-card">
+          <span class="kpi-label">CAPEX Executado</span>
+          <span class="kpi-value">{{ filial1885Data?.vR_INVESTIMENTO_EXECUTADO | currency:'BRL' }}</span>
         </div>
-        <div class="value-box">
-          <h4>CAPEX - % DOT x EXEC</h4>
-          <p>{{ filial1885Data?.pC_INVESTIMENTO_REALIZADO }}%</p>
+        <div class="kpi-card kpi-card--pct">
+          <span class="kpi-label">CAPEX — % Dot. × Exec.</span>
+          <span class="kpi-value">{{ filial1885Data?.pC_INVESTIMENTO_REALIZADO }}%</span>
         </div>
-        <div class="value-box">
-          <h4>Dotação OPEX</h4>
-          <p>{{ filial1885Data?.vR_CUSTEIO_PLANEJADO | currency: 'BRL' }}</p>
+        <div class="kpi-card">
+          <span class="kpi-label">Dotação OPEX</span>
+          <span class="kpi-value">{{ filial1885Data?.vR_CUSTEIO_PLANEJADO | currency:'BRL' }}</span>
         </div>
-        <div class="value-box">
-          <h4>OPEX Executado</h4>
-          <p>{{ filial1885Data?.vR_CUSTEIO_EXECUTADO | currency: 'BRL' }}</p>
+        <div class="kpi-card">
+          <span class="kpi-label">OPEX Executado</span>
+          <span class="kpi-value">{{ filial1885Data?.vR_CUSTEIO_EXECUTADO | currency:'BRL' }}</span>
         </div>
-        <div class="value-box">
-          <h4>OPEX - % DOT x EXEC</h4>
-          <p>{{ filial1885Data?.pC_CUSTEIO_REALIZADO }}%</p>
+        <div class="kpi-card kpi-card--pct">
+          <span class="kpi-label">OPEX — % Dot. × Exec.</span>
+          <span class="kpi-value">{{ filial1885Data?.pC_CUSTEIO_REALIZADO }}%</span>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-</div>
+  </div><!-- /.dash-body -->
+</div><!-- /.dash-wrapper -->
+</div><!-- /.content -->
