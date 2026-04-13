@@ -82,6 +82,7 @@
 /* ── SECTION ──────────────────────────────────────────────── */
 .dash-section {
   background: #fff;
+  text-align: center;
   border-radius: 10px;
   padding: 22px 24px;
   box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
@@ -92,7 +93,7 @@
 
 .section-title {
   margin: 0;
-  font-size: 0.72rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #6b7a8d;
   text-transform: uppercase;
@@ -135,7 +136,7 @@
 }
 
 .kpi-label {
-  font-size: 0.71rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #7a8799;
   text-transform: uppercase;
@@ -251,7 +252,7 @@
 // }
 
 .kpi-group-badge {
-  font-size: 0.72rem;
+  font-size: 0.80rem;
   font-weight: 800;
   letter-spacing: 0.8px;
   padding: 2px 8px;
