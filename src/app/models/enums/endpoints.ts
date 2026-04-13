@@ -1,5 +1,6 @@
 export enum Endpoints {
   URL_DASHBOARD = 'v1/dashboard',
+  URL_DASHBOARD_ORCAMENTO_EXECUCAO = 'v1/dashboard/orcamento-execucao-contratual',
   URL_DASHBOARD_EXECUCAO = 'v1/dashboard/execucao-contratual',
   URL_DASHBOARD_EXECUCAO_DETALHE = 'v1/dashboard/execucao-contratual-detalhe',
   URL_DASHBOARD_ORCAMENTO = 'v1/dashboard/orcamento',
