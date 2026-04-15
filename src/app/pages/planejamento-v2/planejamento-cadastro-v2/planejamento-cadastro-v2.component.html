@@ -58,7 +58,7 @@
 
                 <p-dropdown
                   class="custom-dropdown"
-                  [options]="listaContratos"
+                  [options]="dadosDeDominio.listaContratos"
                   optionLabel="coContrato"
                   [disabled]="!isFlagContrato && isReadonly"
                   [readonly]="isFlagContrato && isReadonly"
@@ -108,41 +108,124 @@
                 ></textarea>
               </div>
               <div class="col-md-3 pr-0">
+
                 <label for="nuPlanejamentoTipo">Tipo de Planejamento:</label>
                 <input
                   type="text"
                   formControlName="nuPlanejamentoTipo"
                   class="form-control"
                   id="nuPlanejamentoTipo"
-                  value="{{ tipo }}"
-                  placeholder="{{ tipo }}"
-                  [readonly]="isReadonly"
+                  [value]="tipo"
+                  [placeholder]="tipo"
+                  readonly
                 />
+
+
+                <div *ngIf="isFlagPlanoDeAquisicao">
+                  <label for="tipoPlanoAquisicao">
+                    Tipo de Aquisição:<span class="span-red"> *</span>
+                  </label>
+
+                  <p-dropdown
+                    class="custom-dropdown"
+                    [autoDisplayFirst]="false"
+                    (onChange)="onPlanoDeAquisicaoChange($event)"
+                    [disabled]="!this.isEditable"
+                    [options]="dadosDeDominio.listaTiposPlanoAquisicao"
+                    optionLabel="descricao"
+                    optionValue="id"
+                    placeholder="Selecione o Tipo"
+                    [filter]="true"
+                  >
+                  </p-dropdown>
+                </div>
+
               </div>
+
               <div class="col-md-3 pr-0">
-                <label for="nuDemandaTipo"
-                  >Planejado Para:<span class="span-red"> *</span></label
-                >
-                <select
-                  class="form-control"
-                  id="nuDemandaTipo"
+
+                <label for="nuDemandaTipo">
+                  Planejado Para:<span class="span-red"> *</span>
+                </label>
+
+                <p-dropdown
+                  class="custom-dropdown"
                   formControlName="nuDemandaTipo"
+                  [options]="dadosDeDominio.listaTiposDemanda"
+                  optionLabel="deDemanda"
+                  optionValue="nuDemanda"
+                  placeholder="Selecione o Planejamento"
+                  [filter]="true"
+                  (onChange)="onPlanejadoParaChange()"
                   [ngClass]="{
                     'is-invalid': submitted && f.nuDemandaTipo?.invalid,
                   }"
-                  (change)="onPlanejadoParaChange()"
                 >
-                  <option value="" disabled selected>
-                    Selecione o Planejamento
-                  </option>
-                  <option
-                    *ngFor="let a of listaTiposDemanda"
-                    [ngValue]="a.nuDemanda"
+                </p-dropdown>
+
+
+                <div *ngIf="isFlagTipoModalidade">
+                  <label for="nuModalidade">
+                    Tipo de Modalidade:<span class="span-red"> *</span>
+                  </label>
+
+                  <p-dropdown
+                    class="custom-dropdown"
+                    formControlName="nuModalidade"
+                    [options]="dadosDeDominio.listaTiposModalidade"
+                    optionLabel="descricao"
+                    optionValue="id"
+                    placeholder="Selecione a Modalidade"
+                    [filter]="true"
                   >
-                    {{ a.deDemanda }}
-                  </option>
-                </select>
+                  </p-dropdown>
+                </div>
+
+                 <div *ngIf="isFlagVrGlobal">
+                  <label for="vrGlobal">
+                    Valor Global:<span class="span-red"> *</span>
+                  </label>
+                      <input
+                        currencyMask
+                        id="vrGlobal"
+                        formControlName="vrGlobal"
+                        [options]="{
+                          prefix: 'R$ ',
+                          thousands: '.',
+                          decimal: ',',
+                          precision: 2,
+                          allowNegative: false,
+                        }"
+                        placeholder="R$ 0,00"
+                        class="form-control"
+                        maxlength="21"
+                      />
+                </div>
+
+                  <div *ngIf="isFlagPrazoVigencia">
+                  <label for="dePrazoVigencia">
+                    Prazo Vigencia:<span class="span-red"> *</span>
+                  </label>
+                      <input
+                        type="number"
+                        id="dePrazoVigencia"
+                        formControlName="dePrazoVigencia"
+                        class="form-control"
+                        maxlength="3"
+                      />
+                </div>
+
+                  <div *ngIf="isFlagDtPrevisaoSiclg">
+                  <label for="dtPrevisaoSiclg">Data previsão SICLG:<span class="span-red"> *</span>
+                  </label>
+                         <input formControlName="dtPrevisaoSiclg" id="dtPrevisaoSiclg" type="date" class="form-control" />
+                </div>
+
+
+
               </div>
+
+
               <div class="col-md-1 pr-0">
                 <label for="nuAno">Exerc&iacute;cio:</label>
 
@@ -169,7 +252,9 @@
                   <option value="" disabled selected>Selecione Status</option>
 
                   <ng-container *ngIf="isCadastro; else edicao">
-                    <ng-container *ngFor="let a of listaStatusPlanejamento">
+                    <ng-container
+                      *ngFor="let a of dadosDeDominio.listaStatusPlanejamento"
+                    >
                       <option
                         *ngIf="a.nuPlanejamentoStatus == 5"
                         [ngValue]="a.nuPlanejamentoStatus"
@@ -207,7 +292,9 @@
                     Selecione Objetivo Estratégico
                   </option>
                   <option
-                    *ngFor="let a of listaObjetivosEstrategicosPdti"
+                    *ngFor="
+                      let a of dadosDeDominio.listaObjetivosEstrategicosPdti
+                    "
                     [value]="a?.nuObjetivoEstrategicoPdti"
                   >
                     {{ a?.coObjetivoEstrategico }} -
@@ -234,7 +321,9 @@
                     Selecione Objetivo Estratégico PEI
                   </option>
                   <option
-                    *ngFor="let a of listaObjetivosEstrategicosPei"
+                    *ngFor="
+                      let a of dadosDeDominio.listaObjetivosEstrategicosPei
+                    "
                     [value]="a?.nuObjetivoEstrategicoPei"
                   >
                     {{ a.coObjetivoEstrategico }} -
@@ -242,6 +331,19 @@
                   </option>
                 </select>
               </div>
+
+          <!-- <div class="col-md-3 pr-0">
+            <label for="icDigital">Classifica&ccedil;&atilde;o Digital:<span class="span-red"> *</span></label>
+            <select class="form-control" id="icDigital" formControlName="icDigital"
+              [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" (change)="onIsDigitalChange($event)">
+              <option value="" disabled selected>
+                Selecione a Classifica&ccedil;&atilde;o
+              </option>
+              <option *ngFor="let a of listaDigital" [ngValue]="a.id">
+                {{ a.tipo }}
+              </option>
+            </select>
+          </div> -->
 
               <div class="col-md-9 pr-0">
                 <label for="deJustificativa"
@@ -269,8 +371,8 @@
                 <p-dropdown
                   class="custom-dropdown"
                   id="nuFilial"
-                  [options]="listaFiliais"
-                  optionLabel="nuFilialEcoFilial"
+                  [options]="dadosDeDominio.listaUnidadesDemandantes"
+                  optionLabel="noFilialEcoFilial"
                   optionValue="nuFilial"
                   [style]="{ width: '100%' }"
                   formControlName="nuFilial"
@@ -291,7 +393,7 @@
               <b>Previsões de Desembolso</b>
             </h4>
 
-            <div style="display: flex; padding-top: 10px;">
+            <div style="display: flex; padding-top: 10px">
               <div class="">
                 <label for="nuSap">Número SAP :</label>
                 <input
@@ -308,7 +410,7 @@
               <div style="padding-left: 10px">
                 <label for="deSaP">Tipo SAP:</label>
                 <input
-                readonly
+                  readonly
                   type="text"
                   class="form-control blockCampo"
                   formControlName="deSap"
@@ -355,7 +457,7 @@
                 >
                   <option value="" disabled selected>Selecione Rubrica</option>
                   <option
-                    *ngFor="let a of listaRubricas"
+                    *ngFor="let a of dadosDeDominio.listaRubricas"
                     [ngValue]="a.nuRubrica"
                   >
                     {{ a.coRubrica + " | " + a.deRubrica }}
@@ -713,7 +815,6 @@
                       (click)="Excluir(planejamento)"
                       style="margin-right: 5px"
                     >
-
                       <i class="tim-icons icon-trash-simple"></i>
                       <span> Excluir</span>
                     </button>
@@ -769,131 +870,146 @@
     </div>
   </mat-tab>
 
-  <mat-tab label="Histórico" >
-
-
-
-      <p-card>
-
-      <h4 class="modal-title" style="padding: 0px 0px 24px 12px ;">
-        <b>Histórico</b> <br/> <small>Histórico Planejamento Orçamentário {{ this.planejamento?.coContrato }}</small>
+  <mat-tab label="Histórico">
+    <p-card>
+      <h4 class="modal-title" style="padding: 0px 0px 24px 12px">
+        <b>Histórico</b> <br />
+        <small
+          >Histórico Planejamento Orçamentário
+          {{ this.planejamento?.coContrato }}</small
+        >
       </h4>
 
       <mat-divider></mat-divider>
 
-        <div class="historico-container">
-
-          <div style="padding: 24px;">
-
+      <div class="historico-container">
+        <div style="padding: 24px">
           <p-dropdown
-          [options]="filtros"
-          [(ngModel)]="filtrosSelecionado"
-          placeholder="Operação "
-          (onChange)="filtrarEventos($event, 1)"
+            [options]="filtros"
+            [(ngModel)]="filtrosSelecionado"
+            placeholder="Operação "
+            (onChange)="filtrarEventos($event, 1)"
           >
           </p-dropdown>
-
-
-          </div>
-
-          <p-timeline
-            *ngIf="listaPlanejamentoItemHistorico.totalRegistros > 0"
-            [value]="listaPlanejamentoItemHistorico.listaHistorico"
-            align="alternate"
-            class="c-p-timeline"
-          >
-
-            <ng-template pTemplate="marker" let-event>
-              <span
-                class="custom-marker p-p-2 p-shadow-2"
-                [ngStyle]="{
-                  'background-color':
-                    event.tpOperacao === 'INCLUSAO'
-                      ? '#4CAF50'
-                      : event.tpOperacao === 'ALTERACAO'
-                      ? '#2196F3'
-                      : '#F44336'
-                }"
-              >
-                <i [ngClass]="event.tpOperacao === 'INCLUSAO' ? 'pi pi-plus' : event.tpOperacao === 'ALTERACAO' ? 'pi pi-pencil' : 'pi pi-trash'" style="color: white"></i>
-              </span>
-            </ng-template>
-
-
-            <ng-template pTemplate="content" let-event>
-              <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
-                <div class="card-content">
-                  <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
-                  <small *ngIf="event.coRubrica">{{event.coRubrica}} - {{event.deRubrica}}</small>
-                  <small  *ngIf="event.sgFilial">{{event.sgFilial}}</small>
-                  <small class="text-gray-500">
-                    {{ event.dhCadastro | date : "short" }} - {{ event.noUsuarioAlteracao }}
-                  </small>
-
-                  <div *ngIf="event.listaDiffs && event.tpOperacao != 'INCLUSAO' && event.tpOperacao != 'EXCLUSAO'" class="mt-2">
-
-                    <button
-                      [disabled]="false"
-                      class="btn-sm btn-default"
-                      type="submit"
-                      (click)="verDetalhes(event.listaDiffs)"
-                    >
-                      Ver detalhes
-                    </button>
-                  </div>
-                </div>
-              </p-card>
-            </ng-template>
-          </p-timeline>
-
-
-
-          <p-paginator
-            [rows]="filtroRegistros.tamanhoPagina"
-            [first]="0"
-            [rowsPerPageOptions]="[5, 10, 20]"
-            (onPageChange)="loadPage($event)"
-            [showCurrentPageReport]="true"
-            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
-            [totalRecords]="listaPlanejamentoItemHistorico.totalRegistros"
-          ></p-paginator>
         </div>
-      </p-card>
 
-
-      <p-dialog
-        header="Detalhes da Alteração"
-        [(visible)]="dialogVisible"
-        [modal]="true"
-        [draggable]="false"
-        [style]="{ width: '500px' }"
-        [closable]="true"
-      >
-        <p-table [value]="selectedDiff">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Campo</th>
-              <th>Antes</th>
-              <th>Depois</th>
-            </tr>
+        <p-timeline
+          *ngIf="listaPlanejamentoItemHistorico.totalRegistros > 0"
+          [value]="listaPlanejamentoItemHistorico.listaHistorico"
+          align="alternate"
+          class="c-p-timeline"
+        >
+          <ng-template pTemplate="marker" let-event>
+            <span
+              class="custom-marker p-p-2 p-shadow-2"
+              [ngStyle]="{
+                'background-color':
+                  event.tpOperacao === 'INCLUSAO'
+                    ? '#4CAF50'
+                    : event.tpOperacao === 'ALTERACAO'
+                      ? '#2196F3'
+                      : '#F44336',
+              }"
+            >
+              <i
+                [ngClass]="
+                  event.tpOperacao === 'INCLUSAO'
+                    ? 'pi pi-plus'
+                    : event.tpOperacao === 'ALTERACAO'
+                      ? 'pi pi-pencil'
+                      : 'pi pi-trash'
+                "
+                style="color: white"
+              ></i>
+            </span>
           </ng-template>
 
+          <ng-template pTemplate="content" let-event>
+            <p-card
+              [header]="
+                event.tpOperacao === 'INCLUSAO'
+                  ? 'INCLUSÃO'
+                  : event.tpOperacao === 'ALTERACAO'
+                    ? 'ALTERAÇÃO'
+                    : 'EXCLUSÃO'
+              "
+            >
+              <div class="card-content">
+                <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
+                <small *ngIf="event.coRubrica"
+                  >{{ event.coRubrica }} - {{ event.deRubrica }}</small
+                >
+                <small *ngIf="event.sgFilial">{{ event.sgFilial }}</small>
+                <small class="text-gray-500">
+                  {{ event.dhCadastro | date: "short" }} -
+                  {{ event.noUsuarioAlteracao }}
+                </small>
 
-      <ng-template pTemplate="body" let-campo>
-        <tr>
-          <td class="diff-row">
-            <strong>{{ campo.campo }}:</strong>
-          </td>
-          <td>
+                <div
+                  *ngIf="
+                    event.listaDiffs &&
+                    event.tpOperacao != 'INCLUSAO' &&
+                    event.tpOperacao != 'EXCLUSAO'
+                  "
+                  class="mt-2"
+                >
+                  <button
+                    [disabled]="false"
+                    class="btn-sm btn-default"
+                    type="submit"
+                    (click)="verDetalhes(event.listaDiffs)"
+                  >
+                    Ver detalhes
+                  </button>
+                </div>
+              </div>
+            </p-card>
+          </ng-template>
+        </p-timeline>
+
+        <p-paginator
+          [rows]="filtroRegistros.tamanhoPagina"
+          [first]="0"
+          [rowsPerPageOptions]="[5, 10, 20]"
+          (onPageChange)="loadPage($event)"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+          [totalRecords]="listaPlanejamentoItemHistorico.totalRegistros"
+        ></p-paginator>
+      </div>
+    </p-card>
+
+    <p-dialog
+      header="Detalhes da Alteração"
+      [(visible)]="dialogVisible"
+      [modal]="true"
+      [draggable]="false"
+      [style]="{ width: '500px' }"
+      [closable]="true"
+    >
+      <p-table [value]="selectedDiff">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Campo</th>
+            <th>Antes</th>
+            <th>Depois</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-campo>
+          <tr>
+            <td class="diff-row">
+              <strong>{{ campo.campo }}:</strong>
+            </td>
+            <td>
               <span class="antes">{{ campo.antes | formatDiff }}</span>
-          </td>
-          <td>
-               <span class="depois">{{ campo.depois | formatDiff }}</span>
-          </td>
-        </tr>
-      </ng-template>
-
-        </p-table>
-      </p-dialog>
+            </td>
+            <td>
+              <span class="depois">{{ campo.depois | formatDiff }}</span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-dialog>
   </mat-tab>
 </mat-tab-group>

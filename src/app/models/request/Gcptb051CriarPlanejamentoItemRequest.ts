@@ -12,6 +12,7 @@ export interface Gcptb051CriarPlanejamentoItemRequest {
     NuObjetivoPEI?: string;
     DeJustificativa?: string;
     DeObservacao?: string;
+    NuModalidade?: number;
     NuOrc?: number;
     NuSap?: number;
     DeSap?: string;

@@ -1,29 +1,19 @@
-import { ListarContratoPlanejamentoOrcamentarioResponse } from './../../../models/response/ListarContratoPlanejamentoOrcamentarioResponse';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
-  RequiredValidator,
   Validators,
 } from '@angular/forms';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import {
-  DemandaTipoResponse,
-  ObjetivoEstrategicoResponse,
   PlanejamentoOrcamentarioConsultaResponse,
-  PlanejamentoStatusResponse,
-  PlanejamentoTipoResponse
+  PlanejamentoStatusResponse
 } from 'src/app/models/generics/planejamento-response';
-import { Endpoints } from 'src/app/models/enums/endpoints';
 import { ApiResponse } from 'src/app/models/generics/api-response';
-import { Filial } from 'src/app/models/generics/filial';
-import { Rubrica } from 'src/app/models/generics/rubrica';
-import { PlanejamentoOrcamentarioItemRequest } from 'src/app/models/generics/planejamento-request';
-import { Orcamento } from 'src/app/models/generics/orcamento';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Select2Data } from 'ng-select2-component';
 import {
@@ -35,14 +25,12 @@ import {
 } from 'src/app/shared/services/token-storage.service';
 import Swal from 'sweetalert2';
 import { IUser } from 'src/app/models/DTOs/IUser';
-import { HttpClient } from '@angular/common/http';
-import { Gcptb060PlanejamentoItemHistoricoResponse } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoResponse';
 import { Gcptb063PrevisaoDesembolsoDTO } from 'src/app/models/DTOs/Gcptb063PrevisaoDesembolsoDTO';
 import { Gcpvw055DetalheTelaConsultaV2DTO } from 'src/app/models/DTOs/Gcpvw055DetalheTelaConsultaV2DTO';
-import { Gcpvw051VisaoContratoPlanejamentoOrcamentario } from 'src/app/models/generics/Gcpvw051VisaoContratoPlanejamentoOrcamentario';
 import { Gcptb051CriarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051CriarPlanejamentoItemRequest';
 import { Gcptb051AtualizarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051AtualizarPlanejamentoItemRequest';
 import { Gcptb060PlanejamentoItemHistoricoV2Response } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoV2Response';
+import { Gcpvw055DetalharPlanejamentoItensResponse } from 'src/app/models/response/Gcpvw055DetalharPlanejamentoItensResponse';
 
 @Component({
   selector: 'app-planejamento-cadastro-v2',
@@ -57,29 +45,24 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   @Input() public isEditable: boolean;
   @Input() public statusExercicio: string;
   @Input() public isCadastro: boolean;
-
-
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
-
-  public listaContratos: ListarContratoPlanejamentoOrcamentarioResponse[] = [];
   public previsoesExcluidas: {
   nuPlanejamentoItem: number;
-  nuPrevisaoDesembolso: number;
-}[] = [];
-  public listaFiliais: Filial[] = [];
-  public listaRubricas: Rubrica[] = [];
-  public listaTiposPlanejamento: PlanejamentoTipoResponse[] = [];
-  public listaTiposDemanda: DemandaTipoResponse[] = [];
-  public listaStatusPlanejamento: PlanejamentoStatusResponse[] = [];
-  public listaObjetivosEstrategicosPdti: ObjetivoEstrategicoResponse[] = [];
-  public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
+  nuPrevisaoDesembolso: number; } [] = [];
+
+  public dadosDeDominio: Gcpvw055DetalharPlanejamentoItensResponse = new Gcpvw055DetalharPlanejamentoItensResponse();
 
   public form: FormGroup;
 
 
   public isFlagContrato : boolean = false;
   public isFlagObjeto : boolean = false;
+  public isFlagPlanoDeAquisicao : boolean = false;
+  public isFlagTipoModalidade : boolean = false;
+  public isFlagVrGlobal : boolean = false;
+  public isFlagPrazoVigencia : boolean = false;
+  public isFlagDtPrevisaoSiclg : boolean = false;
 
   public totalRubrica: number;
   public selectTab: number = 0;
@@ -129,9 +112,6 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   public currentProfile: IUser;
   public isPerfilPrivilegiado = false;
   rubricasSelecionadas: string[] = [];
-  selectContratos: Select2Data;
-  selectedContrato: string = null;
-
   submitted = false;
 
   /**
@@ -185,23 +165,16 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     public token: TokenStorageService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.loading = true;
     this.obterPermissoes();
-    this.definirPageAction();
-    this.formulario();
-    this.obterContratos();
-    this.obterFiliais();
-    this.obterRubricas();
-    this.obterTiposPlanejamento();
-    this.obterTiposDemanda();
-    this.obterStatusPlanejamento();
-    this.obterObjetivosEstrategicosPdti();
-    this.obterObjetivosEstrategicosPei();
+    await this.definirPageAction();
+    await this.formulario();
+    await this.obterDadosDominio();
 
 
     if (this.planejamento?.nuOrc) {
-      this.obterPlanejamento();
+     await this.obterPlanejamento();
     } else {
 
       this.editarTextos();
@@ -210,7 +183,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
 
 
     if(this.tipoModal != 'adicionar'){
-    this.obterPlanejamentoItemHistorico();
+     await this.obterPlanejamentoItemHistorico();
     }
 
   }
@@ -297,9 +270,6 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.actionButtonLabel = element.actionButtonLabel;
   }
 
-  /*ATRIBUTOS FORMULARIO NOVO */
-
-  public formNovo: FormGroup;
 
   /* REFATORAÇÃO HISTORICO */
 
@@ -358,6 +328,20 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       // ]),
       nuSap: [''],
       deSap: [''],
+      nuModalidade: new FormControl(
+        { value: '', disabled: !this.isEditable },
+      ),
+      dePrazoVigencia: new FormControl(
+        { value: '', disabled: !this.isEditable },
+
+      ),
+      dtPrevisaoSiclg: new FormControl(
+        { value: '', disabled: !this.isEditable },
+
+      ),
+      vrGlobal: new FormControl(
+        { value: '', disabled: !this.isEditable },
+      ),
       previsoesDesembolso: new FormArray([]),
       vrTotalOrcamentoPlanejamento: new FormControl(
         { value: 0, disabled: true },
@@ -393,39 +377,11 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.previsoesDesembolso.push(this.novaPrevisaoDesembolso());
   }
 
-  // async excluirPrevisaoDesembolso(i: number) {
-
-  //     const alert = await Swal.fire({
-  //     title: '',
-  //     text: `Deseja realmente excluir rubrica: ${i + 1}?`,
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonText: 'Sim, deletar!',
-  //     cancelButtonText: 'Não, cancelar!',
-  //   }).then((result) => {
-  //     if (result.value) {
-  //       return true;
-  //     } else if (result.dismiss === Swal.DismissReason.cancel) {
-  //       return false;
-  //     }
-  //   });
-
-  //   if (alert) {
-  //     this.previsoesDesembolso.removeAt(i);
-  //     this.somaValorTotalPlanejamentoOrcamentario();
-  //   }
-
-  //   return;
-  // }
 
   novaPrevisaoDesembolso(): FormGroup {
     return new FormGroup({
       nuPlanejamentoItem: new FormControl(0, [Validators.required]),
       nuPrevisaoDesembolso: new FormControl(0, [Validators.required]),
-      // nuPlanejamentoOrcamentario: new FormControl(
-      //   this.planejamento?.nuPlanejamentoOrcamentario ?? 0,
-      //   [Validators.required]
-      // ),
       nuRubrica: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
       ]),
@@ -450,19 +406,68 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   onPlanejadoParaChange() {
     if (this.form.controls['nuDemandaTipo'].value == 4) {
       this.form.controls['icServicoContinuo'].setValue(1);
-    } else {
-      this.form.controls['icServicoContinuo'].setValue(0);
+      return;
     }
+    else if(this.form.controls['nuDemandaTipo'].value == 1){
+      this.isFlagPlanoDeAquisicao = true;
+      return
+    }
+
+     this.form.controls['icServicoContinuo'].setValue(0);
+     this.onPlanoDeAquisicaoChange(0);
+  }
+
+    onPlanoDeAquisicaoChange(event : any) {
+      switch(event.value){
+          case 1:
+            this.isFlagVrGlobal = true;
+            // this.isFlagDtPrevisaoSiclg = false;
+            // this.isFlagPrazoVigencia = false;
+            // this.isFlagTipoModalidade = false;
+            break;
+          case 2:
+            this.isFlagDtPrevisaoSiclg = true;
+            // this.isFlagVrGlobal = false;
+            // this.isFlagPrazoVigencia = false;
+            // this.isFlagTipoModalidade = false;
+            break;
+
+          case 3:
+            this.isFlagPrazoVigencia = true;
+            // this.isFlagVrGlobal = false;
+            // this.isFlagTipoModalidade = false;
+            // this.isFlagDtPrevisaoSiclg = false;
+
+            break;
+          case 4:
+            this.isFlagTipoModalidade = true;
+            // this.isFlagVrGlobal = false;
+            // this.isFlagPrazoVigencia = false;
+            // this.isFlagDtPrevisaoSiclg = false;
+            break;
+          default:
+            this.isFlagVrGlobal = false;
+            this.isFlagDtPrevisaoSiclg = false;
+            this.isFlagPrazoVigencia = false;
+            this.isFlagTipoModalidade = false;
+            this.isFlagPlanoDeAquisicao = false;
+            break;
+
+      }
+
   }
 
   onIsServicoContinuoChange($event: MatSlideToggleChange) {
     if ($event.checked) {
       this.form.controls['icServicoContinuo'].setValue(1);
       this.form.controls['nuDemandaTipo'].setValue(4)
+
     } else {
       this.form.controls['icServicoContinuo'].setValue(0);
       this.form.controls['nuDemandaTipo'].setValue(6)
     }
+
+    this.onPlanoDeAquisicaoChange(0);
   }
 
   onValorRubricaChange(i: number) {
@@ -598,6 +603,7 @@ async removerRubrica(nuRubrica: string) {
 
  public async obterPlanejamento(): Promise<void> {
   try {
+
     const response = await this.apiService.get<
       ApiResponse<Gcpvw055DetalheTelaConsultaV2DTO>
     >(
@@ -618,7 +624,6 @@ async removerRubrica(nuRubrica: string) {
 
     const planejamento = response.data;
 
-    console.log('Planejamento obtido:', planejamento);
 
     this.planejamento = planejamento as any; // mantém compatibilidade interna
 
@@ -652,6 +657,14 @@ async removerRubrica(nuRubrica: string) {
 
     this.form.controls['nuContrato'].setValue(planejamento.nuContrato);
     this.form.controls['coContrato'].setValue(planejamento.coContrato);
+
+    if(planejamento.nuTipoDemanda == 1){
+      this.isFlagPlanoDeAquisicao = true;
+    }
+
+    if(planejamento.nuModalidade){
+      this.isFlagTipoModalidade = true;
+    }
 
     // ===== Previsões =====
     this.previsoesDesembolso.clear();
@@ -739,7 +752,7 @@ async excluirPrevisaoDesembolso(i: number) {
 
   if (!confirm.isConfirmed) return;
 
-  if (nuPlanejamentoItem && nuPrevisaoDesembolso) {
+  if (nuPlanejamentoItem && (nuPrevisaoDesembolso != 0 && nuPrevisaoDesembolso != null)) {
     this.previsoesExcluidas.push({
       nuPlanejamentoItem,
       nuPrevisaoDesembolso
@@ -750,98 +763,35 @@ async excluirPrevisaoDesembolso(i: number) {
   this.somaValorTotalPlanejamentoOrcamentario();
 }
 
-
-  //alterar para ativos - ### inviabiliza visualizar os não ativos #### pediu ta feito
-  public async obterContratos(): Promise<void> {
+   public async obterDadosDominio(): Promise<Gcpvw055DetalharPlanejamentoItensResponse> {
     try {
-        const response = await this.apiService.get<
-          ApiResponse<ListarContratoPlanejamentoOrcamentarioResponse[]>
-        >(`v1/Contrato/lista-contrato-planejamento`);
-
-        this.listaContratos = response.data;
-
-    } catch (error) {}
-  }
-
-  public async obterFiliais(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<Filial[]>>(
-        `${Endpoints.URL_FILIAL}/unidade-demandante`
+      const response = await this.apiService.get<ApiResponse<Gcpvw055DetalharPlanejamentoItensResponse>>(
+        `v1/PlanejamentoOrcamentarioV/planejamento-item-dados-de-dominio`
       );
 
-    this.listaFiliais = (response.data ?? [])
-    .sort((a, b) => a.sgFilial.localeCompare(b.sgFilial))
-    .map(f => ({
-      ...f,
-      nuFilialEcoFilial: `${f.coFilial} - ${f.sgFilial}`
-    }));
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  public async obterRubricas(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<Rubrica[]>>(
-        `${Endpoints.URL_RUBRICA}/ativas`
-      );
-
-      this.listaRubricas = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-
-  public async obterTiposPlanejamento(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<PlanejamentoTipoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/tipos-planejamento`);
-
-      this.listaTiposPlanejamento = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  public async obterTiposDemanda(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<DemandaTipoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/tipos-demanda`);
-
-      this.listaTiposDemanda = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-
-  public async obterStatusPlanejamento(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<PlanejamentoStatusResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
-
-      this.listaStatusPlanejamento = response.data;
-      //conflito de regras - o backend impedi a visualização do status cancelado e encerrado
-      /*
-      if(this.isPerfilPrivilegiado){
-        this.listaStatusPlanejamento.push({
-          nuPlanejamentoStatus: 4,
-          noPlanejamentoStatus: 'Cancelado',
-        },{
-          nuPlanejamentoStatus: 6,
-          noPlanejamentoStatus: 'Encerrado',
-        });
+      if(!response.succeeded) {
+        this.toastr.error(
+          'Não foi possível obter os dados de domínio para este detalhamento.',
+          'Erro'
+        );
+        return;
       }
-      */
+
+      this.dadosDeDominio = response.data as Gcpvw055DetalharPlanejamentoItensResponse;
+      this.tratarStatusPlanejamento()
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+  public tratarStatusPlanejamento() {
+
       this.buildStatusRank_();
             //Define o campo como criado ao criar um novo contrato e desabilita o campo
             if (this.isCadastro) {
-              const criadoId = this.listaStatusPlanejamento.find(
+              const criadoId = this.dadosDeDominio.listaStatusPlanejamento.find(
                 s => s.noPlanejamentoStatus === 'Criado'
               )?.nuPlanejamentoStatus;
 
@@ -850,15 +800,14 @@ async excluirPrevisaoDesembolso(i: number) {
                 this.form.controls['nuPlanejamentoStatus'].disable();
               }
             }
-    } catch (error) {
-      console.error(error);
-    } finally {
+
       const c = this.form?.get('nuPlanejamentoStatus')?.value;
+
       if (c != null && c !== '') {
         this.originalStatusId = this.originalStatusId ?? c;
         this.setupNoRegressionGuard_();
       }
-    }
+
   }
   // TODO: Em outra oportunidade mover essa validacao para o Backend.
   private originalStatusId: number | null = null;
@@ -874,9 +823,9 @@ async excluirPrevisaoDesembolso(i: number) {
 
   private buildStatusRank_(): void {
     this.statusRank.clear();
-    if (!this.listaStatusPlanejamento?.length) return;
+    if (!this.dadosDeDominio.listaStatusPlanejamento?.length) return;
     const mapByName = new Map<string, number>();
-    this.listaStatusPlanejamento.forEach((s) =>
+    this.dadosDeDominio.listaStatusPlanejamento.forEach((s) =>
       mapByName.set(
         (s.noPlanejamentoStatus || '').trim(),
         s.nuPlanejamentoStatus
@@ -888,17 +837,6 @@ async excluirPrevisaoDesembolso(i: number) {
     });
   }
 
-  private getCurrentStatusId_(): number | null {
-    const v = this.form?.get('nuPlanejamentoStatus')?.value;
-    return v == null || v === '' ? this.originalStatusId : v;
-  }
-
-  private getNameById_(id: number): string {
-    return (
-      this.listaStatusPlanejamento?.find((s) => s.nuPlanejamentoStatus === id)
-        ?.noPlanejamentoStatus || ''
-    ).trim();
-  }
 
   private rank_(id: number): number {
     const r = this.statusRank.get(id);
@@ -937,9 +875,9 @@ async excluirPrevisaoDesembolso(i: number) {
 
   public get visibleStatusList(): PlanejamentoStatusResponse[] {
 
-    if (!this.listaStatusPlanejamento?.length) return [];
+    if (!this.dadosDeDominio.listaStatusPlanejamento?.length) return [];
 
-      return this.listaStatusPlanejamento;
+      return this.dadosDeDominio.listaStatusPlanejamento;
 
   }
 
@@ -977,43 +915,9 @@ async excluirPrevisaoDesembolso(i: number) {
     }
   }
 
-  public async obterObjetivosEstrategicosPdti(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<ObjetivoEstrategicoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/objetivos-estrategicos-pdti`);
-
-      // Limita o texto de cada objetivo a 70 caracteres
-      this.listaObjetivosEstrategicosPdti = response.data.map((obj) => ({
-        ...obj,
-        deObjetivoEstrategico:
-          obj.deObjetivoEstrategico?.slice(0, 70) +
-          (obj.deObjetivoEstrategico?.length > 70 ? '...' : ''),
-      }));
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  public async obterObjetivosEstrategicosPei(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<ObjetivoEstrategicoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/objetivos-estrategicos-pei`);
-
-      this.listaObjetivosEstrategicosPei = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   public async onSubmit(): Promise<void> {
     const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
-
-    console.log(totalContratacao,  "TESTE1000");
-    console.log(this.form,  "TESTE1000");
-
-    console.log()
 
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
@@ -1065,7 +969,7 @@ async excluirPrevisaoDesembolso(i: number) {
        const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
           const previsoes = obj.previsoesDesembolso;
 
-          console.log('TESTE 12', previsoes)
+
           for (var p in previsoes) {
             var item: Gcptb063PrevisaoDesembolsoDTO = {
 
@@ -1151,6 +1055,7 @@ async excluirPrevisaoDesembolso(i: number) {
             NuObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
             NuObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
+            NuModalidade: obj.nuModalidade,
             // NuOrc: this.planejamento?.nuOrc,
             // NuSap: Number(previsoes[p].nuSap),
             // DeSap: String(previsoes[p].deSap),
@@ -1191,6 +1096,8 @@ async excluirPrevisaoDesembolso(i: number) {
       this.isReadonly = false;
       await this.habilitarCampoRubrica(true);
       var obj = this.form.getRawValue();
+
+      console.log(obj, "TESTE")
 
 
       var totalRubrica = await this.ValidarValores(obj);
@@ -1336,6 +1243,10 @@ async excluirPrevisaoDesembolso(i: number) {
             NuObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
             NuObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
+            NuModalidade: obj.nuModalidade,
+            VrGlobal: this.parseDecimal(obj.vrGlobal),
+            DePrazoVigencia: obj.dePrazoVigencia,
+            DtPrevisaoSiclg: obj.dtPrevisaoSiclg,
 
           previsaoDesembolso: obj.previsoesDesembolso.map(p => ({
             NuPrevisaoDesembolso: p.nuPrevisaoDesembolso ?? 0,

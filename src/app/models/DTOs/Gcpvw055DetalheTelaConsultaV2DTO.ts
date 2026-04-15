@@ -50,5 +50,8 @@ export interface Gcpvw055DetalheTelaConsultaV2DTO {
   dhCadastro: string; // ISO Date
   icInclusaoManual: boolean;
 
+
+  nuModalidade: number | null;
+
   previsoesDesembolso: Gcptb063PrevisaoDesembolsoDTO[];
 }
