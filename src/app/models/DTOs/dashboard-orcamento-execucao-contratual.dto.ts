@@ -23,6 +23,7 @@ export interface Gcpvw024RelatorioOrcamentoDTO {
   vrGlobalVigente: number;
   vrRetidoVigente: number;
   vrExecutadoAno: number;
+  vrRetencaoAno: number;
 }
 
 export interface DashboardOrcamentoExecucaoContratualResponse {
