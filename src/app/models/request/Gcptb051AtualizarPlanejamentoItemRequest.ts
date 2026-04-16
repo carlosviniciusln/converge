@@ -17,6 +17,7 @@ export interface Gcptb051AtualizarPlanejamentoItemRequest {
     VrGlobal?: number;
     DePrazoVigencia?: number;
     DtPrevisaoSiclg?: string;
+    IcPlanoAquisicao?: boolean;
     NuOrc?: number;
     NuSap?: number;
     DeSap?: string;

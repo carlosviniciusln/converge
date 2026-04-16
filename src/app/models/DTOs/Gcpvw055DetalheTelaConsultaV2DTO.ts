@@ -52,6 +52,9 @@ export interface Gcpvw055DetalheTelaConsultaV2DTO {
 
 
   nuModalidade: number | null;
+  dePrazoVigencia: string | null;
+  dtPrevisaoSiclg : string | null;
+  vrGlobal : string | null;
 
   previsoesDesembolso: Gcptb063PrevisaoDesembolsoDTO[];
 }

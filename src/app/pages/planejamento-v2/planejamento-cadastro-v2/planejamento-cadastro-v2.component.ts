@@ -31,6 +31,7 @@ import { Gcptb051CriarPlanejamentoItemRequest } from 'src/app/models/request/Gcp
 import { Gcptb051AtualizarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051AtualizarPlanejamentoItemRequest';
 import { Gcptb060PlanejamentoItemHistoricoV2Response } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoV2Response';
 import { Gcpvw055DetalharPlanejamentoItensResponse } from 'src/app/models/response/Gcpvw055DetalharPlanejamentoItensResponse';
+import { TipoPlanoAquisicaoEnum } from 'src/app/models/enums/TipoPlanoAquisicaoEnum';
 
 @Component({
   selector: 'app-planejamento-cadastro-v2',
@@ -332,7 +333,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
         { value: '', disabled: !this.isEditable },
       ),
       dePrazoVigencia: new FormControl(
-        { value: '', disabled: !this.isEditable },
+        { value: '', disabled: !this.isEditable } ,
 
       ),
       dtPrevisaoSiclg: new FormControl(
@@ -342,6 +343,9 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       vrGlobal: new FormControl(
         { value: '', disabled: !this.isEditable },
       ),
+      tipoPlanoAquisicao: new FormControl(
+        { value: '', disabled: !this.isEditable },
+      ),
       previsoesDesembolso: new FormArray([]),
       vrTotalOrcamentoPlanejamento: new FormControl(
         { value: 0, disabled: true },
@@ -349,6 +353,19 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       ),
     });
   }
+
+  private tornarObrigatorio(controlName: string) {
+  const control = this.form.get(controlName);
+  control?.setValidators([Validators.required]);
+  control?.updateValueAndValidity();
+}
+
+private removerObrigatorio(controlName: string) {
+  const control = this.form.get(controlName);
+  control?.clearValidators();
+  control?.reset();
+  control?.updateValueAndValidity();
+}
 
   formularioLivre() {
     if (!this.form) return;
@@ -410,61 +427,141 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     }
     else if(this.form.controls['nuDemandaTipo'].value == 1){
       this.isFlagPlanoDeAquisicao = true;
+      this.tornarObrigatorio("tipoPlanoAquisicao");
       return
     }
 
      this.form.controls['icServicoContinuo'].setValue(0);
-     this.onPlanoDeAquisicaoChange(0);
+     this.isFlagPlanoDeAquisicao = false;
+     this.removerObrigatorio("tipoPlanoAquisicao")
   }
 
-    onPlanoDeAquisicaoChange(event : any) {
-      switch(event.value){
-          case 1:
-            this.isFlagVrGlobal = true;
-            // this.isFlagDtPrevisaoSiclg = false;
-            // this.isFlagPrazoVigencia = false;
-            // this.isFlagTipoModalidade = false;
-            break;
-          case 2:
-            this.isFlagDtPrevisaoSiclg = true;
-            // this.isFlagVrGlobal = false;
-            // this.isFlagPrazoVigencia = false;
-            // this.isFlagTipoModalidade = false;
-            break;
+  onPlanoDeAquisicaoChange(event: any): void {
+   const tipo = event.value;
 
-          case 3:
-            this.isFlagPrazoVigencia = true;
-            // this.isFlagVrGlobal = false;
-            // this.isFlagTipoModalidade = false;
-            // this.isFlagDtPrevisaoSiclg = false;
 
-            break;
-          case 4:
-            this.isFlagTipoModalidade = true;
-            // this.isFlagVrGlobal = false;
-            // this.isFlagPrazoVigencia = false;
-            // this.isFlagDtPrevisaoSiclg = false;
-            break;
-          default:
-            this.isFlagVrGlobal = false;
-            this.isFlagDtPrevisaoSiclg = false;
-            this.isFlagPrazoVigencia = false;
-            this.isFlagTipoModalidade = false;
-            this.isFlagPlanoDeAquisicao = false;
-            break;
+   this.resetarFlagsTipoPlano();
+   this.limparValidatorsTipoPlano();
 
-      }
+  switch (tipo) {
+    case 1: // Valor Global
+      this.isFlagVrGlobal = true;
+      this.tornarObrigatorio('vrGlobal');
+      break;
 
+    case 2: // Previsão SICLG
+      this.isFlagDtPrevisaoSiclg = true;
+      this.tornarObrigatorio('dtPrevisaoSiclg');
+      break;
+
+    case 3: // Prazo Vigência
+      this.isFlagPrazoVigencia = true;
+      this.tornarObrigatorio('dePrazoVigencia');
+      break;
+
+    case 4: // Tipo Modalidade
+      this.isFlagTipoModalidade = true;
+      this.tornarObrigatorio('nuModalidade');
+      break;
+
+    default:
+
+      break;
   }
+}
+
+private detectarTipoPlanoPorValor(): void {
+
+  const vrGlobal = this.form.get('vrGlobal')?.value;
+  const prazoVigencia = this.form.get('dePrazoVigencia')?.value;
+  const modalidade = this.form.get('nuModalidade')?.value;
+  const dtSiclg = this.form.get('dtPrevisaoSiclg')?.value;
+
+
+  this.resetarFlagsTipoPlano();
+  this.limparValidatorsTipoPlanoSemReset();
+
+  if (vrGlobal != null) {
+    this.isFlagVrGlobal = true;
+    this.tornarObrigatorio('vrGlobal');
+    this.form.get('tipoPlanoAquisicao')
+      ?.setValue(TipoPlanoAquisicaoEnum.ValorGlobal);
+    return;
+  }
+
+  if (dtSiclg != null) {
+    this.isFlagDtPrevisaoSiclg = true;
+    this.tornarObrigatorio('dtPrevisaoSiclg');
+    this.form.get('tipoPlanoAquisicao')
+      ?.setValue(TipoPlanoAquisicaoEnum.PrevisaoInclusaoSICLG);
+    return;
+  }
+
+  if (prazoVigencia != null) {
+    this.isFlagPrazoVigencia = true;
+    this.tornarObrigatorio('dePrazoVigencia');
+    this.form.get('tipoPlanoAquisicao')
+      ?.setValue(TipoPlanoAquisicaoEnum.PrazoVigenciaContrato);
+    return;
+  }
+
+  if (modalidade != null || this.planejamento?.noModalidade != null) {
+    this.isFlagTipoModalidade = true;
+    this.tornarObrigatorio('nuModalidade');
+    this.form.get('nuModalidade')?.setValue(this.dadosDeDominio.listaTiposModalidade.find(x => x.descricao == this.planejamento?.noModalidade).id)
+    this.form.get('tipoPlanoAquisicao')
+      ?.setValue(TipoPlanoAquisicaoEnum.TipoModalidade);
+    return;
+  }
+}
+
+
+private normalizarDataParaInput(data?: string): string | null {
+  if (!data) return null;
+  return data.split('T')[0];
+}
+
+
+
+  private resetarFlagsTipoPlano(): void {
+    this.isFlagVrGlobal = false;
+    this.isFlagDtPrevisaoSiclg = false;
+    this.isFlagPrazoVigencia = false;
+    this.isFlagTipoModalidade = false;
+  }
+
+
+  private limparValidatorsTipoPlano(): void {
+    this.removerObrigatorio('vrGlobal');
+    this.removerObrigatorio('dtPrevisaoSiclg');
+    this.removerObrigatorio('dePrazoVigencia');
+    this.removerObrigatorio('nuModalidade');
+  }
+
+  private limparValidatorsTipoPlanoSemReset(): void {
+  this.form.get('vrGlobal')?.clearValidators();
+  this.form.get('dePrazoVigencia')?.clearValidators();
+  this.form.get('nuModalidade')?.clearValidators();
+  this.form.get('dtPrevisaoSiclg')?.clearValidators();
+
+  this.form.get('vrGlobal')?.updateValueAndValidity();
+  this.form.get('dePrazoVigencia')?.updateValueAndValidity();
+  this.form.get('nuModalidade')?.updateValueAndValidity();
+  this.form.get('dtPrevisaoSiclg')?.updateValueAndValidity();
+}
+
+
 
   onIsServicoContinuoChange($event: MatSlideToggleChange) {
     if ($event.checked) {
       this.form.controls['icServicoContinuo'].setValue(1);
       this.form.controls['nuDemandaTipo'].setValue(4)
+      this.isFlagPlanoDeAquisicao = false;
 
     } else {
       this.form.controls['icServicoContinuo'].setValue(0);
-      this.form.controls['nuDemandaTipo'].setValue(6)
+      this.form.controls['nuDemandaTipo'].setValue(6);
+      this.isFlagPlanoDeAquisicao = false;
     }
 
     this.onPlanoDeAquisicaoChange(0);
@@ -643,9 +740,14 @@ async removerRubrica(nuRubrica: string) {
       noCriador: planejamento.coMatricula,
       deSap: planejamento.deSap,
       nuSap: planejamento.nuSap,
-
+      vrGlobal: planejamento.vrGlobal,
+      dePrazoVigencia: planejamento.dePrazoVigencia,
+      nuModalidade: planejamento.nuModalidade,
+      dtPrevisaoSiclg: this.normalizarDataParaInput(planejamento.dtPrevisaoSiclg),
       dhCadastro: this.formatarData(planejamento.dhCadastro),
     });
+
+     this.detectarTipoPlanoPorValor();
 
 
     //regra de bloqueio
@@ -662,9 +764,6 @@ async removerRubrica(nuRubrica: string) {
       this.isFlagPlanoDeAquisicao = true;
     }
 
-    if(planejamento.nuModalidade){
-      this.isFlagTipoModalidade = true;
-    }
 
     // ===== Previsões =====
     this.previsoesDesembolso.clear();
@@ -698,6 +797,15 @@ private formatarData(data: string | Date | null | undefined): string {
 
   return `${dia}/${mes}/${ano}`;
 }
+
+bloquearCaracteresInvalidos(event: KeyboardEvent): void {
+  const teclasBloqueadas = ['e', 'E', '+', '-', '.', ','];
+
+  if (teclasBloqueadas.includes(event.key)) {
+    event.preventDefault();
+  }
+}
+
 
 private criarFormGroupPrevisao(
   x: Gcptb063PrevisaoDesembolsoDTO
@@ -1056,6 +1164,11 @@ async excluirPrevisaoDesembolso(i: number) {
             NuObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
             NuModalidade: obj.nuModalidade,
+            VrGlobal: this.parseDecimal(obj.vrGlobal),
+            DePrazoVigencia: obj.dePrazoVigencia,
+            DtPrevisaoSiclg: obj.dtPrevisaoSiclg,
+            IcPlanoAquisicao: this.isFlagPlanoDeAquisicao ? true : null,
+
             // NuOrc: this.planejamento?.nuOrc,
             // NuSap: Number(previsoes[p].nuSap),
             // DeSap: String(previsoes[p].deSap),
@@ -1247,6 +1360,7 @@ async excluirPrevisaoDesembolso(i: number) {
             VrGlobal: this.parseDecimal(obj.vrGlobal),
             DePrazoVigencia: obj.dePrazoVigencia,
             DtPrevisaoSiclg: obj.dtPrevisaoSiclg,
+            IcPlanoAquisicao: this.isFlagPlanoDeAquisicao ? true : null,
 
           previsaoDesembolso: obj.previsoesDesembolso.map(p => ({
             NuPrevisaoDesembolso: p.nuPrevisaoDesembolso ?? 0,

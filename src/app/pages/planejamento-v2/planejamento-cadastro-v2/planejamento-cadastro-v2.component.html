@@ -55,7 +55,6 @@
                 "
               >
                 <label for="nuContrato">Nº Contrato:</label>
-
                 <p-dropdown
                   class="custom-dropdown"
                   [options]="dadosDeDominio.listaContratos"
@@ -108,7 +107,6 @@
                 ></textarea>
               </div>
               <div class="col-md-3 pr-0">
-
                 <label for="nuPlanejamentoTipo">Tipo de Planejamento:</label>
                 <input
                   type="text"
@@ -120,7 +118,7 @@
                   readonly
                 />
 
-
+                <!-- -->
                 <div *ngIf="isFlagPlanoDeAquisicao">
                   <label for="tipoPlanoAquisicao">
                     Tipo de Aquisição:<span class="span-red"> *</span>
@@ -129,6 +127,7 @@
                   <p-dropdown
                     class="custom-dropdown"
                     [autoDisplayFirst]="false"
+                    formControlName="tipoPlanoAquisicao"
                     (onChange)="onPlanoDeAquisicaoChange($event)"
                     [disabled]="!this.isEditable"
                     [options]="dadosDeDominio.listaTiposPlanoAquisicao"
@@ -136,14 +135,15 @@
                     optionValue="id"
                     placeholder="Selecione o Tipo"
                     [filter]="true"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.tipoPlanoAquisicao?.invalid,
+                    }"
                   >
                   </p-dropdown>
                 </div>
-
               </div>
 
               <div class="col-md-3 pr-0">
-
                 <label for="nuDemandaTipo">
                   Planejado Para:<span class="span-red"> *</span>
                 </label>
@@ -163,7 +163,6 @@
                 >
                 </p-dropdown>
 
-
                 <div *ngIf="isFlagTipoModalidade">
                   <label for="nuModalidade">
                     Tipo de Modalidade:<span class="span-red"> *</span>
@@ -177,54 +176,77 @@
                     optionValue="id"
                     placeholder="Selecione a Modalidade"
                     [filter]="true"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.nuModalidade?.invalid,
+                    }"
                   >
                   </p-dropdown>
                 </div>
 
-                 <div *ngIf="isFlagVrGlobal">
+                <div *ngIf="isFlagVrGlobal">
                   <label for="vrGlobal">
                     Valor Global:<span class="span-red"> *</span>
                   </label>
-                      <input
-                        currencyMask
-                        id="vrGlobal"
-                        formControlName="vrGlobal"
-                        [options]="{
-                          prefix: 'R$ ',
-                          thousands: '.',
-                          decimal: ',',
-                          precision: 2,
-                          allowNegative: false,
-                        }"
-                        placeholder="R$ 0,00"
-                        class="form-control"
-                        maxlength="21"
-                      />
+                  <input
+                    currencyMask
+                    id="vrGlobal"
+                    formControlName="vrGlobal"
+                    [options]="{
+                      prefix: 'R$ ',
+                      thousands: '.',
+                      decimal: ',',
+                      precision: 2,
+                      allowNegative: false,
+                    }"
+                    placeholder="R$ 0,00"
+                    class="form-control"
+                    maxlength="21"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.vrGlobal?.invalid,
+                    }"
+                  />
                 </div>
 
-                  <div *ngIf="isFlagPrazoVigencia">
+                <div *ngIf="isFlagPrazoVigencia">
                   <label for="dePrazoVigencia">
-                    Prazo Vigencia:<span class="span-red"> *</span>
+                    Prazo Vigencia (Meses):<span class="span-red"> *</span>
                   </label>
-                      <input
-                        type="number"
-                        id="dePrazoVigencia"
-                        formControlName="dePrazoVigencia"
-                        class="form-control"
-                        maxlength="3"
-                      />
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="dePrazoVigencia"
+                    min="1"
+                    max="999"
+                    step="1"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    (keydown)="bloquearCaracteresInvalidos($event)"
+                    placeholder="Ex: 60 Meses"
+                    formControlName="dePrazoVigencia"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.dePrazoVigencia?.invalid,
+                    }"
+                  />
                 </div>
 
-                  <div *ngIf="isFlagDtPrevisaoSiclg">
-                  <label for="dtPrevisaoSiclg">Data previsão SICLG:<span class="span-red"> *</span>
+                <div *ngIf="isFlagDtPrevisaoSiclg">
+                  <label for="dtPrevisaoSiclg"
+                    >Data de previsão SICLG:<span class="span-red"> *</span>
                   </label>
-                         <input formControlName="dtPrevisaoSiclg" id="dtPrevisaoSiclg" type="date" class="form-control" />
+                  <input
+                    formControlName="dtPrevisaoSiclg"
+                    id="dtPrevisaoSiclg"
+                    type="date"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.dtPrevisaoSiclg?.invalid,
+                    }"
+                  />
                 </div>
 
-
-
+                <!---->
               </div>
-
 
               <div class="col-md-1 pr-0">
                 <label for="nuAno">Exerc&iacute;cio:</label>
@@ -239,14 +261,44 @@
                   [readonly]="isReadonly"
                 />
               </div>
+
               <div class="col-md-2 pr-0">
+                <label>Status:</label>
+
+                <p-dropdown
+                  class="custom-dropdown"
+                  formControlName="nuPlanejamentoStatus"
+                  [options]="
+                    isCadastro
+                      ? dadosDeDominio.listaStatusPlanejamento
+                      : visibleStatusList
+                  "
+                  optionLabel="noPlanejamentoStatus"
+                  optionValue="nuPlanejamentoStatus"
+                  placeholder="Selecione Status"
+                  [filter]="true"
+                  [ngClass]="{
+                    'is-invalid': submitted && f.nuPlanejamentoStatus?.invalid,
+                  }"
+                >
+                  <ng-template pTemplate="item" let-item>
+                    <span
+                      *ngIf="!isCadastro || item.nuPlanejamentoStatus === 5"
+                    >
+                      {{ item.noPlanejamentoStatus }}
+                    </span>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+
+              <!-- <div class="col-md-2 pr-0">
                 <label for="nuPlanejamentoStatus">Status:</label>
                 <select
                   class="form-control"
                   id="nuPlanejamentoStatus"
                   formControlName="nuPlanejamentoStatus"
                   [ngClass]="{
-                    'is-invalid': submitted && f.nuPlanejamentoStatus.invalid,
+                    'is-invalid': submitted && f.nuPlanejamentoStatus?.invalid,
                   }"
                 >
                   <option value="" disabled selected>Selecione Status</option>
@@ -272,8 +324,35 @@
                     </ng-container>
                   </ng-template>
                 </select>
-              </div>
+              </div> -->
+
               <div class="col-md-3 pr-0">
+                <label>
+                  Objetivo Estratégico PDTIC:<span class="span-red"> *</span>
+                </label>
+
+                <p-dropdown
+                  class="custom-dropdown"
+                  formControlName="nuObjetivoEstrategicoPdti"
+                  [options]="dadosDeDominio.listaObjetivosEstrategicosPdti"
+                  optionLabel="deObjetivoEstrategico"
+                  optionValue="nuObjetivoEstrategicoPdti"
+                  placeholder="Selecione Objetivo Estratégico"
+                  [filter]="true"
+                  filterBy="deObjetivoEstrategico,coObjetivoEstrategico"
+                  [ngClass]="{
+                    'is-invalid':
+                      submitted && f.nuObjetivoEstrategicoPdti?.invalid,
+                  }"
+                >
+                  <ng-template pTemplate="item" let-item>
+                    {{ item.coObjetivoEstrategico }} -
+                    {{ item.deObjetivoEstrategico }}
+                  </ng-template>
+                </p-dropdown>
+              </div>
+
+              <!-- <div class="col-md-3 pr-0">
                 <label for="nuObjetivoEstrategicoPdti"
                   >Objetivo Estratégico PDTIC:<span class="span-red">
                     *</span
@@ -301,7 +380,35 @@
                     {{ a?.deObjetivoEstrategico }}
                   </option>
                 </select>
+              </div> -->
+
+              <div class="col-md-3 pr-0">
+                <label>
+                  Objetivo Estratégico PEI:<span class="span-red"> *</span>
+                </label>
+
+                <p-dropdown
+                  class="custom-dropdown"
+                  formControlName="nuObjetivoEstrategicoPei"
+                  [options]="dadosDeDominio.listaObjetivosEstrategicosPei"
+                  optionLabel="deObjetivoEstrategico"
+                  optionValue="nuObjetivoEstrategicoPei"
+                  placeholder="Selecione Objetivo Estratégico PEI"
+                  [filter]="true"
+                  [disabled]="!isEditable"
+                  filterBy="deObjetivoEstrategico,coObjetivoEstrategico"
+                  [ngClass]="{
+                    'is-invalid':
+                      submitted && f.nuObjetivoEstrategicoPei?.invalid,
+                  }"
+                >
+                  <ng-template pTemplate="item" let-item>
+                    {{ item.coObjetivoEstrategico }} -
+                    {{ item.deObjetivoEstrategico }}
+                  </ng-template>
+                </p-dropdown>
               </div>
+              <!--
               <div class="col-md-3 pr-0">
                 <label for="nuObjetivoEstrategico"
                   >Objetivo Estratégico PEI:<span class="span-red">
@@ -330,16 +437,16 @@
                     {{ a.deObjetivoEstrategico }}
                   </option>
                 </select>
-              </div>
+              </div> -->
 
-          <!-- <div class="col-md-3 pr-0">
+              <!-- <div class="col-md-3 pr-0">
             <label for="icDigital">Classifica&ccedil;&atilde;o Digital:<span class="span-red"> *</span></label>
             <select class="form-control" id="icDigital" formControlName="icDigital"
-              [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" (change)="onIsDigitalChange($event)">
+              [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" >
               <option value="" disabled selected>
                 Selecione a Classifica&ccedil;&atilde;o
               </option>
-              <option *ngFor="let a of listaDigital" [ngValue]="a.id">
+              <option *ngFor="let a of null" [ngValue]="a.id">
                 {{ a.tipo }}
               </option>
             </select>
@@ -369,7 +476,6 @@
                   >Unidade Demandante:<span class="span-red"> *</span></label
                 >
                 <p-dropdown
-                  class="custom-dropdown"
                   id="nuFilial"
                   [options]="dadosDeDominio.listaUnidadesDemandantes"
                   optionLabel="noFilialEcoFilial"
@@ -475,21 +581,6 @@
                     class="form-control"
                   />
                 </div>
-
-                <!-- <div class="col-md-3 pr-0">
-          <label for="nuSap">Número SAP :</label>
-          <input formControlName="nuSap"
-                 type="text"
-                 class="form-control blockCampo"
-                 oninput="this.value = this.value?.replace(/[^0-9]/g, '').slice(0, 10)"/>
-        </div>
-
-        <div class="col-md-3 pr-0">
-          <label for="deSaP">Tipo SAP:</label>
-          <input type="text"
-                 class="form-control blockCampo"
-                 formControlName="deSap"/>
-        </div> -->
 
                 <div class="col-md-1 pr-0" style="margin-top: 25px">
                   <button
@@ -784,10 +875,10 @@
                   class="form-control"
                 />
               </div>
-              <div class="col-md-9"></div>
-              <div class="col-md-3">
+
+              <div class="col-md-12">
                 <div
-                  class="col-md-12 pr-0 text-right"
+                  class="pr-0 text-right"
                   style="padding-top: 26px; padding-left: 0px"
                 >
                   <div *ngIf="!isEditable">

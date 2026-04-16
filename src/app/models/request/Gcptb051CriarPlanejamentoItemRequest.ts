@@ -13,6 +13,10 @@ export interface Gcptb051CriarPlanejamentoItemRequest {
     DeJustificativa?: string;
     DeObservacao?: string;
     NuModalidade?: number;
+    VrGlobal?: number;
+    DePrazoVigencia?: number;
+    DtPrevisaoSiclg?: string;
+    IcPlanoAquisicao?: boolean;
     NuOrc?: number;
     NuSap?: number;
     DeSap?: string;
