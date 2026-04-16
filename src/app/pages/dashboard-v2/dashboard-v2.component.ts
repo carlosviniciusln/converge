@@ -17,7 +17,7 @@ export class DashboardV2Component implements OnInit {
   public dadosDashboardOrcamentoExecucaoContratual: DashboardOrcamentoExecucaoContratualResponse | null = null;
   public loading = true;
   public selectedContrato: number | null = null;
-  public anoExercicio = new Date().getFullYear();
+  public anoExercicio: number = new Date().getFullYear();
   constructor(private apiService: ApiService, private router: Router) { }
 
   ngOnInit(): void {
@@ -75,7 +75,14 @@ export class DashboardV2Component implements OnInit {
       value: Number(nuContrato)
       }));
 
-      this.anoExercicio = this.dadosDashboardOrcamentoExecucaoContratual.dhUltimaAtualizacao ? new Date(this.dadosDashboardOrcamentoExecucaoContratual.dhUltimaAtualizacao).getFullYear() : new Date().getFullYear();
+
+      const dataUltimaAtualizacao = this.dadosDashboardOrcamentoExecucaoContratual?.dhUltimaAtualizacao;
+
+      this.anoExercicio = this.anoExercicio = dataUltimaAtualizacao &&
+       !isNaN(Date.parse(dataUltimaAtualizacao))
+       ? new Date(dataUltimaAtualizacao).getFullYear()
+       : new Date().getFullYear();
+
 
     }
 
