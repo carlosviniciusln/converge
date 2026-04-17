@@ -291,41 +291,6 @@
                 </p-dropdown>
               </div>
 
-              <!-- <div class="col-md-2 pr-0">
-                <label for="nuPlanejamentoStatus">Status:</label>
-                <select
-                  class="form-control"
-                  id="nuPlanejamentoStatus"
-                  formControlName="nuPlanejamentoStatus"
-                  [ngClass]="{
-                    'is-invalid': submitted && f.nuPlanejamentoStatus?.invalid,
-                  }"
-                >
-                  <option value="" disabled selected>Selecione Status</option>
-
-                  <ng-container *ngIf="isCadastro; else edicao">
-                    <ng-container
-                      *ngFor="let a of dadosDeDominio.listaStatusPlanejamento"
-                    >
-                      <option
-                        *ngIf="a.nuPlanejamentoStatus == 5"
-                        [ngValue]="a.nuPlanejamentoStatus"
-                      >
-                        {{ a.noPlanejamentoStatus }}
-                      </option>
-                    </ng-container>
-                  </ng-container>
-
-                  <ng-template #edicao>
-                    <ng-container *ngFor="let a of visibleStatusList">
-                      <option [ngValue]="a.nuPlanejamentoStatus">
-                        {{ a.noPlanejamentoStatus }}
-                      </option>
-                    </ng-container>
-                  </ng-template>
-                </select>
-              </div> -->
-
               <div class="col-md-3 pr-0">
                 <label>
                   Objetivo Estratégico PDTIC:<span class="span-red"> *</span>
@@ -352,35 +317,6 @@
                 </p-dropdown>
               </div>
 
-              <!-- <div class="col-md-3 pr-0">
-                <label for="nuObjetivoEstrategicoPdti"
-                  >Objetivo Estratégico PDTIC:<span class="span-red">
-                    *</span
-                  ></label
-                >
-                <select
-                  class="form-control cl-select-pdtic"
-                  id="nuObjetivoEstrategicoPdti"
-                  formControlName="nuObjetivoEstrategicoPdti"
-                  [ngClass]="{
-                    'is-invalid':
-                      submitted && f.nuObjetivoEstrategicoPdti?.invalid,
-                  }"
-                >
-                  <option value="" disabled selected>
-                    Selecione Objetivo Estratégico
-                  </option>
-                  <option
-                    *ngFor="
-                      let a of dadosDeDominio.listaObjetivosEstrategicosPdti
-                    "
-                    [value]="a?.nuObjetivoEstrategicoPdti"
-                  >
-                    {{ a?.coObjetivoEstrategico }} -
-                    {{ a?.deObjetivoEstrategico }}
-                  </option>
-                </select>
-              </div> -->
 
               <div class="col-md-3 pr-0">
                 <label>
@@ -408,49 +344,6 @@
                   </ng-template>
                 </p-dropdown>
               </div>
-              <!--
-              <div class="col-md-3 pr-0">
-                <label for="nuObjetivoEstrategico"
-                  >Objetivo Estratégico PEI:<span class="span-red">
-                    *</span
-                  ></label
-                >
-                <select
-                  class="form-control"
-                  id="nuObjetivoEstrategicoPei"
-                  formControlName="nuObjetivoEstrategicoPei"
-                  [ngClass]="{
-                    'is-invalid':
-                      submitted && f.nuObjetivoEstrategicoPei?.invalid,
-                  }"
-                >
-                  <option value="" disabled selected>
-                    Selecione Objetivo Estratégico PEI
-                  </option>
-                  <option
-                    *ngFor="
-                      let a of dadosDeDominio.listaObjetivosEstrategicosPei
-                    "
-                    [value]="a?.nuObjetivoEstrategicoPei"
-                  >
-                    {{ a.coObjetivoEstrategico }} -
-                    {{ a.deObjetivoEstrategico }}
-                  </option>
-                </select>
-              </div> -->
-
-              <!-- <div class="col-md-3 pr-0">
-            <label for="icDigital">Classifica&ccedil;&atilde;o Digital:<span class="span-red"> *</span></label>
-            <select class="form-control" id="icDigital" formControlName="icDigital"
-              [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" >
-              <option value="" disabled selected>
-                Selecione a Classifica&ccedil;&atilde;o
-              </option>
-              <option *ngFor="let a of null" [ngValue]="a.id">
-                {{ a.tipo }}
-              </option>
-            </select>
-          </div> -->
 
               <div class="col-md-9 pr-0">
                 <label for="deJustificativa"
@@ -1027,8 +920,8 @@
             >
               <div class="card-content">
                 <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
-                <small *ngIf="event.coRubrica"
-                  >{{ event.coRubrica }} - {{ event.deRubrica }}</small
+                <small *ngIf="event.descricaoRubrica"
+                  >{{ event.descricaoRubrica }}</small
                 >
                 <small *ngIf="event.sgFilial">{{ event.sgFilial }}</small>
                 <small class="text-gray-500">

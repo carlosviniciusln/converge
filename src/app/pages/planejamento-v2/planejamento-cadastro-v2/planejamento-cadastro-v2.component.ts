@@ -556,15 +556,15 @@ private normalizarDataParaInput(data?: string): string | null {
     if ($event.checked) {
       this.form.controls['icServicoContinuo'].setValue(1);
       this.form.controls['nuDemandaTipo'].setValue(4)
-      this.isFlagPlanoDeAquisicao = false;
 
     } else {
       this.form.controls['icServicoContinuo'].setValue(0);
       this.form.controls['nuDemandaTipo'].setValue(6);
-      this.isFlagPlanoDeAquisicao = false;
+
     }
 
-    this.onPlanoDeAquisicaoChange(0);
+      this.resetarFlagsTipoPlano();
+      this.isFlagPlanoDeAquisicao = false;
   }
 
   onValorRubricaChange(i: number) {
