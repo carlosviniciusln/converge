@@ -87,6 +87,7 @@ import { FormatDiffPipe } from 'src/app/core/pipes/format-diff.pipe';
 import { MenuModule } from 'primeng/menu';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardV2Component } from './dashboard-v2/dashboard-v2.component';
 import { ContratoComponent } from './contrato/contrato.component';
 import { PagamentoComponent } from './relatorio/pagamento/pagamento.component';
 import { AnaliticoComponent } from './relatorio/informe-mensal/analitico/analitico.component';
@@ -158,6 +159,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   ],
   declarations: [
     DashboardComponent,
+    DashboardV2Component,
     ContratoComponent,
     PagamentoComponent,
     ContratoVigenciaComponent,

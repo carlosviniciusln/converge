@@ -1,0 +1,143 @@
+<div class="content">
+  <div class="dash-wrapper" *ngIf="!loading">
+
+    <!-- ── HEADER ─────────────────────────────────────────── -->
+    <div class="dash-header">
+      <div class="dash-header__search">
+        <label class="search-label">Pesquise aqui um contrato</label>
+        <div class="search-field">
+          <p-dropdown [options]="dadosDashboardOrcamentoExecucaoContratual.contratosDropdown" [filter]="true"
+            [(ngModel)]="selectedContrato" optionLabel="label" optionValue="value"
+            (onChange)="goToContratoFromDropdown($event)" [showClear]="true" placeholder="Contrato"></p-dropdown>
+          <i class="pi pi-spin pi-spinner search-spinner" *ngIf="loading"></i>
+        </div>
+      </div>
+
+      <div class="dash-timestamp" *ngIf="dadosDashboardOrcamentoExecucaoContratual?.dhUltimaAtualizacao">
+        Atualizado em: <strong>{{ dadosDashboardOrcamentoExecucaoContratual?.dhUltimaAtualizacao }}</strong>
+      </div>
+    </div>
+
+    <!-- ── BODY ───────────────────────────────────────────── -->
+    <div class="dash-body">
+
+      <!-- ORÇAMENTO -->
+      <section class="dash-section">
+        <h2 class="section-title">Orçamento</h2>
+        <!-- CAPEX -->
+        <div class="kpi-group">
+          <div class="kpi-group-header kpi-group-header--capex">
+            <span class="kpi-group-badge">CAPEX | Investimento</span>
+          </div>
+          <div class="cards-grid" style="margin-top: 12px;">
+            <div class="kpi-card">
+              <span class="kpi-label">Dotação</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual.dashboardOrcamento.vrInvestimentoPlanejado| currency:'BRL'
+                }}</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Empenho</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento.vrInvestimentoExecutado| currency:'BRL'
+                }}</span>
+            </div>
+            <div class="kpi-card ">
+              <span class="kpi-label">% (Dotação × Empenho)</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.pcInvestimentoRealizado }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPEX -->
+        <div class="kpi-group">
+          <div class="kpi-group-header kpi-group-header--opex">
+            <span class="kpi-group-badge">OPEX | Custeio</span>
+          </div>
+          <div class="cards-grid">
+            <div class="kpi-card kpi-card--pct">
+              <span class="kpi-label ">Dotação</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.vrCusteioPlanejado| currency:'BRL'
+                }}</span>
+            </div>
+            <div class="kpi-card kpi-card--pct">
+              <span class="kpi-label">Empenho</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.vrCusteioExecutado | currency:'BRL'
+                }}</span>
+            </div>
+            <div class="kpi-card kpi-card--pct">
+              <span class="kpi-label">% (Dotação × Empenho)</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.pcCusteioRealizado }}%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXECUÇÃO CONTRATUAL -->
+      <section class="dash-section" style="height: 100%;">
+        <h2 class="section-title">Execução Contratual</h2>
+        <div class="kpi-group">
+          <div class="kpi-group-header kpi-group-header--capex">
+            <span class="kpi-group-badge">Contratos Vigentes: <span style="font-size: 1.3rem;">
+                {{dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual.qtContratoVigente}}
+              </span></span>
+          </div>
+          <div class="cards-grid">
+            <!-- <div class="kpi-card">
+          <span class="kpi-label">Quantidade</span>
+          <span class="kpi-value">{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual.qtContratoVigente }}</span>
+        </div> -->
+            <div class="kpi-card">
+              <span class="kpi-label">Total Contratado</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrGlobalVigente | currency:'BRL'
+                }}</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Total Executado</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrExecutadoVigente |
+                currency:'BRL' }}</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Total Retido</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrRetidoVigente | currency:'BRL'
+                }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-group">
+          <div class="kpi-group-header kpi-group-header--capex">
+            <span class="kpi-group-badge">Em {{anoExercicio}}</span>
+          </div>
+          <div class="cards-grid">
+            <div class="kpi-card">
+              <span class="kpi-label">Pagamentos no Ano</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtPagamentoAno | number:'1.0-0'
+                }}</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Total Pago no Ano</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrExecutadoAno | currency:'BRL'
+                }}</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Total Retido no Ano</span>
+              <span class="kpi-value">{{
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrRetencaoAno | currency:'BRL'
+                }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /.dash-body -->
+  </div><!-- /.dash-wrapper -->
+</div><!-- /.content -->

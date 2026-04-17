@@ -1,0 +1,277 @@
+/* ── WRAPPER ──────────────────────────────────────────────── */
+/* .content do tema já aplica padding: 78px 30px 30px 280px   */
+.dash-wrapper {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ── HEADER ───────────────────────────────────────────────── */
+.dash-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px 24px;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
+}
+
+.dash-header__search {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 0 380px;
+  max-width: 100%;
+}
+
+.search-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7a8d;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  ::ng-deep .p-dropdown {
+    width: 100%;
+    border-radius: 6px;
+    border-color: #d0d7e2;
+
+    &:not(.p-disabled).p-focus {
+      border-color: #0b63a4;
+      box-shadow: 0 0 0 2px rgba(11,99,164,0.15);
+    }
+  }
+}
+
+.search-spinner {
+  position: absolute;
+  right: 36px;
+  color: #0b63a4;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.dash-timestamp {
+  font-size: 0.8rem;
+  color: #8a96a3;
+  white-space: nowrap;
+  padding-bottom: 2px;
+
+  strong {
+    color: #4a5568;
+    font-weight: 600;
+  }
+}
+
+/* ── BODY ─────────────────────────────────────────────────── */
+.dash-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── SECTION ──────────────────────────────────────────────── */
+.dash-section {
+  background: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #6b7a8d;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eef0f4;
+}
+
+/* ── CARDS GRID ───────────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+/* ── CARD ─────────────────────────────────────────────────── */
+.kpi-card {
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f7f9fc;
+  border-top: 3px solid #0b63a4;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(11, 99, 164, 0.12);
+  }
+
+  &--pct {
+    border-top-color: #10b981;
+    background: #f0fdf8;
+  }
+
+  span{
+    height: 40px;
+  }
+}
+
+.kpi-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #7a8799;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  line-height: 1.35;
+}
+
+.kpi-value {
+  font-size: 12pt;
+  font-weight: 700;
+  color: #0b63a4;
+  line-height: 1.25;
+  word-break: break-word;
+  margin-top: 2px;
+  text-align: center;
+}
+
+.kpi-card--pct .kpi-value {
+  color: #059669;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .dash-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dash-header__search {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ── TOTAIS ORÇAMENTO ─────────────────────────────────────── */
+.orcamento-totais {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: linear-gradient(135deg, #0b63a4 0%, #0e4f85 100%);
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-top: 4px;
+}
+
+.orcamento-total-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.orcamento-total-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 24px;
+  flex-shrink: 0;
+}
+
+.orcamento-total-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.75);
+
+  .pi {
+    margin-right: 5px;
+    font-size: 0.75rem;
+  }
+}
+
+.orcamento-total-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+/* ── GRUPOS CAPEX / OPEX ──────────────────────────────────── */
+.kpi-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kpi-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0 6px;
+  border-bottom: 2px solid transparent;
+}
+
+// .kpi-group-header--capex {
+//   border-bottom-color: #0b63a4;
+// }
+
+// .kpi-group-header--opex {
+//   border-bottom-color: #10b981;
+// }
+
+.kpi-group-badge {
+  font-size: 0.80rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+
+  .kpi-group-header--capex & {
+    background: #e8f1fb;
+    color: #0b63a4;
+  }
+
+  .kpi-group-header--opex & {
+    background: #d1fae5;
+    color: #059669;
+  }
+}
+
+.kpi-group-desc {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #8a96a3;
+}
