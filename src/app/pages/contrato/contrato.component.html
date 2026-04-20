@@ -36,7 +36,7 @@
                                 <p-dropdown [options]="selectTiposTpContrato" [(ngModel)]="selectedTipoTpContrato"
                                     [filter]="true" optionLabel="label" optionValue="value"
                                     (onChange)="updateRelatorio($event, 3)" [showClear]="true"
-                                    placeholder="Tipo de Contrato"></p-dropdown>
+                                    placeholder="Tipo Objeto"></p-dropdown>
                             </div>
                             <div class="pl-1 pr-1">
                                 <p-dropdown [options]="selectTiposGestor" [(ngModel)]="selectedTipoGestor"
@@ -79,7 +79,7 @@
                         </th>
                         <th>
                             <div class="p-d-flex p-jc-between p-ai-center">
-                                Tipo de contrato
+                                Tipo Objeto
                             </div>
                         </th>
                         <th>
@@ -134,7 +134,7 @@
                             <span class="image-text">{{contrato.noEmpresa}}</span>
                         </td>
                         <td>
-                            <span class="p-column-title">Tipo de contrato</span>
+                            <span class="p-column-title">Tipo Objeto</span>
                             {{contrato.noContratoTipo}}
                         </td>
                         <td>

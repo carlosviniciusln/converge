@@ -38,7 +38,8 @@ export class DashboardV2Component implements OnInit {
 
   constructor(private apiService: ApiService, private router: Router, public token: TokenStorageService, private modalService: NgbModal) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.obterPermissoes();
     console.log('[DEBUG] DashboardV2Component init, currentUrl=', this.router.url);
     try {
       const url = this.router.url || window.location.hash || '';
@@ -52,8 +53,8 @@ export class DashboardV2Component implements OnInit {
       this.loadAll();
     }
 
-    this.obterPermissoes();
-    this.obterContratos();
+
+
   }
 
   /**
@@ -65,7 +66,8 @@ export class DashboardV2Component implements OnInit {
     this.loading = true;
     try {
       await Promise.all([
-        this.getOrcamentoExecucaoContratual()
+        this.getOrcamentoExecucaoContratual(),
+        this.obterContratos()
         // this.getAtualizacao()
       ]);
     } catch (err) {
