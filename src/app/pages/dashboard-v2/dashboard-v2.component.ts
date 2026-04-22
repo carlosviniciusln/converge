@@ -100,8 +100,11 @@ export class DashboardV2Component implements OnInit {
 
       this.contratosOrigem = response?.data?.contratos;
       this.quantidadeTotal = response.data.totalRecords;
-      // this.openModalRedirect(url);
-      this.openModalNovosContratos();
+
+      if(this.contratosOrigem && this.contratosOrigem.length > 0){
+        console.log('Contratos obtidos:', this.contratosOrigem);
+        this.openModalNovosContratos();
+      }
 
       this.loading = false;
     } catch (error) {

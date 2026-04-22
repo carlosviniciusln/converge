@@ -30,6 +30,7 @@ import { Gcpvw055DetalheTelaConsultaV2DTO } from 'src/app/models/DTOs/Gcpvw055De
 import { Gcptb051CriarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051CriarPlanejamentoItemRequest';
 import { Gcptb051AtualizarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051AtualizarPlanejamentoItemRequest';
 import { Gcptb060PlanejamentoItemHistoricoV2Response } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoV2Response';
+import { Gcptb060DiffRegistros } from 'src/app/models/DTOs/Gcptb060DiffRegistros';
 import { Gcpvw055DetalharPlanejamentoItensResponse } from 'src/app/models/response/Gcpvw055DetalharPlanejamentoItensResponse';
 import { TipoPlanoAquisicaoEnum } from 'src/app/models/enums/TipoPlanoAquisicaoEnum';
 
@@ -130,6 +131,8 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     NuOrc: null
   };
 
+  // PASSAR PARA ENUM
+
   public filtros: any = [
     {
       label: 'Todos',
@@ -151,7 +154,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
 
   listaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoV2Response = new Gcptb060PlanejamentoItemHistoricoV2Response();
   dialogVisible = false;
-  selectedDiff: any = null;
+  selectedDiff: Gcptb060DiffRegistros[] | null = null;
   filtrosSelecionado: string | null = null;
 
   /**
@@ -884,6 +887,7 @@ async excluirPrevisaoDesembolso(i: number) {
         );
         return;
       }
+
 
       this.dadosDeDominio = response.data as Gcpvw055DetalharPlanejamentoItensResponse;
       this.tratarStatusPlanejamento()
