@@ -767,6 +767,10 @@ async removerRubrica(nuRubrica: string) {
       this.isFlagPlanoDeAquisicao = true;
     }
 
+    if(planejamento.nuContrato != null && planejamento.nuContrato != 0){
+      this.isFlagContrato = true;
+    }
+
 
     // ===== Previsões =====
     this.previsoesDesembolso.clear();
