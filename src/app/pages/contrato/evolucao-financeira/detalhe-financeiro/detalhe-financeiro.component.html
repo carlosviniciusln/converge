@@ -11,10 +11,10 @@
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
               <div class="col-md-9 col-sm-6"><b>{{ ContratoV2?.nO_FORNECEDOR }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">CNPJ:</div>
               <div class="col-md-3 col-sm-6"><b>{{ ContratoV2?.cO_CNPJ }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Pagamento Artigo 81?</div>
               <div class="col-md-3 col-sm-6">
                 <b>
@@ -24,55 +24,55 @@
                 </b>
               </div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Status:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.iC_ATIVO ? "Ativo" : "Encerrado" }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Unidade Demandante:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.filial }} - {{ this.ContratoV2?.sG_FILIAL }}</b></div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Data Início (1° vigência):</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.dT_INICIO | date : "dd/MM/yyyy" }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Data Fim (Vigência Atual):</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.dT_TERMINO | date : "dd/MM/yyyy" }}</b></div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Valor Global Total:</div>
               <div class="col-md-3 col-sm-6"><b>{{ somaVigencias(this.Contrato?.gcptb006Vigencias) | currency : "BRL"
                   }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Valor Global Vigente:</div>
               <div class="col-md-3 col-sm-6"><b>{{ ContratoV2?.vR_GLOBAL_VIGENTE | currency : "BRL" }}</b></div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Dia Pagamento Fatura:</div>
               <div class="col-md-3 col-sm-6"><b>{{ ContratoV2?.diA_PAGAMENTO_FATURA }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Dia Fechamento Fatura:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.diA_FECHAMENTO_FATURA }}</b></div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Fiscal Técnico (Demandante):</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.nO_FISCAL_TEC ?? 'Não Informado' }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Fiscal Administrativo (CEGTI):</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.nO_FISCAL_ADM ?? 'Não Informado' }}</b></div>
-  
+
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Cadastrado/Alterado por:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.cO_MATRICULA_CADASTRO }} - {{
                   this.ContratoV2?.nO_USUARIO_CADASTRO }}</b></div>
-  
-              <div class="col-md-3 col-sm-6 text-right">Tipo de Contrato:</div>
+
+              <div class="col-md-3 col-sm-6 text-right">Tipo Objeto:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.contratO_TIPO }}</b></div>
             </div>
             <br />
@@ -102,7 +102,7 @@
               <div class="col-md-2">
                 <b>{{ totalCurrentVigencia | currency : "BRL" }}</b>
               </div>
-  
+
               <div class="col-md-12" *ngFor="let rubrica of  ordenaVigenciaAtualRubricas(currentVigenciaRubricas)">
                 <div class="row">
                   <div class="col-md-10">
@@ -113,11 +113,11 @@
                   </div>
                 </div>
               </div>
-  
+
               <hr class="custom-hr-large" />
-  
+
             </div>
-  
+
             <div class="row" *ngFor="
                 let vigencia of this.Contrato?.gcptb006Vigencias;
                 let i = index
@@ -145,7 +145,7 @@
               <div class="col-md-2">
                 <b>{{ vigencia.vrGlobal | currency : "BRL" }}</b>
               </div>
-  
+
               <div class="col-md-12" *ngFor="
                   let rubrica of ordenaVigenciaRubricas(vigencia.gcptb017VigenciaRubricas);
                   let i = index
@@ -167,7 +167,7 @@
           </div>
         </div>
 
-        
+
     <div *ngFor="let vigenciaRubrica of ListaVigenciasRubricas let i = index">
       <div class="card">
 
@@ -198,13 +198,13 @@
         <div class="col-md-2 text-right">
             <b>{{ vigenciaRubrica.vigencia.totaL_CONTRATO
                 | currency: "BRL" }}</b>
-           
+
         </div>
         <div class="col-md-2 text-right">Término Vigência:</div>
         <div class="col-md-2 text-left">
             <b>{{ vigenciaRubrica.vigencia.fiM_VIGENCIA |
                 date: "dd/MM/yyyy" }}</b>
-          
+
         </div>
         <div class="col-md-6 text-right">Valor Total da Vigência - EXECUTADO:</div>
         <div class="col-md-2 text-right">
@@ -216,14 +216,14 @@
         <div class="col-md-3 text-left">
             <b >{{
                 vigenciaRubrica.vigencia.prazO_REMANESCENTE }}</b>
-          
+
         </div>
         <div class="col-md-5 text-right">Saldo Atual da Vigência (Contratado - Executado):
         </div>
         <div class="col-md-2 text-right">
             <b >{{ vigenciaRubrica.vigencia.saldO_VIGENCIA
                 | currency: "BRL" }}</b>
-          
+
         </div>
         <div class="col-md-6 text-right">
             <small>
@@ -233,7 +233,7 @@
                 <b>{{
                     vigenciaRubrica.vigencia.fiM_VIGENCIA | date: "dd/MM/yyyy"
                     }}</b>
-              
+
             </small>
         </div>
         <div class="col-md-4 text-right">Média Mensal Estimada:
@@ -250,7 +250,7 @@
         <div class="col-md-2 text-right">
             <b>{{vigenciaRubrica.vigencia.mediA_ULTIMOS_3_MESES
                 | currency: "BRL"}}</b>
-     
+
         </div>
         <div class="col-md-5 d-flex justify-content-end">
             <div class="col-md-12"
@@ -335,7 +335,7 @@
                                   <tr class="template-body">
                                       <td>
                                           <button type="button" pButton pRipple
-                                              [pRowToggler]="evolucao"             
+                                              [pRowToggler]="evolucao"
                                               class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span
                                                   [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
                                       </td>
@@ -454,7 +454,7 @@
 </div> -->
 
 
- 
- 
+
+
 
 

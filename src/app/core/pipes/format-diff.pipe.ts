@@ -9,6 +9,16 @@ export class FormatDiffPipe implements PipeTransform {
   constructor(private currency: CurrencyPipe) {}
 
   transform(value: any, nullPlaceholder: string = '—'): string {
+
+    if (typeof value === 'string' && this.isBRDate(value)) {
+       return value.substring(0, 10); // Retorna apenas a parte da data (dd/MM/yyyy)
+    }
+
+
+   if (typeof value === 'string' && this.isPureInteger(value)) {
+     return value.trim();
+   }
+
     // 1) Nulos/vazios
     if (value === null || value === undefined) return nullPlaceholder;
     if (typeof value === 'string' && value.trim() === '') return nullPlaceholder;
@@ -32,6 +42,19 @@ export class FormatDiffPipe implements PipeTransform {
     return String(value);
   }
 
+   /**
+  * Verifica se a string está no formato BR de data:
+  *  - dd/MM/yyyy
+  *  - dd/MM/yyyy HH:mm:ss
+  */
+  private isBRDate(value: string): boolean {
+    if (!value) return false;
+
+    return /^(\d{2})\/(\d{2})\/(\d{4})(?:\s+\d{2}:\d{2}:\d{2})?$/.test(
+      value.trim()
+    );
+  }
+
   /** Formata como BRL com 2 casas, ex.: R$ 1.234,56 */
   private formatBRL(n: number): string {
     // "symbol" -> R$ com espaço; se não quiser espaço, remova abaixo
@@ -39,6 +62,11 @@ export class FormatDiffPipe implements PipeTransform {
     // Se preferir sem espaço: return out.replace('R$ ', 'R$');
     return out;
   }
+
+
+private isPureInteger(value: string): boolean {
+  return /^-?\d+$/.test(value.trim());
+}
 
   /**
    * Converte várias formas de string numérica para number.
