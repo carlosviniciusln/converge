@@ -431,15 +431,35 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     }
     else if(this.form.controls['nuDemandaTipo'].value == 1){
       this.isFlagPlanoDeAquisicao = true;
+      this.planoAquisicaoObrigatorio();
+      return
     }
-
 
      this.form.controls['icServicoContinuo'].setValue(0);
      this.isFlagPlanoDeAquisicao = false;
+     this.limparValidatorsTipoPlano();
 
   }
 
+  private tornarObrigatorio(controlName: string) {
+      const control = this.form.get(controlName);
+      control?.setValidators([Validators.required]);
+      control?.updateValueAndValidity();
+  }
 
+  private removerObrigatorio(controlName: string) {
+    const control = this.form.get(controlName);
+    control?.clearValidators();
+    control?.reset();
+    control?.updateValueAndValidity();
+  }
+
+    private limparValidatorsTipoPlano(): void {
+    this.removerObrigatorio('vrGlobal');
+    this.removerObrigatorio('dtPrevisaoSiclg');
+    this.removerObrigatorio('dePrazoVigencia');
+    this.removerObrigatorio('nuModalidade');
+  }
 
 private normalizarDataParaInput(data?: string): string | null {
   if (!data) return null;
@@ -655,17 +675,16 @@ async removerRubrica(nuRubrica: string) {
 
     if(planejamento.nuTipoDemanda == 1){
       this.isFlagPlanoDeAquisicao = true;
+      this.planoAquisicaoObrigatorio()
     }
 
     if(planejamento.nuContrato != null && planejamento.nuContrato != 0){
       this.isFlagContrato = true;
     }
 
-    if(planejamento.nuModalidade != null || planejamento.nuModalidade != 0){
-      this.form.get('nuModalidade')?.setValue(this.dadosDeDominio.listaTiposModalidade.find(x => x.descricao == this.planejamento?.noModalidade).id)
+    if(this.planejamento?.noModalidade != null){
+      this.form.get('nuModalidade')?.setValue(this.dadosDeDominio.listaTiposModalidade.find(x => x.descricao == this.planejamento?.noModalidade).id);
     }
-
-
 
     // ===== Previsões =====
     this.previsoesDesembolso.clear();
@@ -686,6 +705,30 @@ async removerRubrica(nuRubrica: string) {
 
   this.editarTextos();
 }
+
+private planoAquisicaoObrigatorio(): void {
+  this.limparValidatorsTipoPlanoSemReset();
+  this.tornarObrigatorio('vrGlobal');
+  this.tornarObrigatorio('dtPrevisaoSiclg');
+  this.tornarObrigatorio('dePrazoVigencia');
+  this.tornarObrigatorio('nuModalidade');
+}
+
+
+  private limparValidatorsTipoPlanoSemReset(): void {
+  this.form.get('vrGlobal')?.clearValidators();
+  this.form.get('dePrazoVigencia')?.clearValidators();
+  this.form.get('nuModalidade')?.clearValidators();
+  this.form.get('dtPrevisaoSiclg')?.clearValidators();
+
+  this.form.get('vrGlobal')?.updateValueAndValidity();
+  this.form.get('dePrazoVigencia')?.updateValueAndValidity();
+  this.form.get('nuModalidade')?.updateValueAndValidity();
+  this.form.get('dtPrevisaoSiclg')?.updateValueAndValidity();
+}
+
+
+
 
 private formatarData(data: string | Date | null | undefined): string {
   if (!data) return '';
