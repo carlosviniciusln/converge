@@ -334,21 +334,21 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       deSap: [''],
       nuModalidade: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.required]
+        // [Validators.required]
       ),
       dePrazoVigencia: new FormControl(
         { value: '', disabled: !this.isEditable } ,
-        [Validators.required]
+        // [Validators.required]
 
       ),
       dtPrevisaoSiclg: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.required]
+        // [Validators.required]
 
       ),
       vrGlobal: new FormControl(
         { value: '', disabled: !this.isEditable },
-        [Validators.required]
+        // [Validators.required]
       ),
       previsoesDesembolso: new FormArray([]),
       vrTotalOrcamentoPlanejamento: new FormControl(
