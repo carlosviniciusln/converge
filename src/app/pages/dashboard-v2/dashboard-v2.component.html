@@ -7,7 +7,7 @@
         <label class="search-label">Pesquise aqui um contrato</label>
         <div class="search-field">
           <p-dropdown [options]="dadosDashboardOrcamentoExecucaoContratual.contratosDropdown" [filter]="true"
-            [(ngModel)]="selectedContrato" optionLabel="label" optionValue="value"
+            [(ngModel)]="selectedContrato" optionLabel="label" optionValue="value" noresultslabel="Nenhum contrato encontrado"
             (onChange)="goToContratoFromDropdown($event)" [showClear]="true" placeholder="Contrato"></p-dropdown>
           <i class="pi pi-spin pi-spinner search-spinner" *ngIf="loading"></i>
         </div>

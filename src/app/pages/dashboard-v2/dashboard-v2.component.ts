@@ -38,7 +38,8 @@ export class DashboardV2Component implements OnInit {
 
   constructor(private apiService: ApiService, private router: Router, public token: TokenStorageService, private modalService: NgbModal) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.obterPermissoes();
     console.log('[DEBUG] DashboardV2Component init, currentUrl=', this.router.url);
     try {
       const url = this.router.url || window.location.hash || '';
@@ -52,8 +53,8 @@ export class DashboardV2Component implements OnInit {
       this.loadAll();
     }
 
-    this.obterPermissoes();
-    this.obterContratos();
+
+
   }
 
   /**
@@ -65,7 +66,8 @@ export class DashboardV2Component implements OnInit {
     this.loading = true;
     try {
       await Promise.all([
-        this.getOrcamentoExecucaoContratual()
+        this.getOrcamentoExecucaoContratual(),
+        this.obterContratos()
         // this.getAtualizacao()
       ]);
     } catch (err) {
@@ -98,8 +100,11 @@ export class DashboardV2Component implements OnInit {
 
       this.contratosOrigem = response?.data?.contratos;
       this.quantidadeTotal = response.data.totalRecords;
-      // this.openModalRedirect(url);
-      this.openModalNovosContratos();
+
+      if(this.contratosOrigem && this.contratosOrigem.length > 0){
+        console.log('Contratos obtidos:', this.contratosOrigem);
+        this.openModalNovosContratos();
+      }
 
       this.loading = false;
     } catch (error) {
