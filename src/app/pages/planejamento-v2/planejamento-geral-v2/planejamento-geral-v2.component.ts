@@ -114,13 +114,14 @@ export class PlanejamentoGeralV2Component implements OnInit {
           this.downloadPlanejamentoDesembolso();
         },
       },
-      // {
-      //   label: 'Gerar Atualização SAP',
-      //   icon: 'tim-icons icon-cloud-download-93',
-      //   command: () => {
-      //     this.exportarExcelAtualizacaoSAP(this.anoExercicio);
-      //   },
-      // },
+      {
+        label: 'Gerar Atualização SAP',
+        icon: 'tim-icons icon-cloud-download-93',
+        command: () => {
+          // this.exportarExcelAtualizacaoSAP(this.anoExercicio);
+          this.downloadPlanejamentoDesembolso();
+        },
+      },
       // {
       //   label: 'Upload de Limites',
       //   icon: 'tim-icons icon-upload',

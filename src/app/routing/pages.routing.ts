@@ -31,6 +31,7 @@ import { DevelopComponent } from 'src/app/components/develop/develop.component';
 import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
 import { RelatorioContratoComponent } from 'src/app/pages/relatorio/relatorio-contrato/relatorio-contrato.component';
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
+import { DashboardV2Component } from '../pages/dashboard-v2/dashboard-v2.component';
 import { ContratoComponent } from '../pages/contrato/contrato.component';
 import { DotacaoComponent } from '../pages/dotacao/dotacao.component';
 import { PlanejamentoV2Component } from '../pages/planejamento-v2/planejamento-v2.component';
@@ -40,7 +41,8 @@ import { PlanejamentoGeralV2Component } from '../pages/planejamento-v2/planejame
 
 export const PagesRoutes: Routes = [
   { path: 'develop', component: DevelopComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard-old', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardV2Component },
   { path: 'contrato', component: ContratoComponent },
   { path: 'contrato/atas', component: ContratoComponent },
   { path: 'contrato/create', component: ContratoCadastroComponent },

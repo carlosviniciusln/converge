@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from "@angular/core";
+import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, APP_INITIALIZER } from "@angular/core";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { FileUploadModule } from 'primeng/fileupload';
@@ -13,7 +13,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AppRouting } from "./routing/app.routing";
 
 import ptBr from '@angular/common/locales/pt';
-import { CommonModule, CurrencyPipe, DecimalPipe, registerLocaleData } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe, DatePipe, registerLocaleData } from '@angular/common';
 import { LoaderInterceptor } from "./core/interceptors/loader.interceptor";
 import { ErrorInterceptor } from "./core/interceptors/error.interceptor";
 
@@ -153,6 +153,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
   providers: [
     AuthGuard,
     CurrencyPipe,
+    DatePipe,
     DecimalPipe,
     JwtHelperService,
     MessageService,
@@ -179,6 +180,6 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     // }
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class AppModule { }
