@@ -8,8 +8,6 @@ import { Gcptb026ObjetivoEstrategicoDTO } from "../DTOs/Gcptb026ObjetivoEstrateg
 import { EnumDTO } from "../enums/EnumDTO";
 
 export class Gcpvw055DetalharPlanejamentoItensResponse {
-
-  listaTiposPlanoAquisicao: EnumDTO[];
   listaTiposModalidade: EnumDTO[];
   listaUnidadesDemandantes: Gcptb005FilialDTO[] = [];
   listaRubricas: Gcptb003RubricaDTO[] = [];
