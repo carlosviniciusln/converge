@@ -106,7 +106,7 @@
                   class="form-control"
                 ></textarea>
               </div>
-              <div class="col-md-3 pr-0">
+              <div class="col-md-3 pr-0" style="align-content: center;">
                 <label for="nuPlanejamentoTipo">Tipo de Planejamento:</label>
                 <input
                   type="text"
@@ -118,32 +118,9 @@
                   readonly
                 />
 
-                <!-- -->
-                <div *ngIf="isFlagPlanoDeAquisicao">
-                  <label for="tipoPlanoAquisicao">
-                    Tipo de Aquisição:<span class="span-red"> *</span>
-                  </label>
-
-                  <p-dropdown
-                    class="custom-dropdown"
-                    [autoDisplayFirst]="false"
-                    formControlName="tipoPlanoAquisicao"
-                    (onChange)="onPlanoDeAquisicaoChange($event)"
-                    [disabled]="!this.isEditable"
-                    [options]="dadosDeDominio.listaTiposPlanoAquisicao"
-                    optionLabel="descricao"
-                    optionValue="id"
-                    placeholder="Selecione o Tipo"
-                    [filter]="true"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.tipoPlanoAquisicao?.invalid,
-                    }"
-                  >
-                  </p-dropdown>
-                </div>
               </div>
 
-              <div class="col-md-3 pr-0">
+              <div class="col-md-3 pr-0" style="align-content: center;">
                 <label for="nuDemandaTipo">
                   Planejado Para:<span class="span-red"> *</span>
                 </label>
@@ -163,89 +140,7 @@
                 >
                 </p-dropdown>
 
-                <div *ngIf="isFlagTipoModalidade">
-                  <label for="nuModalidade">
-                    Tipo de Modalidade:<span class="span-red"> *</span>
-                  </label>
 
-                  <p-dropdown
-                    class="custom-dropdown"
-                    formControlName="nuModalidade"
-                    [options]="dadosDeDominio.listaTiposModalidade"
-                    optionLabel="descricao"
-                    optionValue="id"
-                    placeholder="Selecione a Modalidade"
-                    [filter]="true"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.nuModalidade?.invalid,
-                    }"
-                  >
-                  </p-dropdown>
-                </div>
-
-                <div *ngIf="isFlagVrGlobal">
-                  <label for="vrGlobal">
-                    Valor Global:<span class="span-red"> *</span>
-                  </label>
-                  <input
-                    currencyMask
-                    id="vrGlobal"
-                    formControlName="vrGlobal"
-                    [options]="{
-                      prefix: 'R$ ',
-                      thousands: '.',
-                      decimal: ',',
-                      precision: 2,
-                      allowNegative: false,
-                    }"
-                    placeholder="R$ 0,00"
-                    class="form-control"
-                    maxlength="21"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.vrGlobal?.invalid,
-                    }"
-                  />
-                </div>
-
-                <div *ngIf="isFlagPrazoVigencia">
-                  <label for="dePrazoVigencia">
-                    Prazo Vigencia (Meses):<span class="span-red"> *</span>
-                  </label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="dePrazoVigencia"
-                    min="1"
-                    max="999"
-                    step="1"
-                    inputmode="numeric"
-                    pattern="[0-9]*"
-                    (keydown)="bloquearCaracteresInvalidos($event)"
-                    placeholder="Ex: 60 Meses"
-                    formControlName="dePrazoVigencia"
-                    class="form-control"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.dePrazoVigencia?.invalid,
-                    }"
-                  />
-                </div>
-
-                <div *ngIf="isFlagDtPrevisaoSiclg">
-                  <label for="dtPrevisaoSiclg"
-                    >Data de previsão SICLG:<span class="span-red"> *</span>
-                  </label>
-                  <input
-                    formControlName="dtPrevisaoSiclg"
-                    id="dtPrevisaoSiclg"
-                    type="date"
-                    class="form-control"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.dtPrevisaoSiclg?.invalid,
-                    }"
-                  />
-                </div>
-
-                <!---->
               </div>
 
               <div class="col-md-1 pr-0">
@@ -347,6 +242,19 @@
                 </p-dropdown>
               </div>
 
+               <!-- <div class="col-md-3 pr-0">
+            <label for="icDigital">Classifica&ccedil;&atilde;o Digital:<span class="span-red"> *</span></label>
+            <select class="form-control" id="icDigital" formControlName="icDigital"
+              [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" (change)="onIsDigitalChange($event)">
+              <option value="" disabled selected>
+                Selecione a Classifica&ccedil;&atilde;o
+              </option>
+              <option *ngFor="let a of listaDigital" [ngValue]="a.id">
+                {{ a.tipo }}
+              </option>
+            </select>
+          </div> -->
+
               <div class="col-md-9 pr-0">
                 <label for="deJustificativa"
                   >Justificativa para Or&ccedil;amento:<span class="span-red">
@@ -385,6 +293,102 @@
                 </p-dropdown>
               </div>
             </div>
+
+
+            <div style="padding-top: 15px;" *ngIf="isFlagPlanoDeAquisicao">
+               <h4 class="modal-title" id="modal-basic-title">
+                  <b>Plano de Aquisição</b>
+                  </h4>
+
+                <div style="display: flex; padding-top: 10px;">
+
+                 <div style="padding-left: 0;" class="col-md-3 pr-0">
+                  <label for="nuModalidade">
+                    Tipo de Modalidade:<span class="span-red"> *</span>
+                  </label>
+
+                  <p-dropdown
+                    class="custom-dropdown"
+                    formControlName="nuModalidade"
+                    [options]="dadosDeDominio.listaTiposModalidade"
+                    optionLabel="descricao"
+                    optionValue="id"
+                    placeholder="Selecione a Modalidade"
+                    [filter]="true"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.nuModalidade?.invalid,
+                    }"
+                  >
+                  </p-dropdown>
+                </div>
+
+
+
+                <div class="col-md-3 pr-0">
+                  <label for="dtPrevisaoSiclg"
+                    >Data de previsão SICLG:<span class="span-red"> *</span>
+                  </label>
+                  <input
+                    formControlName="dtPrevisaoSiclg"
+                    id="dtPrevisaoSiclg"
+                    type="date"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.dtPrevisaoSiclg?.invalid,
+                    }"
+                  />
+                </div>
+
+                  <div class="col-md-3 pr-0">
+                  <label for="dePrazoVigencia">
+                    Prazo Vigencia (Meses):<span class="span-red"> *</span>
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="dePrazoVigencia"
+                    min="1"
+                    max="999"
+                    step="1"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    (keydown)="bloquearCaracteresInvalidos($event)"
+                    placeholder="Ex: 60 Meses"
+                    formControlName="dePrazoVigencia"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.dePrazoVigencia?.invalid,
+                    }"
+                  />
+                </div>
+
+                 <div class="col-md-3 pr-0">
+                  <label for="vrGlobal">
+                    Valor Global:<span class="span-red"> *</span>
+                  </label>
+                  <input
+                    currencyMask
+                    id="vrGlobal"
+                    formControlName="vrGlobal"
+                    [options]="{
+                      prefix: 'R$ ',
+                      thousands: '.',
+                      decimal: ',',
+                      precision: 2,
+                      allowNegative: false,
+                    }"
+                    placeholder="R$ 0,00"
+                    class="form-control"
+                    maxlength="21"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.vrGlobal?.invalid,
+                    }"
+                  />
+                </div>
+
+
+              </div>
+              </div>
           </div>
         </div>
         <br />
