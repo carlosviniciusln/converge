@@ -304,7 +304,7 @@
 
                  <div style="padding-left: 0;" class="col-md-3 pr-0">
                   <label for="nuModalidade">
-                    Tipo de Modalidade:<span class="span-red"> *</span>
+                    Tipo de Modalidade:
                   </label>
 
                   <p-dropdown
@@ -315,9 +315,6 @@
                     optionValue="id"
                     placeholder="Selecione a Modalidade"
                     [filter]="true"
-                    [ngClass]="{
-                      'is-invalid': submitted && f.nuModalidade?.invalid,
-                    }"
                   >
                   </p-dropdown>
                 </div>

@@ -166,7 +166,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
   async obterStatusPlanejamento(): Promise<void> {
     const response = await this.apiService.get<
       ApiResponse<PlanejamentoStatusResponse[]>
-    >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
+    >(`v1/PlanejamentoOrcamentarioV/status-planejamento`);
     this.listaStatusPlanejamento = response.data;
     this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.map(
       (status) => ({

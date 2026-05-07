@@ -124,6 +124,13 @@ export class PlanejamentoV2Component implements OnInit {
       keyboard: false,
     });
     modalRef.componentInstance.anoSelecionado = anoSelecionado;
+
+
+    modalRef.componentInstance.atualizarPagina.subscribe((data: boolean) => {
+      if (data) {
+        this.obterPlanejamentos();
+      }
+    });
   }
 
   async obterPlanejamentos(): Promise<void> {
