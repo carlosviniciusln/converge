@@ -197,10 +197,10 @@
                   </div>
                   <div
                     class="pl-1 pr-1 me-3"
-                    *ngIf="
-                      selectStatusPlanejamentoCompleto?.length > 0 &&
-                      isPerfilPrivilegiado
-                    "
+                     *ngIf="
+                          selectStatusPlanejamentoCompleto?.length > 0 &&
+                         podeCadastrar()
+                        "
                   >
                     <button
                       type="button"
@@ -236,26 +236,16 @@
                     <div class="p-d-flex p-jc-between text-center">Tipo</div>
                   </th>
                   <th>
-                    <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
-                    <div
-                      *ngIf="
-                        !(selectStatusPlanejamentoCompleto?.length > 0) ||
-                        !isPerfilPrivilegiado
-                      "
-                      class="p-d-flex p-jc-between text-center"
-                    >
-                      Status
-                    </div>
 
-                    <!--  Exibe checkbox + dropdown SOMENTE quando houver opções -->
-                    <ng-container
-                      *ngIf="
-                        selectStatusPlanejamentoCompleto?.length > 0 &&
-                        isPerfilPrivilegiado
-                      "
-                    >
+
+
+                    <ng-container>
                       <div class="c-dropdown-status">
                         <p-checkbox
+                         *ngIf="
+                        selectStatusPlanejamentoCompleto?.length > 0 &&
+                        podeCadastrar()"
+
                           [(ngModel)]="selecionarTodos"
                           (onChange)="selecionarTodosItens()"
                           [binary]="true"
@@ -324,19 +314,13 @@
                     <div class="cef-status-em-lote">
                       <ng-container
                         *ngIf="
-                          selectStatusPlanejamentoCompleto?.length > 0 &&
-                          (perfilOrcamento ||
-                            perfilAdm ||
-                            (perfilOperacional &&
-                              planejamento.coFilial == perfilUnidade) ||
-                            (perfilTorre &&
-                              planejamento.coFilial == perfilUnidade))
+                          (selectStatusPlanejamentoCompleto?.length > 0 &&
+                            planejamento.coFilial == perfilUnidade && statusExercio !== 'Validado' && statusExercio !== 'Cancelado') || this.isPerfilPrivilegiado
                         "
                       >
                         <p-checkbox
                           [(ngModel)]="planejamento.stSelecionado"
                           [binary]="true"
-                          *ngIf="isPerfilPrivilegiado"
                           (click)="$event.stopPropagation()"
                         >
                         </p-checkbox>
