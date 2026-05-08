@@ -222,12 +222,26 @@ export class PlanejamentoGeralV2Component implements OnInit {
       ApiResponse<PlanejamentoStatusResponse[]>
     >(`v1/PlanejamentoOrcamentarioV/status-planejamento`);
     this.listaStatusPlanejamento = response.data;
-    this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.map(
+
+    if(this.perfilOperacional || this.perfilTorre){
+      this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.filter(s => s.nuPlanejamentoStatus !== 5).map(
       (status) => ({
         label: status.noPlanejamentoStatus,
         value: status.nuPlanejamentoStatus,
       }),
     );
+    }
+
+    else{
+
+      this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.map(
+      (status) => ({
+        label: status.noPlanejamentoStatus,
+        value: status.nuPlanejamentoStatus,
+      }),
+    );
+    }
+
   }
 
   public async onSalvarMudancasStatus(): Promise<void> {

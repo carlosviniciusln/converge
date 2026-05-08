@@ -264,6 +264,11 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       return;
     }
 
+    if(this.planejamento.nuStatusPlanejamentoItem == 7 && !isAdministrador && !isOrcamento){
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
     this.isPerfilPrivilegiado = true;
   }
 
@@ -943,13 +948,6 @@ async excluirPrevisaoDesembolso(i: number) {
     });
   }
 
-  public get visibleStatusList(): PlanejamentoStatusResponse[] {
-
-    if (!this.dadosDeDominio.listaStatusPlanejamento?.length) return [];
-
-      return this.dadosDeDominio.listaStatusPlanejamento;
-
-  }
 
   public async obterPlanejamentoItemHistorico(): Promise<void> {
     try {

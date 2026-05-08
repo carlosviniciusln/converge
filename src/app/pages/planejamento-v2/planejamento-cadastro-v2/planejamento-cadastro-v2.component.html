@@ -163,11 +163,7 @@
                 <p-dropdown
                   class="custom-dropdown"
                   formControlName="nuPlanejamentoStatus"
-                  [options]="
-                    isCadastro
-                      ? dadosDeDominio.listaStatusPlanejamento
-                      : visibleStatusList
-                  "
+                  [options]="dadosDeDominio.listaStatusPlanejamento"
                   optionLabel="noPlanejamentoStatus"
                   optionValue="nuPlanejamentoStatus"
                   placeholder="Selecione Status"
