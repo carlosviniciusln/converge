@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ title }}</b><br /><small>{{ subTitle }}</small>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Contrato</th>
+        <th>Rubrica</th>
+        <th>Início vigência</th>
+        <th>Termino vigência</th>
+        <th class="text-right">Valor Executado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of listaValoresRubricaContrato" class="cursor-pointer"
+        (click)="openModalRubricaDetalhadoContrato(i.nU_RUBRICA, i.nU_CONTRATO)">
+        <td>{{ i.cO_CONTRATO }}</td>
+        <td>{{ i.cO_RUBRICA }}</td>
+        <td>{{ i.dT_INICIO_VIGENCIA | date : "dd/MM/yyyy" }}</td>
+        <td>{{ i.dT_FIM_VIGENCIA | date : "dd/MM/yyyy" }}</td>
+        <td class="text-right">{{ i.vR_EXECUTADO| currency : "BRL" }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="obterValoresRubricaExcel()"
+    *ngIf="permissions?.Exportar ?? false">
+    Exportar
+  </button>
+</div>

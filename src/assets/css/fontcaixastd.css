@@ -1,0 +1,85 @@
+/* CAIXAStd — fonte local (assets/fonts) */
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../fonts/CAIXAStd-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: italic;
+  font-weight: 300;
+  src: url('../fonts/CAIXAStd-LightItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: normal;
+  font-weight: 350;
+  src: url('../fonts/CAIXAStd-Book.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: italic;
+  font-weight: 350;
+  src: url('../fonts/CAIXAStd-BookItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/CAIXAStd-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../fonts/CAIXAStd-Italic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/CAIXAStd-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: italic;
+  font-weight: 600;
+  src: url('../fonts/CAIXAStd-SemiBoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/CAIXAStd-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: italic;
+  font-weight: 700;
+  src: url('../fonts/CAIXAStd-BoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: normal;
+  font-weight: 800;
+  src: url('../fonts/CAIXAStd-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'CAIXAStd';
+  font-style: italic;
+  font-weight: 800;
+  src: url('../fonts/CAIXAStd-ExtraBoldItalic.ttf') format('truetype');
+}

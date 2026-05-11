@@ -1,0 +1,66 @@
+<div class="dashboard-search-page">
+
+  <!-- Conteúdo central sempre centralizado verticalmente -->
+  <div class="dashboard-center" [ngClass]="{ 'dashboard-center--com-historico': historico.length > 0 }">
+
+    <!-- Histórico no topo, dentro do fluxo normal, acima da brand -->
+    <div class="dashboard-historico" *ngIf="historico.length > 0">
+      <span class="historico-label">Pesquisas recentes</span>
+      <div class="historico-chips">
+        <button
+          *ngFor="let termo of historico"
+          class="historico-chip"
+          type="button"
+          (click)="buscarPorTermo(termo)">
+          <mat-icon class="chip-icon">history</mat-icon>
+          <span class="chip-label">{{ termo }}</span>
+          <span class="chip-remove" (click)="removerTermo(termo, $event)" aria-label="Remover">
+            <mat-icon class="chip-remove-icon">close</mat-icon>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-brand">
+      <span class="brand-sigla">SDGVC</span>
+      <span class="brand-subtitle">Realize a busca de contratos de forma eficiente</span>
+    </div>
+
+    <div class="dashboard-search-container">
+      <div class="search-input-wrapper">
+        <dsc-input
+          label=""
+          placeholder=""
+          size="large"
+          [(ngModel)]="termoBusca"
+          (keydown.enter)="buscar()"
+          leftIcon="search">
+        </dsc-input>
+
+        <!-- Botão microfone com animação de ondas sonoras -->
+        <button
+          class="mic-button"
+          type="button"
+          [class.mic-button--listening]="micEscutando"
+          [attr.aria-label]="micEscutando ? 'Parar gravação' : 'Pesquisar por voz'"
+          [title]="micEscutando ? 'Escutando... clique para parar' : 'Pesquisar por voz'"
+          (click)="alternarMicrofone()">
+
+          <!-- Ondas sonoras: sempre no DOM, classe CSS controla visibilidade sem afetar animação -->
+          <span class="mic-waves" [class.mic-waves--hidden]="!micEscutando" aria-hidden="true">
+            <span class="mic-wave mic-wave--1"></span>
+            <span class="mic-wave mic-wave--2"></span>
+            <span class="mic-wave mic-wave--3"></span>
+          </span>
+
+          <mat-icon class="mic-icon">{{ micEscutando ? 'mic' : 'mic_none' }}</mat-icon>
+        </button>
+      </div>
+
+      <div class="dashboard-search-actions">
+        <dsc-button variant="primary" size="standard" label="Buscar Contrato" (click)="buscar()"></dsc-button>
+      </div>
+    </div>
+  </div>
+
+</div>

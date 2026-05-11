@@ -1,0 +1,24 @@
+
+highcharts-chart {
+    //width: 90%;
+    //max-width: 1393px;
+    //height: 300px;
+    display: block;
+}
+
+// .highcharts-container {
+//     max-width: 1400px !important;
+// }
+
+@media print{
+    highcharts-chart{
+        width: 1050px !important;
+        //height: 100%;
+
+        display: inline-block;
+    }
+}
+
+.highcharts-container {
+    margin: 0 auto;
+  }

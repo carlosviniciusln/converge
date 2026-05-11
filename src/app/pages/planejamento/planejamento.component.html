@@ -1,0 +1,194 @@
+<div class="content">
+  <dsc-breadcrumb [urls]="[{label: 'Planejamento'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div class="row">
+    <div class="col-12">
+      <p-table #dt [value]="planejamentos" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+        [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0">
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="table-header-title" style="flex-shrink: 0;">
+                {{ this.title }}
+              </div>
+              <div class="pl-1 pr-1">
+                <!-- *ngIf="isAllowedToExport" -->
+                <dsc-button variant="secondary-outlined" icon="cloud_download" iconButton (click)="downloadPlanejamentoDesembolso()"
+                  *ngIf="permissions?.Exportar ?? false"></dsc-button>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-button variant="primary" icon="add" iconButton (click)="openModalPlanejamento('adicionar', true)"
+                  *ngIf="permissions?.Cadastrar ?? false"></dsc-button>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-select [options]="selectTiposPlanejamento" [(ngModel)]="selectedTipoPlanejamento"
+                  [showFilter]="true" (ngModelChange)="updateRelatorio({ value: $event }, 5)"
+                  placeholder="Planejamento"></dsc-select>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-select [options]="selectAnos" [(ngModel)]="selectedAno"
+                  [showFilter]="true" (ngModelChange)="updateRelatorio({ value: $event }, 1)"
+                  placeholder="Exercício"></dsc-select>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-select [options]="selectFiliais" [(ngModel)]="selectedFilial"
+                  [showFilter]="true" (ngModelChange)="updateRelatorio({ value: $event }, 2)"
+                  placeholder="UD" id="filter-ud"></dsc-select>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-select [options]="selectContratos" [(ngModel)]="selectedContrato"
+                  [showFilter]="true" (ngModelChange)="updateRelatorio({ value: $event }, 3)"
+                  placeholder="Contrato" id="filter-contrato"></dsc-select>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-select [options]="selectTiposDemanda" [(ngModel)]="selectedTipoDemanda"
+                  [showFilter]="true" (ngModelChange)="updateRelatorio({ value: $event }, 6)"
+                  placeholder="Tipo" id="filter-tipo"></dsc-select>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-select [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital"
+                  [showFilter]="true" (ngModelChange)="updateRelatorio({ value: $event }, 7)"
+                  placeholder="Digital"></dsc-select>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-select [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
+                  [showFilter]="true" (ngModelChange)="updateRelatorio({ value: $event }, 4)"
+                  placeholder="Status" id="filter-status"></dsc-select>
+              </div>
+              <div class="pl-1 pr-1">
+                <dsc-select [options]="selectObjeto" [(ngModel)]="selectedObjeto"
+                  [showFilter]="true" (ngModelChange)="updateRelatorio({ value: $event }, 8)"
+                  placeholder="Objeto"></dsc-select>
+              </div>
+
+              <div class="pl-1 pr-1 d-flex align-items-center">
+                <dsc-button id="btn-filtrar-filtros" variant="primary" label="Filtrar" (click)="obterPlanejamentos()"></dsc-button>
+              </div>
+              <div class="pl-1 pr-1 d-flex align-items-center">
+                <dsc-button id="btn-limpar-filtros" variant="secondary-outlined" label="Limpar filtros" (click)="limparFiltros()"></dsc-button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">NUORC</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Planejamento</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Exercício</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">UD</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Contrato</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Objeto</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Tipo</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Status</div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between text-center">Valor</div>
+            </th>
+            <!-- <th>
+              <div class="p-d-flex p-jc-between text-center"></div>
+            </th> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-planejamento>
+          <tr class="p-selectable-row" (click)=" openModalPlanejamento('consultar', false, planejamento)">
+            <td style="text-align: center">
+              <span class="p-column-title">Código</span>
+              {{ planejamento.coPlanejamentoOrcamentario }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Planejamento</span>
+              {{ planejamento.gcptb019PlanejamentoTipo.dePlanejamentoTipo }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Exercício</span>
+              {{ planejamento.gcptb010Orcamento.nuAnoOrcamento }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">UD</span>
+              {{ planejamento.gcptb005Filial.sgFilial }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Contrato</span>
+              {{ planejamento.gcptb001Contrato?.coContrato }}
+            </td>
+            <td style="width: 40%">
+              <span class="p-column-title">Objeto</span>
+              {{ planejamento.deObjeto }}
+            </td>
+            <td>
+              <span class="p-column-title">Tipo</span>
+              {{ planejamento.gcptb023DemandaTipo.deDemanda }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Status</span>
+              {{ planejamento.gcptb025PlanejamentoStatus.noPlanejamentoStatus }}
+            </td>
+            <td style="text-align: right">
+              <span class="p-column-title">Valor</span>
+              {{ planejamento.vrTotalOrcamentoPlanejamento | currency : "BRL" }}
+            </td>
+            <!-- <td style="text-align: center">
+              <i class="pi pi-ellipsis-v" [matMenuTriggerFor]="menu" title="clique para detalhar o planejamento">
+              </i> -->
+              <!-- <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                  <i class="tim-icons icon-zoom-split"></i>
+                  <span> Consultar</span>
+                </button>
+                <button mat-menu-item *ngIf="permissions?.Alterar ?? false" (click)="
+                    openModalPlanejamento(
+                      'editar',
+                      true,
+                      planejamento.nuPlanejamentoOrcamentario
+                    )
+                  ">
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Editar</span>
+                </button>
+                <button mat-menu-item *ngIf="!(permissions?.Alterar ?? false)" disabled>
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Editar</span>
+                </button>
+                <button mat-menu-item *ngIf="permissions?.Excluir ?? false" (click)="Excluir(planejamento)">
+                  <i class="tim-icons icon-trash-simple"></i>
+                  <span> Excluir</span>
+                </button>
+                <button mat-menu-item *ngIf="!(permissions?.Excluir ?? false)" disabled>
+                  <i class="tim-icons icon-trash-simple"></i>
+                  <span> Excluir</span>
+                </button>
+              </mat-menu> -->
+            <!-- </td> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="12">Nenhum planejamento cadastrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <dsc-paginator
+        *ngIf="quantidadeTotal > 0"
+        [length]="quantidadeTotal"
+        [pageSize]="filtroRegistros.pageSize"
+        [pageIndex]="filtroRegistros.pageNumber - 1"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="loadPage($event)">
+      </dsc-paginator>
+    </div>
+  </div>
+</div>

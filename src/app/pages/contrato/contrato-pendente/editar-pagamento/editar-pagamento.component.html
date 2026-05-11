@@ -1,0 +1,78 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-3 pr-0">
+        <label for="competencia: ">Competência:</label>
+        <input formControlName="competencia" id="competencia" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.competencia?.invalid }" mask="00/0000"
+          [dropSpecialCharacters]="false" placeholder="Ex. 00/0000" />
+        <p style="color: grey">(prestação de serviços)</p>
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="nU_ATESTE">Número Ateste:</label>
+        <input formControlName="nU_ATESTE" id="nU_ATESTE" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.nU_ATESTE?.invalid }" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="nU_CONTRATO">Número Contrato:</label>
+        <input readonly formControlName="nU_CONTRATO" id="nU_CONTRATO" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.nU_CONTRATO?.invalid }" value="{{this.contrato.nU_CONTRATO}}" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="cO_CONTRATO">Código Contrato:</label>
+        <input readonly formControlName="cO_CONTRATO" id="cO_CONTRATO" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.cO_CONTRATO?.invalid }" value="{{this.contrato.cO_CONTRATO}}" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="nU_PEDIDO">Número Pedido:</label>
+        <input readonly formControlName="nU_PEDIDO" id="nU_PEDIDO" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.nU_PEDIDO?.invalid }" value="{{this.contrato.nU_PEDIDO}}" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="dT_LANCAMENTO">Data Lançamento</label>
+        <input readonly formControlName="dT_LANCAMENTO" id="dT_LANCAMENTO" type="text" class="form-control" [ngClass]="{
+            'is-invalid': submitted && f.dT_LANCAMENTO?.invalid
+          }" value="{{this.contrato.dT_LANCAMENTO | date: 'dd/MM/yyyy'}}" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="cO_MATRICULA">Código Matricula:</label>
+        <input readonly formControlName="cO_MATRICULA" id="cO_MATRICULA" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.cO_MATRICULA?.invalid }" value="{{this.contrato.cO_MATRICULA}}" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="montante">Montante:</label>
+        <input readonly formControlName="montante" id="montante" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.montante?.invalid }" value="{{this.contrato.montante}}" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="miro">Miro:</label>
+        <input readonly formControlName="miro" id="miro" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.miro?.invalid }" value="{{this.contrato.miro}}" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="dE_OBSERVACAO">Observação:</label>
+        <input formControlName="dE_OBSERVACAO" id="dE_OBSERVACAO" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.dE_OBSERVACAO?.invalid }" />
+      </div>
+    </div>
+    <br />
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn-sm btn-secondary no-print"
+    routerLink="/contrato/detalhe/v/{{this.contrato.nU_CONTRATO}}" mat-raised-button
+    (click)="activeModal.dismiss('Cross click')"> Detalhar Pagamentos
+  </button>
+  <button class="btn-sm btn-default" type="submit" (click)="onSubmit()"
+    *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false">
+    Salvar
+  </button>
+</div>

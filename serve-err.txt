@@ -1,0 +1,155 @@
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+- Generating browser application bundles (phase: setup)...
+✔ Browser application bundle generation complete.
+
+./src/app/pages/contrato/contrato-detalhe/contrato-detalhe.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(74:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  align-items: end
+
+
+./src/app/pages/dashboard/dashboard.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(158:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/dashboard/dashboard.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(328:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/dashboard/dashboard.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(339:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-geral/planejamento-geral.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(209:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-geral/planejamento-geral.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(375:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-geral/planejamento-geral.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(386:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-lista/modal-planejamento/modal-planejamento.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(158:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-lista/modal-planejamento/modal-planejamento.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(324:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-lista/modal-planejamento/modal-planejamento.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(335:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-lista/modal-planejamento/modal-planejamento.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(372:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(158:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(324:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component.scss?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(335:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\node_modules\canvg\lib\index.es.js depends on 'rgbcolor'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\node_modules\keycloak-js\dist\keycloak.mjs depends on 'base64-js'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\node_modules\keycloak-js\dist\keycloak.mjs depends on 'js-sha256'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\core\pipes\sort-by-pipe.ts depends on 'lodash'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\contrato\contrato-pendente\contrato-pendente.component.ts depends on 'file-saver'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\contrato\evolucao-financeira\demais-tipos\demais-tipos.component.ts depends on 'html2canvas'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\contrato\evolucao-financeira\demais-tipos\grafico\grafico.component.ts depends on 'highcharts'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\contrato\pagamento-cadastro\pagamento-cadastro.component.ts depends on 'sweetalert2/dist/sweetalert2.js'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\planejamento\planejamento-geral\planejamento-geral.component.ts depends on 'sweetalert2'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+✔ Browser application bundle generation complete.
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\contrato\contrato-detalhe\contrato-detalhe.component.ts depends on 'sweetalert2/dist/sweetalert2.js'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\contrato\evolucao-financeira\detalhe-financeiro\detalhe-financeiro.component.ts depends on 'html2canvas'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\planejamento\planejamento-lista\modal-planejamento\modal-planejamento.component.ts depends on 'sweetalert2'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Sistemas\SIGVC-FRONTEND\src\app\pages\valores-executados\valores-executados.component.ts depends on 'file-saver'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.

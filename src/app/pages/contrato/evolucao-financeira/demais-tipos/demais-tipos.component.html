@@ -1,0 +1,338 @@
+<div class="" id="divPDF">
+    <div *ngFor="let item of listaEvolucaoFinanceira; let indexOfelement = index" class="cl-table-component">
+        <mat-tab-group (selectedTabChange)="onTabChange($event)">
+            <mat-tab *ngFor="let rubrica of rubricas; let i = index" label="{{ rubrica.cO_RUBRICA }}"
+                style="display: flex; justify-content: center;">
+                <div class="row cl-grafico">
+                    <div class="col-md-12" style="margin-top: 10px;">
+                        <mat-card appearance="outlined">
+                            <mat-card-header class="d-flex justify-content-between align-items-center flex-wrap">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <h3 class="card-title text-left"></h3>
+                                    <h3 class="card-title text-left table-header-title">EVOLUÇÃO E PAGAMENTOS -
+                                        <!-- <span>{{titulo()}}</span> -->
+                                        <span>Contrato C1001/2025</span>
+                                    </h3>
+                                </div>
+                                <dsc-button *ngIf="!loadingPDF" variant="secondary-outlined" label="PDF" icon="cloud_download"
+                                    (click)="gerarPDF()" aria-label="Download PDF"></dsc-button>
+                                <div *ngIf="loadingPDF" class="spinner-button"></div>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <app-grafico id="divGrafico_{{ rubrica.cO_RUBRICA }}" class="divGrafico"
+                                            [titulo]="vigenciaAtual?.labeL_VIGENCIA || vigenciaAnterior?.labeL_VIGENCIA || ''"
+                                            [categorias]="rubrica.periodos" [series]="rubrica.series">
+                                        </app-grafico>
+                                    </div>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <mat-card appearance="outlined" style="margin-top: 24px;">
+                            <mat-card-header>
+                                <h3 class="card-title text-left table-header-title">RESUMO DA VIGÊNCIA -
+                                    <span>{{titulo()}}</span>
+                                </h3>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <div class="row">
+                                    <div class="col-md-2 text-right">Início Vigência:</div>
+                                    <div class="col-md-4 text-left">
+                                        <b *ngIf="vigenciaAtual">{{
+                                            vigenciaAtual.iniciO_VIGENCIA | date:
+                                            "dd/MM/yyyy"}}</b>
+                                        <b *ngIf="vigenciaAnterior">{{
+                                            vigenciaAnterior.iniciO_VIGENCIA | date:
+                                            "dd/MM/yyyy" }}</b>
+                                    </div>
+                                    <div class="col-md-4 text-right">Valor Total da Vigência - CONTRATADO:</div>
+                                    <div class="col-md-2 text-right">
+                                        <b *ngIf="vigenciaAtual">{{ vigenciaAtual.totaL_CONTRATO
+                                            | currency: "BRL" }}</b>
+                                        <b *ngIf="vigenciaAnterior">{{
+                                            vigenciaAnterior.totaL_CONTRATO | currency: "BRL"
+                                            }}</b>
+                                    </div>
+                                    <div class="col-md-2 text-right">Término Vigência:</div>
+                                    <div class="col-md-2 text-left">
+                                        <b *ngIf="vigenciaAtual">{{ vigenciaAtual.fiM_VIGENCIA |
+                                            date: "dd/MM/yyyy" }}</b>
+                                        <b *ngIf="vigenciaAnterior">{{
+                                            vigenciaAnterior.fiM_VIGENCIA | date:
+                                            "dd/MM/yyyy" }}</b>
+                                    </div>
+                                    <div class="col-md-6 text-right">Valor Total da Vigência - EXECUTADO:</div>
+                                    <div class="col-md-2 text-right">
+                                        <b>{{
+                                            vigenciaUsuarioSelecionada?.vR_EXECUTADO | currency:
+                                            "BRL" }}</b>
+                                        <!-- <b>{{
+                                            vigenciaAnterior?.vR_EXECUTADO ?? vigenciaAtual.vR_EXECUTADO| currency:
+                                            "BRL" }}</b> -->
+                                    </div>
+                                    <div class="col-md-2 text-right">Prazo Remanescente:</div>
+                                    <div class="col-md-3 text-left">
+                                        <b *ngIf="vigenciaAtual">{{
+                                            vigenciaAtual.prazO_REMANESCENTE }}</b>
+                                        <b *ngIf="vigenciaAnterior"> {{
+                                            vigenciaAnterior.prazO_REMANESCENTE}} </b>
+                                    </div>
+                                    <div class="col-md-5 text-right">Saldo Atual da Vigência (Contratado - Executado):
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <b *ngIf="vigenciaAtual">{{ vigenciaAtual.saldO_VIGENCIA
+                                            | currency: "BRL" }}</b>
+                                        <b *ngIf="vigenciaAnterior">{{
+                                            vigenciaAnterior.saldO_VIGENCIA | currency: "BRL"
+                                            }}</b>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <small>
+                                            *Prazo para o final da vigência do contrato em
+                                            relação ao
+                                            último dia de faturamento pago
+                                            <b *ngIf="vigenciaAtual">{{
+                                                vigenciaAtual.fiM_VIGENCIA | date: "dd/MM/yyyy"
+                                                }}</b>
+                                            <b *ngIf="vigenciaAnterior">{{
+                                                vigenciaAnterior.fiM_VIGENCIA | date:
+                                                "dd/MM/yyyy" }}</b>
+                                        </small>
+                                    </div>
+                                    <div class="col-md-4 text-right">Média Mensal Estimada:
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <b *ngIf="vigenciaAtual">{{
+                                            vigenciaAtual.mediA_MENSAL_ESTIMADA | currency:
+                                            "BRL" }}</b>
+                                        <b *ngIf="vigenciaAnterior">{{
+                                            vigenciaAnterior.mediA_MENSAL_ESTIMADA |
+                                            currency:
+                                            "BRL" }}</b>
+                                    </div>
+                                    <div class="col-md-6"></div>
+                                    <div class="col-md-4 text-right">
+                                        Média dos últimos 03 Pagamentos:
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <b *ngIf="vigenciaAtual">{{vigenciaAtual.mediA_ULTIMOS_3_MESES
+                                            | currency: "BRL"}}</b>
+                                        <b *ngIf="vigenciaAnterior">{{vigenciaAnterior.mediA_ULTIMOS_3_MESES
+                                            | currency: "BRL"}}</b>
+                                    </div>
+                                    <div class="col-md-5 d-flex justify-content-end">
+                                        <div class="col-md-12"
+                                            *ngIf="vigenciaAtual && vigenciaAtual?.mediA_MENSAL_PAGAMENTOS > vigenciaAtual?.mediA_MENSAL_ESTIMADA">
+                                            <div class="col-md-8 red" id="divRed">
+                                                Consumo ACIMA da média estimada
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12"
+                                            *ngIf="vigenciaAnterior && vigenciaAnterior?.mediA_MENSAL_PAGAMENTOS > vigenciaAnterior?.mediA_MENSAL_ESTIMADA">
+                                            <div class="col-md-8 red" id="divRed">
+                                                Consumo ACIMA da média estimada
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12"
+                                            *ngIf="vigenciaAtual && vigenciaAtual?.mediA_MENSAL_PAGAMENTOS <= vigenciaAtual?.mediA_MENSAL_ESTIMADA">
+                                            <div class="col-md-8 green" id="divGreen">
+                                                Consumo ABAIXO da média estimada
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12"
+                                            *ngIf="vigenciaAnterior && vigenciaAnterior?.mediA_MENSAL_PAGAMENTOS <= vigenciaAnterior?.mediA_MENSAL_ESTIMADA">
+                                            <div class="col-md-8 green" id="divGreen">
+                                                Consumo ABAIXO da média estimada
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 text-right">
+                                        Média de Todos os Pagamentos (da Vigência):
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <b *ngIf="vigenciaAtual">{{
+                                            vigenciaAtual.mediA_MENSAL_PAGAMENTOS | currency:
+                                            "BRL"}}</b>
+                                        <b *ngIf="vigenciaAnterior">{{
+                                            vigenciaUsuarioSelecionada?.mediA_MENSAL_PAGAMENTOS |
+                                            currency: "BRL"}}</b>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-center" style="padding-top: 15px;">
+                                    Mantendo-se a média mensal dos pagamentos, o esgotamento dos
+                                    recursos do contrato ocorrerá em
+                                    <strong *ngIf="vigenciaAtual"> {{
+                                        vigenciaAtual.nO_ESGOTAMENTO }} mês(es)</strong>
+                                    <strong *ngIf="vigenciaAnterior"> {{
+                                        vigenciaAnterior.nO_ESGOTAMENTO }} mês(es)</strong>
+                                    em
+                                    relação à última referência paga.
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <div class="row cl-header" style="margin-top: 24px;" *ngIf="listaResumoPagamentos.length !== 0; else elsePagamentoBlock">
+                            <div class="col-md-12">
+                                <mat-card appearance="outlined">
+                                    <mat-card-header>
+                                        <h3 class="card-title text-left table-header-title">RESUMO DOS PAGAMENTOS -
+                                            <span>{{titulo()}}</span>
+                                        </h3>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <p-table #dt [value]="listaResumoPagamentos" dataKey="dE_PERIODO"
+                                                    currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+                                                    [responsiveLayout]="'scroll'">
+                                                    <ng-template pTemplate="header">
+                                                        <tr>
+                                                            <th style="width: 3rem;"></th>
+                                                            <th pSortableColumn="dE_PERIODO">Mês/Ano
+                                                                <p-sortIcon field="dE_PERIODO"></p-sortIcon>
+                                                            </th>
+                                                            <th pSortableColumn="vR_MENSALIZACAO">Valor
+                                                                Estimado <br /> (Mensalização)
+                                                                <p-sortIcon field="dE_PERIODO"></p-sortIcon>
+                                                            </th>
+                                                            <th pSortableColumn="vR_BRUTO">Valor
+                                                                Executado <b>(*)</b> <p-sortIcon
+                                                                    field="vR_BRUTO"></p-sortIcon></th>
+                                                            <th *ngIf="coRubricaSelecionada == 'TOTAL'"
+                                                                pSortableColumn="vR_RETENCAO">
+                                                                Retenções<p-sortIcon field="vR_RETENCAO"></p-sortIcon>
+                                                            </th>
+                                                            <th *ngIf="coRubricaSelecionada == 'TOTAL'"
+                                                                pSortableColumn="vR_LIBERACAO">
+                                                                Liberação<p-sortIcon field="vR_LIBERACAO"></p-sortIcon>
+                                                            </th>
+                                                            <th pSortableColumn="vR_LIQUIDO">Valor Pago
+                                                                <b>(**)</b> <p-sortIcon field="vR_LIQUIDO"></p-sortIcon>
+                                                            </th>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="body" let-evolucao let-expanded="expanded">
+                                                        <tr class="template-body">
+                                                            <td>
+                                                                <button type="button" pButton pRipple
+                                                                    [pRowToggler]="evolucao"
+                                                                    (click)="detalharPagamento(evolucao)"
+                                                                    class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span
+                                                                        [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
+                                                            </td>
+                                                            <td>{{ evolucao.dE_PERIODO }}</td>
+                                                            <td>{{ evolucao.vR_MENSALIZACAO | currency:
+                                                                'BRL' }}</td>
+                                                            <td>{{ evolucao.vR_BRUTO | currency: 'BRL'
+                                                                }}</td>
+                                                            <td *ngIf="coRubricaSelecionada == 'TOTAL'"
+                                                                class="sub-item text-end" style="cursor: pointer;"
+                                                                (click)="openModalDetalhe(evolucao.dE_PERIODO, evolucao.nU_CONTRATO, 'retencao')">
+                                                                <a>
+                                                                    {{ evolucao.vR_RETENCAO | currency:
+                                                                    'BRL' }}</a>
+                                                            </td>
+                                                            <td *ngIf="coRubricaSelecionada == 'TOTAL'"
+                                                                class="sub-item text-end" style="cursor: pointer;"
+                                                                (click)="openModalDetalhe(evolucao.dE_PERIODO, evolucao.nU_CONTRATO, 'liberacao')">
+                                                                <a>
+                                                                    {{ evolucao.vR_LIBERACAO | currency:
+                                                                    'BRL' }}</a>
+                                                            </td>
+                                                            <td>{{ evolucao.vR_LIQUIDO | currency: 'BRL'
+                                                                }}</td>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="rowexpansion" let-evolucao>
+                                                        <tr class="center-item">
+                                                            <td colspan="7">
+                                                                <div
+                                                                    *ngIf="evolucao.detalhes && evolucao.detalhes.length > 0; else semDados">
+                                                                    <p-table [value]="evolucao.detalhes">
+                                                                        <ng-template pTemplate="header">
+                                                        <tr>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th pSortableColumn="nU_PEDIDO">Pedido
+                                                                <p-sortIcon field="nU_PEDIDO"></p-sortIcon>
+                                                            </th>
+                                                            <th pSortableColumn="cO_NUMERO_ATESTE">Nº
+                                                                Ateste <p-sortIcon
+                                                                    field="cO_NUMERO_ATESTE"></p-sortIcon>
+                                                            </th>
+                                                            <th pSortableColumn="cO_RUBRICA">Rubrica
+                                                                <p-sortIcon field="cO_RUBRICA"></p-sortIcon>
+                                                            </th>
+                                                            <th pSortableColumn="vR_PAGAMENTO">Valor
+                                                                Pagamento <p-sortIcon field="vR_PAGAMENTO"></p-sortIcon>
+                                                            </th>
+                                                            <th pSortableColumn="dT_PAGAMENTO_EFETIVO">
+                                                                Data Pagamento
+                                                                <p-sortIcon field="dT_PAGAMENTO_EFETIVO"></p-sortIcon>
+                                                            </th>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="body" let-detalhe>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td>{{ detalhe.nU_PEDIDO }}</td>
+                                                            <td>{{ detalhe.cO_NUMERO_ATESTE }}</td>
+                                                            <td>{{ detalhe.cO_RUBRICA }}</td>
+                                                            <td>{{ detalhe.vR_PAGAMENTO | currency:
+                                                                'BRL' }}</td>
+                                                            <td>{{ detalhe.dT_PAGAMENTO_EFETIVO | date:
+                                                                'dd/MM/yyyy' }}</td>
+                                                        </tr>
+                                                    </ng-template>
+                                                </p-table>
+                                            </div>
+                                            <ng-template #semDados>
+                                                <h4 class="text-center">Sem detalhes disponíveis para
+                                                    este período.</h4>
+                                            </ng-template>
+                                            </td>
+                                            </tr>
+                                            </ng-template>
+                                            </p-table>
+                                            <br />
+                                            <br />
+                                            <div>
+                                                <span>(*) Valor total atestado pelo gestor operacional
+                                                    do contrato (é o consumo
+                                                    orçamentário para a efetivação do pagamento).</span>
+                                                <hr class="linha" />
+                                                <span>(**) Valor líquido do pagamento, após o abatimento
+                                                    de eventuais retenções não
+                                                    tributárias (glosas, descontos e/ou multas
+                                                    aplicadas).</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #elsePagamentoBlock>
+                    <mat-card appearance="outlined" style="margin-top: 24px;">
+                        <mat-card-header>
+                            <h3 class="card-title text-left table-header-title">RESUMO DOS PAGAMENTOS -
+                                <span>{{titulo()}}</span>
+                            </h3>
+                        </mat-card-header>
+                        <mat-card-content>
+                            Não existem pagamentos para a rubrica {{coRubricaSelecionada}}.
+                        </mat-card-content>
+                    </mat-card>
+                </ng-template>
+    </div>
+    </mat-tab>
+    </mat-tab-group>
+</div>
+</div>
+
+
+<div style="opacity: 0; height: 0; overflow: hidden;">
+    <app-detalhe-financeiro [nuContrato]="this.nuContrato"></app-detalhe-financeiro>
+</div>

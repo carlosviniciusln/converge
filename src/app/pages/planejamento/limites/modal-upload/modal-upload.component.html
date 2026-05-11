@@ -1,0 +1,98 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>Upload de Arquivo</b
+    ><br /><small>Cadastro de limites de rubrica</small>
+  </h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="row" style="margin-top: -6px;">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12 pr-0">
+            <label for="nuPlanejamento">Exercício:</label>
+            <select
+              class="form-control"
+              id="nuPlanejamento"
+              formControlName="nuPlanejamento"
+              [ngClass]="{
+                'is-invalid': submitted && f.nuPlanejamento.invalid
+              }"
+            >
+              <option value="" disabled selected>
+                Selecione o ano de exercício
+              </option>
+              <option
+                *ngFor="let a of listaExercicios"
+                [ngValue]="a.nU_PLANEJAMENTO"
+              >
+                {{ a.dE_EXERCICIO }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 pr-0">
+            <label>Anexar Arquivo:</label>
+            <div class="col-md-8" style="margin-left: -14px;">
+              <p-fileUpload
+                #fileUpload
+                mode="basic"
+                chooseLabel="Selecionar arquivo..."
+                chooseIcon="pi pi-upload"
+                accept=".xlsx"
+                (onSelect)="onUpload($event)">
+              </p-fileUpload>
+            </div>
+            <div class="col-md-11">
+              <a *ngIf="isUploaded" (click)="removerArquivo(fileUpload)" class="btnRemover">Remover</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div *ngIf="listaErros.length > 0">
+      <hr />
+      <div class="table-ateste" style="padding-bottom: 20px;">
+        <span style="color:red">Lista de erros</span>
+        <p-table [value]="listaErros" [tableStyle]="{ 'width': '100%'}" >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Linha</th>
+                    <th>Campo</th>
+                    <th>Erro</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-contrato>
+                <tr>
+                    <td>{{ contrato.linha }}</td>
+                    <td>{{ contrato.campo }}</td>
+                    <td>{{ contrato.mensagemErro }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    </div>
+    <div class="modal-footer">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-8 pr-0 text-right">
+            <dsc-button variant="secondary-outlined" label="Exportar Planilha Padrão" icon="open_in_new" (click)="baixarModelo()"></dsc-button>
+          </div>
+          <div class="col-md-4 pr-0 text-right">
+            <dsc-button variant="primary" label="Carregar" (click)="onSubmit()" [disabled]="isDisabled"></dsc-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

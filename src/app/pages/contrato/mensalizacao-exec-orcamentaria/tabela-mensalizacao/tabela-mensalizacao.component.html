@@ -1,0 +1,138 @@
+<div class="row">
+    <div class="col-md-12">
+        <div *ngIf="rubricasVigencia.length > 0">
+            <div *ngIf="vigenciaAtual != null; else elseBlock">
+                <button *ngIf="permissions?.Alterar ?? false" type="button" class="btn btn-danger" aria-label="Close"
+                    (click)="reiniciaMensalizacao(vigenciaAtual.nU_VIGENCIA)" style="height: 47px; width: 190px; float: inline-end;">
+                    <span aria-hidden="true" style="margin-top: -6px; margin-left: -17px;">Voltar Mensalização</span>
+                    <span aria-hidden="true">Original</span>
+                </button>
+            </div>
+            <ng-template #elseBlock>
+                <button *ngIf="permissions?.Alterar ?? false" type="button" class="btn btn-danger" aria-label="Close"
+                    (click)="reiniciaMensalizacao(vigenciaSelecionada.nU_VIGENCIA)" style="height: 47px; width: 190px; float: inline-end;">
+                    <span aria-hidden="true" style="margin-top: -6px; margin-left: -17px;">Voltar Mensalização</span>
+                    <span aria-hidden="true">Original</span>
+                </button>
+            </ng-template>
+        </div>
+    </div>
+    <div class="col-md-4" style="font-weight: bold; ">
+        <div class="col-md-12" style="text-align: -webkit-right;">
+            <span>Valores Planejados</span>
+            <div *ngFor="let total of totalPorRubricaVigencia;">
+                <div class="row">
+                    <div class="col-md-5" style="text-align: right;">{{total.cO_RUBRICA}}: </div>
+                    <div class="col-md-7" style="text-align: right;">{{total.total_vR_PLANEJADO | currency: 'BRL' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4" style="font-weight: bold; ">
+        <div class="col-md-12" style="text-align: left;">
+            <span style="margin-left: -20px;">Valores Executados</span>
+            <div *ngFor="let total of totalPorRubricaVigencia;">
+                <div class="row">
+                    <div class="col-md-12">{{total.total_vR_EXECUTADO | currency: 'BRL' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4" style="text-align: right;">
+        <p>OBS: Para editar a mensalização, primeiro selecione a rubrica e em seguida clique na competência.</p>
+    </div>
+    
+</div>
+
+<div class="row">
+    <div class="card-body" *ngIf="rubricasVigencia.length > 0; else mensalizacaovazia">
+        <mat-tab-group>
+            <mat-tab *ngFor="let rubrica of rubricasVigencia" label="{{ rubrica.cO_RUBRICA }}">
+                <div class="col-md-12">
+                    <p-table *ngIf="rubrica.cO_RUBRICA !== 'TOTAL'" [value]="filtraRubrica(rubrica.cO_RUBRICA)"
+                        styleClass="p-datatable-customers" [responsive]="true" [rowHover]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Competência
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Vr. Mensalização
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Vr. Executado
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Observação
+                                    </div>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-mensalizacao>
+                            <tr class="p-selectable-row" (click)="openModalEdicao(mensalizacao,rubrica)">
+                                <td>
+                                    <span class="p-column-title">Competência</span>
+                                    {{ mensalizacao.periodo}}
+                                </td>
+                                <td>
+                                    <span class="p-column-title">Vr. Mensalização</span>
+                                    {{ mensalizacao.valoresMensais | currency: 'BRL' }}
+                                </td>
+                                <td>
+                                    <span class="p-column-title">Vr. Executado</span>
+                                    {{ mensalizacao.valoresExecutados | currency: 'BRL' }}
+                                </td>
+                                <td>
+                                    <span class="p-column-title">Observação</span>
+                                    {{ mensalizacao.observacao }}
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="4">Nenhuma mensalização encontrada para a rubrica.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+
+                    <p-table *ngIf="rubrica.cO_RUBRICA == 'TOTAL'" [value]="filtraRubrica(rubrica.cO_RUBRICA)"
+                        styleClass="p-datatable-customers" [responsive]="true" [rowHover]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Competência</th>
+                                <th>Total Mensalização</th>
+                                <th>Total Executado</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-mensalizacao>
+                            <tr class="p-selectable-row">
+                                <td>{{ mensalizacao.periodo }}</td>
+                                <td>{{ mensalizacao.valoresMensais | currency: 'BRL' }}</td>
+                                <td>{{ mensalizacao.valoresExecutados | currency: 'BRL' }}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="6">Nenhuma mensalização encontrada.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+<ng-template #mensalizacaovazia>
+    <div class="card-title text-center">
+        Este contrato não possui mensalização.
+    </div>
+</ng-template>

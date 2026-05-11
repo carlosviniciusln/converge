@@ -1,0 +1,180 @@
+<div class="content">
+    <dsc-breadcrumb [urls]="[{label: 'Ateste', url: '/ateste'}, {label: 'Detalhe'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+    <div style="background-color: #f4f4f4; padding: 24px 24px 24px 24px;">
+         <h3 class="text-gradient">
+            Ateste Eletrônico de Faturamento de Contratos
+        </h3>
+         <div>
+                <button class="btn-sm btn-default" style="margin-bottom: 10px;" (click)="openModalRegistrarAteste()"><span>Registrar Novo Ateste</span></button>
+                 <br>
+                <span style="text-align: justify; color:red;">ATENÇÃO USUÁRIO! Caso um ateste seja registrado com erro, a CEGTI deve ser imediatamente acionada para sua exclusão. Somente atestes ainda não pagos poderão ser excluídos.
+                </span>
+        </div>
+
+        <div class="detalhe-ateste">
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Contrato:</div>
+                  <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2?.cO_CONTRATO }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
+                  <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2?.nO_FORNECEDOR }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">CNPJ:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.cO_CNPJ }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">Pagamento Artigo 81?</div>
+                  <div class="col-md-3 col-sm-6">
+                    <b>
+                      {{ this.ContratoV2?.iC_ARTIGO_81 === true ? "Sim"
+                      : this.ContratoV2?.iC_ARTIGO_81 === false ? "Não"
+                      : "Não informado" }}
+                    </b>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Status:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.iC_ATIVO ? "Ativo" : "Encerrado" }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">Unidade Demandante:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.filial }} - {{ this.ContratoV2?.sG_FILIAL }}</b></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Data Início (1° vigência):</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.dT_INICIO | date : "dd/MM/yyyy" }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">Data Fim (Vigência Atual):</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.dT_TERMINO | date : "dd/MM/yyyy" }}</b></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Valor Global Total:</div>
+                  <div class="col-md-3 col-sm-6"><b *ngIf="this.DetalheContrato">{{ DetalheContrato[0]?.totalContrato | currency : "BRL"
+                      }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">Valor Global Vigente:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ ContratoV2?.vR_GLOBAL_VIGENTE | currency : "BRL" }}</b></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Dia Pagamento Fatura:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ ContratoV2?.diA_PAGAMENTO_FATURA }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">Dia Fechamento Fatura:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.diA_FECHAMENTO_FATURA }}</b></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Fiscal Técnico (Demandante):</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.nO_FISCAL_TEC ?? 'Não Informado' }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">Fiscal Administrativo (CEGTI):</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.nO_FISCAL_ADM ?? 'Não Informado' }}</b></div>
+
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3 col-sm-6 text-right">Cadastrado/Alterado por:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.cO_MATRICULA_CADASTRO }} - {{
+                      this.ContratoV2?.nO_USUARIO_CADASTRO }}</b></div>
+
+                  <div class="col-md-3 col-sm-6 text-right">Tipo de Contrato:</div>
+                  <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.contratO_TIPO }}</b></div>
+                </div>
+              </div>
+        </div>
+
+        <div class="p-resumo-ateste" style="display: flex;
+            width: 100%;">
+            <div style="width: 100%;">
+              <p-table [value]="DetalheContrato" styleClass="p-datatable-gridlines">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="col-5">RESUMO DE EXECUÇÃO CONTRATUAL</th>
+                    <th>Valor Global</th>
+                    <th>Valor Já Consumido</th>
+                    <th>Saldo Disponível</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td> VISÃO GERAL DO CONTRATO</td>
+                    <td> R$ {{ row.totalContrato | number:'1.2-2':'pt-BR' }}</td>
+                    <td> R$ {{ row.vrExecutado | number:'1.2-2':'pt-BR' }}</td>
+                    <td> R$ {{ row.vrSaldo | number:'1.2-2':'pt-BR'}}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
+
+              <p-table [value]="DetalheExecutadoContrato?.rubrica" styleClass="p-datatable-gridlines">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th colspan="5" style="color: black; font-weight: 300;">
+                      <strong>VISÃO POR RUBRICA</strong>
+                    </th>
+                  </tr>
+                  <tr style="background-color: #b6cfff; color: black; font-weight: 300;">
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Valor Global</th>
+                    <th>Valor Já Consumido</th>
+                    <th>Saldo Disponível</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rubrica>
+                  <tr>
+                    <td class="col-1">{{ rubrica.coRubrica }}</td>
+                    <td class="col-4">{{ rubrica.deRubrica }}</td>
+                    <td> R$ {{ rubrica.totalContrato | number:'1.2-2':'pt-BR' }}</td>
+                    <td> R$ {{ rubrica.vrExecutado | number:'1.2-2':'pt-BR' }}</td>
+                    <td> R$ {{ rubrica.vrSaldo | number:'1.2-2':'pt-BR' }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
+            </div>
+
+        </div>
+
+        <div class="conteudo-ateste">
+
+            <!-- <div class="table-ateste" style="padding-top: 15px; padding-bottom: 15px;">
+              <h5><strong>ULTIMOS ATESTES REGISTRADOS</strong></h5>  DADOS E CONTRATO DO USUÁRIO LOGADO
+                <p-table [value]="contratos" [tableStyle]="{ 'width': '100%'}" >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="p-th">ATESTE</th>
+                            <th class="p-th">COMPETENCIA</th>
+                            <th class="p-th">RESPONSÁVEL</th>
+                            <th class="p-th">RETENÇÃO</th>
+                            <th class="p-th">MULTA</th>
+                            <th class="p-th">VALOR PAGAMENTO</th>
+                            <th class="p-th">STATUS</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product>
+                        <tr style="color: black; font-weight: 300;">
+                            <td>{{ product.code }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.category }}</td>
+                            <td>{{ product.quantity }}</td>
+                            <td>{{ product.quantity }}</td>
+                            <td>{{ product.quantity }}</td>
+                            <td style="background-color: #b6cfff;">{{ product.quantity }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7">Nenhum contrato cadastrado.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div class="card flex justify-center">
+                    <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"  [first]="0"  [rows]="1" [totalRecords]="1" [rowsPerPageOptions]="[10, 20, 50]" ></p-paginator>
+                </div>
+            </div> -->
+    </div>
+</div>

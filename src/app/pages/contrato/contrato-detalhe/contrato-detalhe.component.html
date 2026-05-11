@@ -1,0 +1,468 @@
+<div class="content" *ngIf="this.Contrato">
+  <dsc-breadcrumb [urls]="[{label: 'Contratos', url: '/contrato'}, {label: this.Contrato.coContrato}, {label: 'Detalhe'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div class="row" style="justify-content: space-between;">
+    <div>
+  <div style="padding-left: 15px" class="text-left pb-1" *ngIf="!validaContratoArtigo81(Contrato?.coContrato)">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Evolução Financeira"
+          (click)="linkEvolucaoFinanceira()"></dsc-button>
+        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Mensalização"
+          (click)="linkMensalizacao()"></dsc-button>
+        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Documentação"
+          (click)="linkContrato()"></dsc-button>
+        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Simular Revisão"
+          (click)="openModalSimulacao(this.Contrato.nuContrato)"></dsc-button>
+        <dsc-button variant="secondary-outlined" label="Prepostos"
+          (click)="openModalPreposto(this.Contrato.nuContrato)"></dsc-button>
+        <label class="title-ata" *ngIf="isRotaAtas">Este instrumento é uma Ata de Registro de Preços (ARP).</label>
+      </div>
+    </div>
+  <div class="edit-contrato text-right pb-1" *ngIf="!validaContratoArtigo81(Contrato?.coContrato)">
+      <dsc-button *ngIf="((this.currentUser | keyvalue)?.length) && this.permissaoEditar"
+        variant="secondary-outlined" label="Editar contrato"
+        (click)="openModalContrato(this.Contrato.nuContrato)"></dsc-button>
+    </div>
+    <div class="col-md-12">
+      <mat-card appearance="outlined" *ngIf="!validaContratoArtigo81(ContratoV2.cO_CONTRATO)">
+        <mat-card-header>
+          <mat-card-title class="text-left">
+            {{this.isRotaAtas ? 'ARP' : 'CONTRATO'}} {{ this.ContratoV2.cO_CONTRATO }} - INFORMAÇÕES GERAIS <b
+              *ngIf="isDerivadoAta && ContratoAtaPai && ContratoAtaPai.nuContrato">(Contrato
+              Derivado da Ata <a href="/#/contrato/detalhe/v/{{ContratoAtaPai?.nuContrato}}"
+                target="_blank">{{ContratoAtaPai.coContrato}}</a>)</b>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
+            <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.nO_FORNECEDOR }}</b></div>
+
+            <div class="col-md-3 col-sm-6 text-right">CNPJ:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.cO_CNPJ }}</b></div>
+
+            <div class="col-md-3 col-sm-6 text-right">Pagamento Artigo 81?</div>
+            <div class="col-md-3 col-sm-6">
+              <b>
+                {{ this.ContratoV2.iC_ARTIGO_81 === true ? "Sim"
+                : this.ContratoV2.iC_ARTIGO_81 === false ? "Não"
+                : "Não informado" }}
+              </b>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 col-sm-6 text-right">Status:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.iC_ATIVO ? "Ativo" : "Encerrado" }}</b></div>
+
+            <div class="col-md-3 col-sm-6 text-right">Unidade Demandante:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.filial }} - {{ this.ContratoV2.sG_FILIAL }}</b></div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 col-sm-6 text-right">Data Início (1° vigência):</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.dT_INICIO | date : "dd/MM/yyyy" }}</b></div>
+
+            <div class="col-md-3 col-sm-6 text-right">Data Fim (Vigência Atual):</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.dT_TERMINO | date : "dd/MM/yyyy" }}</b></div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 col-sm-6 text-right">Valor Global Total:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ somaVigencias(this.Contrato.gcptb006Vigencias) | currency : "BRL"
+                }}</b></div>
+
+            <div class="col-md-3 col-sm-6 text-right">Valor Global Vigente:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ ContratoV2.vR_GLOBAL_VIGENTE | currency : "BRL" }}</b></div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 col-sm-6 text-right">Dia Pagamento Fatura:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ ContratoV2.diA_PAGAMENTO_FATURA }}</b></div>
+
+            <div class="col-md-3 col-sm-6 text-right">Dia Fechamento Fatura:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.diA_FECHAMENTO_FATURA }}</b></div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 col-sm-6 text-right">Fiscal Técnico (Demandante):</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.nO_FISCAL_TEC ?? 'Não Informado' }}</b></div>
+
+            <div class="col-md-3 col-sm-6 text-right">Fiscal Administrativo (CEGTI):</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.nO_FISCAL_ADM ?? 'Não Informado' }}</b></div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 col-sm-6 text-right">Cadastrado/Alterado por:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.cO_MATRICULA_CADASTRO }} - {{
+                this.ContratoV2.nO_USUARIO_CADASTRO }}</b></div>
+
+            <div class="col-md-3 col-sm-6 text-right">Tipo de Contrato:</div>
+            <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.contratO_TIPO }}</b></div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-md-3 col-sm-6 text-right">Objeto do Contrato:</div>
+            <div class="col-md-9 col-sm-6"><b>{{ ContratoV2.nO_OBJETO }}</b></div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card appearance="outlined" style="margin-top: 24px;" *ngIf="!validaContratoArtigo81(ContratoV2.cO_CONTRATO)">
+        <mat-card-header>
+          <mat-card-title class="text-left">{{this.isRotaAtas ? 'ARP' : 'CONTRATO'}} {{ this.ContratoV2.cO_CONTRATO }} -
+            ADITIVOS E VIGÊNCIAS</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row" *ngIf="dadosVigenciaAtual?.length">
+            <div class="col-md-4">
+              <b>VIGÊNCIA ATUAL</b>
+            </div>
+            <div class="col-md-2 text-right">Data Início/Término:</div>
+            <div class="col-md-3">
+              <b>{{ inicioVigencia | date: 'dd/MM/yyyy' }}</b> a
+              <b>{{ fimVigencia | date: 'dd/MM/yyyy' }}</b>
+            </div>
+            <div class="col-md-1 text-right">Valor:</div>
+            <div class="col-md-2">
+              <b>{{ totalCurrentVigencia | currency : "BRL" }}</b>
+            </div>
+
+            <div class="col-md-12" *ngFor="let rubrica of  ordenaVigenciaAtualRubricas(currentVigenciaRubricas)">
+              <div class="row">
+                <div class="col-md-10">
+                  {{ rubrica.nO_RUBRICA}} - {{rubrica.dE_RUBRICA }}
+                </div>
+                <div class="col-md-2">
+                  {{ rubrica.vR_GLOBAL | currency : "BRL" }}
+                </div>
+              </div>
+            </div>
+
+            <hr class="custom-hr-large" />
+
+          </div>
+
+          <div class="row" *ngFor="
+              let vigencia of this.Contrato.gcptb006Vigencias;
+              let i = index
+            ">
+            <!-- <div class="col-md-2 text-right">Vigência:</div> -->
+            <div class="col-md-2">
+              <b>{{ vigencia.gcptb007VigenciaTipo.noVigenciaTipo }}</b>
+            </div>
+            <div *ngIf="i == 0" class="col-md-2 text-right">Protocolo: &nbsp;
+              <b>{{ vigencia.coProtocoloVigencia }}</b>
+            </div>
+            <div *ngIf="i > 0" class="col-md-2 text-right">Protocolo SICLG:
+              <b>{{ vigencia.coProtocoloVigencia }}</b>
+            </div>
+            <div class="col-md-2 text-right">Data Início/Término:</div>
+            <div class="col-md-3">
+              <b>{{ vigencia.dtInicio | date : "dd/MM/yyyy" }}</b> a
+              <b>{{ vigencia.dtTermino | date : "dd/MM/yyyy" }}</b> -
+              <b>{{ vigencia.nuDiaInicio }}</b> a
+              <b>{{ vigencia.nuDiaTermino }}</b>
+            </div>
+            <!-- <div class="col-md-1 text-right">Dias:</div>
+                        <div class="col-md-2"><b>{{vigencia.nuDiaInicio}}</b> a <b>{{vigencia.nuDiaTermino}}</b></div>   -->
+            <div class="col-md-1 text-right">Valor:</div>
+            <div class="col-md-2">
+              <b>{{ vigencia.vrGlobal | currency : "BRL" }}</b>
+            </div>
+
+            <div class="col-md-12" *ngFor="
+                let rubrica of ordenaVigenciaRubricas(vigencia.gcptb017VigenciaRubricas);
+                let i = index
+              ">
+              <div class="row">
+                <!-- <div class="col-md-2 text-right">
+                  <i class="fas fa-level-up fa-rotate-90 fa-xl"></i>
+                </div> -->
+                <div class="col-md-10">
+                  {{ rubrica.gcptb003Rubrica.coRubrica }} -
+                  {{ rubrica.gcptb003Rubrica.deRubrica }}
+                </div>
+                <div class="col-md-2">
+                  {{ rubrica.vrTotal | currency : "BRL" }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- RESUMO DOS PAGAMENTOS -->
+      <mat-tab-group *ngIf="!isRotaAtas" style="margin-top: 24px;">
+        <mat-tab label="PAGAMENTOS">
+    <p-table #dt [value]="Contrato?.gcptb011Pagamentos" styleClass="p-datatable-customers" [rowHover]="true"
+            [filterDelay]="0" sortField="gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica"
+            [globalFilterFields]="['dePeriodo', 'coRubrica', 'vrCredito', 'vrExecutado', 'dtFaturamento', 'dtNotaFiscal', 'dtPagamento', 'dtPagamentoEfetivo', 'coNumeroAteste', 'qtdItens', 'qtdTradeIn', 'nuSap', 'noPagamentoTipo']"
+            sortMode="single" [scrollable]="true" scrollHeight="500px" rowGroupMode="subheader"
+            groupRowsBy="gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica">
+            <ng-template pTemplate="caption">
+              <mat-card appearance="outlined">
+                <mat-card-header>
+                  <mat-card-title class="text-left"> {{ this.tituloPagamentos }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="row">
+                    <div class="col-md-6 col-sm-12" *ngIf="hasEntries(currentVigenciaSum)">
+                      <h4 class="card-title text-left">Valores PAGOS - Vigência Atual</h4>
+                      <div *ngFor="let rubrica of currentVigenciaSum | keyvalue" class="text-left">
+                        Rubrica {{ rubrica.key }}:
+                        <b>{{ rubrica.value | currency:'BRL' }}</b>
+                      </div>
+                      <div class="text-left hr-container">
+                        <hr class="custom-hr" />
+                      </div>
+                      <div class="text-left">
+                        Total:
+                        <b>{{ totalCurrentVigencia | currency:'BRL' }}</b>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-12" [ngClass]="{'resumo-valores': hasEntries(currentVigenciaSum)}"
+                      *ngIf="hasEntries(sumByRubrica)">
+                      <h4 class="card-title text-left">Valores PAGOS - Todas Vigências</h4>
+                      <div *ngFor="let rubrica of sumByRubrica | keyvalue" class="text-left">
+                        Rubrica {{ rubrica.key }}:
+                        <b>{{ rubrica.value | currency:'BRL' }}</b>
+                      </div>
+                      <div class="text-left hr-container">
+                        <hr class="custom-hr" />
+                      </div>
+                      <div class="text-left">
+                        Total:
+                        <b>{{ totalPayment | currency:'BRL' }}</b>
+                      </div>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="dePeriodo" (sortFunction)="compareDates">Mês/Ano
+                <th pSortableColumn="coNumeroAteste">Ateste SILIC
+                <th pSortableColumn="coRubrica">Rubrica
+                <th pSortableColumn="dtPagamentoEfetivo1">Data pagamento
+                <th pSortableColumn="vrCredito">Valor Executado <br /> (Bruto)
+                  <!-- <th class="col-pagamentos">Redutores</th> -->
+                  <!-- <th class="col-pagamentos">Recorrências</th> -->
+                  <!-- <th class="col-pagamentos">Ajuste</th> -->
+                <th pSortableColumn="vrExecutado">Valor Pago <br /> (Liquido)
+                  <!-- <th pSortableColumn="qtdItens">QTD. Itens
+                <th pSortableColumn="qtdTradeIn">QTD. Trade-in
+                <th pSortableColumn="nuSap">N°Pedido SAP -->
+                  <!-- <th class="col-pagamentos">Retenção</th> -->
+                <th class="col-pagamentos">Editar Pag(*)</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="groupheader" let-pagamento>
+              <tr pRowGroupHeader>
+                <td colspan="7">
+                  <span class="p-text-bold p-ml-2">{{
+                    pagamento.gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica
+                    }}
+                    -
+                    {{
+                    pagamento.gcptb017VigenciaRubrica.gcptb003Rubrica.deRubrica
+                    }}</span>
+                </td>
+              </tr>
+            </ng-template>
+            <!-- <ng-template pTemplate="groupfooter" let-pagamento>
+                <tr class="p-rowgroup-footer">
+                    <td style="min-width: 80%">
+                        <div style="text-align: right; width: 100%">Total Customers</div>
+                    </td>
+                    <td style="width: 20%">{{calculatePagamentosTotal(pagamento.gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica)}}</td>
+                </tr>
+            </ng-template> -->
+            <ng-template pTemplate="body" let-pagamento let-rowIndex="rowIndex">
+              <tr class="p-selectable-row" (click)="
+            openModalPagamento(
+              pagamento.nuContrato,
+              pagamento.nuPagamento,
+              pagamento.icConciliacao
+            )" title="Clique para editar este pagamento">
+                <td class="col-pagamentos">{{ pagamento.dePeriodo }}</td>
+                <td class="col-pagamentos">{{ pagamento.coNumeroAteste }}</td>
+                <td class="col-pagamentos">
+                  {{ pagamento.gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica }}
+                </td>
+                <td class="col-pagamentos">
+                  {{ pagamento.dtPagamentoEfetivo | date : "dd/MM/yyyy" }}
+                </td>
+                <td class="col-pagamentos">
+                  {{ pagamento.vrCredito | currency : "BRL" }}
+                </td>
+                <!-- <td class="col-pagamentos">{{pagamento.vrRedutor | currency : 'BRL'}}</td> -->
+                <!-- <td class="col-pagamentos">{{pagamento.vrRecorrencia | currency : 'BRL'}}</td> -->
+                <!-- <td class="col-pagamentos">{{pagamento.vrAjuste | currency : 'BRL'}}</td> -->
+                <td class="col-pagamentos">
+                  {{ pagamento.vrExecutado | currency : "BRL" }}
+                </td>
+                <!-- <td class="col-pagamentos">{{ pagamento.qtdItens }}</td>
+                <td class="col-pagamentos">{{ pagamento.qtdTradeIn }}</td>
+                <td class="col-pagamentos">{{ pagamento.nuSap }}</td> -->
+                <!-- <td class="col-pagamentos">{{pagamento.vrRetencao | currency : 'BRL'}}</td> -->
+                <td class="col-pagamentos text-center">
+                  <i class="pi pi-check-circle" *ngIf="pagamento.dtPagamentoEfetivo"></i>
+                  <i class="pi pi-times-circle" *ngIf="!pagamento.dtPagamentoEfetivo"></i>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div>
+            <span>(*) Acesso exclusivo CEGTI.</span>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="RETENÇÕES" *ngIf="retencoes?.length > 0">
+          <ng-container>
+            <p-table #dt [value]="retencoes" styleClass="p-datatable-customers" [rowHover]="true" [filterDelay]="0"
+              [globalFilterFields]="['dE_PERIODO', 'nU_PEDIDO', 'nU_ATESTE', 'vR_PENALIDADE', 'observacao', 'dE_TIPO_PENALIDADE']"
+              sortMode="single" [scrollable]="true" scrollHeight="500px">
+              <ng-template pTemplate="caption">
+                <mat-card appearance="outlined">
+                  <mat-card-header>
+                    <mat-card-title class="text-center">RESUMO DE RETENÇÕES</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div class="col-md-12 text-right" *ngFor="let retencao of sumByTipoRetencao | keyvalue">
+                      <div class="row">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-4 text-right">{{ retencao.key }}:</div>
+                        <div class="col-md-2">
+                          <b>{{ retencao.value | currency:'BRL' }}</b>
+                        </div>
+                      </div>
+                    </div>
+                  </mat-card-content>
+              </mat-card>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th pSortableColumn="dE_PERIODO" (sortFunction)="compareDates">Mês/Ano</th>
+                  <th pSortableColumn="nU_PEDIDO">Nº Pedido</th>
+                  <th pSortableColumn="nU_ATESTE">Nº Ateste</th>
+                  <th pSortableColumn="vR_PENALIDADE">Valor</th>
+                  <th pSortableColumn="observacao">Observação</th>
+                  <th pSortableColumn="dE_TIPO_PENALIDADE">Tipo Penalidade</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-retencao let-rowIndex="rowIndex">
+                <tr class="p-selectable-row" (click)="openModalRetencao(retencao)"
+                  title="Clique para editar esta retenção">
+                  <td class="col-pagamentos">{{ retencao.dE_PERIODO }}</td>
+                  <td class="col-pagamentos">{{ retencao.nU_PEDIDO }}</td>
+                  <td class="col-pagamentos">{{ retencao.nU_ATESTE }}</td>
+                  <td class="col-pagamentos">{{ retencao.vR_PENALIDADE | currency: 'BRL' }}</td>
+                  <td class="col-pagamentos">{{ retencao.observacao || 'N/A' }}</td>
+                  <td class="col-pagamentos">{{ retencao.dE_TIPO_PENALIDADE }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </ng-container>
+        </mat-tab>
+      </mat-tab-group>
+      <div class="row" *ngIf="isRotaAtas" style="margin-top: 24px;">
+        <div class="col-12">
+          <mat-tab-group>
+            <mat-tab label="Contratos Derivados">
+              <p-table #dt [value]="listaValoresExecutadosAtas" dataKey="coContrato" [rows]="10" [paginator]="true"
+                currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)" [showCurrentPageReport]="true"
+                [expandedRowKeys]="expandedRowKeys">
+
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th style="width: 3rem;"></th>
+                    <th pSortableColumn="ano">Processo</th>
+                    <th pSortableColumn="contrato">Contrato</th>
+                    <th pSortableColumn="gn">UD</th>
+                    <th pSortableColumn="objeto">Objeto</th>
+                    <th pSortableColumn="inicioContrato">Início Contrato</th>
+                    <th pSortableColumn="fimContrato">Fim Contrato</th>
+                    <th pSortableColumn="vrTotalPrevisto">Total Previsto</th>
+                  </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-registro>
+                  <tr>
+                    <td>
+                      <button type="button" pButton pRipple (click)="toggleRow(registro)"
+                        class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain">
+                        <span
+                          [ngClass]="expandedRowKeys[registro.coContrato] ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
+                      </button>
+                    </td>
+                    <td>{{ registro.co_Processo }}</td>
+                    <td><a href="/#/contrato/detalhe/v/{{ registro.nuContrato }}" target="_blank"> {{
+                        registro.coContrato
+                        }}</a></td>
+                    <td>{{ registro.sgFilial }}</td>
+                    <td>
+                      <span pTooltip="{{ registro.objeto }}" tooltipPosition="top" class="truncated-text"
+                        [attr.data-fulltext]="registro.objeto">{{ registro.noEmpresa }}</span>
+                    </td>
+                    <td>{{ registro.dtInicioContrato | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ registro.dtTerminoContrato | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ registro.vrGlobal | currency:'BRL' }}</td>
+                  </tr>
+                </ng-template>
+
+                <ng-template pTemplate="rowexpansion" let-registro>
+                  <tr>
+                    <td colspan="8">
+                      <div class="p-p-3">
+                        <p-table *ngIf="registro.pagamentosAta?.gcptb011Pagamentos?.length > 0"
+                          [value]="registro.pagamentosAta.gcptb011Pagamentos" rowGroupMode="subheader"
+                          [groupRowsBy]="'gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica'">
+
+                          <ng-template pTemplate="groupheader" let-rubrica>
+                  <tr class="p-rowgroup-header">
+                    <td colspan="7" class="text-header p-ml-2 fundo-titulo">
+                      {{ rubrica.gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica }} -
+                      {{ rubrica.gcptb017VigenciaRubrica.gcptb003Rubrica.deRubrica }}
+                    </td>
+                  </tr>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="dePeriodo">Mês/Ano</th>
+                    <th pSortableColumn="coNumeroAteste">Ateste SILIC</th>
+                    <th pSortableColumn="coRubrica">Rubrica</th>
+                    <th pSortableColumn="dtPagamentoEfetivo1">Data pagamento</th>
+                    <th pSortableColumn="vrCredito">Valor Executado (Bruto)</th>
+                    <th pSortableColumn="vrExecutado">Valor Pago (Liquido)</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pagamento>
+                  <tr class="p-selectable-row">
+                    <td class="col-pagamentos">{{ pagamento.dePeriodo }}</td>
+                    <td class="col-pagamentos">{{ pagamento.coNumeroAteste }}</td>
+                    <td class="col-pagamentos">{{ pagamento.gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica }}</td>
+                    <td class="col-pagamentos">{{ pagamento.dtPagamentoEfetivo | date : "dd/MM/yyyy" }}</td>
+                    <td class="col-pagamentos">{{ pagamento.vrCredito | currency : "BRL" }}</td>
+                    <td class="col-pagamentos">{{ pagamento.vrExecutado | currency : "BRL" }}</td>
+                  </tr>
+                </ng-template>
+
+              </p-table>
+              <div *ngIf="!registro.pagamentosAta?.gcptb011Pagamentos?.length" class="p-text-center fundo-titulo">
+                <span class="p-ml-2 text-header"> Nenhum pagamento encontrado para este registro</span>
+              </div>
+        </div>
+        </td>
+        </tr>
+        </ng-template>
+        </p-table>
+        </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

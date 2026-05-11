@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ambiente de Testes Inteligente com IA – CAIXA</title>
+  <style>
+    /* ───────── Reset & Base ───────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Paleta Fixa – Azul CAIXA */
+      --p130: #002A4D;
+      --p110: #00437A;
+      --p90:  #005CA9;
+      --p70:  #2D8AD8;
+      --p50:  #6DBAFA;
+      --p30:  #A0D2FC;
+      --p10:  #E5F1FC;
+
+      /* Laranja CAIXA */
+      --s90: #D87B00;
+      --s70: #F39200;
+      --s50: #FDB548;
+      --s30: #FFD392;
+      --s10: #FFEFD6;
+
+      /* Turquesa */
+      --t90: #359485;
+      --t70: #54BBAB;
+      --t50: #81D6C8;
+      --t30: #B9EBE3;
+      --t10: #E4F7F4;
+
+      /* Feedback */
+      --error:   #C62828;
+      --success: #1B5E20;
+      --warn:    #E65100;
+      --info:    #005CA9;
+
+      --white: #FFFFFF;
+      --gray:  #F4F6F8;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--p130);
+      overflow-x: hidden;
+    }
+
+    /* ───────── Slide wrapper ───────── */
+    .slide {
+      width: 1280px;
+      min-height: 720px;
+      margin: 40px auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,.55);
+      display: grid;
+      position: relative;
+    }
+
+    /* ───────── Shared header band ───────── */
+    .top-bar {
+      height: 8px;
+      background: linear-gradient(90deg, var(--s70) 0%, var(--s50) 60%, var(--t70) 100%);
+    }
+
+    /* ───────── SLIDE 1 ───────── */
+    #slide1 {
+      background: linear-gradient(135deg, var(--p130) 0%, var(--p110) 60%, var(--p90) 100%);
+      grid-template-rows: 8px 1fr;
+      color: var(--white);
+    }
+
+    #slide1 .content {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      gap: 0;
+      padding: 48px 64px 40px;
+      align-items: start;
+    }
+
+    .divider {
+      background: rgba(255,255,255,.18);
+      height: 100%;
+      margin: 0 40px;
+    }
+
+    .slide-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--s70);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    #slide1 h1 {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.18;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    #slide1 .subtitle {
+      font-size: 15px;
+      color: var(--p30);
+      margin-bottom: 36px;
+      line-height: 1.5;
+    }
+
+    .problem-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .problem-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14.5px;
+      color: var(--p10);
+      line-height: 1.45;
+    }
+
+    .problem-list li .icon {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      background: var(--s90);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    /* Impact quote */
+    .impact-quote {
+      background: linear-gradient(135deg, var(--s90), var(--s70));
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-top: 28px;
+      position: relative;
+    }
+
+    .impact-quote::before {
+      content: '"';
+      font-size: 80px;
+      line-height: 1;
+      color: rgba(255,255,255,.25);
+      position: absolute;
+      top: 4px;
+      left: 16px;
+      font-family: Georgia, serif;
+    }
+
+    .impact-quote p {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.5;
+      padding-left: 16px;
+    }
+
+    /* Flow diagram slide 1 */
+    .flow-diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin-top: 20px;
+    }
+
+    .flow-node {
+      width: 200px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .flow-node.dev    { background: var(--p70);  color: var(--white); }
+    .flow-node.qa     { background: var(--t70);  color: var(--white); }
+    .flow-node.infra  { background: var(--p50);  color: var(--p130);  }
+    .flow-node.broken {
+      background: var(--error);
+      color: var(--white);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(198,40,40,.6); }
+      50%      { box-shadow: 0 0 0 10px rgba(198,40,40,0); }
+    }
+
+    .flow-arrow {
+      width: 2px;
+      height: 24px;
+      background: rgba(255,255,255,.3);
+      position: relative;
+    }
+
+    .flow-arrow::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid rgba(255,255,255,.3);
+    }
+
+    .flow-badge {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      margin-top: 4px;
+    }
+
+    .diagram-label {
+      margin-top: 28px;
+      font-size: 12px;
+      color: rgba(255,255,255,.45);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* ───────── SLIDE 2 ───────── */
+    #slide2 {
+      background: var(--p10);
+      grid-template-rows: 8px 1fr;
+    }
+
+    #slide2 .content {
+      padding: 48px 64px 40px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 32px;
+    }
+
+    #slide2 .header-area { display: block; }
+
+    #slide2 h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--p90);
+      line-height: 1.2;
+    }
+
+    #slide2 .sub {
+      font-size: 15px;
+      color: var(--p110);
+      margin-top: 8px;
+    }
+
+    /* Pipeline flow */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .pipe-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      min-width: 130px;
+    }
+
+    .pipe-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,.12);
+    }
+
+    .pipe-icon.step1  { background: linear-gradient(135deg, var(--p90), var(--p70)); color: #fff; }
+    .pipe-icon.step2  { background: linear-gradient(135deg, var(--s90), var(--s70)); color: #fff; }
+    .pipe-icon.step3  { background: linear-gradient(135deg, var(--t90), var(--t70)); color: #fff; }
+    .pipe-icon.step4  { background: linear-gradient(135deg, var(--p70), var(--t70)); color: #fff; }
+    .pipe-icon.step5  { background: linear-gradient(135deg, var(--s70), var(--s50)); color: var(--p130); }
+    .pipe-icon.step6  { background: linear-gradient(135deg, var(--p110), var(--p90)); color: #fff; }
+    .pipe-icon.step7  { background: linear-gradient(135deg, var(--t90), var(--p90)); color: #fff; }
+
+    .pipe-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--p110);
+      text-align: center;
+      line-height: 1.3;
+      max-width: 110px;
+    }
+
+    .pipe-step-num {
+      font-size: 10px;
+      color: var(--p70);
+      font-weight: 600;
+      letter-spacing: .5px;
+    }
+
+    .pipe-connector {
+      width: 32px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--p90), var(--t70));
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .pipe-connector::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 6px solid var(--t70);
+    }
+
+    .slide2-footer {
+      background: linear-gradient(90deg, var(--p90), var(--p110));
+      border-radius: 12px;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 4px;
+    }
+
+    .slide2-footer .icon { font-size: 28px; }
+
+    .slide2-footer p {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.4;
+    }
+
+    .slide2-footer span {
+      color: var(--s50);
+    }
+
+    /* ───────── SLIDE 3 ───────── */
+    #slide3 {
+      background: linear-gradient(135deg, var(--p110) 0%, var(--p130) 100%);
+      grid-template-rows: 8px 1fr;
+      color: var(--white);
+    }
+
+    #slide3 .content {
+      padding: 48px 64px 40px;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    #slide3 h1 {
+      font-size: 33px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    #slide3 .sub {
+      font-size: 14.5px;
+      color: var(--p30);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    /* Timeline flow */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 20px;
+      bottom: 20px;
+      width: 2px;
+      background: rgba(255,255,255,.15);
+    }
+
+    .tl-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 0;
+      position: relative;
+    }
+
+    .tl-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      z-index: 1;
+    }
+
+    .tl-dot.blue    { background: var(--p70); }
+    .tl-dot.orange  { background: var(--s90); }
+    .tl-dot.teal    { background: var(--t90); }
+    .tl-dot.red     { background: var(--error); }
+    .tl-dot.green   { background: #2E7D32; }
+    .tl-dot.gray    { background: rgba(255,255,255,.2); }
+
+    .tl-text strong {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .tl-text span {
+      font-size: 12px;
+      color: var(--p30);
+    }
+
+    /* Right panel – final impact */
+    .impact-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .metric-card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .metric-card .metric-icon {
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+
+    .metric-card .metric-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--s70);
+      line-height: 1;
+    }
+
+    .metric-card .metric-desc {
+      font-size: 12.5px;
+      color: var(--p30);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
+    .final-quote {
+      background: linear-gradient(135deg, var(--s90), var(--s70));
+      border-radius: 14px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-quote::before {
+      content: '❝';
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      font-size: 90px;
+      color: rgba(255,255,255,.15);
+      line-height: 1;
+    }
+
+    .final-quote p {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.55;
+    }
+
+    /* ───────── Logo badge (all slides) ───────── */
+    .logo-badge {
+      position: absolute;
+      bottom: 18px;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: .65;
+    }
+
+    .logo-badge span {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--white);
+      text-transform: uppercase;
+    }
+
+    .logo-box {
+      width: 32px;
+      height: 32px;
+      background: var(--s70);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    /* ───────── Page number ───────── */
+    .slide-number {
+      position: absolute;
+      bottom: 20px;
+      left: 28px;
+      font-size: 11px;
+      color: rgba(255,255,255,.35);
+      letter-spacing: 1px;
+    }
+
+    /* ───────── Print / export helper ───────── */
+    @media print {
+      body { background: #fff; }
+      .slide { margin: 0; border-radius: 0; page-break-after: always; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 1 – O PROBLEMA ATUAL
+════════════════════════════════════════════════ -->
+<section class="slide" id="slide1">
+  <div class="top-bar"></div>
+  <div class="content">
+
+    <!-- LEFT – texto -->
+    <div>
+      <p class="slide-label">Slide 01 · Contexto</p>
+      <h1>Por que ambientes de teste ainda são um gargalo?</h1>
+      <p class="subtitle">
+        O maior inimigo da qualidade de software não é o código com defeito —
+        é o ambiente que não sustenta a validação.
+      </p>
+
+      <ul class="problem-list">
+        <li>
+          <div class="icon">🔗</div>
+          <div><strong>Ambientes compartilhados e instáveis</strong><br>
+          Um time quebra o ambiente e todos os outros param.</div>
+        </li>
+        <li>
+          <div class="icon">⏳</div>
+          <div><strong>Dependência de outras equipes</strong><br>
+          Aguardar infraestrutura para iniciar um ciclo de testes.</div>
+        </li>
+        <li>
+          <div class="icon">🗄️</div>
+          <div><strong>Dados de teste inconsistentes</strong><br>
+          Massa de dados desatualizada gera falsos negativos e falsos positivos.</div>
+        </li>
+        <li>
+          <div class="icon">🐛</div>
+          <div><strong>Dificuldade para reproduzir bugs</strong><br>
+          "Na minha máquina funciona" — ambiente ≠ produção.</div>
+        </li>
+        <li>
+          <div class="icon">🚧</div>
+          <div><strong>Demora para preparar ambientes</strong><br>
+          Horas (ou dias) para provisionar um ambiente pronto para testar.</div>
+        </li>
+      </ul>
+
+      <div class="impact-quote">
+        <p>
+          Grande parte dos problemas de qualidade não está no código,<br>
+          mas sim nos <u>ambientes de teste</u>.
+        </p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- RIGHT – diagrama -->
+    <div>
+      <p class="slide-label">Fluxo atual</p>
+
+      <div class="flow-diagram">
+        <div class="flow-node dev">👨‍💻 Desenvolvedor</div>
+        <div class="flow-arrow"></div>
+        <p class="flow-badge">entrega o código</p>
+
+        <div class="flow-node qa">🔍 QA</div>
+        <div class="flow-arrow"></div>
+        <p class="flow-badge">solicita ambiente</p>
+
+        <div class="flow-node infra">🛠️ Infraestrutura</div>
+        <div class="flow-arrow"></div>
+        <p class="flow-badge">provisiona manualmente</p>
+
+        <div class="flow-node broken">💥 Ambiente Quebrado</div>
+      </div>
+
+      <p class="diagram-label">Cada etapa manual é um ponto de falha</p>
+    </div>
+
+  </div><!-- /.content -->
+
+  <div class="slide-number">01 / 03</div>
+  <div class="logo-badge">
+    <span>CAIXA · TI</span>
+    <div class="logo-box">🏦</div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 2 – AMBIENTE DE TESTE INTELIGENTE COM IA
+════════════════════════════════════════════════ -->
+<section class="slide" id="slide2">
+  <div class="top-bar"></div>
+  <div class="content">
+
+    <div class="header-area">
+      <p class="slide-label" style="color:var(--s90);">Slide 02 · Solução</p>
+      <h1>Ambiente de Teste Inteligente</h1>
+      <p class="sub">
+        Um único <strong>push</strong> no repositório desencadeia um ciclo completamente autônomo —
+        do código ao relatório de qualidade, sem intervenção humana.
+      </p>
+    </div>
+
+    <!-- Pipeline -->
+    <div>
+      <div class="pipeline">
+
+        <div class="pipe-step">
+          <div class="pipe-icon step1">📤</div>
+          <p class="pipe-step-num">01</p>
+          <p class="pipe-label">Push no<br>Azure DevOps</p>
+        </div>
+
+        <div class="pipe-connector"></div>
+
+        <div class="pipe-step">
+          <div class="pipe-icon step2">🤖</div>
+          <p class="pipe-step-num">02</p>
+          <p class="pipe-label">IA inicia<br>o Pipeline</p>
+        </div>
+
+        <div class="pipe-connector"></div>
+
+        <div class="pipe-step">
+          <div class="pipe-icon step3">📦</div>
+          <p class="pipe-step-num">03</p>
+          <p class="pipe-label">Cria<br>Container</p>
+        </div>
+
+        <div class="pipe-connector"></div>
+
+        <div class="pipe-step">
+          <div class="pipe-icon step4">🗄️</div>
+          <p class="pipe-step-num">04</p>
+          <p class="pipe-label">SQL Server<br>Provisionado</p>
+        </div>
+
+        <div class="pipe-connector"></div>
+
+        <div class="pipe-step">
+          <div class="pipe-icon step5">🧬</div>
+          <p class="pipe-step-num">05</p>
+          <p class="pipe-label">IA gera<br>Massa de Dados</p>
+        </div>
+
+        <div class="pipe-connector"></div>
+
+        <div class="pipe-step">
+          <div class="pipe-icon step6">🚀</div>
+          <p class="pipe-step-num">06</p>
+          <p class="pipe-label">Angular + .NET<br>Implantados</p>
+        </div>
+
+        <div class="pipe-connector"></div>
+
+        <div class="pipe-step">
+          <div class="pipe-icon step7">✅</div>
+          <p class="pipe-step-num">07</p>
+          <p class="pipe-label">IA executa<br>Testes</p>
+        </div>
+
+      </div><!-- /.pipeline -->
+
+      <div class="slide2-footer">
+        <span class="icon">⚡</span>
+        <p>
+          O ambiente <span>prepara-se sozinho</span> — sem espera, sem dependência manual.<br>
+          API · UI · Integração — todos os testes, uma única execução orquestrada por IA.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /.content -->
+
+  <div class="slide-number" style="color:rgba(0,44,77,.35);">02 / 03</div>
+  <div class="logo-badge" style="opacity:.5;">
+    <span style="color:var(--p90);">CAIXA · TI</span>
+    <div class="logo-box">🏦</div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 3 – O QA QUE NUNCA DORME
+════════════════════════════════════════════════ -->
+<section class="slide" id="slide3">
+  <div class="top-bar"></div>
+  <div class="content">
+
+    <!-- LEFT – timeline -->
+    <div>
+      <p class="slide-label">Slide 03 · Resultado</p>
+      <h1>O ambiente que<br>testa o sistema sozinho</h1>
+      <p class="sub">
+        Após o deploy automático, a IA assume o ciclo de validação completo —
+        do teste ao encerramento do ambiente.
+      </p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot blue">📤</div>
+          <div class="tl-text">
+            <strong>Push no repositório</strong>
+            <span>Azure DevOps / ALM detecta a mudança</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot orange">🤖</div>
+          <div class="tl-text">
+            <strong>IA cria ambiente conteinerizado</strong>
+            <span>Isolado, limpo e reproduzível</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot teal">🗄️</div>
+          <div class="tl-text">
+            <strong>IA cria banco de dados SQL Server</strong>
+            <span>Schema atualizado e massa de dados gerada automaticamente</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot blue">🚀</div>
+          <div class="tl-text">
+            <strong>IA sobe a aplicação Angular + .NET</strong>
+            <span>Frontend e Backend implantados e integrados</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot teal">✅</div>
+          <div class="tl-text">
+            <strong>IA executa todos os testes</strong>
+            <span>API · UI · Integração — cobertura total</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot red">🐛</div>
+          <div class="tl-text">
+            <strong>Falha detectada → Bug registrado automaticamente</strong>
+            <span>Work item aberto no Azure DevOps com evidências</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot green">📊</div>
+          <div class="tl-text">
+            <strong>Relatório de qualidade gerado</strong>
+            <span>Cobertura, falhas, tempo de execução — visibilidade total</span>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot gray">🧹</div>
+          <div class="tl-text">
+            <strong>Container destruído automaticamente</strong>
+            <span>Zero custo residual · Ambiente efêmero e rastreável</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /left -->
+
+    <!-- RIGHT – métricas + frase final -->
+    <div class="impact-panel">
+
+      <div class="metric-card">
+        <span class="metric-icon">⚡</span>
+        <div>
+          <div class="metric-value">100%</div>
+          <div class="metric-desc">Automação do ciclo<br>de testes</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-icon">🕐</span>
+        <div>
+          <div class="metric-value">0 min</div>
+          <div class="metric-desc">Tempo gasto pelo time<br>preparando ambiente</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-icon">🔁</span>
+        <div>
+          <div class="metric-value">24 / 7</div>
+          <div class="metric-desc">Cobertura contínua,<br>sem intervenção humana</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-icon">🐛</span>
+        <div>
+          <div class="metric-value">Auto</div>
+          <div class="metric-desc">Bugs registrados no<br>Azure DevOps com evidências</div>
+        </div>
+      </div>
+
+      <div class="final-quote">
+        <p>
+          Enquanto o time desenvolve,<br>
+          o ambiente inteligente trabalha<br>
+          continuamente garantindo qualidade.
+        </p>
+      </div>
+
+    </div><!-- /right -->
+
+  </div><!-- /.content -->
+
+  <div class="slide-number">03 / 03</div>
+  <div class="logo-badge">
+    <span>CAIXA · TI</span>
+    <div class="logo-box">🏦</div>
+  </div>
+</section>
+
+</body>
+</html>

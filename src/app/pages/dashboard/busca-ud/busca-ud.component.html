@@ -1,0 +1,19 @@
+<div class="busca-ud-page">
+
+  <!-- BREADCRUMB: o componente já insere "Início" automaticamente -->
+  <dsc-breadcrumb [urls]="[
+    { label: 'Busca por Unidade Demandante' }
+  ]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+
+  <div class="busca-ud-header">
+    <h2 class="busca-ud-titulo">Busca por Unidade Demandante</h2>
+    <dsc-button variant="secondary" size="standard" label="Voltar" iconPrefix="arrow_back" (click)="voltar()"></dsc-button>
+  </div>
+
+  <dsc-alert
+    variant="info"
+    title="Em desenvolvimento"
+    message="O painel de busca por unidade demandante está em desenvolvimento e estará disponível em breve.">
+  </dsc-alert>
+
+</div>

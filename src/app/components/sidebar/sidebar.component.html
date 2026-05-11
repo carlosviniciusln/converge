@@ -1,0 +1,202 @@
+<div class="logo">
+  <a href="/#" class="simple-text logo-mini">
+    <div class="logo-img">
+      <img src="./assets/img/logo.png" />
+    </div>
+  </a>
+  <a href="" class="simple-text logo-normal"> GVC:<br>Gestão Estratégica<br>de Contratos,<br>Planejamento<br>e Orçamento
+  </a>
+</div>
+<div class="sidebar-wrapper">
+  <ul class="nav">
+    <li routerLinkActive="active" *ngFor="let menuItem of menuItems; let i = index" class="{{ menuItem.class }} nav-item">
+      <a *ngIf="
+          !menuItem.checkForAccess ||
+          (menuItem.checkForAccess && hasAccess(menuItem.path))
+        " [routerLink]="[menuItem.path]" [attr.id]="'menu-item-'+i">
+        <i class="tim-icons  {{ menuItem.icon }}"></i>
+        <p>{{ menuItem.title }}</p>
+      </a>
+    </li>
+    <li routerlinkactive="active" class="nav-item">
+      <a data-toggle="collapse" class="nav-link" (click)="isContratoCollapsed = !isContratoCollapsed" id="menu-execucao">
+        <i class="tim-icons icon-single-copy-04"></i>
+        <p>Execução<b class="caret"></b></p>
+      </a>
+      <div [ngClass]="isContratoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+        <ul class="nav">
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/contrato" id="menu-contratos">
+              <i class="tim-icons"></i>
+              <p>Contratos</p>
+            </a>
+          </li>
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/contrato/atas" id="menu-atas">
+              <i class="tim-icons"></i>
+              <p>Atas de Registro</p>
+            </a>
+          </li>
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/contrato/artigos" id="menu-pagamentos-art81">
+              <i class="tim-icons"></i>
+              <p>Pagamentos Art.81</p>
+            </a>
+          </li>
+          <!--li routerlinkactive="active" class="nav-item">
+            <a data-toggle="collapse" class="nav-link" (click)="isContratoCollapsedArt81 = !isContratoCollapsedArt81">
+              <i class="tim-icons"></i>
+              <p>Pagamentos Art.81<b class="caret"></b></p>
+            </a>
+            <div [ngClass]="isContratoCollapsedArt81 == true ? 'collapse show' : 'collapse'" id="relatorios">
+              <ul class="nav">
+                <li routerlinkactive="active" class="nav-item">
+                  <a class="nav-link" href="#/contrato/detalhe/v/{{id2024}}">
+                    <p>2024</p>
+                  </a>
+                </li>
+                <li routerlinkactive="active" class="nav-item">
+                  <a class="nav-link" href="#/contrato/detalhe/v/{{id2025}}">
+                    <p>2025</p>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li-->
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/contrato/conciliacao" id="menu-conciliacao">
+              <i class="tim-icons"></i>
+              <p>Conciliação de Registros</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+     <!-- <li routerlinkactive="active" class="nav-item">
+      <a data-toggle="collapse" class="nav-link" (click)="isDotacaoCollapsed = !isDotacaoCollapsed">
+        <i class="tim-icons icon-single-copy-04"></i>
+        <p>DOTAÇÃO<b class="caret"></b></p>
+      </a>
+      <div [ngClass]="isDotacaoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+        <ul class="nav">
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/dotacao">
+              <i class="tim-icons"></i>
+              <p>SUPLEMENTAÇÃO ORÇAMENTÁRIA</p>
+            </a>
+          </li>
+        </ul>
+      </div> -->
+    <li routerlinkactive="active" class="nav-item">
+      <a data-toggle="collapse" class="nav-link" (click)="isOrcamentoCollapsed = !isOrcamentoCollapsed">
+        <i class="tim-icons icon-coins"></i>
+        <p>Orçamento<b class="caret"></b></p>
+      </a>
+      <div [ngClass]="isOrcamentoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+        <ul class="nav">
+
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/novo-planejamento">
+              <p>Planejamento</p>
+            </a>
+          </li>
+
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento-orcamentario-novo">
+              <p>Planejamento novo</p>
+            </a>
+          </li>
+
+            <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/orcamento/limites">
+              <p>Limites</p>
+            </a>
+          </li>
+
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/valores-executados">
+              <p>Valores Executados</p>
+            </a>
+          </li>
+
+          <li *ngIf="isPerfilOrcamento" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/export-data-pagamento">
+              <p>Extração de Pagamentos</p>
+            </a>
+          </li>
+
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento">
+              <p>Planejamento Legado</p>
+            </a>
+          </li>
+
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento/limites">
+              <p>Limites Legado</p>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+    </li>
+    <li routerlinkactive="active" class="nav-item">
+      <a data-toggle="collapse" class="nav-link" (click)="isRelatoriosCollapsed = !isRelatoriosCollapsed">
+        <i class="tim-icons icon-puzzle-10"></i>
+        <p>Relatórios<b class="caret"></b></p>
+      </a>
+      <div [ngClass]="isRelatoriosCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+        <ul class="nav">
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/pagamento">
+              <p>Relatório de Pagamentos</p>
+            </a>
+          </li>
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/consumo">
+              <p>Relatório de Consumo</p>
+            </a>
+          </li>
+          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/relatorio-contrato">
+              <p>Relatório de Contratos</p>
+            </a>
+          </li>
+
+          <!-- <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/consumo-arp">
+              <p>Relatório de Consumo ARP</p>
+            </a>
+          </li> -->
+          <!-- <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/empenho">
+              <p>Relatório Valor Empenhado</p>
+            </a>
+          </li>
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/informe/analitico">
+              <p>Informe Mensal - Analítico</p>
+            </a>
+          </li>
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/informe/sintetico">
+              <p>Informe Mensal - Sintético</p>
+            </a>
+          </li> -->
+        </ul>
+      </div>
+    </li>
+    <li routerlinkactive="active" class="nav-item">
+      <a class="nav-link" href="#/ateste">
+        <i class="tim-icons icon-single-copy-04"></i>
+        <p>Ateste</p>
+      </a>
+    </li>
+    <li routerLinkActive="active" class="nav-item">
+      <a class="nav-link" href="#/usuarios">
+        <i class="tim-icons icon-single-02"></i>
+        <p>Usuários</p>
+      </a>
+    </li>
+  </ul>
+</div>

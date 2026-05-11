@@ -1,0 +1,57 @@
+﻿<!-- HEADER customizado — replica visual do DSC sem usar dsc-header
+     para permitir o uso de logo customizada (assets/img/logo.png) -->
+<header id="app-header" class="custom-header">
+
+  <!-- Linha principal -->
+  <div class="custom-header__row">
+
+    <!-- Botão sanduíche -->
+    <button id="btn-sandwich" class="custom-header__toggle" aria-label="Botão de navegação" (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <!-- Logo customizada -->
+    <a href="/" class="custom-header__brand" aria-label="Início">
+      <img src="assets/images/logo.png" alt="CONVERGE" class="custom-header__logo" />
+    </a>
+
+    <!-- Separador vertical -->
+    <div class="custom-header__separator"></div>
+
+    <!-- Sigla + nome -->
+    <span class="custom-header__acronym">CONVERGE</span>
+    <span class="custom-header__title"> - Plataforma de Gestão de Contratos</span>
+
+    <!-- Spacer -->
+    <div class="custom-header__spacer"></div>
+
+    <!-- Ações + usuário agrupados à direita -->
+    <div class="custom-header__right">
+
+      <!-- Saudação / usuário -->
+      <div *ngIf="isLoggedIn && currentUser" class="custom-header__user">
+        <div class="custom-header__greeting">
+          <span class="custom-header__greeting-label">Olá</span>
+          <span class="custom-header__username">{{ currentUser?.noUsuario }}</span>
+        </div>
+        <span class="custom-header__workunit">{{ currentUser?.noPerfil }}</span>
+      </div>
+
+      <!-- Ações -->
+      <dsc-button-header id="btn-logout" *ngIf="isLoggedIn" icon="logout" label="Sair" (buttonClick)="signOut()">
+      </dsc-button-header>
+      <dsc-button-header id="btn-entrar" *ngIf="!isLoggedIn" icon="login" label="Entrar" (buttonClick)="openModalLogin()">
+      </dsc-button-header>
+
+    </div>
+
+  </div>
+
+  <!-- Linha de classificação de conteúdo -->
+  <div class="custom-header__classification">
+    <span class="custom-header__classification-label">Conteúdo</span>
+    <span class="custom-header__classification-title">OS DADOS PESSOAIS ESTÃO DE ACORDO COM AS NORMAS DA LGPD</span>
+    <span class="custom-header__classification-info">{{ ultimaAtualizacao }}</span>
+  </div>
+
+</header>

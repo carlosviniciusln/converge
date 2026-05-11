@@ -1,0 +1,150 @@
+<div class="content">
+  <dsc-breadcrumb [urls]="[{label: 'Relatórios'}, {label: 'Informe Mensal - Analítico'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div class="row">
+    <div class="col-12" *ngIf="listaInformeMensal">
+      <p-table
+        #dt
+        [value]="listaInformeMensal"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [rows]="12"
+        [showCurrentPageReport]="true"
+        [paginator]="true"
+        currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
+        [filterDelay]="0"
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-3 table-header-title">
+                Relatório de Informe Mensal - Analítico
+              </div>
+              <div class="col-md-1 pl-1 pr-1 text-right">
+                <dsc-button
+                  variant="secondary-outlined"
+                  icon="cloud_download"
+                  iconButton
+                  (click)="downloadInformeMensal()"
+                  *ngIf="permissions?.Exportar ?? false"
+                ></dsc-button>
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <dsc-select
+                  [options]="selectAnos"
+                  [(ngModel)]="selectedAno"
+                  [showFilter]="true"
+                  (ngModelChange)="updateRelatorio({ value: $event }, 1)"
+                  placeholder="Todos os Anos Orçamentários"
+                ></dsc-select>
+                <!-- <select class="form-control" id="pAno" name="pAno" [(ngModel)]="selectedAno" (ngModelChange)="updateRelatorio($event, 1)">
+                                <option value="null">Todos os Anos Orçamentários</option>
+                                 <option *ngFor="let a of listaAnos;" [ngValue]="a">{{ a }}</option> 
+                            </select> -->
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <dsc-select
+                  [options]="selectFiliais"
+                  [(ngModel)]="selectedFilial"
+                  [showFilter]="true"
+                  (ngModelChange)="updateRelatorio({ value: $event }, 2)"
+                  placeholder="Todas as Unidades Demandantes"
+                ></dsc-select>
+                <!-- <select class="form-control" id="pFilial" name="pFilial" [(ngModel)]="selectedFilial" (ngModelChange)="updateRelatorio($event, 2)">
+                                <option value="null">Todas as Gerências</option>
+                                 <option *ngFor="let a of listaFiliais;" [ngValue]="a.nuFilial">{{ a.sgFilial }}</option> 
+                            </select> -->
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <dsc-select
+                  [options]="selectRubricas"
+                  [(ngModel)]="selectedRubrica"
+                  [showFilter]="true"
+                  (ngModelChange)="updateRelatorio({ value: $event }, 3)"
+                  placeholder="Todas as Rubricas"
+                ></dsc-select>
+                <!-- <select class="form-control" id="pRubrica" name="pRubrica" [(ngModel)]="selectedRubrica" (ngModelChange)="updateRelatorio($event, 3)">
+                                <option value="null">Todas as Rubricas</option>
+                                 <option *ngFor="let a of listaRubricas;" [ngValue]="a.nuRubrica">{{ a.coRubrica }}</option> 
+                            </select> -->
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <dsc-select
+                  [options]="selectContratos"
+                  [(ngModel)]="selectedContrato"
+                  [showFilter]="true"
+                  (ngModelChange)="updateRelatorio({ value: $event }, 4)"
+                  placeholder="Todos os Contratos"
+                ></dsc-select>
+                <!-- <select class="form-control" id="pContrato" name="pContrato" [(ngModel)]="selectedContrato" (ngModelChange)="updateRelatorio($event, 4)">
+                                <option value="null">Todos os Contratos</option>
+                                 <option *ngFor="let a of listaContratos;" [ngValue]="a.nuContrato">{{ a.coContrato }} - {{ a.noEmpresa }}</option> 
+                            </select> -->
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="p-d-flex p-jc-between p-ai-center size12">Contrato</th>
+            <th class="p-d-flex p-jc-between p-ai-center">UD</th>
+            <ng-container
+              *ngFor="
+                let item of listaInformeMensal[0]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <th
+                class="p-d-flex p-jc-between p-ai-center size12"
+                *ngIf="
+                  ['coContrato', 'sgFilial', 'vrTotal'].indexOf(item.key) === -1
+                "
+              >
+                {{ item.key }}
+              </th>
+            </ng-container>
+            <th class="p-d-flex p-jc-between p-ai-center">TOTAL</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-informe let-rowIndex="rowIndex">
+          <tr class="p-selectable-row">
+            <td class="size12">
+              {{ informe.coContrato }}
+            </td>
+            <td>
+              {{ informe.sgFilial }}
+            </td>
+            <ng-container
+              *ngFor="
+                let r of listaInformeMensal[rowIndex]
+                  | keyvalue
+                  | sortBy : 'asc' : 'key'
+              "
+            >
+              <td
+                class="p-d-flex p-jc-between p-ai-center size12"
+                *ngIf="
+                  ['coContrato', 'sgFilial', 'vrTotal'].indexOf(r.key) === -1
+                "
+              >
+                <span *ngIf="r.value">{{
+                  r.value.replace(",", ".") | currency : "BRL"
+                }}</span>
+                <span *ngIf="!r.value">R$ -</span>
+              </td>
+            </ng-container>
+            <td class="size12">
+              {{ informe.vrTotal | currency : "BRL" }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8">Nenhum registro encontrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

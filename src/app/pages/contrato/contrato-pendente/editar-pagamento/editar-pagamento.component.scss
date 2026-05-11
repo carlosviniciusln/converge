@@ -1,0 +1,19 @@
+label {
+    margin-bottom: 0px !important;
+}
+
+::ng-deep .custom-class .modal-dialog {
+    position: relative;
+    top: 5%;
+  }
+
+::ng-deep  .modal-lg {
+    max-width: 1005px !important;
+}
+
+.is-invalid{
+    border: 1px solid red !important;
+}
+.min-height-59{
+    min-height: 59px;
+}

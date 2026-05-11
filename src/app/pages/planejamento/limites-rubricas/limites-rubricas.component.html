@@ -1,0 +1,260 @@
+<div class="content">
+  <dsc-breadcrumb [urls]="[{label: 'Planejamento'}, {label: 'Limites de Rubricas'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div class="row">
+    <div class="col-12">
+      <p-table
+        #dt
+        [value]="limitesRubricas"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [loading]="loading"
+        [filterDelay]="0"
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-2 pl-1 pr-1 table-header-title">
+                {{ this.title }}
+              </div>
+              <div class="pl-1 pr-1">
+                <div class="col-md-1 pl-1 pr-1 text-right">
+                  <button
+                    type="button"
+                    class="btn-sm btn-secondary"
+                    *ngIf="permissions?.Cadastrar ?? false"
+                    (click)="openModalLimitesRubricas(true)"
+                  >
+                    <i class="tim-icons icon-simple-add"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-1 pr-1">
+                <div class="col-md-1 pl-1 pr-1 text-right">
+                  <button
+                    type="button"
+                    class="btn-sm btn-secondary"
+                    (click)="openModalUsoLimitesRubricas()"
+                  >
+                    <i class="tim-icons icon-chart-bar-32"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectAnosOrcamentarios"
+                  [(ngModel)]="selectedAnoOrcamentario"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 1)"
+                  [showClear]="true"
+                  placeholder="Exercício"
+                ></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectRubricas"
+                  [(ngModel)]="selectedRubrica"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 2)"
+                  [showClear]="true"
+                  placeholder="Rubrica"
+                ></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectGruposRemanejamento"
+                  [(ngModel)]="selectedGrupoRemanejamento"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 3)"
+                  [showClear]="true"
+                  placeholder="Grupo Remanejamento"
+                ></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectFiliais"
+                  [(ngModel)]="selectedFilial"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 4)"
+                  [showClear]="true"
+                  placeholder="UD"
+                ></p-dropdown>
+              </div>
+              <div class="pl-1 pr-1">
+                <p-dropdown
+                  [options]="selectTiposPlanejamento"
+                  [(ngModel)]="selectedTipoPlanejamento"
+                  [filter]="true"
+                  optionLabel="label"
+                  optionValue="value"
+                  (onChange)="updateRelatorio($event, 5)"
+                  [showClear]="true"
+                  placeholder="Tipo Planejamento"
+                ></p-dropdown>
+              </div>
+              <div>
+                <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+                (click)="limparFiltros()"></button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Exercício
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Rubrica
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Grupo Remanejamento
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                UD
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Tipo Planejamento
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center header-alignment">
+                Valor
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center"></div>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-limiteRubrica>
+          <tr class="p-selectable-row">
+            <td style="text-align: center">
+              <span class="p-column-title">Exercício</span>
+              {{ limiteRubrica.gcptb010Orcamento.nuAnoOrcamento }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Rubrica</span>
+              {{ limiteRubrica.gcptb003Rubrica.coRubrica }} -
+              {{ limiteRubrica.gcptb003Rubrica.deRubrica }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Grupo Remanejamento</span>
+              {{
+                limiteRubrica.gcptb003Rubrica.gcptb028GrupoRemanejamento
+                  ?.deGrupoRemanejamento
+              }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">UD</span>
+              {{ limiteRubrica.gcptb005Filial.sgFilial }}
+            </td>
+            <td style="text-align: center">
+              <span class="p-column-title">Tipo Planejamento</span>
+              {{ limiteRubrica.gcptb019PlanejamentoTipo.dePlanejamentoTipo }}
+            </td>
+            <td style="text-align: right">
+              <span class="p-column-title">Valor</span>
+              {{ limiteRubrica.vrLimiteRubrica | currency : "BRL" }}
+            </td>
+            <td style="text-align: center">
+              <i
+                class="pi pi-ellipsis-v"
+                [matMenuTriggerFor]="menu"
+                title="clique para detalhar o limite rubrica"
+              >
+              </i>
+              <mat-menu #menu="matMenu">
+                <button
+                  mat-menu-item
+                  (click)="openModalLimitesRubricas(false, limiteRubrica)"
+                >
+                  <i class="tim-icons icon-zoom-split"></i>
+                  <span> Consultar</span>
+                </button>
+                <button
+                  mat-menu-item
+                  *ngIf="permissions?.Alterar ?? false"
+                  (click)="openModalLimitesRubricas(true, limiteRubrica)"
+                >
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Editar</span>
+                </button>
+                <button
+                  mat-menu-item
+                  *ngIf="!(permissions?.Alterar ?? false)"
+                  disabled
+                >
+                  <i class="tim-icons icon-pencil"></i>
+                  <span> Editar</span>
+                </button>
+                <button
+                  mat-menu-item
+                  *ngIf="permissions?.Excluir ?? false"
+                  (click)="Excluir(limiteRubrica)"
+                >
+                  <i class="tim-icons icon-trash-simple"></i>
+                  <span> Excluir</span>
+                </button>
+                <button
+                  mat-menu-item
+                  *ngIf="!(permissions?.Excluir ?? false)"
+                  disabled
+                >
+                  <i class="tim-icons icon-trash-simple"></i>
+                  <span> Excluir</span>
+                </button>
+              </mat-menu>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="p-selectable-row">
+            <td style="text-align: center"></td>
+            <td style="text-align: center"></td>
+            <td style="text-align: center"></td>
+            <td style="text-align: center"></td>
+            <td style="text-align: right">
+              <b>Valor total na página</b>
+            </td>
+            <td style="text-align: right">
+              {{ somaLimitesRubrica?.vrLimiteRubrica | currency : "BRL" }}
+            </td>
+            <td style="text-align: center"></td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="12">Nenhum limite rubrica cadastrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <dsc-paginator
+        *ngIf="quantidadeTotal > 0"
+        [length]="quantidadeTotal"
+        [pageSize]="filtroRegistros.pageSize"
+        [pageIndex]="filtroRegistros.pageNumber - 1"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="loadPage($event)">
+      </dsc-paginator>
+    </div>
+  </div>
+</div>

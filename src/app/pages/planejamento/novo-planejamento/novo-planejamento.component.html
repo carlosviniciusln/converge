@@ -1,0 +1,548 @@
+﻿<div class="np-page">
+
+  <dsc-breadcrumb
+    [urls]="[{ label: 'Planejamento Orçamentário' }]"
+    style="margin-bottom: 16px;">
+  </dsc-breadcrumb>
+
+  <div class="np-body">
+
+    <aside class="np-sidebar">
+      <span class="np-sidebar-title">Exercícios</span>
+  <div *ngFor="let ex of exercicios; trackBy: trackByPlanejamento" class="ex-card" (click)="selecionarExercicio(ex)" [attr.id]="'exercicio-'+ex.cO_EXERCICIO">
+        <div class="ex-card-top">
+          <span class="ex-ano">{{ ex.cO_EXERCICIO }}</span>
+          <span class="badge" [ngClass]="statusClass(ex.statuS_PLANEJAMENTO)">{{ ex.statuS_PLANEJAMENTO }}</span>
+        </div>
+      </div>
+      <div class="np-sidebar-footer">
+        <dsc-button
+          variant="primary"
+          icon="add"
+          label="Novo Exercício"
+          id="btn-novo-exercicio"
+          (click)="abrirNovoExercicio()">
+        </dsc-button>
+      </div>
+    </aside>
+
+    <main class="np-main" *ngIf="exercicioSelecionado; else semSelecao">
+
+      <div class="np-main-header">
+        <div>
+          <h2 class="np-ex-title">Exercício {{ exercicioSelecionado.cO_EXERCICIO }}</h2>
+          <span class="badge" [ngClass]="statusClass(exercicioSelecionado.statuS_PLANEJAMENTO)">
+            Último status: {{ exercicioSelecionado.statuS_PLANEJAMENTO }}
+          </span>
+        </div>
+        <div class="np-main-header-actions">
+          <dsc-button
+            variant="secondary-outlined"
+            icon="account_balance_wallet"
+            label="Limites da Programação"
+            id="btn-limites-programacao"
+            (click)="abrirLimites()">
+          </dsc-button>
+          <dsc-button
+            id="btn-historico"
+            variant="secondary-outlined"
+            icon="history"
+            label="Histórico"
+            [matMenuTriggerFor]="histMenu">
+          </dsc-button>
+          <dsc-button
+            variant="secondary-outlined"
+            icon="edit_note"
+            label="Nova Reprogramação"
+            id="btn-nova-reprogramacao"
+            (click)="adicionarReprogramacao()">
+          </dsc-button>
+        </div>
+      </div>
+
+      <!-- Menu dropdown simplificado para histórico (compact) -->
+      <mat-menu #histMenu="matMenu" panelClass="hist-menu-panel">
+        <button mat-menu-item *ngFor="let prog of programacoesDoExercicio; trackBy: trackByNuPlanejamento"
+                (click)="onSelectFromHistory(prog)">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;">
+            <div class="hist-item-top">
+              <span class="hist-item-left">{{ (prog.tipo || tipoLimpo(prog.tipoFormatado)) }}: </span> 
+              <span class="hist-item-right">{{ prog.statuS_PLANEJAMENTO }}</span>
+            </div>
+            <small style="color:var(--dsc-color-content-neutral-4);">
+              {{ prog.dT_ABERTURA | date:'dd/MM/yyyy' }}
+              <span *ngIf="prog.dT_FECHAMENTO"> — {{ prog.dT_FECHAMENTO | date:'dd/MM/yyyy' }}</span>
+            </small>
+          </div>
+        </button>
+      </mat-menu>
+
+      <!-- Cards de resumo CAPEX / OPEX — refletem a programação selecionada -->
+      <div class="np-summary-grid">
+
+        <!-- CAPEX -->
+        <div class="summary-card">
+          <div class="summary-card-header">
+            <span class="material-icons-outlined summary-icon summary-icon--capex">trending_up</span>
+            <span class="summary-label">CAPEX</span>
+            <span class="summary-card-fonte" *ngIf="programacaoDetalhada">
+              {{ tipoLimpo(programacaoDetalhada.tipoFormatado) }} Nº {{ programacaoDetalhada.nU_PLANEJAMENTO }}
+            </span>
+          </div>
+          <div class="summary-values">
+            <div class="summary-row">
+              <span class="summary-key">Planejado</span>
+              <span class="summary-val summary-val--highlight">
+                {{ (programacaoDetalhada ?? exercicioSelecionado)!.capeX_PLANEJADO | currency:'BRL' }}
+              </span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-key">Executado</span>
+              <span class="summary-val">
+                {{ (programacaoDetalhada ?? exercicioSelecionado)!.capeX_EXECUTADO | currency:'BRL' }}
+              </span>
+            </div>
+          </div>
+          <div class="exec-bar-wrap">
+            <div class="exec-bar-labels">
+              <span>Execução</span>
+              <span class="exec-pct">{{ (programacaoDetalhada ?? exercicioSelecionado)!.perC_CAPEX }}</span>
+            </div>
+            <div class="exec-track">
+              <div class="exec-fill exec-fill--capex"
+                [style.width.%]="pct(
+                  (programacaoDetalhada ?? exercicioSelecionado)!.capeX_EXECUTADO,
+                  (programacaoDetalhada ?? exercicioSelecionado)!.capeX_PLANEJADO)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPEX -->
+        <div class="summary-card">
+          <div class="summary-card-header">
+            <span class="material-icons-outlined summary-icon summary-icon--opex">payments</span>
+            <span class="summary-label">OPEX</span>
+            <span class="summary-card-fonte" *ngIf="programacaoDetalhada">
+              {{ tipoLimpo(programacaoDetalhada.tipoFormatado) }} Nº {{ programacaoDetalhada.nU_PLANEJAMENTO }}
+            </span>
+          </div>
+          <div class="summary-values">
+            <div class="summary-row">
+              <span class="summary-key">Planejado</span>
+              <span class="summary-val summary-val--highlight">
+                {{ (programacaoDetalhada ?? exercicioSelecionado)!.opeX_PLANEJADO | currency:'BRL' }}
+              </span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-key">Executado</span>
+              <span class="summary-val">
+                {{ (programacaoDetalhada ?? exercicioSelecionado)!.opeX_EXECUTADO | currency:'BRL' }}
+              </span>
+            </div>
+          </div>
+          <div class="exec-bar-wrap">
+            <div class="exec-bar-labels">
+              <span>Execução</span>
+              <span class="exec-pct">{{ (programacaoDetalhada ?? exercicioSelecionado)!.perC_OPEX }}</span>
+            </div>
+            <div class="exec-track">
+              <div class="exec-fill exec-fill--opex"
+                [style.width.%]="pct(
+                  (programacaoDetalhada ?? exercicioSelecionado)!.opeX_EXECUTADO,
+                  (programacaoDetalhada ?? exercicioSelecionado)!.opeX_PLANEJADO)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /np-summary-grid -->
+
+      <!-- â”€â”€ LINHA DO TEMPO DE PROGRAMAÃ‡Ã•ES â”€â”€ -->
+  <div class="prog-section" *ngIf="!showHistoryDropdown">
+        <div class="prog-section-header">
+          <span class="prog-section-title">Histórico de Programações</span>
+          <span class="prog-count-badge">{{ programacoesDoExercicio.length }}</span>
+        </div>
+
+        <div *ngIf="!loadingDetalhe">
+          <!-- Usamos o componente DSC Accordion para evitar scroll longo: cada programação vira um accordion -->
+          <ng-container *ngIf="programacoesDoExercicio.length > 0; else progVazio">
+            <!-- Build a template per programação (kept as TemplateRef so pipes and bindings work) -->
+            <ng-template ngFor let-prog [ngForOf]="programacoesDoExercicio" let-i="index">
+              <ng-template #progTemplate>
+                <!-- Cabeçalho adicional: status e datas (usado inside title/body as needed) -->
+                <div class="prog-accordion-header">
+                  <span class="prog-accordion-status">
+                    <span class="badge" [ngClass]="statusClass(prog.statuS_PLANEJAMENTO)">
+                      {{ prog.statuS_PLANEJAMENTO }}
+                    </span>
+                  </span>
+                  <span class="prog-accordion-datas">
+                    <ng-container *ngIf="prog.statuS_PLANEJAMENTO === 'Encerrado'; else soAbertura2">
+                      <span class="prog-data">
+                        <span class="material-icons-outlined prog-data-icon">event</span>
+                        {{ prog.dT_ABERTURA | date:'dd/MM/yyyy' }}
+                      </span>
+                      <span class="prog-data-sep material-icons-outlined">arrow_forward</span>
+                      <span class="prog-data prog-data--fim">
+                        {{ prog.dT_FECHAMENTO | date:'dd/MM/yyyy' }}
+                      </span>
+                    </ng-container>
+                    <ng-template #soAbertura2>
+                      <span class="prog-data">
+                        <span class="material-icons-outlined prog-data-icon">event</span>
+                        {{ prog.dT_ABERTURA | date:'dd/MM/yyyy' }}
+                      </span>
+                    </ng-template>
+                  </span>
+                </div>
+
+                <!-- Conteúdo do accordion: valores e ações -->
+                <div class="prog-accordion-body">
+                  <div class="prog-item-valores">
+                    <div class="prog-valor">
+                      <span id="lbl-capex-{{prog.nU_PLANEJAMENTO}}" class="prog-valor-label">CAPEX Planejado</span>
+                      <span id="ipt-capex-{{prog.nU_PLANEJAMENTO}}" class="prog-valor-val">{{ prog.capeX_PLANEJADO | currency:'BRL' }}</span>
+                    </div>
+                    <div class="prog-valor">
+                      <span id="lbl-opex-{{prog.nU_PLANEJAMENTO}}" class="prog-valor-label">OPEX Planejado</span>
+                      <span id="ipt-opex-{{prog.nU_PLANEJAMENTO}}" class="prog-valor-val">{{ prog.opeX_PLANEJADO | currency:'BRL' }}</span>
+                    </div>
+                    <div class="prog-valor">
+                      <span id="lbl-total-{{prog.nU_PLANEJAMENTO}}" class="prog-valor-label">Total</span>
+                      <span id="ipt-total-{{prog.nU_PLANEJAMENTO}}" class="prog-valor-val prog-valor-val--total">
+                        {{ totalPlanejado(prog) | currency:'BRL' }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button id="btn-ver-detalhes-{{prog.nU_PLANEJAMENTO}}" class="prog-ver-mais" type="button" (click)="verDetalhesProgramacao(prog)">
+                    <span class="material-icons-outlined">open_in_new</span>
+                    Ver detalhes
+                  </button>
+                </div>
+              </ng-template>
+            </ng-template>
+
+            <!-- DSC accordion receives the array of items built in the component class -->
+            <dsc-accordion
+              [accordionItems]="accordionItems"
+              [attr.id]="'crd-progs-accordion'"
+              [multi]="false">
+            </dsc-accordion>
+          </ng-container>
+
+          <ng-template #progVazio>
+            <div class="np-empty-inline">Nenhuma programação encontrada para este exercício.</div>
+          </ng-template>
+        </div>
+      </div><!-- /prog-section -->
+
+      <!-- ───────────────────────────────────────────────
+           DETALHE DA PROGRAMAÇÃO SELECIONADA (drawer inline)
+           ─────────────────────────────────────────────── -->
+      <div class="prog-detalhe" *ngIf="programacaoDetalhada">
+        <div class="prog-detalhe-header">
+          <div>
+            <h3 class="prog-detalhe-title">
+              {{ (programacaoDetalhada.tipo || tipoLimpo(programacaoDetalhada.tipoFormatado)) }}
+            </h3>
+            <span class="badge prog-detalhe-inline-status" [ngClass]="statusClass(programacaoDetalhada.statuS_PLANEJAMENTO)">
+              {{ programacaoDetalhada.statuS_PLANEJAMENTO }}
+            </span>
+          </div>
+          <button id="btn-fechar-detalhes" class="prog-detalhe-close" type="button" (click)="fecharDetalhesProgramacao()">
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+
+        <!-- Abas de conteúdo: Registros | Rubricas -->
+        <div class="np-tabs">
+          <button id="btn-tab-registros" class="np-tab" [class.np-tab--active]="tabAtiva === 'registros'" (click)="ativarTab('registros')">
+            <span class="material-icons-outlined">list_alt</span> Registros
+            <span class="np-tab-badge" *ngIf="totalRegistros > 0">{{ totalRegistros }}</span>
+          </button>
+          <button id="btn-tab-rubricas" class="np-tab" [class.np-tab--active]="tabAtiva === 'rubricas'" (click)="ativarTab('rubricas')">
+            <span class="material-icons-outlined">category</span> Rubricas
+          </button>
+        </div>
+
+        <!-- ABA: Registros (endpoint 3 - filter-paginado) -->
+        <div class="np-tab-content" *ngIf="tabAtiva === 'registros'">
+
+          <!-- Barra toolbar: Acoes + Filtros em linha -->
+          <div class="np-toolbar">
+
+            <!-- Botao Acoes DSC -->
+            <dsc-button
+              id="btn-acoes"
+              variant="secondary-outlined"
+              icon="menu"
+              label="Ações"
+              [matMenuTriggerFor]="acoesMenu"
+              style="margin-bottom: 28px;">
+            </dsc-button>
+            <mat-menu #acoesMenu="matMenu">
+              <button id="acao-novo-registro-np" mat-menu-item (click)="novoRegistro()">
+                <span class="material-icons-outlined">add</span>
+                Novo Registro
+              </button>
+              <button id="acao-gerar-excel-np" mat-menu-item (click)="gerarExcel()">
+                <span class="material-icons-outlined">download</span>
+                Gerar Excel
+              </button>
+              <button id="acao-gerar-atualizacao-sap-np" mat-menu-item (click)="gerarAtualizacaoSAP()">
+                <span class="material-icons-outlined">sync</span>
+                Gerar Atualizacao SAP
+              </button>
+            </mat-menu>
+
+            <!-- Separador -->
+            <div class="np-toolbar-sep"></div>
+
+            <!-- Filtros em linha -->
+            <div class="np-toolbar-filtros">
+              <dsc-select
+                label="Contrato"
+                [options]="opcoesContrato"
+                [(ngModel)]="filtroContrato"
+                [showFilter]="true">
+              </dsc-select>
+              <dsc-select
+                label="Und. Demandante"
+                [options]="opcoesFilial"
+                [(ngModel)]="filtroFilial"
+                [showFilter]="true">
+              </dsc-select>
+              <dsc-select
+                label="Tipo"
+                [options]="opcoesTipo"
+                [(ngModel)]="filtroTipo">
+              </dsc-select>
+              <dsc-select
+                label="Status"
+                [options]="opcoesStatus"
+                [(ngModel)]="filtroStatus">
+              </dsc-select>
+            </div>
+
+            <!-- Botoes filtrar/limpar -->
+            <dsc-button
+              id="btn-filtrar"
+              variant="primary"
+              icon="search"
+              label="Filtrar"
+              (click)="aplicarFiltros()"
+              style="margin-bottom: 28px;">
+            </dsc-button>
+            <dsc-button
+              id="btn-limpar"
+              variant="secondary-outlined"
+              icon="filter_alt_off"
+              label="Limpar"
+              (click)="limparFiltros()"
+              style="margin-bottom: 28px;">
+            </dsc-button>
+          </div>
+
+          <div *ngIf="loadingRegistros" class="np-loading-row">
+            <span class="material-icons-outlined spin">autorenew</span> Carregando registros...
+          </div>
+
+          <div *ngIf="!loadingRegistros && registros.length === 0" class="np-empty-inline">
+            Nenhum registro encontrado.
+          </div>
+
+          <table class="np-table" *ngIf="!loadingRegistros && registros.length > 0">
+            <thead>
+              <tr>
+                <th>NU ORC</th>
+                <th>Contrato</th>
+                <th>Filial</th>
+                <th>Objeto</th>
+                <th>Tipo Demanda</th>
+                <th class="text-right">Valor</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let reg of registros">
+                <td class="mono">{{ reg.nU_ORC }}</td>
+                <td class="mono">{{ reg.cO_CONTRATO }}</td>
+                <td>{{ reg.sG_FILIAL }}</td>
+                <td class="np-table-objeto" [title]="reg.nO_OBJETO">{{ reg.nO_OBJETO }}</td>
+                <td>{{ reg.dE_DEMANDA }}</td>
+                <td class="text-right mono">{{ reg.vR_PLANEJAMENTO | currency:'BRL' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="statusClass(reg.nO_STATUS)">{{ reg.nO_STATUS }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Paginacao simples -->
+          <div class="np-paginacao" *ngIf="totalRegistros > filtro.pageSize">
+            <button [attr.id]="'btn-pag-prev'" class="np-pag-btn" [disabled]="filtro.pageNumber === 1"
+              (click)="mudarPagina(filtro.pageNumber - 1)">
+              <span class="material-icons-outlined">chevron_left</span>
+            </button>
+            <span class="np-pag-info">
+              Pag. {{ filtro.pageNumber }} - {{ totalRegistros }} registros
+            </span>
+            <button [attr.id]="'btn-pag-next'" class="np-pag-btn" [disabled]="registros.length < filtro.pageSize"
+              (click)="mudarPagina(filtro.pageNumber + 1)">
+              <span class="material-icons-outlined">chevron_right</span>
+            </button>
+          </div>
+
+          <!-- Alterar status em lote - so aparece se houver registros -->
+          <div class="prog-detalhe-footer" *ngIf="!loadingRegistros && registros.length > 0 && listaStatus.length > 0">
+            <span class="footer-label">Alterar status em lote:</span>
+            <select id="drp-status-selecionado" class="np-select" [(ngModel)]="statusSelecionado">
+              <option [ngValue]="null">Selecione...</option>
+              <option *ngFor="let s of listaStatus" [ngValue]="s">
+                {{ s.noPlanejamentoStatus }}
+              </option>
+            </select>
+            <dsc-button
+              id="btn-aplicar-status"
+              variant="primary"
+              label="Aplicar"
+              [disabled]="!statusSelecionado">
+            </dsc-button>
+          </div>
+        </div>
+
+        <!-- ABA: Rubricas (endpoint 4) -->
+        <div class="np-tab-content" *ngIf="tabAtiva === 'rubricas'">
+
+          <div *ngIf="loadingRubricas" class="np-loading-row">
+            <span class="material-icons-outlined spin">autorenew</span> Carregando rubricas...
+          </div>
+
+          <div *ngIf="!loadingRubricas && rubricas.length === 0" class="np-empty-inline">
+            Nenhuma rubrica encontrada.
+          </div>
+
+          <table class="np-table" *ngIf="!loadingRubricas && rubricas.length > 0">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Rubrica</th>
+                <th class="text-right">Limite</th>
+                <th class="text-right">Planejado</th>
+                <th class="text-right">Executado</th>
+                <th class="text-right">Diferença</th>
+                <th>% EP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rub of rubricas">
+                <td>
+                  <span class="badge"
+                    [class.badge--capex]="rub.nO_RUBRICA_TIPO === 'CAPEX'"
+                    [class.badge--opex]="rub.nO_RUBRICA_TIPO === 'OPEX'">
+                    {{ rub.nO_RUBRICA_TIPO }}
+                  </span>
+                </td>
+                <td>{{ rub.dE_RUBRICA }}</td>
+                <td class="text-right mono">{{ rub.vR_LIMITE | currency:'BRL' }}</td>
+                <td class="text-right mono">{{ rub.vR_PLANEJADO_MES | currency:'BRL' }}</td>
+                <td class="text-right mono">{{ rub.vR_EXECUTADO | currency:'BRL' }}</td>
+                <td class="text-right mono"
+                  [class.text-positive]="rub.vR_DIFERENCA >= 0"
+                  [class.text-negative]="rub.vR_DIFERENCA < 0">
+                  {{ rub.vR_DIFERENCA | currency:'BRL' }}
+                </td>
+                <td>
+                  <div class="exec-track exec-track--sm">
+                    <div class="exec-fill exec-fill--capex" [style.width.%]="rub.pC_EP"></div>
+                  </div>
+                  <span class="limites-pct">{{ rub.pC_EP }}%</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /prog-detalhe -->
+
+    </main><!-- /np-main -->
+
+    <!-- Placeholder quando nenhum exercÃ­cio estÃ¡ selecionado -->
+    <ng-template #semSelecao>
+      <main class="np-main np-main--empty">
+        <span class="material-icons-outlined np-empty-icon">calendar_today</span>
+        <p class="np-empty-text">Selecione um exercí­cio para visualizar os detalhes</p>
+      </main>
+    </ng-template>
+
+  </div><!-- /np-body -->
+
+</div><!-- /np-page -->
+
+<!-- ===============================================================
+     MODAL: Limites da Programacao (4 niveis accordion manual)
+     =============================================================== -->
+<div class="np-modal-overlay" *ngIf="modalLimitesAberto" (click)="fecharLimites()">
+  <div class="np-modal np-modal--limites" (click)="$event.stopPropagation()">
+
+    <!-- Cabecalho do modal -->
+    <div class="np-modal-header">
+      <div class="np-modal-title-wrap">
+        <span class="material-icons-outlined np-modal-icon">account_balance_wallet</span>
+        <h2 class="np-modal-title">
+          Limites da Programacao
+          <small *ngIf="programacaoDetalhada">
+            &mdash; {{ tipoLimpo(programacaoDetalhada.tipoFormatado) }}
+            &nbsp;N&ordm;&nbsp;{{ programacaoDetalhada.nU_PLANEJAMENTO }}
+          </small>
+        </h2>
+      </div>
+      <button class="np-modal-close" type="button" (click)="fecharLimites()">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="np-modal-body">
+      <!-- Render LimitesComponent inside the modal to reuse its template and logic -->
+      <app-limites [anoExercio]="exercicioSelecionado?.cO_EXERCICIO" [tipoExercicio]="programacaoDetalhada ? tipoLimpo(programacaoDetalhada.tipoFormatado) : null"></app-limites>
+    </div><!-- /np-modal-body -->
+
+    <div class="np-modal-footer">
+      <dsc-button variant="secondary-outlined" label="Fechar" (click)="fecharLimites()"></dsc-button>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────────
+     MODAL: Novo Exercício — confirmação
+────────────────────────────────────────────── -->
+<div class="np-modal-overlay" *ngIf="novoExercicioAberto" (click)="fecharNovoExercicio()">
+  <div class="np-modal np-modal--confirm" (click)="$event.stopPropagation()">
+
+    <div class="np-confirm-icon">
+      <span class="material-icons-outlined">warning_amber</span>
+    </div>
+
+    <p class="np-confirm-msg">
+      Tem certeza de que deseja gerar o Planejamento<br>
+      Orçamentário do exercício {{ proximoAnoExercicio }}?
+    </p>
+
+    <div class="np-confirm-actions">
+      <dsc-button
+        variant="primary"
+        label="Sim"
+        [disabled]="loadingExercicios"
+        (click)="confirmarNovoExercicio()">
+      </dsc-button>
+      <dsc-button
+        variant="secondary-outlined"
+        label="Não"
+        (click)="fecharNovoExercicio()">
+      </dsc-button>
+    </div>
+  </div>
+</div>

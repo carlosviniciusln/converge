@@ -1,0 +1,33 @@
+.total-rubrica {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 1rem;
+}
+
+ul{
+  list-style-type: none;
+  padding: 0;
+}
+li{
+  margin: 5px 0;
+}
+.icon-button {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Espaço entre os ícones */
+  padding: 10px;
+}
+
+.icon-button mat-icon {
+  font-size: 24px; /* Tamanho dos ícones */
+}
+
+.campo-select {
+  z-index: 500;
+  background: white;
+  width: 244px;
+  color: rgb(111 111 111 / 87%) !important;
+  font-size: 14px;float: right;
+  margin-bottom: -16px;
+}

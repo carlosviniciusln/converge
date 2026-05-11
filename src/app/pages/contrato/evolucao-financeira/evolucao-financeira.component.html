@@ -1,0 +1,51 @@
+<div class="content">
+  <dsc-breadcrumb
+    [urls]="[{label: 'Contratos', url: '/contrato'}, {label: this.contrato?.coContrato || ''}, {label: 'Evolução Financeira'}]"
+    style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div class="row">
+    <div class="col-md-7"></div>
+    <div class="col-md-3" style="z-index: 5;margin-top: -85px;">
+
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+  <div class="row mr-1 cl-consumo">
+    <div class="col-md-10">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+        <dsc-button variant="secondary-outlined" label="Detalhar" (click)="linkDetalhar()">
+        </dsc-button>
+        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Mensalização" (click)="linkMensalizacao()">
+        </dsc-button>
+        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Documentação" (click)="linkContrato()">
+        </dsc-button>
+        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Simular Revisão"
+          (click)="openModalSimulacao(nuContrato)">
+        </dsc-button>
+        <label class="title-ata" *ngIf="isRotaAtas">Este instrumento é uma Ata de Registro de Preços (ARP).</label>
+      </div>
+    </div>
+
+    <div style="display: flex;" *ngIf="vigenciasAnteriores?.length > 0 && showSelect" class="section-select">
+      <select class="form-control" [(ngModel)]="vigenciaAnteriorSelect" id="nuFilial">
+        <option value="" disabled selected>Selecione a vigência</option>
+        <option *ngFor="let a of vigenciasAnteriores" [ngValue]="a">
+          {{a?.labeL_VIGENCIA}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div id="area-pdf">
+    <mat-tab-group mat-align-tabs="left" (selectedTabChange)="onTabChange($event)">
+      <mat-tab label="{{montaTituloVigenciaAtual()}}" *ngIf="!loading && vigenciaAtual">
+        <app-demais-tipos [vigenciaAtual]="vigenciaAtual" (abaSelecionada)="receberAbaAtivaVigenciaAtual($event)"
+          [contrato]="this.contrato"></app-demais-tipos>
+      </mat-tab>
+
+      <mat-tab label="OUTRAS VIGÊNCIAS" *ngIf="!loading && vigenciaAnterior">
+        <app-demais-tipos [vigenciaAnterior]="vigenciaAnterior" [vigenciaAnteriorSelect]="vigenciaAnteriorSelect"
+          (abaSelecionada)="receberAbaAtiva($event)"></app-demais-tipos>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+</div>

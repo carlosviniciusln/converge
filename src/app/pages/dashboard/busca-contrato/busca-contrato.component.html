@@ -1,0 +1,324 @@
+<div class="painel-contrato">
+
+  <!-- BREADCRUMB: o componente já insere "Início" automaticamente -->
+  <dsc-breadcrumb [urls]="[
+    { label: 'Contratos', url: '/contrato' },
+    { label: contrato }
+  ]" style="margin-bottom: 16px;"></dsc-breadcrumb>
+
+  <!-- CABEÇALHO DO PAINEL -->
+  <div class="painel-header">
+    <div class="painel-header-left">
+    </div>
+    <div class="painel-header-right">
+      <div class="vigencia-selector">
+        <label class="vigencia-label">Vigência:</label>
+        <select class="vigencia-select" [(ngModel)]="vigenciaSelecionada" (change)="trocarVigencia(vigenciaSelecionada)">
+          <option *ngFor="let vig of vigencias" [value]="vig.id">{{ vig.label }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORPO: GRID 2 COLUNAS -->
+  <div class="painel-body">
+
+    <!-- COLUNA ESQUERDA -->
+    <div class="col-left">
+
+      <!-- INFORMAÇÕES GERAIS -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">description</span>
+          Informações Gerais
+        </div>
+        <div class="card-body">
+          <div class="info-grid info-grid-3">
+            <div class="field field-span-2">
+              <label class="field-label">Fornecedor</label>
+              <span class="field-value field-strong">{{ infoGeral.fornecedor }}</span>
+            </div>
+            <div class="field">
+              <label class="field-label">CNPJ</label>
+              <span class="field-value mono">{{ infoGeral.cnpj }}</span>
+            </div>
+          </div>
+
+          <div class="field mt-8">
+            <label class="field-label">Objeto</label>
+            <span class="field-value">{{ infoGeral.objeto }}</span>
+          </div>
+
+          <hr class="sep" />
+
+          <div class="info-grid info-grid-4">
+            <div class="field">
+              <label class="field-label">Unidade Demandante</label>
+              <span class="field-value">{{ infoGeral.unidadeDemandante }}</span>
+            </div>
+            <div class="field">
+              <label class="field-label">Fiscal do Contrato</label>
+              <span class="field-value">{{ infoGeral.fiscal }}</span>
+            </div>
+            <div class="field">
+              <label class="field-label">Tipo de Contrato</label>
+              <span class="field-value">{{ infoGeral.tipoContrato }}</span>
+            </div>
+            <div class="field">
+              <label class="field-label">Mensalização</label>
+              <span class="field-value">{{ infoGeral.mensalizacao }}</span>
+            </div>
+          </div>
+
+          <hr class="sep" />
+
+          <div class="exec-bar-wrap">
+            <div class="exec-bar-label">
+              <span class="exec-bar-title">Execução Financeira</span>
+              <span class="exec-bar-pct">{{ infoGeral.execucaoPct }}%</span>
+            </div>
+            <dsc-progress-bar [progress]="infoGeral.execucaoPct"></dsc-progress-bar>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESUMO DA VIGÊNCIA -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">event_note</span>
+          Resumo da Vigência
+        </div>
+        <div class="card-body card-body--flush">
+          <div class="vig-body">
+            <div class="vig-dates">
+              <div class="info-grid info-grid-2" style="padding: 10px 12px 0;">
+                <div class="field">
+                  <label class="field-label">Início</label>
+                  <span class="field-value mono">{{ resumoVigencia.inicio }}</span>
+                </div>
+                <div class="field">
+                  <label class="field-label">Término</label>
+                  <span class="field-value mono">{{ resumoVigencia.termino }}</span>
+                </div>
+              </div>
+              <div class="field" style="padding: 6px 12px 0;">
+                <label class="field-label">Prazo Remanescente</label>
+                <span class="field-value field-strong">{{ resumoVigencia.prazo }}</span>
+              </div>
+              <div style="padding: 6px 12px 10px;">
+                <dsc-alert
+                  [variant]="resumoVigencia.alertaOk ? 'success' : 'warning'"
+                  [message]="resumoVigencia.alertaTexto">
+                </dsc-alert>
+              </div>
+            </div>
+
+            <div class="vig-col">
+              <div class="vig-col-title">Valores Contratuais</div>
+              <div class="vig-num">
+                <label class="field-label">Contratado (Vigência)</label>
+                <span class="vig-val text-blue">{{ resumoVigencia.contratado }}</span>
+              </div>
+              <div class="vig-num">
+                <label class="field-label">Saldo Remanescente</label>
+                <span class="vig-val text-red">{{ resumoVigencia.saldo }}</span>
+              </div>
+            </div>
+
+            <div class="vig-col">
+              <div class="vig-col-title">Médias de Consumo</div>
+              <div class="vig-num">
+                <label class="field-label">Estimada Mensal</label>
+                <span class="vig-val text-blue">{{ resumoVigencia.mediaEstimada }}</span>
+              </div>
+              <div class="vig-num">
+                <label class="field-label">Últimos 3 Pagamentos</label>
+                <span class="vig-val text-amber">{{ resumoVigencia.mediaUlt3 }}</span>
+              </div>
+              <div class="vig-num">
+                <label class="field-label">Todos os Pagamentos</label>
+                <span class="vig-val">{{ resumoVigencia.mediaTodos }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="vig-footer">
+            <span [innerHTML]="resumoVigencia.projecao"></span>
+            <span class="text-green vig-exec-pct">Execução: {{ resumoVigencia.execPct }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESUMO DOS PAGAMENTOS -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">payments</span>
+          Resumo dos Pagamentos
+        </div>
+        <div class="card-body card-body--flush">
+          <div class="pgto-banner">
+            <div class="pgto-item">
+              <label class="field-label">Estimado (Mensaliz.)</label>
+              <span class="pgto-val text-blue">{{ pagamentos.estimado }}</span>
+              <span class="pgto-hint">Total da vigência</span>
+            </div>
+            <div class="pgto-item pgto-item--clickable">
+              <label class="field-label">Executado (Pago)</label>
+              <span class="pgto-val text-green">{{ pagamentos.executado }}</span>
+              <span class="pgto-hint text-muted">clique para detalhar</span>
+            </div>
+            <div class="pgto-item">
+              <label class="field-label">Média Mensal Est.</label>
+              <span class="pgto-val text-blue">{{ pagamentos.media }}</span>
+              <span class="pgto-hint">por mensalização</span>
+            </div>
+            <div class="pgto-item">
+              <label class="field-label">Média Últ. 3 Pag.</label>
+              <span class="pgto-val text-amber">{{ pagamentos.mediaUlt3 }}</span>
+              <span class="pgto-hint">{{ pagamentos.alerta }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- COLUNA DIREITA -->
+    <div class="col-right">
+
+      <!-- PENALIDADES -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">warning</span>
+          Penalidades
+        </div>
+        <div class="card-body">
+          <div class="kpi-strip">
+            <div class="kpi-item">
+              <label class="field-label">Multas</label>
+              <span class="kpi-val text-red">{{ penalidades.multas }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Advertências</label>
+              <span class="kpi-val text-amber">{{ penalidades.advertencias }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Suspensões</label>
+              <span class="kpi-val text-muted">{{ penalidades.suspensoes }}</span>
+            </div>
+          </div>
+          <div class="kpi-strip mt-8">
+            <div class="kpi-item">
+              <label class="field-label">Em Tratamento</label>
+              <span class="kpi-val-sm text-amber">{{ penalidades.emTratamento }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Inst. Solicitada</label>
+              <span class="kpi-val-sm text-blue">{{ penalidades.instSolicitada }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Encerradas</label>
+              <span class="kpi-val-sm text-green">{{ penalidades.encerradas }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATESTES -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">check_circle</span>
+          Atestes
+        </div>
+        <div class="card-body">
+          <div class="kpi-strip">
+            <div class="kpi-item">
+              <label class="field-label">Total Registros</label>
+              <span class="kpi-val text-info">{{ atestes.total }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Com Retenção</label>
+              <span class="kpi-val text-red">{{ atestes.comRetencao }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Sem Retenção</label>
+              <span class="kpi-val text-green">{{ atestes.semRetencao }}</span>
+            </div>
+          </div>
+          <div class="mt-8">
+            <dsc-alert variant="warning" [message]="atestes.alertaTexto"></dsc-alert>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDENS DE SERVIÇO -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">assignment</span>
+          Ordens de Serviço
+        </div>
+        <div class="card-body">
+          <div class="kpi-strip">
+            <div class="kpi-item">
+              <label class="field-label">Total de OS</label>
+              <span class="kpi-val text-blue">{{ ordens.total }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Assinadas</label>
+              <span class="kpi-val text-green">{{ ordens.assinadas }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Em Andamento</label>
+              <span class="kpi-val text-amber">{{ ordens.emAndamento }}</span>
+            </div>
+            <div class="kpi-item">
+              <label class="field-label">Pendentes</label>
+              <span class="kpi-val text-muted">{{ ordens.pendentes }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKFLOW: PIPELINE -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">account_tree</span>
+          Fluxo do Contrato — OS → Ateste → Pgto → Retenção
+        </div>
+        <div class="card-body">
+          <div class="pipeline">
+            <div class="pipeline-step">
+              <span class="material-icons pipeline-icon text-blue">assignment</span>
+              <span class="pipeline-label">OS</span>
+              <span class="pipeline-count text-blue">{{ workflow.os }}</span>
+              <span class="pipeline-sub">Assinada</span>
+            </div>
+            <span class="pipeline-arrow material-icons">chevron_right</span>
+            <div class="pipeline-step">
+              <span class="material-icons pipeline-icon text-info">check_circle</span>
+              <span class="pipeline-label">Atestes</span>
+              <span class="pipeline-count text-info">{{ workflow.atestes }}</span>
+              <span class="pipeline-sub">{{ workflow.atestesSub }}</span>
+            </div>
+            <span class="pipeline-arrow material-icons">chevron_right</span>
+            <div class="pipeline-step">
+              <span class="material-icons pipeline-icon text-green">payments</span>
+              <span class="pipeline-label">Pagamentos</span>
+              <span class="pipeline-count text-green">{{ workflow.pgto }}</span>
+              <span class="pipeline-sub">{{ workflow.pgtoSub }}</span>
+            </div>
+            <span class="pipeline-arrow material-icons">chevron_right</span>
+            <div class="pipeline-step">
+              <span class="material-icons pipeline-icon text-red">warning</span>
+              <span class="pipeline-label text-red">Retenções</span>
+              <span class="pipeline-count text-red">{{ workflow.retencoes }}</span>
+              <span class="pipeline-sub">{{ workflow.retencoesSub }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-right -->
+
+  </div><!-- /painel-body -->
+
+</div>

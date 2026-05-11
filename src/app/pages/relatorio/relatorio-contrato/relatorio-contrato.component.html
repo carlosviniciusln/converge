@@ -1,0 +1,181 @@
+
+<div class="content">
+  <dsc-breadcrumb [urls]="[{label: 'Relatórios'}, {label: 'Contratos'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div class="row">
+    <div class="col-12">
+      <p-table
+        #dt
+        [value]="contratos"
+        [(selection)]="selectedContratos"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rows]="filtroRegistros.TamanhoPagina"
+        [paginator]="true"
+        [totalRecords]="quantidadeTotal"
+        [rowsPerPageOptions]="[10, 20, 50, quantidadeTotal]"
+        [lazy]="true"
+        (onLazyLoad)="loadPage($event)"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"
+        [globalFilterFields]="['coContrato','noEmpresa','sgFilial','icAtivo','dtInicioContrato','dtTerminoContrato']"
+        [rowHover]="true">
+
+        <ng-template pTemplate="caption">
+            <div class="table-header">
+            <div class="row header-flex">
+                <div class="table-header-title title">
+                
+                </div>
+                <div class="header-actions">
+                <dsc-button
+                    variant="secondary-outlined"
+                    icon="cloud_download"
+                    iconButton
+                    (click)="exportExcel()"
+                    *ngIf="permissions?.Exportar ?? false"></dsc-button>
+                </div>
+                <div class="pl-1 pr-1 filtro">
+                <dsc-select
+                    [options]="selectTiposContrato"
+                    [(ngModel)]="selectedTipoContrato"
+                    [showFilter]="true"
+                    (ngModelChange)="updateRelatorio({ value: $event }, 1)"
+                    placeholder="Contrato">
+                </dsc-select>
+                </div>
+
+                <div class="pl-1 pr-1 filtro">
+                <dsc-select
+                    [options]="selectTiposFornecedor"
+                    [(ngModel)]="selectedTipoFornecedor"
+                    [showFilter]="true"
+                    (ngModelChange)="updateRelatorio({ value: $event }, 2)"
+                    placeholder="Fornecedor">
+                </dsc-select>
+                </div>
+
+                <div class="pl-1 pr-1 filtro">
+                <dsc-select
+                    [options]="selectTiposTpContrato"
+                    [(ngModel)]="selectedTipoTpContrato"
+                    [showFilter]="true"
+                    (ngModelChange)="updateRelatorio({ value: $event }, 3)"
+                    placeholder="Tipo de Contrato">
+                </dsc-select>
+                </div>
+
+                <div class="pl-1 pr-1 filtro">
+                <dsc-select
+                    [options]="selectTiposGestor"
+                    [(ngModel)]="selectedTipoGestor"
+                    [showFilter]="true"
+                    (ngModelChange)="updateRelatorio({ value: $event }, 4)"
+                    placeholder="Unidade Demandante">
+                </dsc-select>
+                </div>
+
+                <div class="pl-1 pr-1 filtro">
+                  <dsc-select
+                    [options]="selectTiposStatus"
+                    [(ngModel)]="selectedTipoStatus"
+                    [showFilter]="true"
+                    (ngModelChange)="updateRelatorio({ value: $event }, 5)"
+                    placeholder="Status">
+                  </dsc-select>
+              </div>
+
+              <div>
+                <dsc-button variant="secondary-outlined" label="Limpar filtros" (click)="limparFiltros()"></dsc-button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                {{ rota == 'atas' ? 'Nr. Instrumento' : 'Nr. Contrato' }}
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Fornecedor
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Unidade Demandante (Gestor)
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Status
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Vigência Atual - Início
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Vigência Atual - Fim
+              </div>
+            </th>
+            <th>
+              <div class="p-d-flex p-jc-between p-ai-center">
+                Valor Pago
+              </div>
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-contrato>
+          <tr class="p-selectable-row">
+            <td>
+              <span class="p-column-title">Nr. Contrato</span>
+              {{ contrato.coContrato }}
+            </td>
+
+            <td style="width: 200px;">
+              <span class="p-column-title">Fornecedor</span>
+              <span class="image-text">{{ contrato.noEmpresa }}</span>
+            </td>
+
+            <td>
+              <span class="p-column-title">Unidade Demandante (Gestor)</span>
+              {{ contrato.sgFilial }}<span *ngIf="contrato.noGestor"> - {{ contrato.noGestor }}</span>
+            </td>
+
+            <td>
+              <span class="p-column-title">Status</span>
+              {{ contrato.icAtivo }}
+            </td>
+
+            <td>
+              <span class="p-column-title">Vigência Atual - Início</span>
+              {{ contrato.dtInicioContrato | date: 'dd/MM/yyyy' }}
+            </td>
+
+            <td>
+              <span class="p-column-title">Vigência Atual - Fim</span>
+              {{ contrato.dtTerminoContrato | date: 'dd/MM/yyyy' }}
+            </td>
+
+            <td class="text-right">
+              <span class="p-column-title">Valor Pago</span>
+              {{ (contrato.vrGlobal ?? 0) | currency : 'BRL' }}
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7">Nenhum contrato encontrado com os filtros informados.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,248 @@
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  thead {
+    display: table-header-group;
+  }
+  body * {
+    visibility: hidden;
+  }
+  #section-to-print,
+  #section-to-print * {
+    visibility: visible;
+  }
+  #section-to-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  // html, body {
+  //   width: 210mm;
+  //   height: 297mm;
+  //   font-size: 10px;
+  // }
+  /* ... the rest of the rules ... */
+  .cl-grafico {
+    max-width: 210mm;
+  }
+
+  highcharts-chart {
+    width: 1050px;
+    //height: 100%;
+
+    display: inline-block;
+  }
+
+  #divPDF {
+    font-size: 11px !important;
+  }
+
+  .no-print {
+    display: none;
+  }
+}
+
+.red {
+  background: linear-gradient(0deg, #c0504d 0%, #c0504d 100%);
+  color: white;
+  text-align: center;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.green {
+  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  color: white;
+  text-align: center;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.cl-consumo {
+  margin-bottom: 5px;
+}
+
+::ng-deep .p-datatable-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+::ng-deep .p-datatable {
+  overflow: hidden;
+}
+
+.legenda {
+  font-weight: bold;
+}
+
+.divGrafico {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 25px;
+}
+
+.cl-caption {
+  padding-left: 25px;
+}
+
+tr.template-body td a {
+  color: #4b4bff;
+  text-decoration: underline;
+}
+
+.linha {
+  margin: 5px 0px;
+  border-top: 1px solid #e9ecef;
+}
+
+.p-datatable .p-datatable-tbody>tr>td {
+  text-align: center;
+}
+
+.evolucao-info {
+  display: flex;
+  align-items: center !important;
+  justify-content: center;
+}
+
+.col-pagamentos {
+  //width: 105px;
+  min-width: 110px;
+}
+
+.div-vigencias {
+  margin-bottom: 10px;
+}
+
+.pi-check-circle {
+  color: green;
+  margin-left: 40%;
+}
+
+.pi-times-circle {
+  color: red;
+  margin-left: 40%;
+}
+
+.pi-ellipsis-v {
+  //margin-left: 80%;
+  cursor: pointer;
+}
+
+.card {
+  margin-bottom: 10px !important;
+}
+
+.mat-menu-item {
+  border: 0px !important;
+  outline: solid 0px;
+  border: 0px;
+}
+
+.table-header-title {
+  font-size: 23px;
+  font-weight: 100;
+  font-family: "Poppins", sans-serif;
+  color: #1d253b;
+}
+
+:host ::ng-deep .p-rowgroup-footer td {
+  font-weight: 700;
+}
+
+:host ::ng-deep .p-rowgroup-header {
+  span {
+      font-weight: 700;
+  }
+
+  .p-row-toggler {
+      vertical-align: middle;
+      margin-right: .25rem;
+  }
+}
+
+.col-carta {
+  //width: 105px;
+  padding-left: 5px;
+  min-width: 32%;
+}
+
+.width-50 {
+  width: 30px !important;
+}
+
+.hr-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.custom-hr {
+  border: 2px solid;
+  border-radius: 4px;
+  width: 100px;
+  margin: 8px 0;
+}
+
+
+.table-header-title {
+  font-size: 23px;
+  font-weight: 100;
+  font-family: "Poppins", sans-serif;
+  color: #1d253b;
+}
+
+
+::ng-deep .mat-tab-label {
+  font-size: 1.1rem;
+}
+
+::ng-deep .modal-dialog-custom-redirect-width .modal-dialog {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  top: 0 !important;
+  max-width: none !important;
+}
+
+::ng-deep .modal-dialog-custom-redirect-width .modal-content {
+  height: auto !important;
+  min-height: 100% !important;
+  border-radius: 0 !important;
+  background-color: rgba(22, 22, 22, 0.5);
+}
+
+::ng-deep .mat-tab-label-active {
+  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  color: #fff;
+}
+
+::ng-deep .subtab {
+  background: linear-gradient(to left, #059266, #009a54) !important;
+  color: #fff;
+}
+
+::ng-deep .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: #ffa500;
+}
+
+.spinner-button {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #009a53 ;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  margin-right: 24px;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,5 @@
+
+<router-outlet></router-outlet>
+<div class="dsc-spinner-overlay" *ngIf="loading$ | async">
+  <dsc-progress-spinner [indeterminate]="true"></dsc-progress-spinner>
+</div>

@@ -1,0 +1,22 @@
+label {
+    margin-bottom: 0px !important;
+}
+
+::ng-deep .custom-class .modal-dialog {
+    position: relative;
+    top: 5%;
+}
+
+::ng-deep  .modal-md {
+    max-width: 640px !important;
+}
+
+.is-invalid{
+    border: 1px solid red !important;
+}
+.min-height-59{
+    min-height: 59px;
+}
+.div-rubricas{
+    padding: 2px;
+}

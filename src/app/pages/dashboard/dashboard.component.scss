@@ -1,0 +1,258 @@
+// Centraliza o conteúdo — ocupa o espaço flex cedido pelo .sidenav-page-content
+.dashboard-search-page {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 1;
+  padding: 24px 16px;
+}
+
+/* Ensure the dashboard host participates in the flex chain so inner
+   .dashboard-search-page can grow and push the footer to the bottom. */
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0; /* allow children with flex:1 to shrink correctly */
+}
+
+// Histórico no fluxo normal — acima da brand, dentro do .dashboard-center
+.dashboard-historico {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+
+  .historico-label {
+    font-size: 11px;
+    color: #64747a;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+  }
+}
+
+// Linha única de chips com scroll horizontal se necessário
+.historico-chips {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 8px;
+  padding-bottom: 4px; // espaço para scrollbar
+
+  // Esconde scrollbar mas mantém scroll funcional
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+// Chip nativo com visual do DSC
+.historico-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0; // impede que os chips encolham e causem quebra de linha
+  height: 28px;
+  padding: 0 8px 0 6px;
+  border-radius: 8px;
+  border: 1px solid var(--dsc-color-border-neutral-4, #c5d0d5);
+  background-color: var(--dsc-color-bg-neutral-1, #fff);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--dsc-color-state-bg-highlight-hover, #005CA9) 8%, transparent);
+  }
+
+  .chip-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: var(--dsc-color-bg-highlight-5, #005CA9);
+    flex-shrink: 0;
+  }
+
+  .chip-label {
+    font-size: 12px;
+    color: var(--dsc-color-content-highlight-1, #005CA9);
+    white-space: nowrap;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    margin-left: 2px;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--dsc-color-state-bg-highlight-hover, #005CA9) 16%, transparent);
+    }
+
+    .chip-remove-icon {
+      font-size: 12px;
+      width: 12px;
+      height: 12px;
+      color: var(--dsc-color-bg-highlight-6, #003f75);
+    }
+  }
+}
+
+// Brand + busca sempre centralizados verticalmente
+.dashboard-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 85px 0;
+
+  // Quando há histórico visível, reduz a margem para caber os chips
+  &--com-historico {
+    margin: 45px 0;
+  }
+}
+
+.dashboard-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .brand-sigla {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #005CA9;
+    line-height: 1;
+  }
+
+  .brand-subtitle {
+    font-size: 14px;
+    color: #64747a;
+    margin-top: 6px;
+    text-align: center;
+  }
+}
+
+.dashboard-search-container {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  dsc-input {
+    width: 100%;
+  }
+}
+
+// Wrapper que envolve dsc-input + botão microfone
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+
+  dsc-input {
+    width: 100%;
+    // Garante padding-right para o campo não sobrepor o botão mic
+    ::ng-deep input {
+      padding-right: 48px !important;
+    }
+  }
+}
+
+// Botão microfone flutuante sobre o input
+.mic-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64747a;
+  transition: color 0.2s, background 0.2s;
+  z-index: 2;
+  margin-top: -13px;
+  overflow: visible; // permite que as ondas apareçam fora do botão
+
+  .mic-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  &:hover {
+    background: rgba(0, 92, 169, 0.08);
+    color: #005CA9;
+  }
+
+  // Estado: escutando — laranja DSC
+  &--listening {
+    color: #F5821E;
+    background: rgba(245, 130, 30, 0.10);
+
+    &:hover {
+      background: rgba(245, 130, 30, 0.20);
+      color: #d46a10;
+    }
+  }
+}
+
+// Container das ondas — centralizado em cima do botão
+// .mic-waves--hidden usa visibility:hidden (não display:none) para NÃO resetar animações CSS
+.mic-waves {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+  visibility: visible;
+  transition: visibility 0s; // sem transição — troca instantânea
+
+  &--hidden {
+    visibility: hidden;
+  }
+}
+
+// Cada onda é um círculo que expande e desvanece — cor laranja DSC
+.mic-wave {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid #F5821E;
+  opacity: 0;
+  animation: mic-wave-expand 1.8s ease-out infinite;
+
+  &--1 { width: 36px; height: 36px; animation-delay: 0s; }
+  &--2 { width: 36px; height: 36px; animation-delay: 0.6s; }
+  &--3 { width: 36px; height: 36px; animation-delay: 1.2s; }
+}
+
+@keyframes mic-wave-expand {
+  0%   { transform: scale(1);   opacity: 0.8; }
+  100% { transform: scale(2.6); opacity: 0;   }
+}
+
+.dashboard-search-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}

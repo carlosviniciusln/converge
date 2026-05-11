@@ -1,0 +1,94 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
+  </h4>
+  <button type="button" class="close" aria-label="Fechar" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-3 pr-0">
+        <label for="dePeriodo">Competência:</label>
+        <input formControlName="dePeriodo" id="dePeriodo" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.dePeriodo.invalid }" mask="00/0000" [dropSpecialCharacters]="false"
+          placeholder="Ex. 00/0000" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="nuOrcamento">Ano Orçamentário:</label>
+        <select class="form-control" id="nuOrcamento" formControlName="nuOrcamento"
+          [ngClass]="{ 'is-invalid': submitted && f.nuOrcamento.invalid }">
+          <option value="" selected>
+            Selecione o ano Orçamentário
+          </option>
+          <option *ngFor="let a of listaOrcamentos" [ngValue]="a.nuOrcamento">
+            {{ a.nuAnoOrcamento }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-6 pr-0">
+        <label for="nuVigencia">Vigência:</label>
+        <select (change)="obterRubricas()" class="form-control" id="nuVigencia"
+          formControlName="nuVigencia" [ngClass]="{ 'is-invalid': submitted && f.nuVigencia.invalid }">
+          <option value="" selected>Selecione a vigência</option>
+          <option *ngFor="let a of listaVigencias" [ngValue]="a.nuVigencia">
+            {{ a.gcptb007VigenciaTipo.noVigenciaTipo }} -
+            {{ a.dtInicio | date : "dd/MM/yyyy" }} à
+            {{ a.dtTermino | date : "dd/MM/yyyy" }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-3 pr-0">
+        <label for="nuVigenciaRubrica">Rubrica:</label>
+        <select class="form-control" id="nuVigenciaRubrica" formControlName="nuVigenciaRubrica"
+          [ngClass]="{ 'is-invalid': submitted && f.nuVigenciaRubrica.invalid }">
+          <option value="" selected>Selecione a rubrica</option>
+          <option *ngFor="let a of listaRubricas" [ngValue]="a.nuVigenciaRubrica">
+            {{ a.gcptb003Rubrica.coRubrica }} - {{ a.noServicoTipo }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="coNumeroAteste">Número Ateste:</label>
+        <input formControlName="coNumeroAteste" id="coNumeroAteste" type="text" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.coNumeroAteste.invalid }" />
+      </div>
+      <div class="col-md-3 pr-0">
+        <label for="vrCredito">Valor Pago (Liquido):</label>
+        <input formControlName="vrCredito" [ngClass]="{ 'is-invalid': submitted && f.vrCredito.invalid }"
+          id="vrCredito" type="text" class="form-control" mask="separator.2" [allowNegativeNumbers]="true"
+          [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true" />
+      </div>
+
+      <div class="col-md-3 pr-0">
+        <label for="vrExecutado">Valor Executado (Bruto):</label>
+        <input formControlName="vrExecutado" [ngClass]="{ 'is-invalid': submitted && f.vrExecutado.invalid }"
+          id="vrExecutado" type="text" class="form-control" mask="separator.2" [allowNegativeNumbers]="true"
+          [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true" />
+      </div>
+
+      <div class="col-md-3 pr-0">
+        <label for="dtPagamentoEfetivo">Data efetivo pag.:</label>
+        <input formControlName="dtPagamentoEfetivo" id="dtPagamentoEfetivo" type="date" class="form-control"
+          [ngClass]="{
+            'is-invalid': submitted && f.dtPagamentoEfetivo.invalid
+          }" />
+      </div>
+
+      <div class="col-md-3 pr-0">
+        <label for="nuSap">Nº Pedido SAP:</label>
+        <input formControlName="nuSap" [ngClass]="{ 'is-invalid': submitted && f.nuSap.invalid }" id="nuSap"
+          type="text" class="form-control" mask="9999999999" [dropSpecialCharacters]="true" />
+      </div>
+
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <dsc-button variant="primary" label="Salvar" (click)="onSubmit()"
+    *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false"></dsc-button>
+  <dsc-button variant="danger" label="Excluir" (click)="excluirPagamento(this.nuPagamento)"
+    *ngIf="this.nuPagamento && (permissions?.Excluir ?? false)"></dsc-button>
+</div>

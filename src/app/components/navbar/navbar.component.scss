@@ -1,0 +1,188 @@
+// =============================================================
+// NAVBAR customizado — replica visual do DSC (dsc-header)
+// sem usar o componente da biblioteca, para permitir logo custom
+// Cores e tokens alinhados com layout-requisites.md
+// =============================================================
+
+// ── Header principal ──────────────────────────────────────────
+.custom-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.custom-header__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  height: 64px;
+  background: #005CA9; // Primary 90 — Azul CAIXA
+  box-sizing: border-box;
+  color: #fff;
+
+  @media (max-width: 599px) {
+    height: 63px;
+  }
+}
+
+// ── Botão sanduíche ───────────────────────────────────────────
+.custom-header__toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 10%;
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  &:focus-visible {
+    outline: 2px solid #fff;
+    border-radius: 4px;
+  }
+}
+
+// ── Logo ──────────────────────────────────────────────────────
+.custom-header__brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    border-radius: 4px;
+  }
+}
+
+.custom-header__logo {
+  height: 38px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+// ── Separador vertical ────────────────────────────────────────
+.custom-header__separator {
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
+  height: 24px;
+  flex-shrink: 0;
+}
+
+// ── Sigla e título ────────────────────────────────────────────
+.custom-header__acronym {
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.custom-header__title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Spacer ────────────────────────────────────────────────────
+.custom-header__spacer {
+  flex: 1 1 auto;
+}
+
+// ── Grupo direito (usuário + botões) ─────────────────────────
+.custom-header__right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+// ── Usuário ───────────────────────────────────────────────────
+.custom-header__user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.custom-header__greeting {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.custom-header__greeting-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #fff;
+  padding-right: 4px;
+}
+
+.custom-header__username {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.custom-header__workunit {
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  padding-right: 4px;
+}
+
+// ── Linha de classificação ────────────────────────────────────
+.custom-header__classification {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  gap: 8px;
+  background: #2D8AD8; // Primary 70 — faixa pública
+  color: #fff;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+
+.custom-header__classification-label {
+  font-weight: 600;
+}
+
+.custom-header__classification-title {
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.custom-header__classification-info {
+  font-weight: 400;
+  margin-left: auto;
+}
+
+// Garante que o sidenav DSC não sobreponha o header
+dsc-sidenav {
+  .mat-drawer-container {
+    z-index: 900;
+  }
+}

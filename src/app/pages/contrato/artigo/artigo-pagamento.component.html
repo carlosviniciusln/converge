@@ -1,0 +1,41 @@
+﻿<div class="content" id="">
+    <dsc-breadcrumb [urls]="[{label: 'Contratos', url: '/contrato'}, {label: 'Artigos'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+    <div class="row">
+        <div class="" id="divPDF">
+
+            <div class="row cl-grafico">
+                <div class="col-md-12" style="margin-top: 10px;margin-right: -5px !important;">
+                    <ng-template #artigoCardTpl>
+                        <h3 class="card-title text-left"></h3>
+                        <h3 class="card-title text-left table-header-title" style="font-weight: bold;">PAGAMENTOS
+                            ARTIGO 81
+                            <span></span>
+                        </h3>
+                        <span class="card-title">Aqui estao apresentados os valores consolidados por exercicio (ano)
+                            de pagamentos em modalidade "Artigo 81". Esse artigo faz parte do Regulamento de
+                            Licitacoes e Contratos da Caixa (RLCC) e determina a obrigatoriedade de pagamento de bens
+                            e servicos sem a existencia de termo contratual vigente.<br/><br/>
+                            "A CAIXA indenizara a contratada pelo que esta houver executado, mesmo em casos de
+                            ausencia do contrato formal, nulidade ou extrapolacao de prazo ou de valor contratado.<br/><br/>
+                            Paragrafo Unico - Esta sujeito a apuracao de responsabilidade o empregado que agir de
+                            forma dolosa ou culposa para a ocorrencia das situacoes dispostas no caput, cabendo a
+                            autoridade competente analisar a existencia de elementos minimos de autoria e
+                            materialidade para envio a unidade responsavel pela apuracao".
+                        </span>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <app-grafico-artigo id="app-grafico-artigo" class="divGrafico">
+                                </app-grafico-artigo>
+                            </div>
+                        </div>
+                        <span class="card-title" style="font-weight: bold;">Para Consultar o detalhamento de cada
+                            exercicio com cada pagamento realizado, clique sobre o ANO.
+                        </span>
+                    </ng-template>
+                    <dsc-card [data]="{appearance: 'outlined', content: {template: artigoCardTpl}}"></dsc-card>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+label {
+    margin-bottom: 0px !important;
+}
+
+:host .modal-header {
+    padding: 5px 24px 0px 24px !important;
+}
+
+:host .modal-footer {
+    padding: 0px 24px 16px 24px !important;
+    display: flex;
+    justify-content: space-between;
+}
+
+::ng-deep .custom-class .modal-dialog {
+    position: relative;
+    top: 5%;
+}
+
+::ng-deep .modal-lg {
+    max-width: 1005px !important;
+}
+
+.is-invalid {
+    border: 1px solid red !important;
+}
+
+.min-height-59 {
+    min-height: 59px;
+}

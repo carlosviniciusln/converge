@@ -1,0 +1,174 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ titulo }}</b
+    ><br /><small>{{ subTitulo }}</small>
+  </h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-6 pr-0" *ngIf="limiteRubrica?.dhCadastro != null">
+            <label for="dhCadastro">Data de criação:</label>
+            <input
+              readonly
+              formControlName="dhCadastro"
+              id="dhCadastro"
+              type="text"
+              class="form-control"
+            />
+          </div>
+          <div class="col-md-6 pr-0" *ngIf="limiteRubrica?.dhAlteracao != null">
+            <label for="dhCadastro">Data de alteração:</label>
+            <input
+              readonly
+              formControlName="dhAlteracao"
+              id="dhAlteracao"
+              type="text"
+              class="form-control"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 pr-0">
+            <label for="nuAnoOrcamentario">Exercício:</label>
+            <select
+              class="form-control"
+              id="nuAnoOrcamentario"
+              formControlName="nuAnoOrcamentario"
+              [ngClass]="{
+                'is-invalid': submitted && f.nuAnoOrcamentario.invalid
+              }"
+            >
+              <option value="" disabled selected>
+                Selecione o ano de exercício
+              </option>
+              <option
+                *ngFor="let a of listaOrcamentos"
+                [ngValue]="a.nuOrcamento"
+              >
+                {{ a.nuAnoOrcamento }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6 pr-0">
+            <label for="nuFilial">Unidade Demandante:</label>
+            <select
+              class="form-control"
+              id="nuFilial"
+              formControlName="nuFilial"
+              [ngClass]="{ 'is-invalid': submitted && f.nuFilial.invalid }"
+            >
+              <option value="" disabled selected>
+                Selecione Gerência Nacional
+              </option>
+              <option *ngFor="let a of listaFiliais" [ngValue]="a.nuFilial">
+                {{ a.coFilial }} - {{ a.sgFilial }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 pr-0">
+            <label for="nuRubrica">Rubrica:</label>
+            <select
+              class="form-control"
+              id="nuRubrica"
+              formControlName="nuRubrica"
+              [ngClass]="{ 'is-invalid': submitted && f.nuRubrica.invalid }"
+              (change)="onRubricaChange()"
+            >
+              <option value="" disabled selected>Selecione a Rubrica</option>
+              <option *ngFor="let a of listaRubricas" [ngValue]="a.nuRubrica">
+                {{ a.coRubrica }} - {{ a.deRubrica }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6 pr-0">
+            <label for="nuGrupoRemanejamento">Grupo Remanejamento:</label>
+            <select
+              class="form-control"
+              id="nuGrupoRemanejamento"
+              formControlName="nuGrupoRemanejamento"
+              [ngClass]="{
+                'is-invalid': submitted && f.nuGrupoRemanejamento.invalid
+              }"
+            >
+              <option value="" disabled selected>
+                Selecione a Grupo de Remanejamento
+              </option>
+              <option
+                *ngFor="let a of listaGruposRemanejamento"
+                [ngValue]="a.nuGrupoRemanejamento"
+              >
+                {{ a.coGrupoRemanejamento }} - {{ a.deGrupoRemanejamento }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 pr-0">
+            <label for="nuPlanejamentoTipo">Tipo Planejamento:</label>
+            <select
+              class="form-control"
+              id="nuPlanejamentoTipo"
+              formControlName="nuPlanejamentoTipo"
+              [ngClass]="{
+                'is-invalid': submitted && f.nuPlanejamentoTipo.invalid
+              }"
+            >
+              <option value="" disabled selected>
+                Selecione o Tipo Planejamento
+              </option>
+              <option
+                *ngFor="let a of listaTiposPlanejamento"
+                [ngValue]="a.nuPlanejamentoTipo"
+              >
+                {{ a.dePlanejamentoTipo }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6 pr-0">
+            <label for="vrLimiteRubrica">Valor Limite:</label>
+            <input
+              currencyMask
+              class="form-control"
+              id="vrLimiteRubrica"
+              formControlName="vrLimiteRubrica"
+              placeholder="R$ 0,00"
+              [options]="{ allowNegative: false }"
+              [ngClass]="{ 'is-invalid': submitted && f.vrLimiteRubrica.invalid }"
+            />
+            <!-- (keyup)="function(i)" -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="modal-footer">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-10 pr-0"></div>
+          <div class="col-md-1 pr-0 text-right" style="padding: 22px">
+            <button
+              class="btn-sm btn-default"
+              type="submit"
+              (click)="onSubmit()"
+            >
+              {{ actionButtonLabel }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

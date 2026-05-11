@@ -1,0 +1,185 @@
+<div class="content">
+  <dsc-breadcrumb [urls]="[{label: 'Relatórios'}, {label: 'Empenho'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div class="row">
+    <div class="col-12">
+      <p-table
+        #dt
+        [value]="listaEmpenho"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [filterDelay]="0"
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-5 table-header-title">
+                Relatório de Valor Empenhado
+              </div>
+              <div class="col-md-1 pl-1 pr-1 text-right">
+                <dsc-button
+                  variant="secondary-outlined"
+                  icon="cloud_download"
+                  iconButton
+                  (click)="downloadEmpenho()"
+                  *ngIf="permissions?.Exportar ?? false"
+                ></dsc-button>
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <dsc-select
+                  [options]="selectAnos"
+                  [(ngModel)]="selectedAno"
+                  [showFilter]="true"
+                  (ngModelChange)="updateRelatorio({ value: $event }, 1)"
+                  placeholder="Todos os Anos Orçamentários"
+                ></dsc-select>
+                <!-- <select class="form-control" id="pAno" name="pAno" [(ngModel)]="selectedAno" (ngModelChange)="updateRelatorio($event, 1)">
+                                <option value="null">Todos os Anos Orçamentários</option>
+                                 <option *ngFor="let a of listaAnos;" [ngValue]="a">{{ a }}</option> 
+                            </select> -->
+              </div>
+              <div class="col-md-2 pl-1 pr-1">
+                <dsc-select
+                  [options]="selectFiliais"
+                  [(ngModel)]="selectedFilial"
+                  [showFilter]="true"
+                  (ngModelChange)="updateRelatorio({ value: $event }, 2)"
+                  placeholder="Todas as Unidades Demandantes"
+                ></dsc-select>
+                <!-- <select class="form-control" id="pFilial" name="pFilial" [(ngModel)]="selectedFilial" (ngModelChange)="updateRelatorio($event, 2)">
+                                <option value="null">Todas as Gerências</option>
+                                 <option *ngFor="let a of listaFiliais;" [ngValue]="a.nuFilial">{{ a.sgFilial }}</option> 
+                            </select> -->
+              </div>
+              <div class="col-md-2 pl-1">
+                <dsc-select
+                  [options]="selectContratos"
+                  [(ngModel)]="selectedContrato"
+                  [showFilter]="true"
+                  (ngModelChange)="updateRelatorio({ value: $event }, 4)"
+                  placeholder="Todos os Contratos"
+                ></dsc-select>
+                <!-- <select class="form-control" id="pContrato" name="pContrato" [(ngModel)]="selectedContrato" (ngModelChange)="updateRelatorio($event, 3)">
+                                <option value="null">Todos os Contratos</option>
+                                 <option *ngFor="let a of listaContratos;" [ngValue]="a.nuContrato">{{ a.coContrato }} - {{ a.noEmpresa }}</option> 
+                            </select> -->
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>UD</th>
+            <th>Contrato</th>
+            <th>Fornecedor</th>
+            <th>JAN</th>
+            <th>FEV</th>
+            <th>MAR</th>
+            <th>ABR</th>
+            <th>MAI</th>
+            <th>JUN</th>
+            <th>JUL</th>
+            <th>AGO</th>
+            <th>SET</th>
+            <th>OUT</th>
+            <th>NOV</th>
+            <th>DEZ</th>
+            <th>Pago</th>
+            <th>Empenho</th>
+            <th>Défict</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-empenho>
+          <tr class="p-selectable-row">
+            <td>
+              <span class="p-column-title">UD</span>
+              {{ empenho.sgFilial }}
+            </td>
+            <td>
+              <span class="p-column-title">Contrato</span>
+              <span>{{ empenho.coContrato }}</span>
+            </td>
+            <td>
+              <span class="p-column-title">Fornecedor</span>
+              {{ empenho.noEmpresa }}
+            </td>
+            <td>
+              <span class="p-column-title">JAN</span>
+              {{ empenho.vrJan | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">FEV</span>
+              {{ empenho.vrFev | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">MAR</span>
+              {{ empenho.vrMar | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">ABR</span>
+              {{ empenho.vrAbr | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">MAI</span>
+              {{ empenho.vrMai | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">JUN</span>
+              {{ empenho.vrJun | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">JUL</span>
+              {{ empenho.vrJul | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">AGO</span>
+              {{ empenho.vrAgo | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">SET</span>
+              {{ empenho.vrSet | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">OUT</span>
+              {{ empenho.vrOut | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">NOV</span>
+              {{ empenho.vrNov | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">DEZ</span>
+              {{ empenho.vrDez | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">Pago</span>
+              {{ empenho.vrPago | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">Empenho</span>
+              {{ empenho.vrTotal | currency : "BRL" }}
+            </td>
+            <td>
+              <span class="p-column-title">Défict</span>
+              {{ empenho.vrDefict | currency : "BRL" }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="12">Nenhum registro encontrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <dsc-paginator
+        *ngIf="quantidadeTotal > 0"
+        [length]="quantidadeTotal"
+        [pageSize]="filtroRegistros.pageSize"
+        [pageIndex]="filtroRegistros.pageNumber - 1"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="loadPage($event)">
+      </dsc-paginator>
+    </div>
+  </div>
+</div>

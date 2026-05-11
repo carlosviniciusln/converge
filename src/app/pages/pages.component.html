@@ -1,0 +1,63 @@
+<div class="wrapper">
+  <div class="main-panel main-panel--full">
+  <app-navbar id="app-navbar"></app-navbar>
+    <dsc-sidenav
+      [menu]="sidenav.menuItems"
+      [opened]="(sidenav.opened$ | async) ?? false"
+      (openedChange)="sidenav.setOpened($event)"
+      [fixedInViewport]="true"
+      [fixedTopGap]="56">
+      <div class="sidenav-content-wrapper">
+        <div class="sidenav-page-content">
+          <router-outlet></router-outlet>
+        </div>
+        <footer class="custom-footer">
+          <div class="custom-footer__content">
+            <a href="/" class="custom-footer__brand" aria-label="Início">
+              <img src="assets/images/logo.png" alt="CONVERGE" class="custom-footer__logo" />
+            </a>
+            <span class="custom-footer__sigla">CONVERGE</span>
+            <span class="custom-footer__additional">Plataforma de Gestão de Contratos</span>
+            <span class="custom-footer__version">Versão 2.4.3</span>
+          </div>
+          <div class="custom-footer__bottom">
+            <span class="custom-footer__links-title">Links úteis</span>
+            <a class="custom-footer__link" href="https://forms.office.com/Pages/ResponsePage.aspx?id=mLqbq0po-0Ot2Jwr6-3iKdkZ9MzWM6RKoqhsXwBjATZURUpMMzhQU0lYUVZMTExUU1Y4UFIzTUxWMS4u" target="_blank" rel="noopener noreferrer">Comentários e sugestões</a>
+            <a class="custom-footer__link" href="https://caixa.sharepoint.com/:b:/r/sites/Arquivos7550/Documentos%20Compartilhados/GERENCIA/PROJETOS/SIGVC/DOCUMENTA%C3%87%C3%83O/SIGVC_Manual%20do%20Usuario/Vers%C3%A3o%201.10/SIGVC_Manual_do_Usu%C3%A1rio_V1.10.pdf?csf=1&web=1&e=qtjobS" target="_blank" rel="noopener noreferrer">Manual do usuário</a>
+          </div>
+        </footer>
+      </div>
+    </dsc-sidenav>
+  </div>
+</div>
+
+<!-- Floating search control (bottom-right) -->
+<div *ngIf="floatingVisible" style="position:fixed; right:18px; bottom:18px; z-index:1050;">
+  <!-- collapsed button -->
+  <div *ngIf="!floatingOpen" style="position:relative; display:flex; gap:8px; align-items:center;">
+    <button id="floating-search-btn" class="btn btn-default" (click)="toggleFloating()" title="Abrir busca">
+      <i class="pi pi-search"></i>
+    </button>
+    <button id="floating-search-hide" class="btn btn-sm btn-light" style="height:36px;" (click)="hideFloating()" title="Fechar busca">x</button>
+  </div>
+
+  <!-- open input panel -->
+  <div *ngIf="floatingOpen" style="background:#fff; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.2); padding:8px; min-width:320px; display:flex; gap:8px; align-items:center;">
+    <input id="floating-search-input" [(ngModel)]="floatingSearchTerm" placeholder="Digite contrato ou visão gerencial" style="flex:1; padding:8px;" />
+    <button id="floating-mic-btn" (click)="startMic()" title="Falar"
+      style="background:#FF7F11; border:2px solid #FF7F11; color:#fff; height:40px; padding:6px 10px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center;"
+      [style.border-color]="micListening ? '#ff4d00' : '#FF7F11'" aria-label="Ativar microfone">
+      <!-- Inline SVG microphone to avoid dependency on icon fonts and ensure visibility -->
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3z" fill="#ffffff"/>
+        <path d="M19 11a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 5 5 0 0 0 4 4.9V19a1 1 0 1 0 2 0v-3.1A5 5 0 0 0 19 11z" fill="#ffffff"/>
+      </svg>
+    </button>
+    <button id="floating-search-submit" (click)="submitFloatingSearch()" aria-label="Pesquisar"
+      style="background:#0b5ed7 !important; border:1px solid #0b5ed7 !important; color:#fff !important; height:40px; padding:6px 14px; border-radius:6px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; box-shadow:none !important;">
+      Ir
+    </button>
+    <button id="floating-search-close" (click)="toggleFloating()" title="Fechar"
+      style="background:transparent; border:none; color:#666; height:32px; padding:4px 8px; font-size:16px;">✕</button>
+  </div>
+</div>

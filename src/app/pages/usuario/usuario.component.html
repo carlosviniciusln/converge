@@ -1,0 +1,266 @@
+<div class="content">
+  <dsc-breadcrumb [urls]="[{label: 'Usuários'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div class="row">
+    <div class="column-45 pr-1">
+      <p-table
+        #dt
+        [value]="listaUsuarios"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [filterDelay]="0"
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-5 table-header-title">
+                Usuários não autorizados
+              </div>
+
+              <!-- <div class="col-md-2 pl-1 pr-1">
+                            <select class="form-control" id="pPerfis" name="pPerfis" [(ngModel)]="selectedPerfis" (ngModelChange)="onChangeSelect($event)">
+                                <option value="null">Todos os Perfil</option>
+                                 <option *ngFor="let a of listaPerfis;" [ngValue]="a.nuPerfil">{{ a.noPerfil }}</option> 
+                            </select>
+                        </div> -->
+              <div class="col-md-7 pl-1">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="pFiltro"
+                  name="pFiltro"
+                  (keyup.enter)="onChangeInput($event)"
+                  placeholder="Digite e pressione enter para pesquisar..."
+                />
+                <!-- <select class="form-control" id="pContrato" name="pContrato" [(ngModel)]="selectedContrato" (ngModelChange)="updateRelatorio($event, 4)">
+                                <option value="null">Todos os Contratos</option>
+                                 <option *ngFor="let a of listaContratos;" [ngValue]="a.nuContrato">{{ a.coContrato }} - {{ a.noEmpresa }}</option> 
+                            </select> -->
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 10px"></th>
+            <th>Matricula</th>
+            <th>Nome</th>
+            <!-- <th>Perfil</th> -->
+            <!-- <th></th> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-usuario>
+          <tr class="p-selectable-row">
+            <td>
+              <input
+                type="checkbox"
+                name="ckbUsuarios"
+                [value]="usuario.nuUsuario"
+                (change)="onChangeUsuario($event)"
+                *ngIf="permissions?.Alterar ?? false"
+              />
+            </td>
+            <td>
+              <span class="p-column-title">Matricula</span>
+              {{ usuario.coMatricula }}
+            </td>
+            <td>
+              <span class="p-column-title">Nome</span>
+              {{ usuario.noUsuario }}
+            </td>
+            <!-- <td>
+                        <span class="p-column-title">Perfil</span>
+                        {{usuario.perfil?.noPerfil ?? '--'}}
+                    </td> -->
+            <!-- <td style="text-align: center; width: 50px;">
+                        <i class="pi pi-ellipsis-v" title="clique para detalhar o contrato"></i>
+                    </td> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="12">Nenhum registro encontrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <dsc-paginator
+        *ngIf="quantidadeTotal > 0"
+        [length]="quantidadeTotal"
+        [pageSize]="filtroRegistros.pageSize"
+        [pageIndex]="filtroRegistros.pageNumber - 1"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="loadPage($event)">
+      </dsc-paginator>
+    </div>
+    <div class="column-10 vertical-center">
+      <dsc-button
+        variant="primary"
+        icon="double_arrow"
+        (click)="Autorizar()"
+        [disabled]="!arrayUsuarios.length"
+        matTooltip="selecione o(s) usuário(s) não autorizados para conceder o acesso."
+        *ngIf="permissions?.Alterar ?? false"
+      ></dsc-button>&nbsp;
+      <!-- <button ... /> -->
+      <dsc-button
+        variant="secondary-outlined"
+        icon="keyboard_double_arrow_left"
+        (click)="atualizaPerfilUsuarios(false)"
+        [disabled]="!arrayUsuariosAutorizados.length"
+        matTooltip="selecione o(s) usuário(s) autorizados para retirar o acesso."
+        *ngIf="permissions?.Alterar ?? false"
+      ></dsc-button>
+    </div>
+    <div class="column-45 pl-1">
+      <p-table
+        #dt
+        [value]="listaUsuariosAutorizados"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [loading]="loading"
+        [filterDelay]="0"
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <div class="row">
+              <div class="col-md-5 table-header-title">
+                Usuários autorizados
+              </div>
+
+              <!-- <div class="col-md-2 pl-1 pr-1">
+                            <select class="form-control" id="pPerfis" name="pPerfis" [(ngModel)]="selectedPerfis" (ngModelChange)="onChangeSelect($event)">
+                                <option value="null">Todos os Perfil</option>
+                                 <option *ngFor="let a of listaPerfis;" [ngValue]="a.nuPerfil">{{ a.noPerfil }}</option> 
+                            </select>
+                        </div> -->
+              <div class="col-md-7 pl-1">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="pFiltro"
+                  name="pFiltro"
+                  (keyup.enter)="onChangeInputAutorizados($event)"
+                  placeholder="Digite e pressione enter para pesquisar..."
+                />
+                <!-- <select class="form-control" id="pContrato" name="pContrato" [(ngModel)]="selectedContrato" (ngModelChange)="updateRelatorio($event, 4)">
+                                <option value="null">Todos os Contratos</option>
+                                 <option *ngFor="let a of listaContratos;" [ngValue]="a.nuContrato">{{ a.coContrato }} - {{ a.noEmpresa }}</option> 
+                            </select> -->
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 10px"></th>
+            <th>Matricula</th>
+            <th>Nome</th>
+            <th>Perfil</th>
+            <!-- <th></th> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-usuario>
+          <tr class="p-selectable-row">
+            <td>
+              <input
+                type="checkbox"
+                name="ckbUsuarios"
+                [value]="usuario.nuUsuario"
+                (change)="onChangeUsuarioAutorizados($event)"
+                *ngIf="permissions?.Alterar ?? false"
+              />
+            </td>
+            <td>
+              <span class="p-column-title">Matricula</span>
+              {{ usuario.coMatricula }}
+            </td>
+            <td>
+              <span class="p-column-title">Nome</span>
+              {{ usuario.noUsuario }}
+            </td>
+            <td>
+              <span class="p-column-title">Perfil</span>
+              {{ usuario.perfil?.noPerfil ?? "--" }}
+            </td>
+            <!-- <td style="text-align: center; width: 50px;">
+                        <i class="pi pi-ellipsis-v" title="clique para detalhar o contrato"></i>
+                    </td> -->
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="12">Nenhum registro encontrado.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <dsc-paginator
+        *ngIf="quantidadeTotalAutorizados > 0"
+        [length]="quantidadeTotalAutorizados"
+        [pageSize]="filtroRegistrosAutorizados.pageSize"
+        [pageIndex]="filtroRegistrosAutorizados.pageNumber - 1"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="loadPageAutorizados($event)">
+      </dsc-paginator>
+    </div>
+  </div>
+</div>
+
+<p-confirmDialog #cd [style]="{ width: '30vw' }">
+  <ng-template pTemplate="header">
+    <!-- <div class="header-confirm-dialog"> -->
+    <div>
+      <div class="grid col-md-12">
+        <h4>Perfil do(s) usuário(s)</h4>
+        <p style="margin-bottom: 15px;">Selecione o Perfil desejado:</p>
+      </div>
+      <div class="row search-box">
+        <!-- <p-dropdown
+          [options]="listaSelecaoPerfis"
+          [(ngModel)]="selectedPerfil"
+          [filter]="true"
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="onSelectedPerfilChange($event)"
+          [showClear]="true"
+          placeholder="Selecione um Perfil"
+        ></p-dropdown> -->
+        <div *ngFor="let item of listaSelecaoPerfis" class="field-checkbox">
+          <div class="position-radio-item">
+            <p-radioButton
+              [inputId]="item.value"
+              name="item"
+              [value]="item.value"
+              [(ngModel)]="selectedPerfil"
+            ></p-radioButton>
+            <label class="position-radio-item-label" [for]="item.value">{{
+              item.label
+            }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="Cancelar"
+      class="p-button-outlined p-button-success"
+      style="border-color: #009a53;"
+      (click)="cd.reject()"
+    ></button>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Confirmar"
+      class="p-button-success"
+      style="background: linear-gradient(0deg, #137d9a 0%, #009a53 100%); border-color: #009a53;"
+      (click)="cd.accept()"
+    ></button>
+  </ng-template>
+</p-confirmDialog>

@@ -1,0 +1,206 @@
+<div class="" id="divPDF">
+  <div
+    *ngFor="let item of listaEvolucaoFinanceira; let indexOfelement = index"
+    class="cl-table-component"
+  >
+    <div class="row mr-1 cl-consumo">
+      <div class="col-md-9">
+        <button
+          type="button"
+          class="btn-sm btn-secondary no-print"
+          data-html2canvas-ignore="true"
+          (click)="goBackToPrevPage()"
+          *ngIf="indexOfelement == 0"
+          mat-raised-button
+          matTooltip="Clique para voltar"
+        >
+          <i class="tim-icons icon-minimal-left"></i> Voltar
+        </button>
+        <dsc-button
+          variant="secondary-outlined"
+          label="PDF"
+          icon="cloud_download"
+          class="no-print"
+          data-html2canvas-ignore="true"
+          (click)="downloadPDF()"
+          *ngIf="indexOfelement == 0  && (permissions?.Exportar ?? false)"
+        ></dsc-button>
+      </div>
+      <!-- <div class="col-md-3 red" id="divRed" *ngIf="item.detalhe.vrMediaEfetivaUltimos03Meses > item.detalhe.vrMediaMensalEstimada">
+            Consumo ACIMA da média estimada <i class="tim-icons icon-minimal-up"></i>
+        </div>
+        <div class="col-md-3 green" id="divGreen" *ngIf="item.detalhe.vrMediaEfetivaUltimos03Meses <= item.detalhe.vrMediaMensalEstimada">
+            Consumo ABAIXO da média estimada <i class="tim-icons icon-minimal-down"></i>
+        </div> -->
+    </div>
+    <div class="row cl-grafico">
+      <div class="col-md-12">
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            <mat-card-title class="text-center">{{ item.grafico.titulo }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+              <div class="col-md-8">
+                <app-grafico-aquisicao
+                  [titulo]="item.grafico.titulo"
+                  [categorias]="item.grafico.categorias"
+                  [series]="item.grafico.series"
+                >
+                </app-grafico-aquisicao>
+              </div>
+              <div class="col-md-4">
+                <app-grafico-geral
+                  [titulo]="item.graficoGeral.titulo"
+                  [categorias]="item.graficoGeral.categorias"
+                  [series]="item.graficoGeral.series"
+                >
+                </app-grafico-geral>
+              </div>
+            </mat-card-content>
+          </mat-card>
+      </div>
+    </div>
+    <div class="row cl-header">
+      <div class="col-md-12">
+        <mat-card appearance="outlined">
+          <mat-card-content>
+            <div class="row">
+              <div class="col-md-2 text-right">Início Vigência:</div>
+              <div class="col-md-2">
+                <b>{{ item.detalhe.dtInicioVigencia | date: "dd/MM/yyyy" }}</b>
+              </div>
+              <div class="col-md-3 text-right">Total de Itens Previsto:</div>
+              <div class="col-md-1">
+                <b>{{ item.detalhe.qtTotalItensPrevisto }}</b>
+              </div>
+              <div class="col-md-2 text-right">Total Contrato:</div>
+              <div class="col-md-2">
+                <b>{{ item.detalhe.vrTotalContrato | currency: "BRL" }}</b>
+              </div>
+              <div class="col-md-2 text-right">Término Vigência:</div>
+              <div class="col-md-2">
+                <b>{{ item.detalhe.dtFimVigencia | date: "dd/MM/yyyy" }}</b>
+              </div>
+              <div class="col-md-3 text-right">Total Solicitado pelo G.O:</div>
+              <div class="col-md-1">
+                <b>{{ item.detalhe.qtTotalSolicitado }}</b>
+              </div>
+              <div class="col-md-2 text-right">Valor Pago:</div>
+              <div class="col-md-2">
+                <b>{{ item.detalhe.vrExecutado | currency: "BRL" }}</b>
+              </div>
+              <div class="col-md-2 text-right">Prazo Remanescente:</div>
+              <div class="col-md-3">
+                <b>{{ item.detalhe.noPrazoRemanescente }}</b>
+              </div>
+              <div class="col-md-2 text-right">Total de Itens Pago:</div>
+              <div class="col-md-1">
+                <b>{{ item.detalhe.qtTotalPago }}</b>
+              </div>
+              <div class="col-md-2 text-right">Saldo Contrato:</div>
+              <div class="col-md-2">
+                <b>{{ item.detalhe.vrSaldoContrato | currency: "BRL" }}</b>
+              </div>
+              <div class="col-md-2 text-right">Valor Unitário:</div>
+              <div class="col-md-2">
+                <b>{{ item.detalhe.vrUnitario | currency: "BRL" }}</b>
+              </div>
+              <div class="col-md-3 text-right">Pendente de Solicitação:</div>
+              <div class="col-md-3">
+                <b>{{ item.detalhe.qtTotalPendente }}</b>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row cl-body">
+      <div class="col-md-12">
+        <p-table [value]="item.resumo" styleClass="p-datatable-customers">
+          <ng-template pTemplate="caption">
+            <div class="table-header">
+              <div class="row">
+                <div class="col-md-12 table-header-title text-center">
+                  Resumo dos Pagamentos do Contrato
+                  {{ item.coContrato }} efetuados até
+                  {{ getLatestDate(item.resumo) | date: "dd/MM/yyyy" }}
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Mês/Ano</th>
+              <th>Ateste</th>
+              <th>Data Pagamento</th>
+              <th>Valor Bruto Faturamento</th>
+              <th>Valor Executado</th>
+              <th>Glosas</th>
+              <th>Multa</th>
+              <th>Qtd de Itens</th>
+              <th>Qtd Trade In</th>
+              <th>N° Pedido SAP</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-pagamento>
+            <tr class="p-selectable-row">
+              <td class="text-center">
+                <span class="p-column-title">Mês/Ano</span>
+                {{ pagamento.dePeriodo }}
+              </td>
+              <td class="text-center">
+                <span class="p-column-title">Ateste</span>
+                {{ pagamento.coNumeroAteste }}
+              </td>
+              <td class="text-center">
+                <span class="p-column-title">Data Pagamento</span>
+                {{ pagamento.dtPagamentoEfetivo | date: "dd/MM/yyyy" }}
+              </td>
+              <td class="text-right">
+                <span class="p-column-title">Valor Bruto Faturamento</span>
+                {{ pagamento.vrCredito | currency: "BRL" }}
+              </td>
+              <td class="text-right">
+                <span class="p-column-title">Valor Executado</span>
+                {{ pagamento.vrExecutado | currency: "BRL" }}
+              </td>
+              <td class="text-right">
+                <span class="p-column-title">Glosas</span>
+                {{ pagamento.vrGlosa | currency: "BRL" }}
+              </td>
+              <td class="text-right">
+                <span class="p-column-title">Multa</span>
+                {{ pagamento.vrMulta | currency: "BRL" }}
+              </td>
+              <td class="text-right">
+                <span class="p-column-title">Qtd de Itens</span>
+                {{ pagamento.qtItens }}
+              </td>
+              <td class="text-right">
+                <span class="p-column-title">Qtd Trade In</span>
+                {{ pagamento.qtTradeIn }}
+              </td>
+              <td class="text-center">
+                <span class="p-column-title">N° Pedido SAP</span>
+                {{ pagamento.nuSap }}
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="8">Nenhum registro encontrado.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <br />
+      <p class="cl-caption">
+        <span class="legenda">Legenda:</span><br />
+        Bruto Faturamento: É o valor do faturamento aprovado pelo G.O (gestor
+        Operacional)<br />
+        Valor Executado: É o valor total das notas emitidas pelo fornecedor
+      </p>
+      <!-- <div class="html2pdf__page-break"></div> -->
+    </div>
+  </div>
+</div>

@@ -1,0 +1,157 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    <b>{{ title }}</b><br />
+  </h4>
+  <button type="button" class="btn btn-danger" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true"><i class="fa-solid fa-rotate-left"></i> Voltar para o Painel Inicial</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p-table #dt [scrollable]="true" scrollHeight="100%" scrollWidth="100%" [value]="this.listaContratosVigencia"
+    dataKey="nU_CONTRATO" [expandedRowKeys]="expandedRows" styleClass="p-datatable-contratos" [rowHover]="true"
+    [rows]="10" [showCurrentPageReport]="true" [paginator]="true"
+    currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)" [filterDelay]="0">
+    <ng-template pTemplate="caption">
+      <div class="table-header">
+        <div class="row">
+          <div class="col-md-7 table-header-title">Contratos Vigência</div>
+          <div class="col-md-1 pl-1 pr-1 text-right" style="display: flex; justify-content: flex-end; align-items: center;">
+            <dsc-button variant="secondary-outlined" icon="cloud_download" iconButton (click)="obterContratosVigenciasExcel()"
+              *ngIf="permissions?.Exportar ?? false"></dsc-button>
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control" #myInput (input)="filterItem(myInput.value)" id="pPesquisar"
+              placeholder="Digite para pesquisar" />
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="th-contrato">Contrato</th>
+        <th class="th-contrato">Fornecedor</th>
+        <!-- <th >Obj. do Contrato</th> -->
+        <!--th class="th-gn">GN</th-->
+        <th>Início vigência</th>
+        <th>Termino vigência</th>
+        <th class="text-center">Valor Global</th>
+        <th class="text-center">Valor Total Pago</th>
+        <th class="text-center">Valor Últ. Prorrogação</th>
+        <th class="text-center">Valor Pago Últ. Prorrogação</th>
+        <th class="text-center">Últ. Fatura Paga</th>
+        <th class="text-center">Média Mensal Estimada</th>
+        <th class="text-center">Média Últ. 3 meses</th>
+        <th class="text-center">Saldo Contrato</th>
+        <th class="text-center">Últ. Comp. Paga</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-i let-expanded="expanded">
+      <tr class="p-selectable-row">
+        <td [ngbTooltip]="i.cO_CONTRATO" class="th-contrato" tooltipClass="my-freaky-tooltip" #tt="ngbTooltip">
+          <a target="_blank" routerLink="/contrato/evolucao-financeira/{{ i.nU_CONTRATO }}" routerLinkActive="active">{{
+            i.cO_CONTRATO }}</a>
+        </td>
+        <td class="th-contrato" [pRowToggler]="i" pTooltip="{{i.nO_EMPRESA}}">{{ i.nO_EMPRESA.slice(0, 15) }}...</td>
+        <!-- <td [pRowToggler]="i">{{i.noObjeto}}</td> -->
+        <!--td class="th-gn" [pRowToggler]="i">{{ i.sG_FILIAL }}</td-->
+        <!-- <td>{{i.icArtigo81 ? "Sim" : "Não"}}</td> -->
+        <td [pRowToggler]="i">
+          {{ i.dT_INICIO | date : "dd/MM/yyyy" }}
+        </td>
+        <td [pRowToggler]="i">{{ defineEndDate(i) | date : "dd/MM/yyyy" }}</td>
+        <td [pRowToggler]="i">{{ i.vR_GLOBAL | currency : "BRL" }}</td>
+        <td [pRowToggler]="i">{{ i.vR_PAGO | currency : "BRL" }}</td>
+        <td [pRowToggler]="i">{{ i.vR_ULT_PRORROGACAO | currency : "BRL" }}</td>
+        <td [pRowToggler]="i">
+          {{ i.vR_PAGO_ULT_PRORROGACAO | currency : "BRL" }}
+        </td>
+        <td [pRowToggler]="i">{{ i.vR_ULT_FATURA_PAGA | currency : "BRL" }}</td>
+        <td [pRowToggler]="i">{{ i.vR_MEDIA_ESTIMADA | currency : "BRL" }}</td>
+        <td [pRowToggler]="i">{{ i.vR_MEDIA3_MESES | currency : "BRL" }}</td>
+        <td [pRowToggler]="i">{{ i.vR_SALDO_CONTRATO | currency : "BRL" }}</td>
+        <td [pRowToggler]="i">{{ i.dT_ULT_COMPETENCIA_PAGA }}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-i let-expanded="expanded">
+      <tr class="p-selectable-row-expansion" *ngFor="let i2 of i.contratoVigenciaRubrica">
+        <td>--</td>
+        <td>--</td>
+        <!-- <td>--</td> -->
+        <td>--</td>
+        <td>{{ i2.coRubrica }}</td>
+        <td>--</td>
+        <td>--</td>
+        <td>{{ i2.vR_GLOBAL | currency : "BRL" }}</td>
+        <td>{{ i2.vR_PAGO | currency : "BRL" }}</td>
+        <td>{{ i2.vR_ULT_PRORROGACAO | currency : "BRL" }}</td>
+        <td>{{ i2.vR_PAGO_ULT_PRORROGACAO | currency : "BRL" }}</td>
+        <td>{{ i2.vR_ULT_FATURA_PAGA | currency : "BRL" }}</td>
+        <td>{{ i2.vR_MEDIA_ESTIMADA | currency : "BRL" }}</td>
+        <td>{{ i2.vR_MEDIA3_MESES | currency : "BRL" }}</td>
+        <td>{{ i2.vR_SALDO_CONTRATO | currency : "BRL" }}</td>
+        <td>{{ i.dT_ULT_COMPETENCIA_PAGA }}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <tr>
+        <td colspan="13" *ngIf="listaContratosVigencia">
+          <b>Quantidade de Contratos: {{ quantitativoContratos() }}</b>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr colspan="14">
+        <span *ngIf="this.loading">Aguarde, localizando registros...</span>
+        <span *ngIf="!this.loading">Nenhum registro encontrado.</span>
+      </tr>
+    </ng-template>
+  </p-table>
+  <br />
+  <!-- <table class="table">
+          <thead>
+              <tr>
+                  <th>Contrato</th>
+                  <th>Fornecedor</th>
+                  <th>Artigo 81</th>
+                  <th>Início vigência</th>
+                  <th>Termino vigência</th>
+                  <th class="text-center">Valor Global</th>
+                  <th class="text-center">Valor Total Pago</th>
+                  <th class="text-center">Valor Últ. Prorrogação</th>
+                  <th class="text-center">Valor Pago Últ. Prorrogação</th>
+                  <th class="text-center">Últ. Fatura Paga</th>
+                  <th class="text-center">Média Mensal Estimada</th>
+                  <th class="text-center">Média Últ. 3 meses</th>
+                  <th class="text-center">Saldo Contrato</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let i of listaContratosVigencia;">
+                  <td>{{i.coContrato}}</td>
+                  <td>{{i.noEmpresa}}</td>
+                  <td>{{i.icArtigo81 ? "Sim" : "Não"}}</td>
+                  <td>{{i.dtInicioVigencia | date: 'dd/MM/yyyy'}}</td>
+                  <td>{{i.dtFimVigencia | date: 'dd/MM/yyyy'}}</td>
+                  <td class="text-center">{{i.vrGlobal | currency : 'BRL'}}</td>
+                  <td class="text-center">{{i.vrTotalPago | currency : 'BRL'}}</td>
+                  <td class="text-center">{{i.vrUltProrrogacao | currency : 'BRL'}}</td>
+                  <td class="text-center">{{i.vrTotalPagoUltProrrogacao | currency : 'BRL'}}</td>
+                  <td class="text-center">{{i.vrUltFatura | currency : 'BRL'}}</td>
+                  <td class="text-center">{{i.vrMediaMensal | currency : 'BRL'}}</td>
+                  <td class="text-center">{{i.vrMediaUlt3Meses | currency : 'BRL'}}</td>
+                  <td class="text-center">{{i.vrSaldoContrato | currency : 'BRL'}}</td>
+              </tr>
+              <tr>
+                  <td colspan="13" *ngIf="listaContratosVigencia">
+                    <b>Quantidade de Contratos: {{quantitativoContratos(false)}} <br/>
+                    Quantidade de Contratos (Artigo 81): {{quantitativoContratos(true)}}</b>
+                </td>
+              </tr>
+          </tbody>
+          <tbody *ngIf="!listaContratosVigencia">
+            <tr>
+                <td colspan="13">Nenhum contrato encontrado.</td>
+            </tr>
+          </tbody>
+      </table> -->
+</div>

@@ -1,0 +1,231 @@
+<div class="content">
+    <dsc-breadcrumb [urls]="[{label: 'Relatórios'}, {label: 'Consumo'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+    <div class="row">
+        <div style="flex:1">
+            <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
+                styleClass="p-datatable-customers" 
+                sortMode="single"
+                (onSort)="aoOrdenar($event)"
+                [globalFilterFields]="['coContrato','noEmpresa','dhCadastro']" [rowHover]="true">
+                <ng-template pTemplate="caption">
+                    <div class="table-header">
+                        <div class="row">
+                            <div class="col-md-1 pl-1 pr-1 table-header-title">Relatório de Consumo
+                            </div>
+                            <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button> -->
+                            <div class=" pl-1 pr-1">
+                                <!-- *ngIf="isAllowedToExport" -->
+                                <dsc-button variant="secondary-outlined" icon="cloud_download" iconButton (click)="exportExcel()"
+                                    *ngIf="permissions?.Exportar ?? false"></dsc-button>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <dsc-select [options]="selectTiposContrato" [(ngModel)]="selectedTipoContrato"
+                                    [showFilter]="true"
+                                    (ngModelChange)="updateRelatorio({ value: $event }, 1)"
+                                    placeholder="Contrato"></dsc-select>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <dsc-select [options]="selectTiposFornecedor" [(ngModel)]="selectedTipoFornecedor"
+                                    [showFilter]="true"
+                                    (ngModelChange)="updateRelatorio({ value: $event }, 2)"
+                                    placeholder="Fornecedor"></dsc-select>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <dsc-select [options]="selectTiposTpContrato" [(ngModel)]="selectedTipoTpContrato"
+                                    [showFilter]="true"
+                                    (ngModelChange)="updateRelatorio({ value: $event }, 3)"
+                                    placeholder="Tipo de Contrato"></dsc-select>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <dsc-select [options]="selectTiposGestor" [(ngModel)]="selectedTipoGestor"
+                                    [showFilter]="true"
+                                    (ngModelChange)="updateRelatorio({ value: $event }, 4)"
+                                    placeholder="Unidade Demandante"></dsc-select>
+                            </div>
+                            <div class="pl-1 pr-1">
+                                <dsc-select [options]="selectTiposStatus" [(ngModel)]="selectedTipoStatus"
+                                    [showFilter]="true"
+                                    (ngModelChange)="updateRelatorio({ value: $event }, 5)"
+                                    placeholder="Status"></dsc-select>
+                            </div>
+
+                            <div class="pl-1 pr-1">
+                                <dsc-select [options]="selectTiposAcuracia" [(ngModel)]="selectedTipoAcuracia"
+                                    [showFilter]="true"
+                                    (ngModelChange)="updateRelatorio({ value: $event }, 6)"
+                                    placeholder="Acurácia"></dsc-select>
+                            </div>                            <div>
+                            <dsc-button variant="secondary-outlined" label="Limpar filtros" (click)="limparFiltros()"></dsc-button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+
+                        <th pSortableColumn="coContrato">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Nr. Contrato
+                            </div>
+                            <p-sortIcon field="coContrato">
+
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="noEmpresa">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Fornecedor
+                            </div>
+                            <p-sortIcon field="noEmpresa">
+
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="sgFilial">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                               Unidade Demandante
+                            </div>
+                            <p-sortIcon field="sgFilial">
+
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="icAtivo">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                               Status
+                            </div>
+                            <p-sortIcon field="icAtivo">
+
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="dtInicioContrato">
+                            <div class="p-d-flex p-jc-between p-ai-center white-space-break">
+                                Vigência - Início
+
+                            </div>
+                           <p-sortIcon field="dtInicioContrato">
+
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="dtTerminoContrato">
+                            <div class="p-d-flex p-jc-between p-ai-center white-space-break">
+                                Vigência Atual - Fim
+
+                            </div>
+                            <p-sortIcon field="dtTerminoContrato">
+
+                            </p-sortIcon>
+
+                        </th>
+                        <th pSortableColumn="vrGlobal">
+                            <div class="p-d-flex p-jc-between p-ai-center white-space-break">
+                                Valor Global Vigente
+
+                            </div>
+                            <p-sortIcon field="vrGlobal">
+
+                            </p-sortIcon>
+
+                        </th>
+                        <th pSortableColumn="vrExecutado">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                               Valor Executado
+                            </div>
+                            <p-sortIcon field="vrExecutado">
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="percDiasCorridos">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                % Dias Corridos
+                            </div>
+                            <p-sortIcon field="percDiasCorridos">
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="percVrExecutado">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                % Executado Vigência
+                            </div>
+                            <p-sortIcon field="percVrExecutado">
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="percConsumo">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                % Consumo
+                            </div>
+                            <p-sortIcon field="percConsumo">
+                            </p-sortIcon>
+                        </th>
+                        <th pSortableColumn="saldoDisponivel">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Saldo Disponível
+                            </div>
+                            <p-sortIcon field="saldoDisponivel">
+                            </p-sortIcon>
+                        </th>
+                        <th style="padding-left: 65px;" pSortableColumn="pC_ACURACIA">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                Acurácia
+                            </div>
+                            <p-sortIcon field="pC_ACURACIA">
+                            </p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-contrato>
+                    <tr class="p-selectable-row" (click)="navegarInfoContrato(contrato.coContrato,contrato.nuContrato)">
+                        <td>
+                            {{contrato.coContrato}}
+                        </td>
+                        <td style="width: 200px;">
+                            <span class="image-text">{{contrato.noEmpresa}}</span>
+                        </td>
+                        <td>
+                            {{contrato.sgFilial}}
+                        </td>
+                        <td>
+                            {{contrato.icAtivo ? 'Ativo' : 'Encerrado'}}
+                        </td>
+                        <td>
+                            {{contrato.dtInicioContrato | date: 'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                            {{contrato.dtTerminoContrato | date: 'dd/MM/yyyy'}}
+                        </td>
+                        <td>
+                          R$ {{contrato.vrGlobalFormatado | number:'1.2-2':'pt-BR'}}
+                        </td>
+                        <td>
+                          R$ {{contrato.vrExecutadoFormatado | number:'1.2-2':'pt-BR'}}
+                        </td>
+                        <td>
+                            {{contrato.percDiasCorridos | number:'1.2-2':'pt-BR'}}%
+                        </td>
+                        <td>
+                            {{contrato.percVrExecutado | number:'1.2-2':'pt-BR'}}%
+                        </td>
+                        <td>
+                            {{contrato.percConsumo | number:'1.2-2':'pt-BR' }}%
+                        </td>
+                        <td>
+                            R$ {{contrato.saldoDisponivel | number:'1.2-2':'pt-BR'}}
+                        </td>
+                        <td >
+                           <span class="c-acuracia" [ngStyle]="{'background-color' : contrato.dE_COR}">{{contrato.pC_ACURACIA ? contrato.pC_ACURACIA : "0.00" | number:'1.2-2':'pt-BR'}}%</span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="13">Nenhum contrato cadastrado.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <dsc-paginator
+              *ngIf="quantidadeTotal > 0"
+              [length]="quantidadeTotal"
+              [pageSize]="filtroRegistros.pageSize"
+              [pageIndex]="filtroRegistros.pageNumber - 1"
+              [pageSizeOptions]="[10, 20, 50]"
+              (page)="loadPage($event)">
+            </dsc-paginator>
+        </div>
+    </div>
+</div>

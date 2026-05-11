@@ -1,0 +1,63 @@
+<div class="content">
+
+  <dsc-breadcrumb [urls]="[{label: 'Planejamento Orçamentário'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <ng-template #planejamentoOrcamentarioCardTpl>
+    <mat-tab-group>
+      <mat-tab *ngFor="let tabCapexOpex of tabsPlanejamento" label="{{ tabCapexOpex }}" class="subtab">
+        <p-table *ngIf="tabCapexOpex == 'Planejamento Orçamentário'" #dt [value]="planejamentos"
+          tyleClass="p-datatable-customers" [rowHover]="true" sortMode="single">
+          <ng-template pTemplate="header">
+            <tr class="bordered-orange">
+              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Exercício</th>
+              <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Status</th>
+              <th colspan="3" class="header-extra">CAPEX</th>
+              <th colspan="3" class="header-extra">OPEX</th>
+            </tr>
+            <tr class="bordered-orange">
+              <th>Planejado</th>
+              <th>Executado</th>
+              <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%ExL</th>
+              <th>Planejado</th>
+              <th>Executado</th>
+              <th pTooltip="Percentual da Execução do Planejamento" tooltipPosition="top">%ExL</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+            <tr>
+              <td class="text-centered" style="cursor: pointer; color: cornflowerblue;"><a (click)="openModalPlanejamento(item.cO_EXERCICIO)" [attr.id]="'exercicio-'+item.cO_EXERCICIO">
+                {{item.cO_EXERCICIO}}</a>
+              </td>
+              <td class="text-centered">
+                {{item.statuS_PLANEJAMENTO}}
+              </td>
+              <td  class="text-centered">
+                {{item.capeX_PLANEJADO | currency : 'BRL'}}
+              </td>
+              <td class="text-centered">
+                {{item.capeX_EXECUTADO | currency : 'BRL'}}
+              </td>
+              <td class="text-centered">
+                {{item.perC_CAPEX}}
+              </td>
+              <td class="text-centered">
+                {{item.opeX_PLANEJADO | currency : 'BRL'}}
+              </td>
+              <td class="text-centered">
+                {{item.opeX_EXECUTADO | currency : 'BRL'}}
+              </td>
+              <td class="text-centered">
+                {{item.perC_OPEX}}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </mat-tab>
+    </mat-tab-group>
+    <div class="row">
+  <div class="col-2" style="margin-top: 30px; align-items: center;">
+  <dsc-button id="btn-novo-exercicio-list" variant="primary" label="Novo Exercício" (click)="novoExercicio()" *ngIf="perfil == 'Administrador' || perfil == 'Orçamento'"></dsc-button>
+      </div>
+    </div>
+  </ng-template>
+  <dsc-card [data]="{appearance: 'outlined', content: {template: planejamentoOrcamentarioCardTpl}}"></dsc-card>
+</div>

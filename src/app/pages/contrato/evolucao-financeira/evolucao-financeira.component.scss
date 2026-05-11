@@ -1,0 +1,110 @@
+@page {
+    size: A4;
+    margin: 0;
+  }
+  @media print {
+
+      body * {
+        visibility: hidden;
+      }
+      #section-to-print, #section-to-print * {
+        visibility: visible;
+      }
+      #section-to-print {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+    .cl-grafico{
+      max-width: 210mm;
+     }
+
+     highcharts-chart{
+      width: 1050px;
+      //height: 100%;
+
+        display: inline-block;
+    }
+
+     #divPDF{
+       font-size: 11px !important;
+     }
+
+     .no-print{
+       display: none;
+     }
+  }
+
+  .red{
+    background: linear-gradient(0deg, #c0504d 0%, #c0504d 100%);
+    color: white;
+    text-align: center;
+    padding: 5px;
+    border-radius: 3px;
+
+  }
+
+  .green{
+    background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+    color: white;
+    text-align: center;
+    padding: 5px;
+    border-radius: 3px;
+
+  }
+
+  .cl-consumo{
+    margin-bottom: 5px;
+  }
+
+  #area-pdf {
+    overflow-x: hidden;
+  }
+
+  :host ::ng-deep .mat-tab-body-content {
+    overflow: hidden !important;
+}
+
+:host {
+  display: block;
+  overflow-x: hidden;
+}
+
+h3.card-title.text-center b {
+  transform: rotate(90deg);
+  display: inline-block;
+}
+
+.section-select{
+  background-color: white;
+}
+
+.floating-text{
+  position: fixed;
+  top: 50px;
+  left: 56%;
+  transform: translate(-50%, 0);
+  transition: transform 0.1s ease-out;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 10;
+  font-size: 19px;
+}
+
+.floating-rubrica{
+  position: fixed;
+  top: 70px;
+  left: 67%;
+  transform: translate(-50%, 0);
+  transition: transform 0.1s ease-out;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 10;
+  font-size: 19px;
+}
+
+.title-ata{
+  margin-left: 12px;
+  font-weight: bold;
+}
