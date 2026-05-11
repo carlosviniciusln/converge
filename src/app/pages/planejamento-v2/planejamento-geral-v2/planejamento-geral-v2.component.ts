@@ -390,11 +390,19 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
   public async obterdadosDashboard(): Promise<void> {
     try {
+
+      let sgUnidade = "";
+        if (this.filtroRegistros.Ud) {
+          sgUnidade = this.filtroRegistros.Ud;
+        }
+      const params: Record<string, any> = {
+        nuPlanejamento: this.nuPlanejamentoExercicio,
+        sgUnidade: sgUnidade
+      };  
+
       const response = await this.apiService.get<
         ApiResponse<Gcpvw54VisaoDashboardPlanejamentoOrcamentario[]>
-      >(`v1/PlanejamentoOrcamentarioV/dashboard`, {
-        nuPlanejamento: this.nuPlanejamentoExercicio,
-      });
+      >(`v1/PlanejamentoOrcamentarioV/dashboard`, params);
       this.dadosDashboard = response?.data;
 
       if (!response?.succeeded) {
@@ -422,6 +430,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
       }
       case 2: {
         this.filtroRegistros.Ud = valor;
+        await this.obterdadosDashboard();
         break;
       }
       case 3: {
