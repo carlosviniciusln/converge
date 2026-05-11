@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -25,6 +25,7 @@ import Swal from 'sweetalert2';
 export class ModalPlanejamentoV2Component implements OnInit {
 
   @Input() public anoSelecionado: number;
+  @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
   public form: FormGroup;
   public gcpvw049ResumoPlanejamento: Gcpvw049ResumoPlanejamento[] = [];
   public labelButtonsLeft : DomainDTO = {label: null, value: null, message: null, position: null};
@@ -66,6 +67,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
       }
 
       this.gcpvw049ResumoPlanejamento = response.data ?? [];
+      this.atualizarPagina.emit(true);
 
       if(this.gcpvw049ResumoPlanejamento.length){
         this.montarPlanejamentosModal(this.gcpvw049ResumoPlanejamento);
@@ -98,9 +100,9 @@ export class ModalPlanejamentoV2Component implements OnInit {
             switch (ultimoPlanejamento.statusPlanejamento) {
               case "Aberta":
                 this.labelButtonsLeft = {
-                  label: 'Encerrar Programação',
-                  value: 'encerrar',
-                  message: 'Tem certeza que deseja encerrar o planejamento',
+                  label: 'Validar Programação',
+                  value: 'validado',
+                  message: 'Tem certeza que deseja validar o planejamento',
                   position: 'left'
                 };
                 this.labelButtonsRight = {
@@ -113,9 +115,9 @@ export class ModalPlanejamentoV2Component implements OnInit {
 
               case "Criado":
                 this.labelButtonsLeft = {
-                  label: 'Encerrar Programação',
-                  value: 'encerrar',
-                  message: 'Tem certeza que deseja encerrar o planejamento',
+                  label: 'Validar Programação',
+                  value: 'validado',
+                  message: 'Tem certeza que deseja validar o planejamento',
                   position: 'left'
                 };
                 this.labelButtonsRight = {
@@ -126,8 +128,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
                 };
                 break;
 
-
-              case "Encerrado":
+              case "Validado":
                 this.labelButtonsLeft = {
                   label: 'Nova Reprogramação',
                   value: 'nova',
@@ -149,9 +150,9 @@ export class ModalPlanejamentoV2Component implements OnInit {
             switch (ultimoPlanejamento.statusPlanejamento) {
               case "Aberta":
                 this.labelButtonsLeft = {
-                  label: 'Encerrar Reprogramação',
-                  value: 'encerrar',
-                  message: 'Tem certeza que deseja encerrar o planejamento',
+                  label: 'Validar Reprogramação',
+                  value: 'validado',
+                  message: 'Tem certeza que deseja validar o planejamento',
                   position: 'left'
                 };
                 this.labelButtonsRight = {
@@ -164,9 +165,9 @@ export class ModalPlanejamentoV2Component implements OnInit {
 
               case "Criado":
                 this.labelButtonsLeft = {
-                  label: 'Encerrar Reprogramação',
-                  value: 'encerrar',
-                  message: 'Tem certeza que deseja encerrar o planejamento',
+                  label: 'Validar Reprogramação',
+                  value: 'validado',
+                  message: 'Tem certeza que deseja validar o planejamento',
                   position: 'left'
                 };
                 this.labelButtonsRight = {
@@ -177,7 +178,7 @@ export class ModalPlanejamentoV2Component implements OnInit {
                 };
                 break;
 
-              case "Encerrado":
+              case "Validado":
                 this.labelButtonsLeft = {
                   label: 'Nova Reprogramação',
                   value: 'nova',

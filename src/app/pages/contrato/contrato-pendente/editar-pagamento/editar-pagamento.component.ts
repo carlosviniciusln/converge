@@ -9,16 +9,13 @@ import {
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { PagamentoPendenteResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
-import { ApiResponse } from 'src/app/models/generics/api-response';
 import {
   Gcptb006Vigencia,
   Gcptb011Pagamento,
   Gcptb017VigenciaRubrica,
 } from 'src/app/models/generics/contrato-response';
-import { ContratoVigencia } from 'src/app/models/generics/contratoVigencia';
 import { Orcamento } from 'src/app/models/generics/orcamento';
 import { PagamentoTipo } from 'src/app/models/generics/pagamento-tipo';
-import { Rubrica } from 'src/app/models/generics/rubrica';
 import { ApiService } from 'src/app/shared/services/api.service';
 import {
   ActionPolicies,
@@ -26,6 +23,7 @@ import {
   TokenStorageService,
 } from 'src/app/shared/services/token-storage.service';
 import { Endpoints } from 'src/app/models/enums/endpoints';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-editar-pagamento',
@@ -60,7 +58,8 @@ export class EditarPagamentoComponent implements OnInit {
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
-    public token: TokenStorageService
+    public token: TokenStorageService,
+    private router: Router
   ) {
     this.obterPermissoes();
   }
@@ -126,6 +125,14 @@ export class EditarPagamentoComponent implements OnInit {
       this.form.controls['nU_PAGAMENTO'].enable();
       this.form.controls['nU_ATESTE'].enable();
     }
+  }
+
+  irParaDetalhes() {
+    // this.activeModal.dismiss();
+
+    const url = `/#/contrato/detalhe/v/${this.contrato.nU_CONTRATO}`;
+
+    window.open(url, '_blank');
   }
 
   onReset(): void {

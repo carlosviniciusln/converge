@@ -11,6 +11,7 @@
               <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Status</th>
               <th colspan="3" class="header-extra">CAPEX</th>
               <th colspan="3" class="header-extra">OPEX</th>
+              <!-- <th rowspan="2" class="header-extra" style="text-align: center; vertical-align: middle;">Ações</th> -->
             </tr>
             <tr class="bordered-orange">
               <th>Planejado</th>
@@ -27,7 +28,7 @@
                 {{item.coExercicio}}</a>
               </td>
               <td class="text-centered">
-                {{item.statusPlanejamento}}
+                {{item.noStatusExercicio}}
               </td>
               <td  class="text-centered">
                 {{item.capexPlanejado | currency : 'BRL'}}
@@ -47,6 +48,16 @@
               <td class="text-centered">
                 {{item.percOpex}}
               </td>
+               <!-- <td class="text-centered"> -->
+                <!-- <div style="display: flex; flex-direction: row; justify-content: center; gap: 10px">
+                  <button pTooltip="Encerrar" style="color: red" aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <i class=" tim-icons icon-simple-remove"> </i>
+                  </button> -->
+                   <!-- <button pTooltip="Reabrir" style="color: #344675;" sr aria-label="Close" class="close" data-dismiss="modal" type="button">
+                    <i class=" tim-icons icon-refresh-01"> </i>
+                  </button> -->
+                <!-- </div> -->
+              <!-- </td> -->
             </tr>
           </ng-template>
         </p-table>
