@@ -54,4 +54,9 @@ export interface Gcpvw051VisaoContratoPlanejamentoOrcamentario {
   // 🔹 campos apenas do front-end (não vêm da API)
   noStatusOriginal?: string;
   stSelecionado?: boolean;
+
+  vrGegat?: number | null;
+  vrGeorc?: number | null;
+  vrDiferenca?: number | null;
+  PcDiferenca?: number | null;
 }

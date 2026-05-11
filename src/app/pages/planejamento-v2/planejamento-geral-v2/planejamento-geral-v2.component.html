@@ -197,10 +197,10 @@
                   </div>
                   <div
                     class="pl-1 pr-1 me-3"
-                     *ngIf="
-                          selectStatusPlanejamentoCompleto?.length > 0 &&
-                         podeCadastrar()
-                        "
+                    *ngIf="
+                      selectStatusPlanejamentoCompleto?.length > 0 &&
+                      podeCadastrar()
+                    "
                   >
                     <button
                       type="button"
@@ -211,8 +211,6 @@
                       Salvar status
                     </button>
                   </div>
-
-
                 </div>
               </ng-template>
               <ng-template pTemplate="header">
@@ -263,8 +261,22 @@
                       </div>
                     </ng-container>
                   </th>
+                    <th>
+                    <div class="p-d-flex p-jc-between text-center">Valor GEGAT</div>
+                  </th>
+
+                    <th>
+                    <div class="p-d-flex p-jc-between text-center">Valor GESTOR</div>
+                  </th>
+
+                         <th>
+                    <div class="p-d-flex p-jc-between text-center"> DIFERENCA GESTOR-GEGAT</div>
+                  </th>
                   <th>
-                    <div class="p-d-flex p-jc-between text-center">Valor</div>
+                    <div class="p-d-flex p-jc-between text-center">%DIF</div>
+                  </th>
+                  <th>
+                    <div class="p-d-flex p-jc-between text-center">Valor GEORC</div>
                   </th>
 
                 </tr>
@@ -328,16 +340,38 @@
                       <label>{{ planejamento.noStatus }}</label>
                     </div>
                   </td>
-                  <td style="text-align: right">
-                    <span class="p-column-title">Valor</span>
+
+                       <td style="text-align: right">
+                    <span class="p-column-title"></span>
+                    {{ planejamento.vrGegat | currency: "BRL" }}
+                  </td>
+
+                       <td style="text-align: right">
+                    <span class="p-column-title"></span>
                     {{ planejamento.vrPlanejamento | currency: "BRL" }}
                   </td>
+
+                       <td style="text-align: right">
+                    <span class="p-column-title"></span>
+                    {{ planejamento.vrDiferenca | currency: "BRL" }}
+                  </td>
+
+                       <td style="text-align: right">
+                    <span class="p-column-title"></span>
+                    {{ planejamento.pcDiferenca | currency: "BRL" }}
+                  </td>
+                  <td style="text-align: right">
+                    <span class="p-column-title"></span>
+                    {{ planejamento.vrGeorc | currency: "BRL" }}
+                  </td>
+
+
 
                 </tr>
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <td colspan="12">Nenhum planejamento cadastrado.</td>
+                  <td colspan="11">Nenhum planejamento cadastrado.</td>
                 </tr>
               </ng-template>
             </p-table>
