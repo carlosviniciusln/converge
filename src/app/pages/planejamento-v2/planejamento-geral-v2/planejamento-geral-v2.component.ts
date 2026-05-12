@@ -67,6 +67,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
   perfilOperacional: boolean = false;
   perfilTorre: boolean = false;
   perfilUnidade: string = '';
+  perfilAceitos: boolean = false;
   isPerfilPrivilegiado: boolean = false;
   selecionarTodos: boolean = false;
   permissions: ActionPolicies;
@@ -160,6 +161,8 @@ export class PlanejamentoGeralV2Component implements OnInit {
     this.perfilTorre = perfil === PerfisEnum.TorresGEGAT;
     this.perfilOperacional = perfil === PerfisEnum.GestorOperacional;
 
+
+    this.perfilAceitos = this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
 
     const podeAlterarContexto = this.perfilOrcamento || this.perfilAdm || this.perfilTorre;
 
@@ -466,7 +469,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
       const params: Record<string, any> = {
         nuPlanejamento: this.nuPlanejamentoExercicio,
         sgUnidade: sgUnidade
-      };  
+      };
 
       const response = await this.apiService.get<
         ApiResponse<Gcpvw54VisaoDashboardPlanejamentoOrcamentario[]>

@@ -246,10 +246,12 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     const isAdministrador = perfil === PerfisEnum.Administrador;
     const isOrcamento = perfil === PerfisEnum.Orcamento;
     const isTorresGEGAT = perfil === PerfisEnum.TorresGEGAT;
+    const isGestorOperacional = perfil === PerfisEnum.GestorOperacional;
 
-    const podeAlterarContexto = mesmaUnidade || isOrcamento || isAdministrador || isTorresGEGAT;
 
-    if (!podeAlterarContexto) {
+    const perfisAceitos = isOrcamento || isAdministrador || isTorresGEGAT || (isGestorOperacional && mesmaUnidade);
+
+    if (!perfisAceitos) {
       this.isPerfilPrivilegiado = false;
       return;
     }
