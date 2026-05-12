@@ -23,7 +23,7 @@
           <span style="color: green">{{ statusExercio }}</span>
         </p>
 
-        <div style="margin: 14px">
+        <div style="margin: 14px;">
           <table
             border="1"
             width="100%"
@@ -270,7 +270,7 @@
                   </th>
 
                          <th>
-                    <div class="p-d-flex p-jc-between text-center"> DIFERENÇA GESTOR-GEGAT</div>
+                    <div class="p-d-flex p-jc-between text-center"> Diferença GESTOR-GEGAT</div>
                   </th>
                   <th>
                     <div class="p-d-flex p-jc-between text-center">%DIF</div>
@@ -327,7 +327,7 @@
                       <ng-container
                         *ngIf="
                           (selectStatusPlanejamentoCompleto?.length > 0 &&
-                            planejamento.coFilial == perfilUnidade && statusExercio !== 'Validado' && statusExercio !== 'Cancelado') || this.isPerfilPrivilegiado
+                            planejamento.coFilial == perfilUnidade && perfilAceitos && statusExercio !== 'Validado' && statusExercio !== 'Cancelado') || this.isPerfilPrivilegiado
                         "
                       >
                         <p-checkbox
@@ -341,28 +341,28 @@
                     </div>
                   </td>
 
-                       <td style="text-align: right">
+                       <td style="text-align: left">
                     <span class="p-column-title"></span>
-                    {{ planejamento.vrGegat | currency: "BRL" }}
+                    {{ planejamento.vrGegat || 0 | currency: "BRL" }}
                   </td>
 
-                       <td style="text-align: right">
+                       <td style="text-align: left">
                     <span class="p-column-title"></span>
                     {{ planejamento.vrPlanejamento | currency: "BRL" }}
                   </td>
 
-                       <td style="text-align: right">
+                       <td style="text-align: left">
                     <span class="p-column-title"></span>
-                    {{ planejamento.vrDiferenca | currency: "BRL" }}
+                    {{ planejamento.vrDiferenca || 0 | currency: "BRL" }}
                   </td>
 
-                       <td style="text-align: right">
+                       <td style="text-align: left">
                     <span class="p-column-title"></span>
-                    {{ planejamento.pcDiferenca | number: "1.2-2" }}%
+                    {{ planejamento.pcDiferenca || 0 | number: "1.2-2" }}%
                   </td>
-                  <td style="text-align: right">
+                  <td style="text-align: left">
                     <span class="p-column-title"></span>
-                    {{ planejamento.vrGeorc | currency: "BRL" }}
+                    {{ planejamento.vrGeorc || 0 | currency: "BRL" }}
                   </td>
 
 

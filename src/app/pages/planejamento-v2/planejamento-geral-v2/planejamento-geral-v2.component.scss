@@ -1,3 +1,10 @@
+:host ::ng-deep .mat-mdc-tab-body-content {
+    height: 100%;
+    overflow: hidden !important;
+}
+:host ::ng-deep .p-datatable>.p-datatable-wrapper {
+    overflow: hidden !important;
+}
 :host ::ng-deep .c-dropdown-status{
   color: red;
   display: flex;
