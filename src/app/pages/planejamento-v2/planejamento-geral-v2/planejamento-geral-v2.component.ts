@@ -22,6 +22,7 @@ import Swal from 'sweetalert2';
 import { PlanejamentoCadastroV2Component } from '../planejamento-cadastro-v2/planejamento-cadastro-v2.component';
 import { Gcpvw051VisaoContratoPlanejamentoOrcamentario } from 'src/app/models/generics/Gcpvw051VisaoContratoPlanejamentoOrcamentario';
 import { Gcptb051AtualizarStatusEmLoteRequest } from 'src/app/models/request/Gcptb051AtualizarStatusEmLoteRequest';
+import { IUser } from 'src/app/models/DTOs/IUser';
 
 @Component({
   selector: 'app-planejamento-geral-v2',
@@ -57,13 +58,16 @@ export class PlanejamentoGeralV2Component implements OnInit {
   public statusExercio: string;
   public nuPlanejamentoExercicio: number;
 
+  public dadosUsuarioLogado : IUser;
   currentUser: any;
-  currentProfile: PerfisEnum;
+  // currentProfile: PerfisEnum;
+  public currentProfile: IUser;
   perfilOrcamento: boolean = false;
   perfilAdm: boolean = false;
   perfilOperacional: boolean = false;
   perfilTorre: boolean = false;
   perfilUnidade: string = '';
+  perfilAceitos: boolean = false;
   isPerfilPrivilegiado: boolean = false;
   selecionarTodos: boolean = false;
   permissions: ActionPolicies;
@@ -77,7 +81,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
   ) {
-    this.obterPermissoes();
+
   }
 
   async ngOnInit(): Promise<void> {
@@ -88,6 +92,8 @@ export class PlanejamentoGeralV2Component implements OnInit {
       this.statusExercio = params['statusPlanejamento'] ?? '';
       this.nuPlanejamentoExercicio = Number(params['nuPlanejamento']) || 0;
     });
+
+     this.obterPermissoes();
 
     this.filtroRegistros = {
       paginaAtual: 1,
@@ -102,6 +108,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
       {
         label: 'Novo Registro',
         icon: 'pi pi-plus',
+        disabled: !this.podeCadastrar(),
         command: () => {
           this.openModalAddPlanejamento('adicionar', true, true, this.nuPlanejamentoExercicio, this.anoExercicio);
         },
@@ -140,40 +147,104 @@ export class PlanejamentoGeralV2Component implements OnInit {
     ];
   }
 
-  obterPermissoes() {
-    this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
-    this.currentProfile = this.token.getUserPerfil();
-    if (this.currentProfile == 'Administrador') this.perfilAdm = true;
-    if (this.currentProfile == 'Orçamento') this.perfilOrcamento = true;
-    if (this.currentProfile == 'Gestor Operacional')
-      this.perfilOperacional = true;
-    if (this.currentProfile == 'Torres GEGAT') this.perfilTorre = true;
-
-    if (this.statusExercio == 'Cancelado') {
-      //nenhum perfil pode alterar
-      this.isPerfilPrivilegiado = false;
-    } else if (this.statusExercio == 'Encerrado' && !this.perfilOrcamento) {
-      //encerrado so perfil orçamento pode alterar
-      this.isPerfilPrivilegiado = false;
-    } else {
-      this.isPerfilPrivilegiado = true;
-    }
-
+  obterPermissoes(){
+    this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
     this.currentUser = this.token.getUser();
     this.perfilUnidade = this.currentUser?.coUnidade;
+
+    const perfil = this.currentProfile.noPerfil;
+
+    console.log(perfil, 'Perfil do usuário');
+
+    this.perfilAdm = perfil === PerfisEnum.Administrador;
+    this.perfilOrcamento = perfil === PerfisEnum.Orcamento;
+    this.perfilTorre = perfil === PerfisEnum.TorresGEGAT;
+    this.perfilOperacional = perfil === PerfisEnum.GestorOperacional;
+
+
+    this.perfilAceitos = this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
+
+    const podeAlterarContexto = this.perfilOrcamento || this.perfilAdm || this.perfilTorre;
+
+    if (!podeAlterarContexto) {
+      this.isPerfilPrivilegiado = false;
+      console.log('Usuário sem perfil privilegiado, acesso restrito.');
+      return;
+    }
+
+    if (this.statusExercio === "Cancelado") {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    if (this.statusExercio === "Validado"  && !this.perfilAdm) {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    this.isPerfilPrivilegiado = true;
+
+
+
+
+  }
+
+  // obterPermissoes() {
+  //   this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
+  //   this.currentProfile = this.token.getUserPerfil();
+  //   if (this.currentProfile == 'Administrador') this.perfilAdm = true;
+  //   if (this.currentProfile == 'Orçamento') this.perfilOrcamento = true;
+  //   if (this.currentProfile == 'Gestor Operacional')
+  //     this.perfilOperacional = true;
+  //   if (this.currentProfile == 'Torres GEGAT') this.perfilTorre = true;
+
+  //   if (this.statusExercio == 'Cancelado') {
+  //     //nenhum perfil pode alterar
+  //     this.isPerfilPrivilegiado = false;
+  //   } else if (this.statusExercio == 'Encerrado' && !this.perfilOrcamento) {
+  //     //encerrado so perfil orçamento pode alterar
+  //     this.isPerfilPrivilegiado = false;
+  //   } else {
+  //     this.isPerfilPrivilegiado = true;
+  //   }
+
+  //   this.currentUser = this.token.getUser();
+  //   this.perfilUnidade = this.currentUser?.coUnidade;
+  // }
+
+
+  podeCadastrar(): boolean {
+    if (this.statusExercio === 'Cancelado') return false;
+    if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
+
+    return this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
   }
 
   async obterStatusPlanejamento(): Promise<void> {
     const response = await this.apiService.get<
       ApiResponse<PlanejamentoStatusResponse[]>
-    >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
+    >(`v1/PlanejamentoOrcamentarioV/status-planejamento`);
     this.listaStatusPlanejamento = response.data;
-    this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.map(
+
+    if(this.perfilOperacional || this.perfilTorre){
+      this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.filter(s => s.nuPlanejamentoStatus !== 5).map(
       (status) => ({
         label: status.noPlanejamentoStatus,
         value: status.nuPlanejamentoStatus,
       }),
     );
+    }
+
+    else{
+
+      this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.map(
+      (status) => ({
+        label: status.noPlanejamentoStatus,
+        value: status.nuPlanejamentoStatus,
+      }),
+    );
+    }
+
   }
 
   public async onSalvarMudancasStatus(): Promise<void> {
@@ -390,11 +461,19 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
   public async obterdadosDashboard(): Promise<void> {
     try {
+
+      let sgUnidade = "";
+        if (this.filtroRegistros.Ud) {
+          sgUnidade = this.filtroRegistros.Ud;
+        }
+      const params: Record<string, any> = {
+        nuPlanejamento: this.nuPlanejamentoExercicio,
+        sgUnidade: sgUnidade
+      };
+
       const response = await this.apiService.get<
         ApiResponse<Gcpvw54VisaoDashboardPlanejamentoOrcamentario[]>
-      >(`v1/PlanejamentoOrcamentarioV/dashboard`, {
-        nuPlanejamento: this.nuPlanejamentoExercicio,
-      });
+      >(`v1/PlanejamentoOrcamentarioV/dashboard`, params);
       this.dadosDashboard = response?.data;
 
       if (!response?.succeeded) {
@@ -422,6 +501,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
       }
       case 2: {
         this.filtroRegistros.Ud = valor;
+        await this.obterdadosDashboard();
         break;
       }
       case 3: {

@@ -170,7 +170,6 @@ export class PlanejamentoCadastroV2Component implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.loading = true;
-    this.obterPermissoes();
     await this.definirPageAction();
     await this.formulario();
     await this.obterDadosDominio();
@@ -188,6 +187,8 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     if(this.tipoModal != 'adicionar'){
      await this.obterPlanejamentoItemHistorico();
     }
+
+     this.obterPermissoes();
 
   }
 
@@ -234,21 +235,43 @@ export class PlanejamentoCadastroV2Component implements OnInit {
    */
 
   obterPermissoes() {
+
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
     this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
-    if (
-      this.planejamento?.coFilial == this.currentProfile.coUnidade ||
-      this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
-      this.currentProfile.noPerfil == PerfisEnum.Administrador
-    ){
-      if(this.statusExercicio == "Cancelado"){ //nenhum perfil pode alterar
-        this.isPerfilPrivilegiado = false;
-      } else if (this.statusExercicio == "Encerrado" && this.currentProfile.noPerfil != PerfisEnum.Orcamento){ //encerrado apena so perfil orçamento pode alterar
-        this.isPerfilPrivilegiado = false;
-      } else {
-        this.isPerfilPrivilegiado = true;
-      }
+
+    const perfil = this.currentProfile.noPerfil;
+    const mesmaUnidade = this.planejamento?.coFilial === this.currentProfile.coUnidade;
+
+
+    const isAdministrador = perfil === PerfisEnum.Administrador;
+    const isOrcamento = perfil === PerfisEnum.Orcamento;
+    const isTorresGEGAT = perfil === PerfisEnum.TorresGEGAT;
+    const isGestorOperacional = perfil === PerfisEnum.GestorOperacional;
+
+
+    const perfisAceitos = isOrcamento || isAdministrador || isTorresGEGAT || (isGestorOperacional && mesmaUnidade);
+
+    if (!perfisAceitos) {
+      this.isPerfilPrivilegiado = false;
+      return;
     }
+
+    if (this.statusExercicio === "Cancelado") {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    if (this.statusExercicio === "Validado"  && !isAdministrador) {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    if(this.planejamento.nuStatusPlanejamentoItem == 7 && !isAdministrador && !isOrcamento){
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    this.isPerfilPrivilegiado = true;
   }
 
   definirPageAction() {
@@ -711,19 +734,19 @@ private planoAquisicaoObrigatorio(): void {
   this.tornarObrigatorio('vrGlobal');
   this.tornarObrigatorio('dtPrevisaoSiclg');
   this.tornarObrigatorio('dePrazoVigencia');
-  this.tornarObrigatorio('nuModalidade');
+  // this.tornarObrigatorio('nuModalidade');
 }
 
 
   private limparValidatorsTipoPlanoSemReset(): void {
   this.form.get('vrGlobal')?.clearValidators();
   this.form.get('dePrazoVigencia')?.clearValidators();
-  this.form.get('nuModalidade')?.clearValidators();
+  // this.form.get('nuModalidade')?.clearValidators();
   this.form.get('dtPrevisaoSiclg')?.clearValidators();
 
   this.form.get('vrGlobal')?.updateValueAndValidity();
   this.form.get('dePrazoVigencia')?.updateValueAndValidity();
-  this.form.get('nuModalidade')?.updateValueAndValidity();
+  // this.form.get('nuModalidade')?.updateValueAndValidity();
   this.form.get('dtPrevisaoSiclg')?.updateValueAndValidity();
 }
 
@@ -927,13 +950,6 @@ async excluirPrevisaoDesembolso(i: number) {
     });
   }
 
-  public get visibleStatusList(): PlanejamentoStatusResponse[] {
-
-    if (!this.dadosDeDominio.listaStatusPlanejamento?.length) return [];
-
-      return this.dadosDeDominio.listaStatusPlanejamento;
-
-  }
 
   public async obterPlanejamentoItemHistorico(): Promise<void> {
     try {
