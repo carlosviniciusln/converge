@@ -139,6 +139,16 @@ export class ModalPlanejamentoV2Component implements OnInit {
                 this.labelButtonsRight = null;
                 break;
 
+               case "Cancelado":
+                this.labelButtonsLeft = {
+                  label: 'Nova Programação',
+                  value: 'nova',
+                  message: 'Tem certeza que deseja gerar uma nova reprogramação do planejamento',
+                  position: 'left'
+                };
+                this.labelButtonsRight = null;
+                break;
+
               default:
                 this.labelButtonsLeft = null;
                 this.labelButtonsRight = null;
