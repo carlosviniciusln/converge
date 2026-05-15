@@ -886,23 +886,10 @@
           <ng-template pTemplate="marker" let-event>
             <span
               class="custom-marker p-p-2 p-shadow-2"
-              [ngStyle]="{
-                'background-color':
-                  event.tpOperacao === 'INCLUSAO'
-                    ? '#4CAF50'
-                    : event.tpOperacao === 'ALTERACAO'
-                      ? '#2196F3'
-                      : '#F44336',
-              }"
+              [ngStyle]="{ 'background-color': getMarkerColor(event) }"
             >
               <i
-                [ngClass]="
-                  event.tpOperacao === 'INCLUSAO'
-                    ? 'pi pi-plus'
-                    : event.tpOperacao === 'ALTERACAO'
-                      ? 'pi pi-pencil'
-                      : 'pi pi-trash'
-                "
+                [ngClass]="getMarkerIcon(event)"
                 style="color: white"
               ></i>
             </span>

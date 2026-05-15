@@ -198,6 +198,20 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.dialogVisible = true;
   }
 
+  getMarkerColor(event: any): string {
+    if (event.tpOperacao === 'INCLUSAO') return '#4CAF50';
+    if (event.tpOperacao === 'ALTERACAO' && event.listaDiffs?.some((d: any) => d.depois === 'Validado')) return '#4CAF50';
+    if (event.tpOperacao === 'ALTERACAO') return '#2196F3';
+    return '#F44336';
+  }
+
+  getMarkerIcon(event: any): string {
+    if (event.tpOperacao === 'INCLUSAO') return 'pi pi-plus';
+    if (event.tpOperacao === 'ALTERACAO' && event.listaDiffs?.some((d: any) => d.depois === 'Validado')) return 'pi pi-check';
+    if (event.tpOperacao === 'ALTERACAO') return 'pi pi-pencil';
+    return 'pi pi-trash';
+  }
+
   onTabChange(event) {
     this.selectTab = event.index;
   }
