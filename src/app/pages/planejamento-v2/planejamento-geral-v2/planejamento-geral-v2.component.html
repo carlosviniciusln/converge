@@ -141,6 +141,35 @@
 
                   <div class="pl-1 pr-1">
                     <p-dropdown
+                      [options]="planejamentos.listaDiretoria"
+                      [filter]="true"
+                      (onChange)="updateRelatorio($event.value, 7)"
+                      [showClear]="true"
+                      placeholder="Diretoria"
+                    ></p-dropdown>
+                  </div>
+                  <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="planejamentos.listaSuperintendencia"
+                      [filter]="true"
+                      (onChange)="updateRelatorio($event.value, 8)"
+                      [showClear]="true"
+                      placeholder="Superintendência"
+                    ></p-dropdown>
+                  </div>
+
+                   <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="planejamentos.listaUnidadeDemandante"
+                      [filter]="true"
+                      (onChange)="updateRelatorio($event.value, 2)"
+                      [showClear]="true"
+                      placeholder="GN"
+                    ></p-dropdown>
+                  </div>
+
+                  <div class="pl-1 pr-1">
+                    <p-dropdown
                       [options]="planejamentos.listaNuOrc"
                       [filter]="true"
                       (onChange)="updateRelatorio($event.value, 1)"
@@ -148,15 +177,7 @@
                       placeholder="NUORC"
                     ></p-dropdown>
                   </div>
-                  <div class="pl-1 pr-1">
-                    <p-dropdown
-                      [options]="planejamentos.listaUnidadeDemandante"
-                      [filter]="true"
-                      (onChange)="updateRelatorio($event.value, 2)"
-                      [showClear]="true"
-                      placeholder="UD"
-                    ></p-dropdown>
-                  </div>
+                 
                   <div class="pl-1 pr-1">
                     <p-dropdown
                       [options]="planejamentos.listaContrato"
@@ -195,6 +216,7 @@
                       placeholder="Objeto"
                     ></p-dropdown>
                   </div>
+                  
                   <div
                     class="pl-1 pr-1 me-3"
                     *ngIf="

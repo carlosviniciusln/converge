@@ -50,6 +50,8 @@ export class PlanejamentoGeralV2Component implements OnInit {
     objeto: '',
     nuPlanejamento: 0,
     tipoPlanejamento: '',
+    sgDiretoria: null,
+    sgSuperintendencia: null,
   };
 
   public isUltimaReprogramacao: boolean = false;
@@ -462,13 +464,11 @@ export class PlanejamentoGeralV2Component implements OnInit {
   public async obterdadosDashboard(): Promise<void> {
     try {
 
-      let sgUnidade = "";
-        if (this.filtroRegistros.Ud) {
-          sgUnidade = this.filtroRegistros.Ud;
-        }
       const params: Record<string, any> = {
         nuPlanejamento: this.nuPlanejamentoExercicio,
-        sgUnidade: sgUnidade
+        sgUnidade: this.filtroRegistros.Ud ?? '',
+        sgDiretoria: this.filtroRegistros.sgDiretoria ?? '',
+        sgSuperintendencia: this.filtroRegistros.sgSuperintendencia ?? '',
       };
 
       const response = await this.apiService.get<
@@ -520,6 +520,16 @@ export class PlanejamentoGeralV2Component implements OnInit {
         this.filtroRegistros.objeto = valor;
         break;
       }
+      case 7: {
+        this.filtroRegistros.sgDiretoria = valor;
+        await this.obterdadosDashboard();
+        break;
+      }
+      case 8: {
+        this.filtroRegistros.sgSuperintendencia = valor;
+        await this.obterdadosDashboard();
+        break;
+      }
     }
 
     this.obterPlanejamentosOrc();
@@ -566,6 +576,8 @@ export class PlanejamentoGeralV2Component implements OnInit {
       this.planejamentos.listaObjeto = response?.data?.listaObjeto ?? [];
       this.planejamentos.listaStatus = response?.data?.listaStatus ?? [];
       this.planejamentos.listaNuOrc = response?.data?.listaNuOrc ?? [];
+      this.planejamentos.listaDiretoria = response?.data?.listaDiretoria ?? [];
+      this.planejamentos.listaSuperintendencia = response?.data?.listaSuperintendencia ?? [];
       this.planejamentos.totalRegistros = response.data.totalRegistros;
       this.loading = false;
       this.planejamentos.contratos.forEach((p) => {

@@ -21,5 +21,7 @@ export class Gcpvw051VisaoContratosPlanejamentoOrcamentarioResponse {
     // listaDigital: string[];
     listaObjeto: string[];
     listaStatus: string[];
+    listaDiretoria: string[];
+    listaSuperintendencia: string[];
     totalRegistros: number;
 }
