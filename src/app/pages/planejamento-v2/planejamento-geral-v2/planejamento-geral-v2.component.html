@@ -8,9 +8,7 @@
     >
       Voltar
     </button>
-    <p class="card-title date-info">
-      <b>Atualizado em: 09/06/2025 18:29</b>
-    </p>
+
   </div>
 
   <div class="card">
@@ -291,12 +289,12 @@
                     <div class="p-d-flex p-jc-between text-center">Valor GESTOR</div>
                   </th>
 
-                         <th>
+                  <!-- <th>
                     <div class="p-d-flex p-jc-between text-center"> Diferença GESTOR-GEGAT</div>
                   </th>
                   <th>
                     <div class="p-d-flex p-jc-between text-center">%DIF</div>
-                  </th>
+                  </th> -->
                   <th>
                     <div class="p-d-flex p-jc-between text-center">Valor GEORC</div>
                   </th>
@@ -362,29 +360,28 @@
                       <label>{{ planejamento.noStatus }}</label>
                     </div>
                   </td>
-
-                       <td style="text-align: left">
+                  <td style="text-align: left">
                     <span class="p-column-title"></span>
-                    {{ planejamento.vrGegat || 0 | currency: "BRL" }}
+                    {{ planejamento.vrGegat | currency: "BRL" }}
                   </td>
 
-                       <td style="text-align: left">
+                  <td style="text-align: center">
                     <span class="p-column-title"></span>
-                    {{ planejamento.vrPlanejamento | currency: "BRL" }}
+                    {{ (planejamento.vrPlanejamento == null || planejamento.vrPlanejamento === 0) ? "-" : (planejamento.vrPlanejamento | currency: "BRL") }}
                   </td>
 
-                       <td style="text-align: left">
+                  <!-- <td style="text-align: left">
                     <span class="p-column-title"></span>
                     {{ planejamento.vrDiferenca || 0 | currency: "BRL" }}
                   </td>
 
-                       <td style="text-align: left">
-                    <span class="p-column-title"></span>
-                    {{ planejamento.pcDiferenca || 0 | number: "1.2-2" }}%
-                  </td>
                   <td style="text-align: left">
                     <span class="p-column-title"></span>
-                    {{ planejamento.vrGeorc || 0 | currency: "BRL" }}
+                    {{ planejamento.pcDiferenca || 0 | number: "1.2-2" }}%
+                  </td> -->
+                  <td style="text-align: center">
+                    <span class="p-column-title"></span>
+                    {{ (planejamento.vrGeorc == null || planejamento.vrGeorc === 0) ? "-" : (planejamento.vrGeorc | currency: "BRL" )}}
                   </td>
 
 
@@ -393,7 +390,7 @@
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <td colspan="11">Nenhum planejamento cadastrado.</td>
+                  <td colspan="9">Nenhum planejamento cadastrado.</td>
                 </tr>
               </ng-template>
             </p-table>

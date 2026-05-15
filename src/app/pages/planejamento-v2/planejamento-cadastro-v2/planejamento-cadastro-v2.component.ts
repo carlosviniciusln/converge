@@ -111,6 +111,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   public currentPageAction: PageAction;
 
   public currentProfile: IUser;
+  public perfilAtual: string = '';
   public isPerfilPrivilegiado = false;
   rubricasSelecionadas: string[] = [];
   submitted = false;
@@ -240,6 +241,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
 
     const perfil = this.currentProfile.noPerfil;
+    this.perfilAtual = perfil;
     const mesmaUnidade = this.planejamento?.coFilial === this.currentProfile.coUnidade;
 
 
@@ -266,7 +268,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       return;
     }
 
-    if(this.planejamento.nuStatusPlanejamentoItem == 7 && !isAdministrador && !isOrcamento){
+    if(this.planejamento.nuStatusPlanejamentoItem == 3 && !isAdministrador && !isOrcamento){
       this.isPerfilPrivilegiado = false;
       return;
     }
@@ -381,18 +383,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     });
   }
 
-//   private tornarObrigatorio(controlName: string) {
-//   const control = this.form.get(controlName);
-//   control?.setValidators([Validators.required]);
-//   control?.updateValueAndValidity();
-// }
 
-// private removerObrigatorio(controlName: string) {
-//   const control = this.form.get(controlName);
-//   control?.clearValidators();
-//   control?.reset();
-//   control?.updateValueAndValidity();
-// }
 
   formularioLivre() {
     if (!this.form) return;
@@ -813,8 +804,6 @@ async excluirPrevisaoDesembolso(i: number) {
 
   const grupo = this.previsoesDesembolso.at(i) as FormGroup;
 
-  console.log(grupo.value, "VALORES DO GRUPO");
-
   const nuPlanejamentoItem = grupo.get('nuPlanejamentoItem')?.value;
   const nuPrevisaoDesembolso = grupo.get('nuPrevisaoDesembolso')?.value;
 
@@ -853,8 +842,20 @@ async excluirPrevisaoDesembolso(i: number) {
         return;
       }
 
+      console.log('Dados de domínio obtidos:', this.planejamento);
 
-      this.dadosDeDominio = response.data as Gcpvw055DetalharPlanejamentoItensResponse;
+
+      const dadosDeDominio = response.data as Gcpvw055DetalharPlanejamentoItensResponse;
+
+      this.dadosDeDominio =  {
+        ...dadosDeDominio,
+        listaStatusPlanejamento: this.planejamento.nuStatusPlanejamento === 3
+          ? dadosDeDominio.listaStatusPlanejamento
+          : dadosDeDominio.listaStatusPlanejamento.filter(
+              s => s.noPlanejamentoStatus !== 'Validado'
+            )
+
+            }
       this.tratarStatusPlanejamento()
 
     } catch (error) {

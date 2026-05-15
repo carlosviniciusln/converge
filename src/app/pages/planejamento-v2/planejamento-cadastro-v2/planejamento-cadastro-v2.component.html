@@ -165,6 +165,7 @@
                   formControlName="nuPlanejamentoStatus"
                   [options]="dadosDeDominio.listaStatusPlanejamento"
                   optionLabel="noPlanejamentoStatus"
+                  [readonly]="(perfilAtual !== 'Orçamento' && perfilAtual !== 'Administrador') && (form.get('nuPlanejamentoStatus')?.value !== 5)"
                   optionValue="nuPlanejamentoStatus"
                   placeholder="Selecione Status"
                   [filter]="true"
@@ -932,7 +933,7 @@
                   *ngIf="
                     event.listaDiffs &&
                     event.tpOperacao != 'INCLUSAO' &&
-                    event.tpOperacao != 'EXCLUSAO'
+                    event.tpOperacao != 'EXCLUSAO' && event.listaDiffs.length != 0
                   "
                   class="mt-2"
                 >
