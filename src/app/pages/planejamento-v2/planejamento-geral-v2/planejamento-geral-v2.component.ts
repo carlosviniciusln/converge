@@ -191,30 +191,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
   }
 
-  // obterPermissoes() {
-  //   this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
-  //   this.currentProfile = this.token.getUserPerfil();
-  //   if (this.currentProfile == 'Administrador') this.perfilAdm = true;
-  //   if (this.currentProfile == 'Orçamento') this.perfilOrcamento = true;
-  //   if (this.currentProfile == 'Gestor Operacional')
-  //     this.perfilOperacional = true;
-  //   if (this.currentProfile == 'Torres GEGAT') this.perfilTorre = true;
-
-  //   if (this.statusExercio == 'Cancelado') {
-  //     //nenhum perfil pode alterar
-  //     this.isPerfilPrivilegiado = false;
-  //   } else if (this.statusExercio == 'Encerrado' && !this.perfilOrcamento) {
-  //     //encerrado so perfil orçamento pode alterar
-  //     this.isPerfilPrivilegiado = false;
-  //   } else {
-  //     this.isPerfilPrivilegiado = true;
-  //   }
-
-  //   this.currentUser = this.token.getUser();
-  //   this.perfilUnidade = this.currentUser?.coUnidade;
-  // }
-
-
   podeCadastrar(): boolean {
     if (this.statusExercio === 'Cancelado') return false;
     if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
@@ -229,7 +205,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
     this.listaStatusPlanejamento = response.data;
 
     if(this.perfilOperacional || this.perfilTorre){
-      this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.filter(s => s.nuPlanejamentoStatus !== 5).map(
+      this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.filter(s => s.nuPlanejamentoStatus !== 5 && s.nuPlanejamentoStatus !== 3).map(
       (status) => ({
         label: status.noPlanejamentoStatus,
         value: status.nuPlanejamentoStatus,
@@ -306,9 +282,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
 
       try {
-
-          console.log(statusNovo, 'Resposta da alteração de status');
-
 
        const response = await this.apiService.put<ApiResponse<any>>(
           `v1/PlanejamentoOrcamentarioV/alterar-status-lote-planejamento-item`,
