@@ -1032,7 +1032,7 @@ async excluirPrevisaoDesembolso(i: number) {
       return;
     }
 
-    if (this.previsoesDesembolso.controls.some(ctrl => (this.parseDecimal((ctrl as FormGroup).getRawValue().vrTotalRubrica) ?? 0) <= 0)) {
+    if (this.temPrevisaoZerada()) {
       await Swal.fire({
         title: 'Atenção!',
         text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
@@ -1056,7 +1056,7 @@ async excluirPrevisaoDesembolso(i: number) {
       return;
     }
 
-    if (this.previsoesDesembolso.controls.some(ctrl => (this.parseDecimal((ctrl as FormGroup).getRawValue().vrTotalRubrica) ?? 0) <= 0)) {
+    if (this.temPrevisaoZerada()) {
       await Swal.fire({
         title: 'Atenção!',
         text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
@@ -1073,6 +1073,17 @@ async excluirPrevisaoDesembolso(i: number) {
         this.activeModal.dismiss('Cross click');
         break;
     }
+  }
+
+  private temPrevisaoZerada(): boolean {
+    for (let i = 0; i < this.previsoesDesembolso.length; i++) {
+      const raw = (this.previsoesDesembolso.at(i) as FormGroup).getRawValue();
+      const total = Number(raw.vrTotalRubrica);
+      if (isNaN(total) || total <= 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /* nova conversao  - inicio */
@@ -1157,6 +1168,16 @@ async excluirPrevisaoDesembolso(i: number) {
         return;
       }
 
+      if (this.temPrevisaoZerada()) {
+        await Swal.fire({
+          title: 'Atenção!',
+          text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+
       const previsoes = obj.previsoesDesembolso;
 
       if (previsoes.length > 0) {
@@ -1233,6 +1254,17 @@ async excluirPrevisaoDesembolso(i: number) {
         await Swal.fire({
           title: 'Atenção!',
           text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        this.habilitarCampoRubrica(false);
+        return;
+      }
+
+      if (this.temPrevisaoZerada()) {
+        await Swal.fire({
+          title: 'Atenção!',
+          text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
           icon: 'warning',
           confirmButtonText: 'OK'
         });
