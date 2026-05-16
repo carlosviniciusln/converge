@@ -896,15 +896,7 @@
           </ng-template>
 
           <ng-template pTemplate="content" let-event>
-            <p-card
-              [header]="
-                event.tpOperacao === 'INCLUSAO'
-                  ? 'INCLUSÃO'
-                  : event.tpOperacao === 'ALTERACAO'
-                    ? 'ALTERAÇÃO'
-                    : 'EXCLUSÃO'
-              "
-            >
+            <p-card [header]="getCardHeader(event)">
               <div class="card-content">
                 <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
                 <small *ngIf="event.descricaoRubrica"

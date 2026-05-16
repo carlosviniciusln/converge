@@ -212,6 +212,13 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     return 'pi pi-trash';
   }
 
+  getCardHeader(event: any): string {
+    if (event.tpOperacao === 'INCLUSAO') return 'INCLUSÃO';
+    if (event.tpOperacao === 'ALTERACAO' && event.listaDiffs?.some((d: any) => d.depois === 'Validado')) return 'VALIDADO';
+    if (event.tpOperacao === 'ALTERACAO') return 'ALTERAÇÃO';
+    return 'EXCLUSÃO';
+  }
+
   onTabChange(event) {
     this.selectTab = event.index;
   }
