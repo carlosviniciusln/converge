@@ -156,8 +156,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
     const perfil = this.currentProfile.noPerfil;
 
-    console.log(perfil, 'Perfil do usuário');
-
     this.perfilAdm = perfil === PerfisEnum.Administrador;
     this.perfilOrcamento = perfil === PerfisEnum.Orcamento;
     this.perfilTorre = perfil === PerfisEnum.TorresGEGAT;
@@ -170,7 +168,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
     if (!podeAlterarContexto) {
       this.isPerfilPrivilegiado = false;
-      console.log('Usuário sem perfil privilegiado, acesso restrito.');
       return;
     }
 
@@ -465,7 +462,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
   async updateRelatorio(valor: string | null, op: number): Promise<void> {
     this.loading = true;
 
-    console.log(valor, 'VALOR DA UD');
     switch (op) {
       case 1: {
         this.filtroRegistros.nuOrc = valor;

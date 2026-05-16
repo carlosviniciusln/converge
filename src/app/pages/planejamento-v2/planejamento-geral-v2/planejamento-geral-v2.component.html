@@ -183,7 +183,7 @@
                       emptyMessage="Sem registros"
                     ></p-dropdown>
                   </div>
-                 
+
                   <div class="pl-1 pr-1">
                     <p-dropdown
                       [options]="planejamentos.listaContrato"
@@ -230,7 +230,7 @@
                       emptyMessage="Sem registros"
                     ></p-dropdown>
                   </div>
-                  
+
                   <div
                     class="pl-1 pr-1 me-3"
                     *ngIf="
@@ -343,11 +343,11 @@
 
                   <td style="text-align: center">
                     <span class="p-column-title">UD</span>
-                    {{ planejamento.sgDiretoria }}
+                    {{ planejamento.sgDiretoria === null ? "-" : planejamento.sgDiretoria }}
                   </td>
                   <td style="text-align: center">
                     <span class="p-column-title">UD</span>
-                    {{ planejamento.sgSuperintendencia }}
+                     {{ planejamento.sgSuperintendencia === null ? "-" : planejamento.sgSuperintendencia }}
                   </td>
                   <td style="text-align: center">
                     <span class="p-column-title">UD</span>

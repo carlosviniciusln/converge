@@ -68,6 +68,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   public totalRubrica: number;
   public selectTab: number = 0;
   public loading: boolean = true;
+  public gestorETorresGEGAT: boolean = false;
   public isReadonly = true;
   public permissions: ActionPolicies;
 
@@ -173,7 +174,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.loading = true;
     await this.definirPageAction();
     await this.formulario();
-    await this.obterDadosDominio();
+
 
 
     if (this.planejamento?.nuOrc) {
@@ -190,6 +191,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     }
 
      this.obterPermissoes();
+     await this.obterDadosDominio();
 
   }
 
@@ -271,8 +273,9 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     const isTorresGEGAT = perfil === PerfisEnum.TorresGEGAT;
     const isGestorOperacional = perfil === PerfisEnum.GestorOperacional;
 
-
     const perfisAceitos = isOrcamento || isAdministrador || isTorresGEGAT || (isGestorOperacional && mesmaUnidade);
+
+    this.gestorETorresGEGAT =  isTorresGEGAT || isGestorOperacional;
 
     if (!perfisAceitos) {
       this.isPerfilPrivilegiado = false;
@@ -863,18 +866,15 @@ async excluirPrevisaoDesembolso(i: number) {
         return;
       }
 
-      console.log('Dados de domínio obtidos:', this.planejamento);
-
-
       const dadosDeDominio = response.data as Gcpvw055DetalharPlanejamentoItensResponse;
 
       this.dadosDeDominio =  {
         ...dadosDeDominio,
-        listaStatusPlanejamento: this.planejamento.nuStatusPlanejamento === 3
+        listaStatusPlanejamento: this.planejamento?.nuStatusPlanejamentoItem === 3 || this.planejamento?.nuStatusPlanejamento === 3
           ? dadosDeDominio.listaStatusPlanejamento
-          : dadosDeDominio.listaStatusPlanejamento.filter(
+          : this.gestorETorresGEGAT ? dadosDeDominio.listaStatusPlanejamento.filter(
               s => s.noPlanejamentoStatus !== 'Validado'
-            )
+            ) : dadosDeDominio.listaStatusPlanejamento
 
             }
       this.tratarStatusPlanejamento()
@@ -1458,24 +1458,6 @@ async excluirPrevisaoDesembolso(i: number) {
       item.VrSetembro, item.VrOutubro, item.VrNovembro, item.VrDezembro
     ];
     return meses.reduce((total, valor) => total + (valor ?? 0), 0);
-  }
-
-  public async ExcluirItens(
-    planejamento: any
-  ): Promise<void> {
-
-
-    console.log(planejamento, "TESTE EXCLUSÃO");
-    // try {
-
-
-
-    //   return
-    // } catch (error) {
-    //   console.error('Erro ao excluir planejamento item:', error);
-    //   this.atualizarPagina.emit(false);
-    //   return
-    // }
   }
 
 

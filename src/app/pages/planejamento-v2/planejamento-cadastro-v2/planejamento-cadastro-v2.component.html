@@ -165,7 +165,7 @@
                   formControlName="nuPlanejamentoStatus"
                   [options]="dadosDeDominio.listaStatusPlanejamento"
                   optionLabel="noPlanejamentoStatus"
-                  [readonly]="(perfilAtual !== 'Orçamento' && perfilAtual !== 'Administrador') && (form.get('nuPlanejamentoStatus')?.value !== 5)"
+                  [readonly]="(perfilAtual !== 'Orçamento' && perfilAtual !== 'Administrador') && (planejamento?.nuPlanejamentoStatus!== 5 || planejamento?.nuStatusPlanejamentoItem !== 5)"
                   optionValue="nuPlanejamentoStatus"
                   placeholder="Selecione Status"
                   [filter]="true"
