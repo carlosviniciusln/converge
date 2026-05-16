@@ -69,7 +69,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
   perfilOperacional: boolean = false;
   perfilTorre: boolean = false;
   perfilUnidade: string = '';
-  perfilAceitos: boolean = false;
   isPerfilPrivilegiado: boolean = false;
   selecionarTodos: boolean = false;
   permissions: ActionPolicies;
@@ -161,10 +160,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
     this.perfilTorre = perfil === PerfisEnum.TorresGEGAT;
     this.perfilOperacional = perfil === PerfisEnum.GestorOperacional;
 
-
-    this.perfilAceitos = this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
-
-    const podeAlterarContexto = this.perfilOrcamento || this.perfilAdm || this.perfilTorre;
+    const podeAlterarContexto = this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
 
     if (!podeAlterarContexto) {
       this.isPerfilPrivilegiado = false;
@@ -194,6 +190,22 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
     return this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
   }
+
+    podeAlterarStatusEmLote(planejamento : any) {
+    if (this.statusExercio === 'Cancelado') return false;
+    if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
+
+    if(this.perfilOperacional){
+      return planejamento.coFilial == this.perfilUnidade && planejamento.nuStatusPlanejamento !== 3 && planejamento.nuStatusPlanejamento !== 7;
+    }
+
+    if(this.perfilTorre){
+      return planejamento.nuStatusPlanejamento !== 3 && planejamento.nuStatusPlanejamento !== 7;
+    }
+
+    return this.perfilOrcamento || this.perfilAdm
+
+    }
 
   async obterStatusPlanejamento(): Promise<void> {
     const response = await this.apiService.get<
@@ -228,30 +240,25 @@ export class PlanejamentoGeralV2Component implements OnInit {
       const novoStatusObj = this.listaStatusPlanejamento.find(
         (s) => s.nuPlanejamentoStatus === idSelecionado,
       );
-      const itensSelecionados =
-        this.perfilOrcamento || this.perfilAdm
-          ? this.planejamentos.contratos.filter((p) => p.stSelecionado)
-          : this.planejamentos.contratos.filter(
-              (p) => p.stSelecionado && this.perfilUnidade == p.coFilial,
-            );
+      const itensSelecionados =  this.planejamentos.contratos.filter((p) => p.stSelecionado)
 
       if (itensSelecionados.length === 0) {
         this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
         return;
       }
 
-      if (this.statusSelecionados.length == 0) {
+     if (!this.statusSelecionados || !this.statusSelecionados[0]) {
         this.toastr.warning('Selecione uma opção de status.', 'Aviso');
         return;
       }
 
-      if (this.statusExercio === 'Encerrado') {
-        this.toastr.warning(
-          'Não é permitido alterar status em planejamentos encerrados.',
-          'Aviso',
-        );
-        return;
-      }
+      // if (this.statusExercio === 'Encerrado') {
+      //   this.toastr.warning(
+      //     'Não é permitido alterar status em planejamentos encerrados.',
+      //     'Aviso',
+      //   );
+      //   return;
+      // }
 
       const alert = await Swal.fire({
         text: `Deseja realmente alterar o Status de todos os registros selecionados desta página para o Status ${novoStatusObj?.noPlanejamentoStatus} `,
@@ -310,13 +317,15 @@ export class PlanejamentoGeralV2Component implements OnInit {
     }
   }
 
-  selecionarTodosItens() {
-    this.planejamentos.contratos.forEach((p) => {
+selecionarTodosItens() {
+  this.planejamentos.contratos.forEach((p) => {
+    if (this.podeAlterarStatusEmLote(p)) {
       p.stSelecionado = this.selecionarTodos;
-    });
-    this.atualizarStatusSelecionados();
-  }
-
+    } else {
+      p.stSelecionado = false;
+    }
+  });
+}
   atualizarStatusSelecionados() {
     const itensNaoSelecionados = this.planejamentos.contratos.filter(
       (p) => p.stSelecionado == false,
@@ -337,12 +346,8 @@ export class PlanejamentoGeralV2Component implements OnInit {
     );
     if (!novoStatus) return;
 
-    const itensSelecionados =
-      this.perfilOrcamento || this.perfilAdm
-        ? this.planejamentos.contratos.filter((p) => p.stSelecionado)
-        : this.planejamentos.contratos.filter(
-            (p) => p.stSelecionado && this.perfilUnidade == p.coFilial,
-          );
+    const itensSelecionados = this.planejamentos.contratos.filter((p) => p.stSelecionado)
+
     if (itensSelecionados.length === 0) return;
 
     itensSelecionados.forEach((p) => {
