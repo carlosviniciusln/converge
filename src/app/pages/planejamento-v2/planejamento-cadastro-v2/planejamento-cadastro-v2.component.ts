@@ -875,9 +875,6 @@ async excluirPrevisaoDesembolso(i: number) {
 
       const dadosDeDominio = response.data as Gcpvw055DetalharPlanejamentoItensResponse;
 
-
-      console.log('DADOS', this.gestorETorresGEGAT);
-
       this.dadosDeDominio =  {
         ...dadosDeDominio,
         listaStatusPlanejamento: this.planejamento?.nuStatusPlanejamentoItem === 3 || this.planejamento?.nuStatusPlanejamento === 3
