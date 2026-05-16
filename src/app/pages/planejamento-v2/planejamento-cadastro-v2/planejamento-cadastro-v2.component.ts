@@ -1024,6 +1024,17 @@ async excluirPrevisaoDesembolso(i: number) {
       });
       return;
     }
+
+    if (this.previsoesDesembolso.controls.some(ctrl => (this.parseDecimal((ctrl as FormGroup).getRawValue().vrTotalRubrica) ?? 0) <= 0)) {
+      await Swal.fire({
+        title: 'Atenção!',
+        text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
         this.Cadastrar();
         break;
       case PageAction.Alterar:
@@ -1037,6 +1048,17 @@ async excluirPrevisaoDesembolso(i: number) {
       });
       return;
     }
+
+    if (this.previsoesDesembolso.controls.some(ctrl => (this.parseDecimal((ctrl as FormGroup).getRawValue().vrTotalRubrica) ?? 0) <= 0)) {
+      await Swal.fire({
+        title: 'Atenção!',
+        text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
         this.Alterar();
         break;
       case PageAction.Consultar:
