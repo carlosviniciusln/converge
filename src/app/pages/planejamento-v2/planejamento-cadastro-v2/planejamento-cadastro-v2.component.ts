@@ -833,6 +833,18 @@ private criarFormGroupPrevisao(
 
 async excluirPrevisaoDesembolso(i: number) {
 
+
+
+if (this.previsoesDesembolso.length === 1) {
+    await Swal.fire({
+      text: 'Não é possível excluir. Deve haver pelo menos uma rubrica.',
+      icon: 'warning',
+      confirmButtonText: 'Ok'
+    });
+    return;
+  }
+
+
   const grupo = this.previsoesDesembolso.at(i) as FormGroup;
 
   const nuPlanejamentoItem = grupo.get('nuPlanejamentoItem')?.value;
