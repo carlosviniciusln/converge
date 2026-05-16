@@ -174,6 +174,8 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.loading = true;
     await this.definirPageAction();
     await this.formulario();
+    this.obterPermissoesIniciais()
+    await this.obterDadosDominio();
 
 
 
@@ -191,7 +193,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     }
 
      this.obterPermissoes();
-     await this.obterDadosDominio();
+
 
   }
 
@@ -258,10 +260,18 @@ export class PlanejamentoCadastroV2Component implements OnInit {
    * FIM HISTORICO METODOS
    */
 
+  obterPermissoesIniciais(){
+     this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
+     const perfil = this.currentProfile.noPerfil;
+     const isTorresGEGAT = perfil === PerfisEnum.TorresGEGAT;
+     const isGestorOperacional = perfil === PerfisEnum.GestorOperacional;
+     this.gestorETorresGEGAT =  isTorresGEGAT || isGestorOperacional;
+  }
+
   obterPermissoes() {
 
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
-    this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
+    // this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
 
     const perfil = this.currentProfile.noPerfil;
     this.perfilAtual = perfil;
@@ -274,8 +284,6 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     const isGestorOperacional = perfil === PerfisEnum.GestorOperacional;
 
     const perfisAceitos = isOrcamento || isAdministrador || isTorresGEGAT || (isGestorOperacional && mesmaUnidade);
-
-    this.gestorETorresGEGAT =  isTorresGEGAT || isGestorOperacional;
 
     if (!perfisAceitos) {
       this.isPerfilPrivilegiado = false;
@@ -622,7 +630,6 @@ async removerRubrica(nuRubrica: string) {
   async obterDadosContrato(nuContrato: string) {
     try {
 
-      //VERIFICAR ESSE TIPO
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioConsultaResponse>
       >(
@@ -726,8 +733,8 @@ async removerRubrica(nuRubrica: string) {
 
     // ===== Previsões =====
     this.previsoesDesembolso.clear();
-
     let total = 0;
+
     planejamento.previsoesDesembolso.forEach(p => {
       total += p.vrPlanejado;
       this.previsoesDesembolso.push(this.criarFormGroupPrevisao(p));
@@ -867,6 +874,9 @@ async excluirPrevisaoDesembolso(i: number) {
       }
 
       const dadosDeDominio = response.data as Gcpvw055DetalharPlanejamentoItensResponse;
+
+
+      console.log('DADOS', this.gestorETorresGEGAT);
 
       this.dadosDeDominio =  {
         ...dadosDeDominio,
