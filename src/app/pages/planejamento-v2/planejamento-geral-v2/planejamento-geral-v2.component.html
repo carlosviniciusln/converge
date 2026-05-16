@@ -373,11 +373,11 @@
                     (keydown.enter)="$event.stopPropagation()"
                     (keydown.space)="$event.stopPropagation()"
                   >
-                    <div class="cef-status-em-lote">
+                    <div class="cef-status-em-lote" style="text-align: center;">
                       <ng-container
                         *ngIf="
-                          (selectStatusPlanejamentoCompleto?.length > 0 &&
-                            planejamento.coFilial == perfilUnidade && perfilAceitos && statusExercio !== 'Validado' && statusExercio !== 'Cancelado') || this.isPerfilPrivilegiado
+                          selectStatusPlanejamentoCompleto?.length > 0 &&
+                          podeAlterarStatusEmLote(planejamento)
                         "
                       >
                         <p-checkbox
