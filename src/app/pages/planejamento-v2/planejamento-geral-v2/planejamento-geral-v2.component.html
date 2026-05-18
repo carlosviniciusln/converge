@@ -392,7 +392,7 @@
                   </td>
                   <td style="text-align: left">
                     <span class="p-column-title"></span>
-                    {{ planejamento.vrGegat | currency: "BRL" }}
+                    {{ (planejamento.vrGegat == null || planejamento.vrGegat == 0) ? "-" : (planejamento.vrGegat | currency: "BRL") }}
                   </td>
 
                   <td style="text-align: center">
