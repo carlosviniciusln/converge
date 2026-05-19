@@ -20,6 +20,7 @@ export class Gcpvw051VisaoContratosPlanejamentoOrcamentarioResponse {
     listaTipo: string[];
     // listaDigital: string[];
     listaObjeto: string[];
+    listaDigital: string[];
     listaStatus: string[];
     listaDiretoria: string[];
     listaSuperintendencia: string[];

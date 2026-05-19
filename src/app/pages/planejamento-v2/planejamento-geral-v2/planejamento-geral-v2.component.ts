@@ -47,7 +47,8 @@ export class PlanejamentoGeralV2Component implements OnInit {
     Status: null,
     NuPlanejamentoTipo: null,
     tipo: null,
-    objeto: '',
+    // objeto: '',
+    noTipoDigital: null,
     nuPlanejamento: 0,
     tipoPlanejamento: '',
     sgDiretoria: null,
@@ -490,8 +491,12 @@ selecionarTodosItens() {
         this.filtroRegistros.Status = valor;
         break;
       }
+      // case 6: {
+      //   this.filtroRegistros.objeto = valor;
+      //   break;
+      // }
       case 6: {
-        this.filtroRegistros.objeto = valor;
+        this.filtroRegistros.noTipoDigital = valor;
         break;
       }
       case 7: {
@@ -547,7 +552,8 @@ selecionarTodosItens() {
       this.planejamentos.listaUnidadeDemandante =
         response?.data?.listaUnidadeDemandante ?? [];
       this.planejamentos.listaTipo = response?.data?.listaTipo ?? [];
-      this.planejamentos.listaObjeto = response?.data?.listaObjeto ?? [];
+      // this.planejamentos.listaObjeto = response?.data?.listaObjeto ?? [];
+      this.planejamentos.listaDigital = ['SEM DIGITAL', ...(response?.data?.listaDigital ?? [])];
       this.planejamentos.listaStatus = response?.data?.listaStatus ?? [];
       this.planejamentos.listaNuOrc = response?.data?.listaNuOrc ?? [];
       this.planejamentos.listaDiretoria = response?.data?.listaDiretoria ?? [];
@@ -555,7 +561,7 @@ selecionarTodosItens() {
       this.planejamentos.totalRegistros = response.data.totalRegistros;
       this.loading = false;
       this.planejamentos.contratos.forEach((p) => {
-        p.noStatusOriginal = p.noStatus; // adiciona propriedade auxiliar
+        p.noStatusOriginal = p.noStatus;
       });
     } catch (error) {
       this.loading = false;

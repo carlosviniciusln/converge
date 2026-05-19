@@ -239,18 +239,24 @@
                 </p-dropdown>
               </div>
 
-               <!-- <div class="col-md-3 pr-0">
-            <label for="icDigital">Classifica&ccedil;&atilde;o Digital:<span class="span-red"> *</span></label>
-            <select class="form-control" id="icDigital" formControlName="icDigital"
-              [ngClass]="{ 'is-invalid': submitted && f.icDigital?.invalid }" (change)="onIsDigitalChange($event)">
-              <option value="" disabled selected>
-                Selecione a Classifica&ccedil;&atilde;o
-              </option>
-              <option *ngFor="let a of listaDigital" [ngValue]="a.id">
-                {{ a.tipo }}
-              </option>
-            </select>
-          </div> -->
+           <div class="col-md-3 pr-0">
+                <label for="nuTipoDigital">Classificação Digital:</label
+                >
+                <p-dropdown
+                  id="nuTipoDigital"
+                  [options]="dadosDeDominio.listaDigital"
+                  optionLabel="noTipoDigital"
+                  optionValue="nuTipoDigital"
+                  [style]="{ width: '100%' }"
+                  formControlName="nuTipoDigital"
+                  placeholder="selecione a classificação digital"
+                  [filter]="true"
+                  [emptyMessage]="'Nenhuma classificação cadastrado.'"
+                  [ngClass]="{ 'is-invalid': submitted && f.nuTipoDigital?.invalid }"
+                >
+                </p-dropdown>
+            </div>
+
 
               <div class="col-md-9 pr-0">
                 <label for="deJustificativa"

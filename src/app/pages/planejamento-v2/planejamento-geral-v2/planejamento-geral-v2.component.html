@@ -218,7 +218,7 @@
                       emptyMessage="Sem registros"
                     ></p-dropdown>
                   </div>
-                  <div class="pl-1 pr-1">
+                  <!-- <div class="pl-1 pr-1">
                     <p-dropdown
                       class="objet-dropdown"
                       [options]="planejamentos.listaObjeto"
@@ -226,6 +226,19 @@
                       (onChange)="updateRelatorio($event.value, 6)"
                       [showClear]="true"
                       placeholder="Objeto"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
+                    ></p-dropdown>
+                  </div> -->
+
+                    <div class="pl-1 pr-1">
+                    <p-dropdown
+                      class="objet-dropdown"
+                      [options]="planejamentos.listaDigital"
+                      [filter]="true"
+                      (onChange)="updateRelatorio($event.value, 6)"
+                      [showClear]="true"
+                      placeholder="Digital"
                       emptyFilterMessage="Sem registros"
                       emptyMessage="Sem registros"
                     ></p-dropdown>
