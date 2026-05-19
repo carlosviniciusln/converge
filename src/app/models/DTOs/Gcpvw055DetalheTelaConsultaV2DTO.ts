@@ -43,7 +43,7 @@ export interface Gcpvw055DetalheTelaConsultaV2DTO {
 
   icServicoContinuo: 'SIM' | 'NÃO';
 
-  nuDigital: number | null;
+  nuTipoDigital: number | null;
 
   nuUsuario: number;
   coMatricula: number;

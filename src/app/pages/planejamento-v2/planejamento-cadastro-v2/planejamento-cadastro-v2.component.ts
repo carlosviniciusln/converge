@@ -384,9 +384,9 @@ export class PlanejamentoCadastroV2Component implements OnInit {
         Validators.required,
       ]),
 
-      // icDigital: new FormControl({ value: '', disabled: !this.isEditable }, [
-      //   Validators.required,
-      // ]),
+      nuTipoDigital: new FormControl({ value: '', disabled: !this.isEditable }, [
+        // Validators.required,
+      ]),
       nuSap: [''],
       deSap: [''],
       nuModalidade: new FormControl(
@@ -696,7 +696,7 @@ async removerRubrica(nuRubrica: string) {
       nuDemandaTipo: planejamento.nuTipoDemanda,
       nuObjetivoEstrategicoPdti: planejamento.nuObjetivoPdtic,
       nuObjetivoEstrategicoPei: planejamento.nuObjetivoPei,
-      // icDigital: planejamento.nuDigital,
+      nuTipoDigital: planejamento.nuTipoDigital,
       noCriador: planejamento.coMatricula,
       deSap: planejamento.deSap,
       nuSap: planejamento.nuSap,
@@ -1202,7 +1202,7 @@ if (this.previsoesDesembolso.length === 1) {
 
             NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus == null ? 5 : obj.nuPlanejamentoStatus,
             // NuVigencia: obj.nuAno,
-            // DeDigital: digital?.code,
+            nuTipoDigital: obj?.nuTipoDigital,
             DeObjeto: obj.deObjeto,
             DeObservacao: obj.deObservacao,
             NuDemandaTipo: obj.nuDemandaTipo,
@@ -1256,9 +1256,6 @@ if (this.previsoesDesembolso.length === 1) {
       this.isReadonly = false;
       await this.habilitarCampoRubrica(true);
       var obj = this.form.getRawValue();
-
-      console.log(obj, "TESTE")
-
 
       var totalRubrica = await this.ValidarValores(obj);
 
@@ -1418,6 +1415,7 @@ if (this.previsoesDesembolso.length === 1) {
             VrGlobal: this.parseDecimal(obj.vrGlobal),
             DePrazoVigencia: obj.dePrazoVigencia,
             DtPrevisaoSiclg: obj.dtPrevisaoSiclg,
+            nuTipoDigital: obj?.nuTipoDigital,
             IcPlanoAquisicao: this.isFlagPlanoDeAquisicao ? true : null,
 
           previsaoDesembolso: obj.previsoesDesembolso.map(p => ({

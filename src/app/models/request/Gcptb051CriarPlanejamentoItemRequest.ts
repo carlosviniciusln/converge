@@ -20,6 +20,7 @@ export interface Gcptb051CriarPlanejamentoItemRequest {
     NuOrc?: number;
     NuSap?: number;
     DeSap?: string;
+    nuTipoDigital?: number;
     previsaoDesembolso?: Gcptb063CriarPrevisaoDesembolsoRequest[];
 
 
