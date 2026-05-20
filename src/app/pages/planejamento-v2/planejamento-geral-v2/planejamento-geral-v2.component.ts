@@ -185,12 +185,25 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
   }
 
-  podeCadastrar(): boolean {
-    if (this.statusExercio === 'Cancelado') return false;
-    if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
+    podeCadastrar(): boolean {
+      const itensSelecionados =  this.planejamentos.contratos.filter((p) => p.stSelecionado);
 
-    return this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
-  }
+      if (this.statusExercio === 'Cancelado') return false;
+      if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
+
+      return this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
+    }
+
+    IsHabilitarSalvarStatusEmLote(): boolean {
+
+       const itensSelecionados =  this.planejamentos.contratos.filter((p) => p.stSelecionado);
+
+      if (this.statusExercio === 'Cancelado') return false;
+      if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
+
+      return (this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional) && itensSelecionados.length !== 0;
+    }
+
 
     podeAlterarStatusEmLote(planejamento : any) {
     if (this.statusExercio === 'Cancelado') return false;
