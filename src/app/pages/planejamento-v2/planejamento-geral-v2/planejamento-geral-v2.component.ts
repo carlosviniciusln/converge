@@ -553,7 +553,7 @@ selecionarTodosItens() {
         response?.data?.listaUnidadeDemandante ?? [];
       this.planejamentos.listaTipo = response?.data?.listaTipo ?? [];
       // this.planejamentos.listaObjeto = response?.data?.listaObjeto ?? [];
-      this.planejamentos.listaDigital = ['SEM DIGITAL', ...(response?.data?.listaDigital ?? [])];
+      this.planejamentos.listaDigital = ['SEM CLASSIFICAÇÃO', ...(response?.data?.listaDigital ?? [])];
       this.planejamentos.listaStatus = response?.data?.listaStatus ?? [];
       this.planejamentos.listaNuOrc = response?.data?.listaNuOrc ?? [];
       this.planejamentos.listaDiretoria = response?.data?.listaDiretoria ?? [];
