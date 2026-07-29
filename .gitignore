@@ -65,3 +65,5 @@ src/assets/md/next-tasks.md
 package-lock.json
 **/environment.ts
 src/environments/environment.ts
+
+.env
