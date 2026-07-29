@@ -7,7 +7,12 @@
     "build": "ng build",
     "build-dev": "ng build --deploy-url /painel-gerencial/ --base-href /painel-gerencial/",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "swa:deploy": "node scripts/swa-deploy.cjs"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "private": true,
   "dependencies": {
