@@ -44,6 +44,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/staticwebapp.config.json",
               {
                 "glob": "**/*",
                 "input": "node_modules/material-icons/iconfont",
@@ -51,7 +52,7 @@
               }
             ],
             "styles": [
-              "node_modules/sidsc-components/styles/main.scss",
+              "sidsc-stubs/styles/main.scss",
               "src/styles.scss",
               "src/assets/css/primeng-theme.css",
               "node_modules/primeng/resources/primeng.min.css",
@@ -61,7 +62,7 @@
               "src/assets/css/primeicons.css",
               "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
-              "node_modules/sidsc-components/styles/main.scss"
+              "sidsc-stubs/styles/main.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [
