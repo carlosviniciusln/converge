@@ -1,0 +1,61 @@
+@use 'sass:map';
+
+@mixin generate-tokens-to-property($property, $values, $unit: '') {
+  @each $key, $value in $values {
+    @if $unit !='' {
+      --dsc-#{$property}-#{$key}: #{map.get($value, $unit)};
+    }
+
+    @else {
+      --dsc-#{$property}-#{$key}: #{$value};
+    }
+  }
+}
+
+@mixin generate-tokens-to-element($element, $property, $values, $unit: '') {
+  @each $key, $value in $values {
+    @if $unit !='' {
+      --dsc-#{$element}-#{$property}-#{$key}: #{map.get($value, $unit)};
+    }
+
+    @else {
+      --dsc-#{$element}-#{$property}-#{$key}: #{$value};
+    }
+  }
+}
+
+@mixin generate-tokens-to-element-with-var($element, $property, $values, $unit: '') {
+  @each $key, $value in $values {
+    @if $unit !='' {
+      --dsc-#{$element}-#{$property}-#{$key}: #{var(map.get($value, $unit))};
+    }
+
+    @else {
+      --dsc-#{$element}-#{$property}-#{$key}: #{var($value)};
+    }
+  }
+}
+
+@mixin generate-tokens-state-to-element-with-var($element, $state, $property, $values, $unit: '') {
+  @each $key, $value in $values {
+    @if $unit !='' {
+      --dsc-#{$element}-#{$state}-#{$property}-#{$key}: #{var(map.get($value, $unit))};
+    }
+
+    @else {
+      --dsc-#{$element}-#{$state}-#{$property}-#{$key}: #{var($value)};
+    }
+  }
+}
+
+@mixin generate-tokens-state($element, $state, $values, $unit: '') {
+  @each $key, $value in $values {
+    @if $unit !='' {
+      --dsc-#{$element}-#{$state}-#{$key}: #{var(map.get($value, $unit))};
+    }
+
+    @else {
+      --dsc-#{$element}-#{$state}-#{$key}: #{var($value)};
+    }
+  }
+}

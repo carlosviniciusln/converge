@@ -1,0 +1,13 @@
+@use './color-tokens.import';
+@use './typography-tokens.import';
+@use './size-tokens.import';
+@use './opacity-tokens.import';
+@use './state-layer-tokens.import';
+
+:root {
+  @include color-tokens.get-color-tokens();
+  @include typography-tokens.get-typography-tokens();
+  @include size-tokens.get-size-tokens();
+  @include opacity-tokens.get-opacity-tokens();
+  @include state-layer-tokens.get-state-layer-tokens();
+}

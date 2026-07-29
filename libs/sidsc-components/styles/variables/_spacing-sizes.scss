@@ -1,0 +1,91 @@
+$none:(
+  'px': 0px,
+  'rem': 0rem
+);
+
+$quark: (
+  'px': 4px,
+  'rem': .25rem,
+);
+
+$nano: (
+  'px': 8px,
+  'rem': .5rem
+);
+
+$micro: (
+  'px': 12px,
+  'rem': .75rem
+);
+
+$tiny: (
+  'px': 16px,
+  'rem': 1rem
+);
+
+$smaller: (
+  'px': 24px,
+  'rem': 1.5rem
+);
+
+$small: (
+  'px': 32px,
+  'rem': 2rem
+);
+
+$medium: (
+  'px': 40px,
+  'rem': 2.5rem
+);
+
+$large: (
+  'px': 48px,
+  'rem': 3rem
+);
+
+$larger: (
+  'px': 56px,
+  'rem': 3.5rem
+);
+
+$big: (
+  'px': 64px,
+  'rem': 4rem
+);
+
+$bigger: (
+  'px': 72px,
+  'rem': 4.5rem
+);
+
+$huge: (
+  'px': 80px,
+  'rem': 5rem
+);
+
+$giant: (
+  'px': 120px,
+  'rem': 7.5rem
+);
+
+$enormous: (
+  'px': 160px,
+  'rem': 10rem
+);
+
+$spacing-sizes: (
+  'quark': $quark,
+  'nano': $nano,
+  'micro': $micro,
+  'tiny': $tiny,
+  'smaller': $smaller,
+  'small': $small,
+  'medium': $medium,
+  'large': $large,
+  'larger': $larger,
+  'big': $big,
+  'bigger': $bigger,
+  'huge': $huge,
+  'giant': $giant,
+  'enormous': $enormous
+);

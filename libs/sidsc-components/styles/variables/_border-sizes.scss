@@ -1,0 +1,83 @@
+$hairline: (
+  'px': 1px,
+  'rem': .063rem
+);
+
+$thin: (
+  'px': 2px,
+  'rem': .125rem
+);
+
+$thick: (
+  'px': 4px,
+  'rem': .25rem
+);
+
+$heavy: (
+  'px': 8px,
+  'rem': .5rem
+);
+
+$strong: (
+  'px': 12px,
+  'rem': .75rem
+);
+
+$quark: (
+  'px': 2px,
+  'rem': .125rem
+);
+
+$nano: (
+  'px': 4px,
+  'rem': .25rem
+);
+
+$small: (
+  'px': 8px,
+  'rem': .5rem
+);
+
+$medium: (
+  'px': 12px,
+  'rem': .75rem
+);
+
+$large: (
+  'px': 16px,
+  'rem': 1rem
+);
+
+$pill: (
+  'px': 1000px,
+  'rem': 62.5rem
+);
+
+$none: (
+  'px': 1000px,
+  'rem': 62.5rem
+);
+
+$width-sizes: (
+  'none': $none,
+  'hairline': $hairline,
+  'thin': $thin,
+  'thick': $thick,
+  'heavy': $heavy,
+  'strong': $strong
+);
+
+$radius-sizes: (
+  'none': $none,
+  'quark': $quark,
+  'nano': $nano,
+  'small': $small,
+  'medium': $medium,
+  'large': $large,
+  'pill': $pill
+);
+
+$border-sizes: (
+  'width': $width-sizes,
+  'radius': $radius-sizes
+);

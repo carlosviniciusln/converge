@@ -1,0 +1,41 @@
+@use 'sass:map';
+@use '../variables/spacing-sizes.import' as *;
+@use '../variables/border-sizes.import' as *;
+@use '../variables/icon-sizes.import' as *;
+@use '../variables/input-sizes.import' as *;
+@use '../variables/button-sizes.import' as *;
+@use './token-util' as *;
+
+@mixin _generate-space-size-tokens() {
+  @include generate-tokens-to-property('spacing', $spacing-sizes, 'rem');
+}
+
+@mixin _generate-icon-size-tokens() {
+  @include generate-tokens-to-property('icon', $icon-sizes, 'rem');
+}
+
+@mixin _generate-border-size-tokens() {
+  @each $property, $size-values in $border-sizes {
+    @include generate-tokens-to-element('border', $property, $size-values, 'px');
+  }
+}
+
+@mixin _generate-input-size-tokens() {
+  @each $property, $size-values in $input-sizes {
+    @include generate-tokens-to-element('input', $property, $size-values, 'px');
+  }
+}
+
+@mixin _generate-button-size-tokens() {
+  @each $property, $size-values in $button-sizes {
+    @include generate-tokens-to-element('button', $property, $size-values, 'px');
+  }
+}
+
+@mixin get-size-tokens() {
+  @include _generate-space-size-tokens();
+  @include _generate-icon-size-tokens();
+  @include _generate-border-size-tokens();
+  @include _generate-input-size-tokens();
+  @include _generate-button-size-tokens();
+}

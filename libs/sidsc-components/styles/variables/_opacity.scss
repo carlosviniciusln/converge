@@ -1,0 +1,20 @@
+$opacity-8: 8%;
+$opacity-16: 16%;
+$opacity-24: 24%;
+$opacity-32: 32%;
+$opacity-40: 40%;
+$opacity-48: 48%;
+$opacity-56: 56%;
+$opacity-64: 64%;
+
+$opacities: (
+  '8': $opacity-8,
+  '16': $opacity-16,
+  '24': $opacity-24,
+  '32': $opacity-32,
+  '40': $opacity-40,
+  '48': $opacity-48,
+  '56': $opacity-56,
+  '64': $opacity-64,
+);
+

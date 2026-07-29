@@ -1,0 +1,110 @@
+@font-face {
+  font-family: "Futura BT";
+  font-weight: 300;
+  font-style: normal;
+  font-display: block;
+  src: url('../../assets/fonts/futura/futura-book.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Futura BT";
+  font-weight: 300;
+  font-style: italic;
+  font-display: block;
+  src: url('../../assets/fonts/futura/futura-book-italic.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Futura BT";
+  font-weight: 500;
+  font-style: normal;
+  font-display: block;
+  src: url('../../assets/fonts/futura/futura-medium.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Futura BT";
+  font-weight: 500;
+  font-style: italic;
+  font-display: block;
+  src: url('../../assets/fonts/futura/futura-medium-italic.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Futura BT";
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+  src: url('../../assets/fonts/futura/futura-bold.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Futura BT";
+  font-weight: 700;
+  font-style: italic;
+  font-display: block;
+  src: url('../../assets/fonts/futura/futura-bold-italic.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Futura BT";
+  font-weight: 800;
+  font-style: normal;
+  font-display: block;
+  src: url('../../assets/fonts/futura/futura-heavy.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: "Futura BT";
+  font-weight: 800;
+  font-style: italic;
+  font-display: block;
+  src: url('../../assets/fonts/futura/futura-heavy-italic.ttf') format("truetype");
+}
+
+//TODO Remover o font-face do futura quando o projeto (componentes e portal) estiver todo migrado para a nova fonte.
+
+@font-face {
+  font-family: 'Caixa STD';
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+  src: url('../../assets/fonts/caixa-std/CAIXAStd-Regular.woff2') format('woff2'),
+  url('../../assets/fonts/caixa-std/CAIXAStd-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Caixa STD';
+  font-weight: 600;
+  font-style: normal;
+  font-display: block;
+  src: url('../../assets/fonts/caixa-std/CAIXAStd-SemiBold.woff2') format('woff2'),
+  url('../../assets/fonts/caixa-std/CAIXAStd-SemiBold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Caixa STD';
+  font-weight: 600;
+  font-style: italic;
+  font-display: block;
+  src: url('../../assets/fonts/caixa-std/CAIXAStd-SemiBoldItalic.woff2') format('woff2'),
+  url('../../assets/fonts/caixa-std/CAIXAStd-SemiBoldItalic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Caixa STD';
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+  src: url('../../assets/fonts/caixa-std/CAIXAStd-Bold.woff2') format('woff2'),
+  url('../../assets/fonts/caixa-std/CAIXAStd-Bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Caixa STD';
+  font-weight: 700;
+  font-style: italic;
+  font-display: block;
+  src: url('../../assets/fonts/caixa-std/CAIXAStd-BoldItalic.woff2') format('woff2'),
+  url('../../assets/fonts/caixa-std/CAIXAStd-BoldItalic.woff') format('woff');
+}

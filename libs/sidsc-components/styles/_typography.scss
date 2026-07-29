@@ -1,0 +1,20 @@
+.dsc-h1 {
+  font: var(--dsc-typography-head-huge-600) !important;
+}
+
+.dsc-h2 {
+  font: var(--dsc-typography-head-large-600) !important;
+}
+
+.dsc-h1, .dsc-h2 {
+  margin-bottom: var(--dsc-spacing-smaller) !important;
+}
+
+.dsc-h3 {
+  font: var(--dsc-typography-head-standard-600) !important;
+}
+
+.dsc-p {
+  font: var(--dsc-typography-text-big-400) !important;
+  font-feature-settings: "ss01" !important;
+}

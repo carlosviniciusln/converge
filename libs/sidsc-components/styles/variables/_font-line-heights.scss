@@ -1,0 +1,13 @@
+$tight: 100%;
+$near: 120%;
+$medium: 140%;
+$distant: 150%;
+$farther: 170%;
+
+$font-line-heights: (
+  'tight': $tight,
+  'near': $near,
+  'medium': $medium,
+  'distant': $distant,
+  'farther': $farther
+);

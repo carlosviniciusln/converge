@@ -1,0 +1,11 @@
+@mixin style-hints($font-label-hint) {
+  .mat-label__hint {
+    font: var(#{$font-label-hint});
+  }
+}
+
+@mixin style-error($font-color) {
+  .mat-label {
+    color: var(#{$font-color});
+  }
+}

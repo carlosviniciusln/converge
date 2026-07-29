@@ -1,0 +1,42 @@
+@use './label.import';
+
+@mixin label-dimension-style {
+  .mat-label {
+    display: flex;
+    gap: var(--dsc-spacing-nano);
+    margin-bottom: var(--dsc-spacing-quark);
+    color: var(--dsc-color-content-neutral-5);
+
+    &__hint {
+      color: var(--dsc-color-content-neutral-3);
+    }
+
+    .mat-icon {
+      font-size: var(--dsc-icon-size-small);
+      height: var(--dsc-icon-size-small);
+      width: var(--dsc-icon-size-small);
+      color: var(--dsc-color-bg-neutral-7);
+    }
+
+    &--small {
+      font: var(--dsc-typography-text-small-600);
+      font-feature-settings: "ss01";
+
+      @include label.style-hints(--dsc-typography-text-small-400);
+    }
+
+    &--standard {
+      font: var(--dsc-typography-text-standard-600);
+      font-feature-settings: "ss01";
+
+      @include label.style-hints(--dsc-typography-text-standard-400);
+    }
+
+    &--large {
+      font: var(--dsc-typography-text-large-600);
+      font-feature-settings: "ss01";
+
+      @include label.style-hints(--dsc-typography-text-large-400);
+    }
+  }
+}

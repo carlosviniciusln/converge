@@ -1,0 +1,146 @@
+$primary-palette: (
+  '10': #e5f1fc,
+  '30': #a0d2fc,
+  '50': #6dbafa,
+  '70': #2d8ad8,
+  '90': #005ca9,
+  '110': #00437a,
+  '130': #002a4d,
+);
+
+$secondary-palette: (
+  '10': #ffefd6,
+  '30': #ffd392,
+  '50': #fdb548,
+  '70': #f39200,
+  '90': #d87b00,
+  '110': #a65e00,
+  '130': #663a00,
+);
+
+$tertiary-palette: (
+  '10': #e4f7f4,
+  '30': #b9ebe3,
+  '50': #81d6c8,
+  '70': #54bbab,
+  '90': #359485,
+  '110': #216e62,
+  '130': #03453b,
+);
+
+$grayscale-palette: (
+  '10': #f7fafa,
+  '30': #ebf1f2,
+  '50': #d0e0e3,
+  '70': #9eb2b8,
+  '90': #64747a,
+  '110': #404b52,
+  '130': #22292e,
+);
+
+$ceu-palette: (
+  '10': #d0f5ff,
+  '30': #6edbfa,
+  '50': #2ec8f3,
+  '70': #00b5e5,
+  '90': #008cb2,
+  '110': #006480,
+  '130': #003c4d,
+);
+
+$uva-palette: (
+  '10': #f8eaf3,
+  '30': #eac9de,
+  '50': #ce97bb,
+  '70': #b26f9b,
+  '90': #93537d,
+  '110': #753c61,
+  '130': #4f213f,
+);
+
+$limao-palette: (
+  '10': #f5fec1,
+  '30': #def06d,
+  '50': #c5de31,
+  '70': #afca0b,
+  '90': #99b103,
+  '110': #6d8000,
+  '130': #465200,
+);
+
+$tangerina-palette: (
+  '10': #fff3d6,
+  '30': #fcdd92,
+  '50': #fac546,
+  '70': #f9b000,
+  '90': #d19400,
+  '110': #996c00,
+  '130': #664800,
+);
+
+$goiaba-palette: (
+  '10': #ffeae5,
+  '30': #fcbdb0,
+  '50': #f79481,
+  '70': #ef765e,
+  '90': #d8583f,
+  '110': #b23820,
+  '130': #801905,
+);
+
+$negative-palette: (
+  '10': #fbebeb,
+  '30': #f0afaf,
+  '50': #e47272,
+  '70': #d93636,
+  '90': #b22c2c,
+  '110': #8c2323,
+  '130': #661a1a,
+);
+
+$attention-palette: (
+  '10': #fff9e6,
+  '30': #fee59b,
+  '50': #fdd150,
+  '70': #fcbe05,
+  '90': #ca9804,
+  '110': #977203,
+  '130': #654c02,
+);
+
+$positive-palette: (
+  '10': #e7f4ea,
+  '30': #a2d3ad,
+  '50': #5cb26e,
+  '70': #179231,
+  '90': #127527,
+  '110': #0d581c,
+  '130': #093a14,
+);
+
+$informative-palette: (
+  '10': #e5f6f8,
+  '30': #9bdae5,
+  '50': #4fbed2,
+  '70': #04a2bf,
+  '90': #038299,
+  '110': #026173,
+  '130': #02414c,
+);
+
+$colors: (
+  'primary': $primary-palette,
+  'secondary': $secondary-palette,
+  'tertiary': $tertiary-palette,
+  'grayscale': $grayscale-palette,
+  'ceu': $ceu-palette,
+  'uva': $uva-palette,
+  'limao': $limao-palette,
+  'tangerina': $tangerina-palette,
+  'goiaba': $goiaba-palette,
+  'negative': $negative-palette,
+  'attention': $attention-palette,
+  'positive': $positive-palette,
+  'informative': $informative-palette
+);
+
