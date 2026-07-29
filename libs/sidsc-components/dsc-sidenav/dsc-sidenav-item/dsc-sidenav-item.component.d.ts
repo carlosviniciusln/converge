@@ -1,0 +1,34 @@
+import { EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { isNotEmptyArray } from 'sidsc-components/core';
+import { DscMenu } from '../shared/dsc-menu';
+import { DscCollapsibleMenu } from '../shared/dsc-collapsible-menu';
+import * as i0 from "@angular/core";
+export declare class DscSidenavItemComponent implements OnInit, OnDestroy {
+    private _router;
+    protected readonly isNotEmptyArray: typeof isNotEmptyArray;
+    private _navSubscription?;
+    expandedMenu: DscMenu | null;
+    menu: DscMenu | DscCollapsibleMenu;
+    depth: number;
+    onClick: EventEmitter<DscMenu>;
+    expandChange: EventEmitter<DscMenu>;
+    expanded: boolean;
+    selectedKey: string | null;
+    ariaExpanded?: boolean | null;
+    selectedKeyChange: EventEmitter<DscMenu | null>;
+    constructor(_router: Router);
+    ngOnInit(): void;
+    isActive(menu: DscMenu): boolean;
+    private _checkIfSelected;
+    private _isSelected;
+    expand(item: DscMenu): void;
+    private _expand;
+    onExpandChange(item: DscMenu): void;
+    onSelected(item: DscMenu): void;
+    onSpace(event: KeyboardEvent, menu: DscMenu): void;
+    onMenuItemClick(menu: DscMenu): void;
+    ngOnDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DscSidenavItemComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<DscSidenavItemComponent, "dsc-sidenav-item", never, { "menu": { "alias": "menu"; "required": false; }; "depth": { "alias": "depth"; "required": false; }; "expanded": { "alias": "expanded"; "required": false; }; "selectedKey": { "alias": "selectedKey"; "required": false; }; "ariaExpanded": { "alias": "ariaExpanded"; "required": false; }; }, { "onClick": "onClick"; "expandChange": "expandChange"; "selectedKeyChange": "selectedKeyChange"; }, never, never, true, never>;
+}

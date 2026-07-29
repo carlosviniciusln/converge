@@ -1,0 +1,58 @@
+$highlight: (
+  'highlight-1': --dsc-color-primary-90,
+  'highlight-2': --dsc-color-primary-110,
+);
+
+$accent: (
+  'accent-1': --dsc-color-secondary-70,
+  'accent-2': --dsc-color-secondary-90,
+  'accent-3': --dsc-color-secondary-130
+);
+
+$decorative: (
+  'decorative-1': --dsc-color-tertiary-90,
+  'decorative-2': --dsc-color-tertiary-110,
+);
+
+$neutral: (
+  'neutral-1': --dsc-color-grayscale-white,
+  'neutral-2': --dsc-color-grayscale-70,
+  'neutral-3': --dsc-color-grayscale-90,
+  'neutral-4': --dsc-color-grayscale-110,
+  'neutral-5': --dsc-color-grayscale-130
+);
+
+$success: (
+  'success-1': --dsc-color-positive-70,
+  'success-2': --dsc-color-positive-90,
+  'success-3': --dsc-color-positive-110
+);
+
+$warning: (
+  'warning-1': --dsc-color-attention-90,
+  'warning-2': --dsc-color-attention-110,
+  'warning-3': --dsc-color-attention-130
+);
+
+$danger: (
+  'danger-1': --dsc-color-negative-70,
+  'danger-2': --dsc-color-negative-90,
+  'danger-3': --dsc-color-negative-110
+);
+
+$information: (
+  'information-1': --dsc-color-informative-70,
+  'information-2': --dsc-color-informative-90,
+  'information-3': --dsc-color-informative-110
+);
+
+$content-colors: (
+  'highlight': $highlight,
+  'accent': $accent,
+  'decorative': $decorative,
+  'neutral': $neutral,
+  'success': $success,
+  'warning': $warning,
+  'danger': $danger,
+  'information': $information
+);

@@ -1,0 +1,84 @@
+$highlight: (
+  'highlight-1': --dsc-color-primary-10,
+  'highlight-2': --dsc-color-primary-30,
+  'highlight-3': --dsc-color-primary-50,
+  'highlight-4': --dsc-color-primary-70,
+  'highlight-5': --dsc-color-primary-90,
+  'highlight-6': --dsc-color-primary-110,
+  'highlight-7': --dsc-color-primary-130
+);
+
+$accent: (
+  'accent-1': --dsc-color-secondary-10,
+  'accent-2': --dsc-color-secondary-30,
+  'accent-3': --dsc-color-secondary-50,
+  'accent-4': --dsc-color-secondary-70,
+  'accent-5': --dsc-color-secondary-90,
+  'accent-6': --dsc-color-secondary-110,
+  'accent-7': --dsc-color-secondary-130
+);
+
+$decorative: (
+  'decorative-1': --dsc-color-tertiary-10,
+  'decorative-2': --dsc-color-tertiary-30,
+  'decorative-3': --dsc-color-tertiary-50,
+  'decorative-4': --dsc-color-tertiary-70,
+  'decorative-5': --dsc-color-tertiary-90
+);
+
+$neutral: (
+  'neutral-1': --dsc-color-grayscale-white,
+  'neutral-2': --dsc-color-grayscale-10,
+  'neutral-3': --dsc-color-grayscale-30,
+  'neutral-4': --dsc-color-grayscale-50,
+  'neutral-5': --dsc-color-grayscale-70,
+  'neutral-6': --dsc-color-grayscale-90,
+  'neutral-7': --dsc-color-grayscale-110
+);
+
+$success: (
+  'success-1': --dsc-color-positive-10,
+  'success-2': --dsc-color-positive-30,
+  'success-3': --dsc-color-positive-50,
+  'success-4': --dsc-color-positive-90,
+  'success-5': --dsc-color-positive-110,
+  'success-6': --dsc-color-positive-70
+);
+
+$warning: (
+  'warning-1': --dsc-color-attention-10,
+  'warning-2': --dsc-color-attention-30,
+  'warning-3': --dsc-color-attention-50,
+  'warning-4': --dsc-color-attention-90,
+  'warning-5': --dsc-color-attention-110,
+  'warning-6': --dsc-color-attention-70
+);
+
+$danger: (
+  'danger-1': --dsc-color-negative-10,
+  'danger-2': --dsc-color-negative-30,
+  'danger-3': --dsc-color-negative-50,
+  'danger-4': --dsc-color-negative-90,
+  'danger-5': --dsc-color-negative-110,
+  'danger-6': --dsc-color-negative-70
+);
+
+$information: (
+  'information-1': --dsc-color-informative-10,
+  'information-2': --dsc-color-informative-30,
+  'information-3': --dsc-color-informative-50,
+  'information-4': --dsc-color-informative-90,
+  'information-5': --dsc-color-informative-110,
+  'information-6': --dsc-color-informative-70
+);
+
+$background-colors: (
+  'highlight': $highlight,
+  'accent': $accent,
+  'decorative': $decorative,
+  'neutral': $neutral,
+  'success': $success,
+  'warning': $warning,
+  'danger': $danger,
+  'information': $information
+);

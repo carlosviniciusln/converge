@@ -64,7 +64,7 @@ export class DashboardV2Component implements OnInit {
 
       if(!response?.data){
           console.error('Erro ao carregar dados de orçamento e execução contratual');
-           this.dadosDashboardOrcamentoExecucaoContratual = [] as any;
+         this.dadosDashboardOrcamentoExecucaoContratual = null;
            return;
       }
 
@@ -81,7 +81,7 @@ export class DashboardV2Component implements OnInit {
 
     catch(e){
     console.error('Erro ao carregar dados de orçamento e execução contratual', e);
-    this.dadosDashboardOrcamentoExecucaoContratual = [] as any;
+    this.dadosDashboardOrcamentoExecucaoContratual = null;
   }
 }
 

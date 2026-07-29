@@ -1,0 +1,101 @@
+@use 'sass:math';
+
+.mat-badge-content {
+  color: var(--dsc-color-content-neutral-1);
+  border-radius: var(--dsc-border-radius-pill);
+  padding: 0 var(--dsc-spacing-quark);
+  z-index: 1;
+  width: auto !important;
+}
+
+@mixin _badge-size($size) {
+  .mat-badge-content {
+    min-width: $size;
+    height: $size;
+    line-height: $size !important;
+  }
+
+  &.mat-badge-above .mat-badge-content {
+    top: math.div(-$size, 2);
+  }
+
+  &.mat-badge-below .mat-badge-content {
+    bottom: math.div(-$size, 2);
+  }
+
+  &.mat-badge-before .mat-badge-content {
+    left: -$size;
+  }
+
+  &.mat-badge-after .mat-badge-content {
+    right: -$size;
+  }
+
+  &.mat-badge-overlap {
+    &.mat-badge-before .mat-badge-content {
+      left: math.div(-$size, 2);
+    }
+
+    &.mat-badge-after .mat-badge-content {
+      right: math.div(-$size, 2);
+    }
+  }
+
+  &.mat-badge-variantDark {
+    .mat-badge-content {
+      outline: var(--dsc-border-width-hairline) solid var(--dsc-color-border-neutral-1) !important;
+    }
+  }
+}
+
+@mixin _badge-color($text-color, $background-color) {
+  .mat-badge-content {
+    color: $text-color;
+    background-color: $background-color;
+  }
+}
+
+.mat-badge {
+  &-small {
+    @include _badge-size(8px);
+  }
+
+  &-medium {
+    @include _badge-size(16px);
+    font: var(--dsc-typography-caption-standard-600) !important;
+    font-feature-settings: "ss01";
+  }
+
+  &-large {
+    @include _badge-size(24px);
+  }
+
+  &--danger {
+    @include _badge-color(var(--dsc-color-content-neutral-1), var(--dsc-color-bg-danger-4));
+  }
+
+  &--information {
+    @include _badge-color(var(--dsc-color-content-neutral-1), var(--dsc-color-bg-information-4));
+  }
+
+  &--success {
+    @include _badge-color(var(--dsc-color-content-neutral-1), var(--dsc-color-bg-success-4));
+  }
+
+  &--warning {
+    @include _badge-color(var(--dsc-color-content-neutral-5), var(--dsc-color-bg-warning-3));
+  }
+
+  &--highlight {
+    @include _badge-color(var(--dsc-color-content-neutral-1), var(--dsc-color-bg-highlight-5));
+  }
+
+  &--accent {
+    @include _badge-color(var(--dsc-color-content-neutral-5), var(--dsc-color-bg-accent-4));
+  }
+}
+
+.mat-badge-large .mat-badge-content {
+  font: var(--dsc-typography-text-standard-600) !important;
+  font-feature-settings: "ss01";
+}
