@@ -46,22 +46,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
-package-lock.json
-environments/environment.ts
-src/environments/environment.ts
-src/assets/md/dsc-components.md
-src/assets/md/layout-requisites.md
-src/assets/md/lessons-learned.md
-src/assets/md/next-tasks.md
-src/environments/environment.ts
-package-lock.json
-src/environments/environment.ts
-src/assets/md/dsc-components.md
-src/assets/md/layout-requisites.md
-src/assets/md/lessons-learned.md
-src/assets/md/next-tasks.md
-
-**/*.md
-package-lock.json
 **/environment.ts
 src/environments/environment.ts
