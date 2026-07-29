@@ -1,0 +1,36 @@
+import { AfterViewInit, ElementRef, NgZone, OnDestroy, ViewContainerRef } from '@angular/core';
+import { _MatTooltipBase, MatTooltipDefaultOptions } from '@angular/material/tooltip';
+import { Overlay, ScrollDispatcher } from '@angular/cdk/overlay';
+import { Platform } from '@angular/cdk/platform';
+import { AriaDescriber, FocusMonitor } from '@angular/cdk/a11y';
+import { Directionality } from '@angular/cdk/bidi';
+import { BooleanInput, NumberInput } from '@angular/cdk/coercion';
+import { DscTooltipComponent } from './dsc-tooltip.component';
+import * as i0 from "@angular/core";
+export type DscTooltipPosition = 'after' | 'before' | 'above' | 'below' | 'left' | 'right';
+export type DscTooltipVariant = 'highlight' | 'neutral';
+export declare class DscTooltipDirective extends _MatTooltipBase<DscTooltipComponent> implements AfterViewInit, OnDestroy {
+    protected readonly _tooltipComponent: typeof DscTooltipComponent;
+    protected readonly _cssClassPrefix = "mat-mdc";
+    get placement(): DscTooltipPosition;
+    set placement(value: DscTooltipPosition);
+    private _placement;
+    get variant(): DscTooltipVariant;
+    set variant(value: DscTooltipVariant);
+    private _variant;
+    get positionAtOrigin(): boolean;
+    set positionAtOrigin(value: BooleanInput);
+    get disabled(): boolean;
+    set disabled(value: BooleanInput);
+    get showDelay(): number;
+    set showDelay(value: NumberInput);
+    get hideDelay(): number;
+    set hideDelay(value: NumberInput);
+    get message(): string;
+    set message(value: string);
+    constructor(overlay: Overlay, elementRef: ElementRef<HTMLElement>, scrollDispatcher: ScrollDispatcher, viewContainerRef: ViewContainerRef, ngZone: NgZone, platform: Platform, ariaDescriber: AriaDescriber, focusMonitor: FocusMonitor, scrollStrategy: any, dir: Directionality, defaultOptions: MatTooltipDefaultOptions, _document: any);
+    ngAfterViewInit(): void;
+    ngOnDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DscTooltipDirective, [null, null, null, null, null, null, null, null, null, { optional: true; }, { optional: true; }, null]>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<DscTooltipDirective, "[dscTooltip]", never, { "placement": { "alias": "dscTooltipPosition"; "required": false; }; "variant": { "alias": "dscTooltipVariant"; "required": false; }; "positionAtOrigin": { "alias": "dscTooltipPositionAtOrigin"; "required": false; }; "disabled": { "alias": "dscTooltipDisabled"; "required": false; }; "showDelay": { "alias": "dscTooltipShowDelay"; "required": false; }; "hideDelay": { "alias": "dscTooltipHideDelay"; "required": false; }; "message": { "alias": "dscTooltip"; "required": false; }; }, {}, never, never, false, never>;
+}

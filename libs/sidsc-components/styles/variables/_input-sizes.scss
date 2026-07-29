@@ -1,0 +1,24 @@
+$small: (
+  'px': 32px,
+  'rem': 2rem
+);
+
+$standard: (
+  'px': 40px,
+  'rem': 2.5rem
+);
+
+$large: (
+  'px': 48px,
+  'rem': 3rem
+);
+
+$height-sizes: (
+  'small': $small,
+  'standard': $standard,
+  'large': $large
+);
+
+$input-sizes: (
+  'height': $height-sizes
+);

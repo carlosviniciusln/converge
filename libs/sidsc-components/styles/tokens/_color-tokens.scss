@@ -1,0 +1,50 @@
+@use '../variables/palette.import' as *;
+@use '../variables/color-background.import' as *;
+@use '../variables/color-content.import' as *;
+@use '../variables/color-border.import' as *;
+@use './token-util' as *;
+
+@mixin _generate-fundamental-colors-tokens() {
+  @each $key, $values in $colors {
+    @include generate-tokens-to-element('color', $key, $values);
+  }
+
+  --dsc-color-grayscale-white: #fff;
+  --dsc-color-gradient-ceu: linear-gradient(90deg, var(--dsc-color-primary-90) 0%, var(--dsc-color-ceu-70) 63%, var(--dsc-color-ceu-70) 100%);
+  --dsc-color-gradient-uva: linear-gradient(90deg, var(--dsc-color-primary-90) 0%, var(--dsc-color-uva-70) 63%, var(--dsc-color-uva-70) 100%);
+  --dsc-color-gradient-limao: linear-gradient(90deg, var(--dsc-color-primary-90) 0%, var(--dsc-color-tertiary-70) 60%, var(--dsc-color-limao-70) 100%);
+  --dsc-color-gradient-tangerina: linear-gradient(90deg, var(--dsc-color-primary-70) 0%, var(--dsc-color-primary-70) 23%, var(--dsc-color-tertiary-50) 60%, var(--dsc-color-tangerina-70) 100%);
+  --dsc-color-gradient-goiaba: linear-gradient(90deg, var(--dsc-color-primary-90) 0%, var(--dsc-color-goiaba-70) 63%, var(--dsc-color-goiaba-70) 100%);
+  --dsc-color-gradient-agua: linear-gradient(90deg, var(--dsc-color-tertiary-70) 0%, var(--dsc-color-ceu-70) 100%);
+  --dsc-color-gradient-primavera: linear-gradient(90deg, var(--dsc-color-tertiary-70) 0%, var(--dsc-color-uva-70) 100%);
+  --dsc-color-gradient-inverno: linear-gradient(90deg, var(--dsc-color-tertiary-70) 0%, var(--dsc-color-limao-70) 100%);
+  --dsc-color-gradient-verao: linear-gradient(90deg, var(--dsc-color-tertiary-70) 0%, var(--dsc-color-tangerina-70) 100%);
+  --dsc-color-gradient-outono: linear-gradient(90deg, var(--dsc-color-tertiary-70) 0%, var(--dsc-color-goiaba-70) 100%);
+  --dsc-color-gradient-oceano: linear-gradient(90deg, var(--dsc-color-primary-90) 0%, var(--dsc-color-tertiary-70) 100%);
+  --dsc-color-gradient-gelo: linear-gradient(90deg, var(--dsc-color-grayscale-white) 0%, var(--dsc-color-grayscale-50) 100%);
+}
+
+@mixin _generate-background-tokens() {
+  @each $key, $values in $background-colors {
+    @include generate-tokens-to-element-with-var('color', 'bg', $values)
+  }
+}
+
+@mixin _generate-content-tokens() {
+  @each $key, $values in $content-colors {
+    @include generate-tokens-to-element-with-var('color', 'content', $values)
+  }
+}
+
+@mixin _generate-border-tokens() {
+  @each $key, $values in $border-colors {
+    @include generate-tokens-to-element-with-var('color', 'border', $values)
+  }
+}
+
+@mixin get-color-tokens() {
+  @include _generate-fundamental-colors-tokens();
+  @include _generate-background-tokens();
+  @include _generate-content-tokens();
+  @include _generate-border-tokens();
+}

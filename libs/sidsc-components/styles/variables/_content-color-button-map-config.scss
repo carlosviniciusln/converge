@@ -1,0 +1,32 @@
+$default: (
+  'primary': --dsc-color-content-neutral-1,
+  'secondary': --dsc-color-content-neutral-1,
+  'auxiliary': --dsc-color-content-neutral-4,
+  'highlight-auxiliary': --dsc-color-content-highlight-1,
+  'danger': --dsc-color-content-neutral-1,
+  'text': --dsc-color-content-highlight-1,
+  'menu-header': --dsc-color-content-neutral-1
+);
+
+$hover: (
+  'highlight-auxiliary': --dsc-color-content-highlight-2,
+  'text': --dsc-color-content-highlight-2
+);
+
+$active: (
+  'highlight-auxiliary': --dsc-color-content-highlight-2,
+  'text': --dsc-color-content-highlight-2
+);
+
+$disabled: (
+  'auxiliary': --dsc-color-content-neutral-2,
+  'highlight-auxiliary': --dsc-color-content-neutral-2,
+  'text': --dsc-color-content-neutral-3
+);
+
+$content: (
+  'default': $default,
+  'hover': $hover,
+  'active': $active,
+  'disabled': $disabled
+);

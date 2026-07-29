@@ -1,0 +1,100 @@
+$display-large-600: --dsc-font-size-giant, --dsc-font-weight-600, --dsc-font-line-height-near, --dsc-font-family-1;
+$display-large-700: --dsc-font-size-giant, --dsc-font-weight-700, --dsc-font-line-height-near, --dsc-font-family-1;
+$display-standard-600: --dsc-font-size-huge, --dsc-font-weight-600, --dsc-font-line-height-near, --dsc-font-family-1;
+$display-standard-700: --dsc-font-size-huge, --dsc-font-weight-700, --dsc-font-line-height-near, --dsc-font-family-1;
+$display-small-600: --dsc-font-size-bigger, --dsc-font-weight-600, --dsc-font-line-height-near, --dsc-font-family-1;
+$display-small-700: --dsc-font-size-bigger, --dsc-font-weight-700, --dsc-font-line-height-near, --dsc-font-family-1;
+$head-huge-600: --dsc-font-size-big, --dsc-font-weight-600, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-huge-700: --dsc-font-size-big, --dsc-font-weight-700, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-big-600: --dsc-font-size-larger, --dsc-font-weight-600, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-big-700: --dsc-font-size-larger, --dsc-font-weight-700, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-large-600: --dsc-font-size-large, --dsc-font-weight-600, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-large-700: --dsc-font-size-large, --dsc-font-weight-700, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-standard-600: --dsc-font-size-medium, --dsc-font-weight-600, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-standard-700: --dsc-font-size-medium, --dsc-font-weight-700, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-small-600: --dsc-font-size-small, --dsc-font-weight-600, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-small-700: --dsc-font-size-small, --dsc-font-weight-700, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-tiny-600: --dsc-font-size-smaller, --dsc-font-weight-600, --dsc-font-line-height-medium, --dsc-font-family-1;
+$head-tiny-700: --dsc-font-size-smaller, --dsc-font-weight-700, --dsc-font-line-height-medium, --dsc-font-family-1;
+$text-huge-400: --dsc-font-size-small, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-huge-600: --dsc-font-size-small, --dsc-font-weight-600, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-huge-700: --dsc-font-size-small, --dsc-font-weight-700, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-big-400: --dsc-font-size-smaller, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-big-600: --dsc-font-size-smaller, --dsc-font-weight-600, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-big-700: --dsc-font-size-smaller, --dsc-font-weight-700, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-large-400: --dsc-font-size-tiny, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-large-600: --dsc-font-size-tiny, --dsc-font-weight-600, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-large-700: --dsc-font-size-tiny, --dsc-font-weight-700, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-standard-400: --dsc-font-size-micro, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-standard-600: --dsc-font-size-micro, --dsc-font-weight-600, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-standard-700: --dsc-font-size-micro, --dsc-font-weight-700, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-small-400: --dsc-font-size-nano, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$text-small-600: --dsc-font-size-nano, --dsc-font-weight-600, --dsc-font-line-height-distant, --dsc-font-family-1;
+$caption-standard-400: --dsc-font-size-quark, --dsc-font-weight-400, --dsc-font-line-height-farther, --dsc-font-family-1;
+$caption-standard-600: --dsc-font-size-quark, --dsc-font-weight-600, --dsc-font-line-height-farther, --dsc-font-family-1;
+$link-huge-400: --dsc-font-size-small, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$link-big-400: --dsc-font-size-smaller, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$link-large-400: --dsc-font-size-tiny, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$link-standard-400: --dsc-font-size-micro, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+$link-small-400: --dsc-font-size-nano, --dsc-font-weight-400, --dsc-font-line-height-distant, --dsc-font-family-1;
+
+$display-typographies: (
+  'large-600': $display-large-600,
+  'large-700':$display-large-700,
+  'standard-600': $display-standard-600,
+  'standard-700': $display-standard-700,
+  'small-600': $display-small-600,
+  'small-700': $display-small-700
+);
+
+$head-typographies: (
+  'huge-600': $head-huge-600,
+  'huge-700': $head-huge-700,
+  'big-600': $head-big-600,
+  'big-700': $head-big-700,
+  'large-600': $head-large-600,
+  'large-700': $head-large-700,
+  'standard-600': $head-standard-600,
+  'standard-700': $head-standard-700,
+  'small-600': $head-small-600,
+  'small-700': $head-small-700,
+  'tiny-600': $head-tiny-600,
+  'tiny-700': $head-tiny-700
+);
+
+$text-typographies: (
+  'huge-400': $text-huge-400,
+  'huge-600': $text-huge-600,
+  'huge-700': $text-huge-700,
+  'big-400': $text-big-400,
+  'big-600': $text-big-600,
+  'big-700': $text-big-700,
+  'large-400': $text-large-400,
+  'large-600': $text-large-600,
+  'large-700': $text-large-700,
+  'standard-400': $text-standard-400,
+  'standard-600': $text-standard-600,
+  'standard-700': $text-standard-700,
+  'small-400': $text-small-400,
+  'small-600': $text-small-600
+);
+
+$caption-typographies: (
+  'standard-400': $caption-standard-400,
+  'standard-600': $caption-standard-600
+);
+
+$link-typographies: (
+  'huge-400': $link-huge-400,
+  'big-400': $link-big-400,
+  'large-400': $link-large-400,
+  'standard-400': $link-standard-400,
+  'small-400': $link-small-400
+);
+
+$typographies: (
+  'display': $display-typographies,
+  'head': $head-typographies,
+  'text': $text-typographies,
+  'caption': $caption-typographies
+);

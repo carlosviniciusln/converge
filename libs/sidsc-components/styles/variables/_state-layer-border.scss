@@ -1,0 +1,18 @@
+$disabled: (
+  'disabled-1': --dsc-color-grayscale-70
+);
+
+$readonly: (
+  'readonly-1': --dsc-color-grayscale-70
+);
+
+$focus: (
+  'focus-light': --dsc-color-grayscale-white,
+  'focus-dark': --dsc-color-grayscale-130
+);
+
+$state-layers-border: (
+  'disabled': $disabled,
+  'readonly': $readonly,
+  'focus': $focus
+);

@@ -1,0 +1,5 @@
+/*
+ * Public API Surface of sidsc-components
+ */
+export default {};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3Byb2plY3RzL3NpZHNjLWNvbXBvbmVudHMvc3JjL3B1YmxpYy1hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFDSCxlQUFlLEVBQUUsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qXG4gKiBQdWJsaWMgQVBJIFN1cmZhY2Ugb2Ygc2lkc2MtY29tcG9uZW50c1xuICovXG5leHBvcnQgZGVmYXVsdCB7fTtcbiJdfQ==

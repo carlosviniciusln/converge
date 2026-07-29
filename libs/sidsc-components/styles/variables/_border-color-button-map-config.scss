@@ -1,0 +1,25 @@
+$default: (
+  'auxiliary': --dsc-color-border-neutral-2,
+  'highlight-auxiliary': --dsc-color-border-highlight-1
+);
+
+$focus: (
+  'primary': --dsc-color-border-neutral-7,
+  'secondary': --dsc-color-border-neutral-7,
+  'auxiliary': --dsc-color-border-neutral-7,
+  'highlight-auxiliary': --dsc-color-border-neutral-7,
+  'danger': --dsc-color-border-neutral-7,
+  'text': --dsc-color-border-neutral-7,
+  'menu-header': --dsc-color-border-neutral-1
+);
+
+$disabled: (
+  'auxiliary': --dsc-color-border-neutral-4,
+  'highlight-auxiliary': --dsc-color-border-neutral-4
+);
+
+$border: (
+  'default': $default,
+  'focus': $focus,
+  'disabled': $disabled
+);

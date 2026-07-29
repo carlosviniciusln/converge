@@ -1,0 +1,13 @@
+@use './border-color-button-map-config.import' as *;
+@use './background-color-button-map-config.import' as *;
+@use './content-color-button-map-config.import' as *;
+@use './icon-color-button-map-config.import' as *;
+
+$button-colors: (
+  'bg': $background,
+  'icon': $icon,
+  'content': $content,
+  'border': $border
+);
+
+

@@ -1,0 +1,80 @@
+$quark: (
+  'px': 12px,
+  'rem': .75rem
+);
+
+$nano: (
+  'px': 14px,
+  'rem': .875rem
+);
+
+$micro: (
+  'px': 16px,
+  'rem': 1rem
+);
+
+$tiny: (
+  'px': 18px,
+  'rem': 1.125rem
+);
+
+$smaller: (
+  'px': 20px,
+  'rem': 1.25rem
+);
+
+$small: (
+  'px': 24px,
+  'rem': 1.5rem
+);
+
+$medium: (
+  'px': 28px,
+  'rem': 1.75rem
+);
+
+$large: (
+  'px': 32px,
+  'rem': 2rem
+);
+
+$larger: (
+  'px': 36px,
+  'rem': 2.25rem
+);
+
+$big: (
+  'px': 40px,
+  'rem': 2.5rem
+);
+
+$bigger: (
+  'px': 44px,
+  'rem': 2.75rem
+);
+
+$huge: (
+  'px': 52px,
+  'rem': 3.25rem
+);
+
+$giant: (
+  'px': 60px,
+  'rem': 3.75rem
+);
+
+$font-sizes: (
+  'quark': $quark,
+  'nano': $nano,
+  'micro': $micro,
+  'tiny': $tiny,
+  'smaller': $smaller,
+  'small': $small,
+  'medium': $medium,
+  'large': $large,
+  'larger': $larger,
+  'big': $big,
+  'bigger': $bigger,
+  'huge': $huge,
+  'giant': $giant
+);
