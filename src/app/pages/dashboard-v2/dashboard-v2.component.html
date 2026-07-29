@@ -1,5 +1,5 @@
 <div class="content">
-  <div class="dash-wrapper" *ngIf="!loading">
+  <div class="dash-wrapper" *ngIf="!loading && dadosDashboardOrcamentoExecucaoContratual">
 
     <!-- ── HEADER ─────────────────────────────────────────── -->
     <div class="dash-header">
@@ -30,7 +30,7 @@
             <div id="card-capex-dotacao" class="kpi-card">
               <span class="kpi-label">Dotação</span>
               <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual.dashboardOrcamento.vrInvestimentoPlanejado| currency:'BRL'
+                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.vrInvestimentoPlanejado| currency:'BRL'
                 }}</span>
             </div>
             <div id="card-capex-empenho" class="kpi-card">
