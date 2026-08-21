@@ -17,7 +17,7 @@ const MOCK_USER: Login = {
   accessToken: MOCK_TOKEN,
   expiresIn:   3600,
   coMatricula: 'usuario',
-  noUsuario:   'João da Silva',
+  noUsuario:   'Jonathas',
   nuUsuario:   1,
   noPerfil:    'Administrador',
   claims: [{
