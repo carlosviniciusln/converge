@@ -38,10 +38,29 @@
       </div>
 
       <!-- Ações -->
-      <dsc-button-header id="btn-logout" *ngIf="isLoggedIn" icon="logout" label="Sair" (buttonClick)="signOut()">
-      </dsc-button-header>
-      <dsc-button-header id="btn-entrar" *ngIf="!isLoggedIn" icon="login" label="Entrar" (buttonClick)="openModalLogin()">
-      </dsc-button-header>
+      <button
+        *ngIf="isLoggedIn"
+        id="btn-logout"
+        type="button"
+        class="custom-header__action"
+        (click)="signOut()"
+        aria-label="Sair"
+      >
+        <mat-icon>logout</mat-icon>
+        <span>Sair</span>
+      </button>
+
+      <button
+        *ngIf="!isLoggedIn"
+        id="btn-entrar"
+        type="button"
+        class="custom-header__action"
+        (click)="openModalLogin()"
+        aria-label="Entrar"
+      >
+        <mat-icon>login</mat-icon>
+        <span>Entrar</span>
+      </button>
 
     </div>
 

@@ -219,8 +219,16 @@ export class TokenStorageService {
   constructor(private jwtHelper: JwtHelperService) {}
 
   signOut(): void {
-    window.localStorage.clear();
-    window.location.reload();
+    window.localStorage.removeItem(TOKEN_KEY);
+    window.localStorage.removeItem(USER_KEY);
+
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const cookieName = cookie.split('=')[0].trim();
+      if (cookieName) {
+        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+      }
+    }
   }
 
   public saveToken(token: string): void {
