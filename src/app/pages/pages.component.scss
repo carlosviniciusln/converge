@@ -1,0 +1,131 @@
+// Remove o espaço reservado para o sidebar — agora o menu é o drawer do header
+.wrapper {
+  .sidebar {
+    display: none;
+  }
+
+  .main-panel--full {
+    float: none;
+    width: 100%;
+    margin-left: 0;
+
+    > .content {
+      padding-left: 30px;
+    }
+  }
+}
+
+// Força o dsc-sidenav e os elementos internos do Angular Material a ocuparem
+// todo o espaço do .content (flex column com min-height: 100vh - 70px)
+::ng-deep dsc-sidenav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  .mat-sidenav-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mat-sidenav-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+// Organiza page-content + footer dentro do sidenav
+.sidenav-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+
+  .sidenav-page-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  dsc-footer {
+    flex-shrink: 0;
+    margin-top: auto;
+  }
+}
+
+// ── Footer customizado ────────────────────────────────────────
+.custom-footer {
+  flex-shrink: 0;
+  margin-top: auto;
+  background: #005CA9;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+
+.custom-footer__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.custom-footer__brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.custom-footer__logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.custom-footer__sigla {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.custom-footer__additional {
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+}
+
+.custom-footer__version {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  margin-left: auto;
+}
+
+.custom-footer__bottom {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.custom-footer__links-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.custom-footer__link {
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  text-decoration: underline;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}

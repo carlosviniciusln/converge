@@ -1,0 +1,425 @@
+// Paleta CAIXA DSC
+$primary-90: #005CA9;
+$primary-110: #00437A;
+$primary-130: #002A4D;
+$primary-10: #E5F1FC;
+$accent: #127527;    // Positive 90
+$accent-lt: #e7f4ea; // Positive 10
+$warn: #b22c2c;      // Negative 90
+$warn-lt: #fbebeb;   // Negative 10
+$amber: #ca9804;     // Attention 90
+$amber-lt: #fff9e6;  // Attention 10
+$info: #038299;      // Informative 90
+$surface: #f7fafa;   // Greyscale 10
+$border: #d0e0e3;    // Greyscale 50
+$border-lt: #ebf1f2; // Greyscale 30
+$text: #22292e;      // Greyscale 130
+$muted: #64747a;     // Greyscale 90
+$muted-lt: #9eb2b8;  // Greyscale 70
+$card: #ffffff;
+$radius: 8px;
+$shadow: 0 2px 8px rgba(0,0,0,.10);
+
+// ─── Layout ───────────────────────────────────────────────────────
+.painel-contrato {
+  padding: 16px 20px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.painel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  .painel-titulo {
+    font-size: 20px;
+    font-weight: 700;
+    color: $primary-130;
+    margin: 0 0 6px;
+  }
+
+  .painel-contrato-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .contrato-num {
+      font-size: 15px;
+      font-weight: 600;
+      color: $primary-90;
+    }
+  }
+
+  .painel-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+.vigencia-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: $primary-10;
+  border: 1px solid $border;
+  border-radius: 6px;
+  padding: 4px 12px;
+
+  .vigencia-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: $muted;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    white-space: nowrap;
+  }
+
+  .vigencia-select {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 600;
+    color: $primary-110;
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+  }
+}
+
+// ─── Grid 2 colunas ───────────────────────────────────────────────
+.painel-body {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.col-left,
+.col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// ─── Utilitários ──────────────────────────────────────────────────
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: $muted;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.field-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: $text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.field-strong { font-weight: 700; }
+
+.info-grid {
+  display: grid;
+  gap: 6px 14px;
+}
+.info-grid-2 { grid-template-columns: 1fr 1fr; }
+.info-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.info-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.field-span-2 { grid-column: span 2; }
+
+.mt-8 { margin-top: 8px; }
+.sep {
+  border: none;
+  border-top: 1px solid $border;
+  margin: 8px 0;
+}
+.mono { font-family: 'Courier New', Courier, monospace; }
+
+// ─── Cores semânticas ─────────────────────────────────────────────
+.text-blue   { color: $primary-90; }
+.text-green  { color: $accent; }
+.text-red    { color: $warn; }
+.text-amber  { color: $amber; }
+.text-muted  { color: $muted; }
+
+// ─── Barra de execução ────────────────────────────────────────────
+.exec-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.exec-bar-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.exec-bar-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: $primary-110;
+  text-decoration: underline dotted;
+}
+.exec-bar-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: $accent;
+}
+
+// ─── Resumo da Vigência ───────────────────────────────────────────
+.vig-body {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 0;
+  border: 1px solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+  margin-bottom: 8px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.vig-dates {
+  padding: 10px 12px;
+  border-right: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.vig-col {
+  padding: 10px 12px;
+  border-right: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &:last-child { border-right: none; }
+}
+
+.vig-col-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: $muted;
+  border-bottom: 1px solid $border;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+.vig-num {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.vig-val {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.vig-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: $muted;
+  font-style: italic;
+  padding: 4px 12px;
+  border-top: 1px solid $border;
+  background: $surface;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  strong { color: $primary-110; font-style: normal; }
+}
+
+.vig-exec-pct {
+  font-style: normal;
+  font-weight: 700;
+}
+
+// ─── Pagamentos Banner ─────────────────────────────────────────────
+.pgto-banner {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  border: 1px solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pgto-item {
+  padding: 8px 10px;
+  border-right: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &:last-child { border-right: none; }
+}
+
+.pgto-item--clickable {
+  cursor: pointer;
+  transition: background .15s;
+  &:hover { background: $surface; }
+}
+
+.pgto-val {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pgto-hint {
+  font-size: 11px;
+  color: $muted;
+}
+
+// ─── KPI Strip ────────────────────────────────────────────────────
+.kpi-strip {
+  display: flex;
+  border: 1px solid $border;
+  border-radius: $radius;
+  overflow: hidden;
+}
+
+.kpi-item {
+  flex: 1;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border-right: 1px solid $border;
+
+  &:last-child { border-right: none; }
+}
+
+.kpi-val {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.kpi-val-sm {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+// ─── Pipeline Workflow ────────────────────────────────────────────
+.pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.pipeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+  padding: 10px 8px;
+  flex: 1;
+  min-width: 72px;
+  border-radius: $radius;
+  cursor: pointer;
+  transition: background .15s;
+
+  &:hover { background: $surface; }
+}
+
+.pipeline-icon {
+  font-size: 22px;
+}
+
+.pipeline-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: $muted;
+}
+
+.pipeline-count {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.pipeline-sub {
+  font-size: 10px;
+  color: $muted;
+}
+
+.pipeline-arrow {
+  color: $border;
+  font-size: 22px;
+}
+
+// ─── Cards (painel customizado) ───────────────────────────────────
+.card {
+  background: $card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  overflow: hidden;
+}
+
+.card-header {
+  background: $primary-130;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .card-header-icon {
+    font-size: 16px;
+    opacity: .9;
+  }
+}
+
+.card-body {
+  padding: 10px 12px;
+
+  &.card-body--flush {
+    padding: 0;
+  }
+}
+
+/* Smaller canvas heights for busca-gerencial to reduce excessive whitespace */
+.orc-main-canvas { height: 340px !important; min-height: 240px; }
+.orc-monthly-canvas { height: 260px !important; min-height: 180px; }
+.orc-bar-canvas { height: 380px !important; }
+
+.text-info { color: $info; }

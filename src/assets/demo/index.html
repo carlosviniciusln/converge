@@ -1,0 +1,2736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Contrato v2 | SDGVC</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* ── Paleta Fixa CAIXA ─────────────────────────
+         Azul Principal: Primary 130 / 110 / 90
+         Fonte: design.caixa/fundamentals/colors
+      ─────────────────────────────────────────────── */
+      --primary:    #002A4D;   /* Primary 130 — headers, nav */
+      --primary-lt: #00437A;   /* Primary 110 — sub-headers, pipeline */
+      --primary-90: #005CA9;   /* Primary 90  — botões, links ativos */
+      --primary-70: #2D8AD8;   /* Primary 70  — hover, destaques */
+
+      /* ── Laranja CAIXA (Secondary) — uso restrito ── */
+      --orange:     #d87b00;   /* Secondary 90 */
+      --orange-lt:  #ffefd6;   /* Secondary 10 */
+
+      /* ── Turquesa CAIXA (Tertiary) ─────────────── */
+      --teal:       #54bbab;   /* Tertiary 70  — acento visual */
+      --teal-lt:    #e4f7f4;   /* Tertiary 10 */
+
+      /* ── Feedback: Positive (verde) ─────────────── */
+      --accent:     #127527;   /* Positive 90 — sucesso, pago */
+      --accent-lt:  #e7f4ea;   /* Positive 10 */
+
+      /* ── Feedback: Negative (vermelho) ──────────── */
+      --warn:       #b22c2c;   /* Negative 90 — erro, multa */
+      --warn-lt:    #fbebeb;   /* Negative 10 */
+
+      /* ── Feedback: Attention (amarelo) ──────────── */
+      --amber:      #ca9804;   /* Attention 90 — alerta */
+      --amber-lt:   #fff9e6;   /* Attention 10 */
+
+      /* ── Feedback: Informative (ciano) ──────────── */
+      --info:       #038299;   /* Informative 90 — informação */
+      --info-lt:    #e5f6f8;   /* Informative 10 */
+
+      /* ── Neutros (Greyscale CAIXA) ───────────────── */
+      --surface:    #f7fafa;   /* Greyscale 10 — fundo geral */
+      --card:       #ffffff;   /* Branco */
+      --border:     #d0e0e3;   /* Greyscale 50 — bordas */
+      --border-lt:  #ebf1f2;   /* Greyscale 30 — bordas suaves */
+      --text:       #22292e;   /* Greyscale 130 — texto principal */
+      --muted:      #64747a;   /* Greyscale 90 — texto secundário */
+      --muted-lt:   #9eb2b8;   /* Greyscale 70 — placeholder */
+
+      /* ── Azul claro (Primary 10) ─────────────────── */
+      --blue-lt:    #E5F1FC;   /* Primary 10 */
+
+      /* ── Tipografia e forma ───────────────────────── */
+      --radius:     8px;
+      --shadow:     0 2px 8px rgba(0,0,0,.10);
+      --fs-base:    14px;
+      --fs-sm:      13px;
+      --fs-xs:      12px;
+      --fs-xxs:     11px;
+      --fs-lg:      15px;
+      --fs-xl:      18px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: var(--fs-base);
+      color: var(--text);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    /* ══════════════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════════════ */
+    .page {
+      display: grid;
+      height: 100vh;
+      grid-template-rows: auto 1fr;
+    }
+
+    .body {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 10px;
+      padding: 10px 14px 10px 14px;
+      overflow: hidden;
+    }
+
+    .col-left  { display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+    .col-right { display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+
+    /* ══════════════════════════════════════════════
+       CABEÇALHO
+    ══════════════════════════════════════════════ */
+    header {
+      background: linear-gradient(135deg, #002A4D 0%, #005CA9 60%, #54BBAB 100%); /* Gradiente Oceano CAIXA */
+      color: #fff;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0 6px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .header-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 0 6px;
+    }
+    header h1 { font-size: var(--fs-xl); font-weight: 700; letter-spacing: .4px; }
+
+    .contract-badge {
+      background: var(--primary-lt);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 20px;
+      padding: 3px 14px;
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-ativo {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent-lt);  /* Positive 10 */
+      color: var(--accent);          /* Positive 90 */
+      border-radius: 20px;
+      padding: 1px 8px;
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: var(--fs-xs);
+      color: rgba(255,255,255,.65);
+    }
+    .breadcrumb a { color: rgba(255,255,255,.8); text-decoration: none; }
+    .breadcrumb a:hover { color: #fff; text-decoration: underline; }
+    .breadcrumb .bsep { opacity: .4; font-size: var(--fs-xxs); }
+    .breadcrumb .bcurrent { color: #fff; font-weight: 600; }
+
+    /* Seletor de vigência no breadcrumb */
+    .vigencia-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 6px;
+      padding: 3px 10px;
+      cursor: pointer;
+    }
+    .vigencia-select-wrap label {
+      font-size: var(--fs-xxs);
+      color: rgba(255,255,255,.65);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      white-space: nowrap;
+    }
+    .vigencia-select-wrap select {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      font-family: inherit;
+      padding-right: 4px;
+    }
+    .vigencia-select-wrap select option { background: var(--primary); color: #fff; }
+
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .user-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--primary-lt);
+      border: 2px solid rgba(255,255,255,.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--fs-base); font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .user-detail { display: flex; flex-direction: column; gap: 0; text-align: right; }
+    .user-name { font-size: var(--fs-sm); font-weight: 700; color: #fff; }
+    .user-meta { font-size: var(--fs-xxs); color: rgba(255,255,255,.65); }
+
+    /* ══════════════════════════════════════════════
+       CARD GENÉRICO
+    ══════════════════════════════════════════════ */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .card-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 6px 13px;
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .card-body {
+      padding: 9px 13px;
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* ══════════════════════════════════════════════
+       BOTÃO EXPANDIR CARD ([ ⤢ ])
+    ══════════════════════════════════════════════ */
+    .btn-expand {
+      background: rgba(255,255,255,.0);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 4px;
+      color: rgba(255,255,255,.75);
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 6px;
+      flex-shrink: 0;
+      transition: background .14s, color .14s;
+      letter-spacing: 0;
+      font-weight: 400;
+      text-transform: none;
+      margin-left: auto;
+    }
+    .btn-expand:hover {
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      border-color: rgba(255,255,255,.55);
+    }
+    /* variante para headers azul-claro (vig-header, pipeline-header) */
+    .btn-expand-lt {
+      background: rgba(255,255,255,.0);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 4px;
+      color: rgba(255,255,255,.75);
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 6px;
+      flex-shrink: 0;
+      transition: background .14s, color .14s;
+      letter-spacing: 0;
+      font-weight: 400;
+      text-transform: none;
+    }
+    .btn-expand-lt:hover {
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      border-color: rgba(255,255,255,.55);
+    }
+
+    /* ══════════════════════════════════════════════
+       FULLSCREEN OVERLAY (tela cheia do card)
+    ══════════════════════════════════════════════ */
+    .fs-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--surface);
+      z-index: 3000;
+      flex-direction: column;
+      animation: fsIn .18s ease;
+    }
+    .fs-overlay.open { display: flex; }
+    @keyframes fsIn {
+      from { opacity: 0; transform: scale(.98); }
+      to   { opacity: 1; transform: none; }
+    }
+    .fs-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 9px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      border-bottom: 2px solid var(--primary-lt);
+    }
+    .fs-header h2 {
+      font-size: var(--fs-base);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      flex: 1;
+    }
+    .fs-close {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 2px 10px;
+      line-height: 1.4;
+      transition: background .13s;
+    }
+    .fs-close:hover { background: rgba(255,255,255,.25); }
+    .fs-hint {
+      font-size: var(--fs-xxs);
+      color: rgba(255,255,255,.5);
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .fs-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    /* Grade para conteúdo expandido */
+    .fs-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .fs-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .fs-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .fs-section-title {
+      background: var(--primary-lt);
+      color: #fff;
+      padding: 6px 14px;
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .fs-section-body { padding: 12px 14px; }
+
+    /* ══════════════════════════════════════════════
+       CAMPOS
+    ══════════════════════════════════════════════ */
+    .field { display: flex; flex-direction: column; gap: 1px; }
+    .field label {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .field .value {
+      font-size: var(--fs-base);
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px 12px; }
+
+    hr.sep { border: none; border-top: 1px solid var(--border); margin: 2px 0; }
+
+    .col-green { color: var(--accent);     }  /* Positive 90 */
+    .col-red   { color: var(--warn);       }  /* Negative 90 */
+    .col-blue  { color: var(--primary-90); }  /* Primary 90 */
+    .col-amber { color: var(--amber);      }  /* Attention 90 */
+    .col-muted { color: var(--muted);      }  /* Greyscale 90 */
+    .col-teal  { color: var(--teal);       }  /* Tertiary 70 */
+    .col-accent { color: var(--accent);    }
+    .col-muted { color: var(--muted); }
+
+    /* ══════════════════════════════════════════════
+       PROGRESSO
+    ══════════════════════════════════════════════ */
+    .progress-bar-wrap {
+      background: var(--border);
+      border-radius: 6px;
+      height: 7px;
+      overflow: hidden;
+    }
+    .progress-bar { height: 100%; border-radius: 6px; background: var(--accent); }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--fs-xxs);
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    /* ══════════════════════════════════════════════
+       ALERT BOX
+    ══════════════════════════════════════════════ */
+    .alert-box {
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .alert-ok    { background: var(--accent-lt); color: var(--accent);  border: 1px solid #5cb26e; }  /* Positive 50 */
+    .alert-warn  { background: var(--warn-lt);   color: var(--warn);    border: 1px solid #e47272; }  /* Negative 50 */
+    .alert-amber { background: var(--amber-lt);  color: var(--amber);   border: 1px solid #fdd150; }  /* Attention 50 */
+
+    /* ══════════════════════════════════════════════
+       CHIP
+    ══════════════════════════════════════════════ */
+    .chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+    }
+    .chip-green  { background: var(--accent-lt); color: var(--accent);   }  /* Positive */
+    .chip-red    { background: var(--warn-lt);   color: var(--warn);     }  /* Negative */
+    .chip-blue   { background: var(--blue-lt);   color: var(--primary-90); }  /* Primary 90 */
+    .chip-amber  { background: var(--amber-lt);  color: var(--amber);    }  /* Attention */
+    .chip-assin  { background: var(--accent-lt); color: var(--accent);   }  /* Positive 10/90 */
+    .chip-pend   { background: var(--amber-lt);  color: var(--amber);    }  /* Attention 10/90 */
+    .chip-ok     { background: var(--accent-lt); color: var(--accent);   }  /* Positive */
+
+    /* ══════════════════════════════════════════════
+       SEÇÃO DE VALORES AGRUPADOS
+    ══════════════════════════════════════════════ */
+    .vg-section {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .vg-section-title {
+      background: var(--surface);
+      padding: 4px 10px;
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .vg-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .vg-item {
+      padding: 5px 10px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .vg-item:nth-child(even) { border-right: none; }
+    .vg-item:nth-last-child(-n+2) { border-bottom: none; }
+    .vg-item label {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--muted);
+    }
+    .vg-item .vg-val {
+      font-size: var(--fs-base);
+      font-weight: 700;
+    }
+    .vg-item .vg-sub {
+      font-size: var(--fs-xxs);
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════════════
+       RESUMO DA VIGÊNCIA — layout reorganizado
+    ══════════════════════════════════════════════ */
+    .vig-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .vig-header {
+      background: var(--primary-lt);
+      color: #fff;
+      padding: 5px 12px;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .vig-body {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr;
+      gap: 0;
+    }
+
+    /* Coluna de datas */
+    .vig-dates {
+      padding: 7px 12px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 160px;
+    }
+    /* Colunas numéricas */
+    .vig-col {
+      padding: 7px 10px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .vig-col:last-child { border-right: none; }
+    .vig-col-title {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 3px;
+      margin-bottom: 2px;
+    }
+    .vig-num {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .vig-num label {
+      font-size: var(--fs-xxs);
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .vig-num .v {
+      font-size: var(--fs-sm);
+      font-weight: 700;
+    }
+    .vig-foot {
+      font-size: var(--fs-xxs);
+      color: var(--muted);
+      font-style: italic;
+      padding: 3px 12px 4px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .vig-foot strong { color: var(--primary-lt); font-style: normal; }
+
+    /* ══════════════════════════════════════════════
+       WORKFLOW PIPELINE  OS → Ateste → Pgto → Retenção
+    ══════════════════════════════════════════════ */
+    .pipeline-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .pipeline-header {
+      background: var(--primary-lt);
+      color: #fff;
+      padding: 5px 12px;
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .pipeline {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      background: var(--card);
+    }
+    .pipeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 8px 8px;
+      cursor: pointer;
+      transition: background .15s;
+      gap: 4px;
+      text-align: center;
+    }
+    .pipeline-step:hover { background: var(--surface); }
+    .pipeline-step .ps-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+    .pipeline-step .ps-label {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+    }
+    .pipeline-step .ps-count {
+      font-size: var(--fs-xl);
+      font-weight: 800;
+      line-height: 1;
+    }
+    .pipeline-step .ps-sub {
+      font-size: var(--fs-xxs);
+      color: var(--muted);
+    }
+    .pipeline-step .ps-hint {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      color: var(--muted);
+      opacity: .6;
+    }
+    .pipeline-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 2px;
+      color: var(--border);
+      font-size: 18px;
+      font-weight: 300;
+    }
+    /* Cores por etapa */
+    .ps-os     .ps-count { color: var(--primary-90); }
+    .ps-ateste .ps-count { color: var(--info); }         /* Informative 90 — azul ciano CAIXA */
+    .ps-pgto   .ps-count { color: var(--accent); }
+    .ps-reten  .ps-count { color: var(--warn); }
+    .ps-reten  .ps-label { color: var(--warn); }
+
+    /* ══════════════════════════════════════════════
+       RESUMO DOS PAGAMENTOS (só aqui aparecem valores)
+    ══════════════════════════════════════════════ */
+    .pgto-banner {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .pgto-item {
+      padding: 7px 10px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .pgto-item:last-child { border-right: none; }
+    .pgto-item label {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--muted);
+    }
+    .pgto-item .pv {
+      font-size: var(--fs-base);
+      font-weight: 700;
+    }
+    .pgto-item .ph {
+      font-size: var(--fs-xxs);
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════════════
+       KPI STRIP
+    ══════════════════════════════════════════════ */
+    .kpi-strip {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .kpi-item {
+      flex: 1;
+      padding: 5px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      border-right: 1px solid var(--border);
+    }
+    .kpi-item:last-child { border-right: none; }
+    .kpi-item label {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--muted);
+    }
+    .kpi-item .kval { font-size: var(--fs-base); font-weight: 700; }
+    .kpi-item .kval.sm { font-size: var(--fs-sm); }
+
+    /* ══════════════════════════════════════════════
+       TABELAS
+    ══════════════════════════════════════════════ */
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: var(--primary);
+      color: #fff;
+      padding: 5px 8px;
+      text-align: left;
+      font-size: var(--fs-xxs);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    thead th.r { text-align: right; }
+    thead th.c { text-align: center; }
+    tbody tr:nth-child(even) { background: var(--blue-lt); }  /* Primary 10 */
+    tbody tr:nth-child(odd)  { background: #fff; }
+    tbody td {
+      padding: 5px 8px;
+      color: var(--text);
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+      font-size: var(--fs-sm);
+    }
+    tbody td.r { text-align: right; }
+    tbody td.c { text-align: center; }
+    tbody td.mono { font-family: monospace; }
+
+    /* ══════════════════════════════════════════════
+       MODAL
+    ══════════════════════════════════════════════ */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,50,.55);
+      backdrop-filter: blur(2px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 40px rgba(0,0,0,.28);
+      width: 860px;
+      max-width: 95vw;
+      max-height: 82vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalIn .18s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(-16px) scale(.97); }
+      to   { opacity: 1; transform: none; }
+    }
+    .modal-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 11px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .modal-header h2 { font-size: var(--fs-sm); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+    .modal-close {
+      background: none; border: none; color: #fff;
+      font-size: 22px; cursor: pointer; line-height: 1; opacity: .8; padding: 0 4px;
+    }
+    .modal-close:hover { opacity: 1; }
+    .modal-kpi-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--surface);
+    }
+    .mkpi {
+      flex: 1;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      border-right: 1px solid var(--border);
+    }
+    .mkpi:last-child { border-right: none; }
+    .mkpi label {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--muted);
+    }
+    .mkpi .mv { font-size: var(--fs-lg); font-weight: 700; }
+    .modal-body { flex: 1; overflow-y: auto; }
+    .modal-body thead th { position: sticky; top: 0; z-index: 1; }
+    .modal-footer {
+      padding: 7px 14px;
+      font-size: var(--fs-xxs);
+      color: var(--muted);
+      font-style: italic;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════════════
+       CLICÁVEL
+    ══════════════════════════════════════════════ */
+    .clickable { cursor: pointer; transition: filter .15s; }
+    .clickable:hover { filter: brightness(.93); }
+    .click-hint {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      opacity: .55;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    /* ══════════════════════════════════════════════
+       BOTÕES
+    ══════════════════════════════════════════════ */
+    .btn {
+      border: none;
+      border-radius: 5px;
+      padding: 3px 11px;
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      transition: background .15s;
+    }
+    .btn-blue  { background: var(--primary-90); color: #fff; }   /* Primary 90 */
+    .btn-blue:hover  { background: var(--primary-lt); }           /* Primary 110 */
+    .btn-green { background: var(--accent); color: #fff; }        /* Positive 90 */
+    .btn-green:hover { background: #0d5820; }                     /* Positive 130 aprox. */
+
+    /* ══════════════════════════════════════════════
+       ÚLTIMA OS mini-card
+    ══════════════════════════════════════════════ */
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .mini-card-title {
+      background: var(--surface);
+      padding: 4px 10px;
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .mini-card-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 16px;
+      padding: 7px 10px;
+    }
+
+    /* ══════════════════════════════════════════════
+       LEGENDA
+    ══════════════════════════════════════════════ */
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 4px; font-size: var(--fs-xxs); color: var(--muted); }
+    .legend-dot  { width: 7px; height: 7px; border-radius: 50%; }
+
+    /* ══════════════════════════════════════════════
+       MENU SANDUÍCHE
+    ══════════════════════════════════════════════ */
+    .hamburger-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+      border-radius: 5px;
+      transition: background .15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hamburger-btn:hover { background: rgba(255,255,255,.12); }
+    .hamburger-btn .hb-label {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      opacity: .75;
+    }
+
+    /* Overlay e painel */
+    .side-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,50,.45);
+      z-index: 2000;
+    }
+    .side-overlay.open { display: block; }
+    .side-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 280px;
+      height: 100vh;
+      background: var(--primary);
+      box-shadow: -6px 0 28px rgba(0,0,0,.35);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform .22s ease;
+      z-index: 2001;
+    }
+    .side-overlay.open .side-panel { transform: translateX(0); }
+    .side-panel-header {
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .side-panel-title {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: rgba(255,255,255,.6);
+    }
+    .side-close {
+      background: none; border: none; color: rgba(255,255,255,.7);
+      font-size: 20px; cursor: pointer; padding: 0; line-height: 1;
+    }
+    .side-close:hover { color: #fff; }
+
+    .side-user-block {
+      padding: 20px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .side-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--primary-lt);
+      border: 3px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 800; color: #fff;
+    }
+    .side-name {
+      font-size: var(--fs-base);
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+    }
+    .side-meta {
+      font-size: var(--fs-xxs);
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .side-badge {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 14px;
+      padding: 3px 12px;
+      font-size: var(--fs-xxs);
+      color: rgba(255,255,255,.8);
+      font-weight: 700;
+    }
+
+    .side-menu {
+      flex: 1;
+      padding: 10px 0;
+      overflow-y: auto;
+    }
+    .side-menu-section {
+      padding: 6px 18px 3px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: rgba(255,255,255,.35);
+    }
+    .side-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 18px;
+      font-size: var(--fs-sm);
+      color: rgba(255,255,255,.8);
+      cursor: pointer;
+      transition: background .13s;
+      text-decoration: none;
+    }
+    .side-menu-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .side-menu-item .smi-icon { font-size: 15px; width: 20px; text-align: center; }
+    .side-menu-divider { border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 6px 18px; }
+
+    .side-footer {
+      padding: 12px 18px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      font-size: var(--fs-xxs);
+      color: rgba(255,255,255,.35);
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════════════════
+       MODAL GRÁFICO — execução financeira
+    ══════════════════════════════════════════════ */
+    .modal-wide {
+      width: 900px;
+      max-width: 96vw;
+    }
+    .chart-area {
+      padding: 18px 24px 8px;
+      position: relative;
+    }
+    .chart-legend-row {
+      display: flex;
+      gap: 18px;
+      padding: 0 24px 12px;
+      flex-wrap: wrap;
+    }
+    .chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--fs-xxs);
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .chart-legend-swatch {
+      width: 14px; height: 10px;
+      border-radius: 3px;
+    }
+
+    /* ══════════════════════════════════════════════
+       MODAL DETALHE PAGAMENTO
+    ══════════════════════════════════════════════ */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+    }
+    .detail-item {
+      padding: 8px 14px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .detail-item:nth-child(3n) { border-right: none; }
+    .detail-item label {
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--muted);
+    }
+    .detail-item .dv {
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      color: var(--text);
+    }
+    .detail-item .dv.mono { font-family: monospace; }
+    .detail-section-title {
+      padding: 7px 14px 4px;
+      font-size: var(--fs-xxs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+    }
+    .detail-section-title:first-child { border-top: none; }
+
+    /* Linha clicável na tabela de pagamentos */
+    .row-detail-btn {
+      background: var(--primary-lt);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .row-detail-btn:hover { background: var(--primary); }
+
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══════════════════════════════════════════════
+       MODAIS
+  ══════════════════════════════════════════════ -->
+
+  <!-- Modal OS -->
+  <div class="modal-overlay" id="modal-os" onclick="if(event.target===this)closeModal('modal-os')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>🗂️ Ordens de Serviço — Contrato 01417/2025 · Vigência 9567</h2>
+        <button class="modal-close" onclick="closeModal('modal-os')">×</button>
+      </div>
+      <div class="modal-kpi-bar">
+        <div class="mkpi"><label>Total de OS</label><div class="mv col-blue">1</div></div>
+        <div class="mkpi"><label>Assinadas</label><div class="mv col-green">1</div></div>
+        <div class="mkpi"><label>Em Andamento</label><div class="mv col-amber">0</div></div>
+        <div class="mkpi"><label>Pendentes</label><div class="mv col-muted">0</div></div>
+        <div class="mkpi"><label>Canceladas</label><div class="mv col-red">0</div></div>
+      </div>
+      <div class="modal-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Nr. OS</th><th>Data Criação</th><th>Unidade</th>
+              <th class="c">Documento</th><th class="c">SINAPI</th><th class="c">Situação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono col-blue" style="color:var(--primary-lt);font-weight:700">0030/2025</td>
+              <td class="mono">10/03/2025</td><td>GETEL</td>
+              <td class="c"><span class="chip chip-assin">✔ ASSINADO</span></td>
+              <td class="c"><span class="chip chip-blue">S</span></td>
+              <td class="c"><span class="chip chip-green">Vigente</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">1 registro &nbsp;•&nbsp; ESC ou clique fora para fechar</div>
+    </div>
+  </div>
+
+  <!-- Modal Atestes -->
+  <div class="modal-overlay" id="modal-atestes" onclick="if(event.target===this)closeModal('modal-atestes')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>✅ Atestes Eletrônicos — Contrato 01417/2025 · Vigência 9567</h2>
+        <button class="modal-close" onclick="closeModal('modal-atestes')">×</button>
+      </div>
+      <div class="modal-kpi-bar">
+        <div class="mkpi"><label>Total Atestado</label><div class="mv col-green">2</div></div>
+        <div class="mkpi"><label>Com Retenção</label><div class="mv col-red">1</div></div>
+        <div class="mkpi"><label>Sem Retenção</label><div class="mv col-green">1</div></div>
+        <div class="mkpi"><label>Vr. Total Retido</label><div class="mv col-red">R$ 100,02</div></div>
+        <div class="mkpi"><label>Vr. Total Atestado</label><div class="mv col-blue">R$ 4.558,12</div></div>
+      </div>
+      <div class="modal-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Competência</th><th>Matrícula</th>
+              <th class="r">Vr. Retenção</th><th class="r">Vr. Multa</th>
+              <th class="r">Vr. Pagamento</th><th>Motivo Retenção</th>
+              <th>Penalidade</th><th>Observação</th><th class="c">Anexo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">05/2025</td><td class="mono">f723401</td>
+              <td class="r mono">R$ 1,00</td><td class="r mono">R$ 1,00</td>
+              <td class="r mono col-green" style="color:var(--accent);font-weight:700">R$ 1,00</td>
+              <td>Retenção</td><td>Penalidade</td><td>Observações</td>
+              <td class="c"><span class="chip" style="background:var(--info-lt);color:var(--info)">—</span></td>
+            </tr>
+            <tr>
+              <td class="mono">05/2025</td><td class="mono">f723401</td>
+              <td class="r mono">R$ 2,10</td><td class="r mono">R$ 333,00</td>
+              <td class="r mono col-green" style="color:var(--accent);font-weight:700">R$ 9,00</td>
+              <td>Retenção</td><td>Penalidade</td><td>Observações</td>
+              <td class="c"><span class="chip" style="background:var(--info-lt);color:var(--info)">—</span></td>
+            </tr>
+            <tr>
+              <td class="mono">05/2025</td><td class="mono">F570872</td>
+              <td class="r mono">R$ 100,02</td><td class="r mono">R$ 1.003,00</td>
+              <td class="r mono col-green" style="color:var(--accent);font-weight:700">R$ 1.000.001,00</td>
+              <td>TESTE</td><td>TESTE</td><td>TESTE</td>
+              <td class="c"><span class="chip chip-blue" style="cursor:pointer" title="Ver anexo">📎</span></td>
+            </tr>
+            <tr>
+              <td class="mono">05/2025</td><td class="mono">F570872</td>
+              <td class="r mono">R$ 100,00</td><td class="r mono">R$ 1.000,00</td>
+              <td class="r mono col-green" style="color:var(--accent);font-weight:700">R$ 1.000,00</td>
+              <td>Retenção Ateste</td><td>Multa Ateste</td><td>Ateste Manual</td>
+              <td class="c"><span class="chip chip-blue" style="cursor:pointer" title="Ver anexo">📎</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">4 registros em 05/2025 &nbsp;•&nbsp; ESC ou clique fora para fechar</div>
+    </div>
+  </div>
+
+  <!-- Modal Pagamentos -->
+  <div class="modal-overlay" id="modal-pagamentos" onclick="if(event.target===this)closeModal('modal-pagamentos')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>💰 Pagamentos Executados — Contrato 01417/2025 · Vigência 9567</h2>
+        <button class="modal-close" onclick="closeModal('modal-pagamentos')">×</button>
+      </div>
+      <div class="modal-kpi-bar">
+        <div class="mkpi"><label>Total Estimado</label><div class="mv col-blue">R$ 113.631.779,04</div></div>
+        <div class="mkpi"><label>Total Executado</label><div class="mv col-green">R$ 12.748.783,44</div></div>
+        <div class="mkpi"><label>Média Mensal Est.</label><div class="mv col-blue">R$ 4.734.657,46</div></div>
+        <div class="mkpi"><label>Média Últ. 3 Pag.</label><div class="mv col-amber">R$ 2.733.513,17</div></div>
+        <div class="mkpi"><label>Com Retenção</label><div class="mv col-red">1 parcela</div></div>
+      </div>
+      <div class="modal-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Competência</th>
+              <th class="r">Vl. Estimado</th><th class="r">Vl. Executado</th>
+              <th class="c">Retenção</th><th class="r">Δ %</th><th>Situação</th><th class="c">Detalhe</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">Jan/2026</td>
+              <td class="r mono">R$ 4.734.657,46</td>
+              <td class="r mono col-green" style="color:var(--accent);font-weight:700">R$ 1.821.254,78</td>
+              <td class="c"><span class="chip chip-red">Sim</span></td>
+              <td class="r col-red">-61,5%</td>
+              <td><span class="chip chip-green">Pago</span></td>
+              <td class="c"><button class="row-detail-btn" onclick="abrirDetalhePgto('Jan/2026','R$ 4.734.657,46','R$ 1.821.254,78','R$ 100,02','R$ 1.000,00','-61,5%','Pago','2026001','NF-00432','BOL-9823','0030/2025','Suporte TI','Sim','R$ 1.821.254,78','R$ 100,02','R$ 0,00','05/01/2026','12/01/2026','22/01/2026','30','17','✅ No prazo')">Ver</button></td>
+            </tr>
+            <tr>
+              <td class="mono">Fev/2026</td>
+              <td class="r mono">R$ 4.734.657,46</td>
+              <td class="r mono col-green" style="color:var(--accent);font-weight:700">R$ 2.733.513,17</td>
+              <td class="c"><span class="chip chip-green">Não</span></td>
+              <td class="r col-amber">-42,3%</td>
+              <td><span class="chip chip-green">Pago</span></td>
+              <td class="c"><button class="row-detail-btn" onclick="abrirDetalhePgto('Fev/2026','R$ 4.734.657,46','R$ 2.733.513,17','R$ 0,00','R$ 0,00','-42,3%','Pago','2026002','NF-00518','BOL-10021','0030/2025','Suporte TI','Não','R$ 2.733.513,17','R$ 0,00','R$ 0,00','03/02/2026','10/02/2026','21/02/2026','30','18','✅ No prazo')">Ver</button></td>
+            </tr>
+            <tr><td class="mono">Mar/2026</td><td class="r mono">R$ 4.734.657,46</td><td class="r col-muted">—</td><td class="c"><span class="chip chip-blue">Pend.</span></td><td class="r col-muted">—</td><td><span class="chip chip-blue">Pendente</span></td><td class="c"><span class="col-muted">—</span></td></tr>
+            <tr><td class="mono">Abr/2026</td><td class="r mono">R$ 4.734.657,46</td><td class="r col-muted">—</td><td class="c"><span class="chip chip-blue">Pend.</span></td><td class="r col-muted">—</td><td><span class="chip chip-blue">Pendente</span></td><td class="c"><span class="col-muted">—</span></td></tr>
+            <tr><td class="mono">Mai/2026</td><td class="r mono">R$ 4.734.657,46</td><td class="r col-muted">—</td><td class="c"><span class="chip chip-blue">Pend.</span></td><td class="r col-muted">—</td><td><span class="chip chip-blue">Pendente</span></td><td class="c"><span class="col-muted">—</span></td></tr>
+            <tr><td class="mono">Jun/2026</td><td class="r mono">R$ 4.734.657,46</td><td class="r col-muted">—</td><td class="c"><span class="chip chip-blue">Pend.</span></td><td class="r col-muted">—</td><td><span class="chip chip-blue">Pendente</span></td><td class="c"><span class="col-muted">—</span></td></tr>
+            <tr><td class="mono">Jul/2026</td><td class="r mono">R$ 4.734.657,46</td><td class="r col-muted">—</td><td class="c"><span class="chip chip-blue">Pend.</span></td><td class="r col-muted">—</td><td><span class="chip chip-blue">Pendente</span></td><td class="c"><span class="col-muted">—</span></td></tr>
+            <tr><td class="mono">Ago/2026</td><td class="r mono">R$ 4.734.657,46</td><td class="r col-muted">—</td><td class="c"><span class="chip chip-blue">Pend.</span></td><td class="r col-muted">—</td><td><span class="chip chip-blue">Pendente</span></td><td class="c"><span class="col-muted">—</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">Todas as competências da vigência &nbsp;•&nbsp; ESC ou clique fora para fechar</div>
+    </div>
+  </div>
+
+  <!-- Modal Retenções -->
+  <div class="modal-overlay" id="modal-retencoes" onclick="if(event.target===this)closeModal('modal-retencoes')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>⚠️ Retenções & Penalidades — Contrato 01417/2025 · Vigência 9567</h2>
+        <button class="modal-close" onclick="closeModal('modal-retencoes')">×</button>
+      </div>
+      <div class="modal-kpi-bar">
+        <div class="mkpi"><label>Penalidades Aplicadas</label><div class="mv col-red">R$ 2.153.849,13</div></div>
+        <div class="mkpi"><label>Valor Pago</label><div class="mv col-green">R$ 2.003.500,13</div></div>
+        <div class="mkpi"><label>Saldo a Receber</label><div class="mv col-amber">R$ 150.349,00</div></div>
+        <div class="mkpi"><label>Qtd. RTC</label><div class="mv col-blue">31</div></div>
+        <div class="mkpi"><label>Vr. Total Registrado</label><div class="mv col-blue">R$ 2.158.714,78</div></div>
+      </div>
+      <div class="modal-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th><th>Demanda</th><th>SICLG</th>
+              <th class="r">Valor</th><th>Penalidade</th>
+              <th>Status</th><th>Situação SICLG</th><th class="c">CI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>BOLETO</td><td class="mono col-blue" style="color:var(--primary-lt);font-weight:700">24608326</td><td>71583</td><td class="r mono">R$ 26.986,04</td><td>Multa</td><td><span class="chip chip-amber">Instauração Solicitada</span></td><td>Em Tratamento</td><td class="c"><span class="chip chip-red">Sem CI</span></td></tr>
+            <tr><td>BOLETO</td><td class="mono col-blue" style="color:var(--primary-lt);font-weight:700">24608284</td><td>71582</td><td class="r mono">R$ 13.242,32</td><td>Multa</td><td><span class="chip chip-amber">Instauração Solicitada</span></td><td>Em Tratamento</td><td class="c"><span class="chip chip-red">Sem CI</span></td></tr>
+            <tr><td>BOLETO</td><td class="mono col-blue" style="color:var(--primary-lt);font-weight:700">24633051</td><td>71593</td><td class="r mono">R$ 4.354,37</td><td>Multa</td><td><span class="chip chip-amber">Instauração Solicitada</span></td><td>Em Tratamento</td><td class="c"><span class="chip chip-red">Sem CI</span></td></tr>
+            <tr><td>BOLETO</td><td class="mono col-blue" style="color:var(--primary-lt);font-weight:700">24636668</td><td>71594</td><td class="r mono">R$ 39.357,44</td><td>Multa</td><td><span class="chip chip-amber">Instauração Solicitada</span></td><td>Em Tratamento</td><td class="c"><span class="chip chip-red">Sem CI</span></td></tr>
+            <tr><td>BOLETO</td><td class="mono col-blue" style="color:var(--primary-lt);font-weight:700">24641013</td><td>71601</td><td class="r mono">R$ 8.395,24</td><td>Multa</td><td><span class="chip chip-amber">Instauração Solicitada</span></td><td>Em Tratamento</td><td class="c"><span class="chip chip-red">Sem CI</span></td></tr>
+            <tr><td>BOLETO</td><td class="mono col-blue" style="color:var(--primary-lt);font-weight:700">24639941</td><td>71595</td><td class="r mono">R$ 7.716,63</td><td>Multa</td><td><span class="chip chip-amber">Instauração Solicitada</span></td><td>Em Tratamento</td><td class="c"><span class="chip chip-red">Sem CI</span></td></tr>
+            <tr><td>BOLETO</td><td class="mono col-blue" style="color:var(--primary-lt);font-weight:700">24612001</td><td>71560</td><td class="r mono">R$ 5.200,00</td><td>Advertência</td><td><span class="chip chip-green">Encerrada</span></td><td>Concluído</td><td class="c"><span class="chip chip-green">Com CI</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">31 registros no total &nbsp;•&nbsp; ESC ou clique fora para fechar</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PAINEL LATERAL — Menu Sanduíche
+  ══════════════════════════════════════════════ -->
+  <div class="side-overlay" id="side-overlay" onclick="closeSidePanel()">
+    <div class="side-panel" onclick="event.stopPropagation()">
+      <div class="side-panel-header">
+        <span class="side-panel-title">Menu</span>
+        <button class="side-close" onclick="closeSidePanel()">×</button>
+      </div>
+
+      <div class="side-user-block">
+        <div class="side-avatar">JL</div>
+        <div class="side-name">João Carlos Lima</div>
+        <div class="side-meta">
+          Matrícula: 723401<br>
+          Fiscal de Contrato
+        </div>
+        <div class="side-badge">🏢 DITI / GESIT</div>
+      </div>
+
+      <nav class="side-menu">
+        <div class="side-menu-section">Navegação</div>
+        <a class="side-menu-item" href="#">
+          <span class="smi-icon">🏠</span> Home
+        </a>
+        <a class="side-menu-item" href="#">
+          <span class="smi-icon">📋</span> Meus Contratos
+        </a>
+        <a class="side-menu-item" href="#">
+          <span class="smi-icon">🗂️</span> Ordens de Serviço
+        </a>
+        <a class="side-menu-item" href="#">
+          <span class="smi-icon">✅</span> Atestes Pendentes
+        </a>
+        <a class="side-menu-item" href="#">
+          <span class="smi-icon">💰</span> Pagamentos
+        </a>
+        <hr class="side-menu-divider">
+        <div class="side-menu-section">Relatórios</div>
+        <a class="side-menu-item" href="#">
+          <span class="smi-icon">📊</span> Execução Financeira
+        </a>
+        <a class="side-menu-item" href="#">
+          <span class="smi-icon">⚠️</span> Penalidades
+        </a>
+        <hr class="side-menu-divider">
+        <div class="side-menu-section">Conta</div>
+        <a class="side-menu-item" href="#">
+          <span class="smi-icon">⚙️</span> Preferências
+        </a>
+        <a class="side-menu-item" href="#" style="color:rgba(255,100,100,.8)">
+          <span class="smi-icon">🚪</span> Sair
+        </a>
+      </nav>
+
+      <div class="side-footer">SIGVC · v2.0 · 2026</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       MODAL GRÁFICO — Execução Financeira
+  ══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-grafico" onclick="if(event.target===this)closeModal('modal-grafico')">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h2>📊 Execução Financeira — Contrato 01417/2025 · Vigência 9567</h2>
+        <button class="modal-close" onclick="closeModal('modal-grafico')">×</button>
+      </div>
+      <div class="modal-kpi-bar">
+        <div class="mkpi"><label>Total Estimado</label><div class="mv col-blue">R$ 113.631.779,04</div></div>
+        <div class="mkpi"><label>Total Executado</label><div class="mv col-green">R$ 12.748.783,44</div></div>
+        <div class="mkpi"><label>% Executado</label><div class="mv col-amber">11,2%</div></div>
+        <div class="mkpi"><label>Saldo</label><div class="mv col-red">R$ 100.882.995,60</div></div>
+        <div class="mkpi"><label>Média Mensal Est.</label><div class="mv col-blue">R$ 4.734.657,46</div></div>
+      </div>
+      <div class="modal-body" style="overflow:hidden">
+        <div class="chart-area">
+          <canvas id="grafico-canvas" height="260"></canvas>
+        </div>
+        <div class="chart-legend-row">
+          <div class="chart-legend-item">
+            <div class="chart-legend-swatch" style="background:#00437A"></div>Estimado (Mensaliz.)
+          </div>
+          <div class="chart-legend-item">
+            <div class="chart-legend-swatch" style="background:#127527"></div>Executado
+          </div>
+          <div class="chart-legend-item">
+            <div class="chart-legend-swatch" style="background:#d87b00;opacity:.6;height:3px;border-radius:0"></div>Média Mensal Est.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">Valores em R$ · Barras com retenção indicadas em vermelho &nbsp;•&nbsp; ESC ou clique fora para fechar</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       MODAL DETALHE DO PAGAMENTO
+  ══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-pgto-detalhe" onclick="if(event.target===this)closeModal('modal-pgto-detalhe')">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h2 id="pgto-detalhe-title">💰 Detalhe do Pagamento</h2>
+        <button class="modal-close" onclick="closeModal('modal-pgto-detalhe')">×</button>
+      </div>
+      <div class="modal-kpi-bar" id="pgto-detalhe-kpi">
+        <div class="mkpi"><label>Competência</label><div class="mv col-blue" id="pd-competencia">—</div></div>
+        <div class="mkpi"><label>Vl. Bruto</label><div class="mv col-blue" id="pd-bruto">—</div></div>
+        <div class="mkpi"><label>Vl. Desconto</label><div class="mv col-red" id="pd-desconto">—</div></div>
+        <div class="mkpi"><label>Vl. Líquido</label><div class="mv col-green" id="pd-liquido">—</div></div>
+        <div class="mkpi"><label>Situação</label><div class="mv" id="pd-situacao">—</div></div>
+      </div>
+      <div class="modal-body">
+        <!-- Identificação -->
+        <div class="detail-section-title">🔖 Identificação</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Nr. Fatura / Medição</label>
+            <div class="dv mono" id="pd-fatura">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Nr. Nota Fiscal (NF)</label>
+            <div class="dv mono" id="pd-nf">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Nr. Boleto</label>
+            <div class="dv mono" id="pd-boleto">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Nr. OS Vinculada</label>
+            <div class="dv mono" id="pd-os">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Tipo de Serviço</label>
+            <div class="dv" id="pd-servico">—</div>
+          </div>
+          <div class="detail-item">
+            <label>SINAPI?</label>
+            <div class="dv" id="pd-sinapi">—</div>
+          </div>
+        </div>
+        <!-- Valores -->
+        <div class="detail-section-title">💵 Valores</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Vl. Medição Bruta</label>
+            <div class="dv mono col-blue" id="pd-vl-bruto">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Desconto / Glosa</label>
+            <div class="dv mono col-red" id="pd-vl-desconto">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Vl. Líquido Pago</label>
+            <div class="dv mono col-green" id="pd-vl-liquido">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Retenção (Ateste)</label>
+            <div class="dv mono col-red" id="pd-retencao">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Multa Aplicada</label>
+            <div class="dv mono col-amber" id="pd-multa">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Δ % vs. Estimado</label>
+            <div class="dv" id="pd-delta">—</div>
+          </div>
+        </div>
+        <!-- Datas -->
+        <div class="detail-section-title">📅 Datas e Prazos</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Data de Emissão NF</label>
+            <div class="dv mono" id="pd-dt-emissao">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Data de Ateste</label>
+            <div class="dv mono" id="pd-dt-ateste">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Data de Pagamento</label>
+            <div class="dv mono" id="pd-dt-pgto">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Prazo Contratual (dias)</label>
+            <div class="dv" id="pd-prazo">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Dias até Pagamento</label>
+            <div class="dv" id="pd-dias">—</div>
+          </div>
+          <div class="detail-item">
+            <label>Situação do Prazo</label>
+            <div class="dv" id="pd-prazo-status">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">Detalhe da competência selecionada &nbsp;•&nbsp; ESC ou clique fora para fechar</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       CABEÇALHO
+  ══════════════════════════════════════════════ -->
+  <header>
+    <div class="header-top">
+      <h1>📋 Painel do Contrato &nbsp;|&nbsp; SIGVC</h1>
+      <button class="hamburger-btn" onclick="openSidePanel()" title="Menu do usuário">
+        <span>☰</span>
+        <span class="hb-label">JL &nbsp;·&nbsp; João Carlos Lima</span>
+      </button>
+    </div>
+    <div class="header-bottom">
+      <nav class="breadcrumb">
+        <a href="#">🏠 Home</a>
+        <span class="bsep">›</span>
+        <a href="#">Contratos</a>
+        <span class="bsep">›</span>
+        <span class="bcurrent">Visão do Contrato 01417/2025</span>
+        <span class="bsep">›</span>
+        <!-- Seletor de vigência integrado ao breadcrumb -->
+        <div class="vigencia-select-wrap" title="Selecionar vigência">
+          <label>Vigência:</label>
+          <select id="sel-vigencia" onchange="trocarVigencia(this.value)">
+            <option value="9567" selected>9567 — 03/04/2025 a 02/04/2027 (Atual)</option>
+            <option value="8132">8132 — 01/01/2024 a 31/12/2024</option>
+            <option value="7201">7201 — 01/01/2023 a 31/12/2023</option>
+          </select>
+          <span style="opacity:.6;font-size:10px">▼</span>
+        </div>
+      </nav>
+      <div class="contract-badge">
+        Nº 01417/2025 &nbsp;•&nbsp;
+        <span class="status-ativo"><span class="dot"></span>Ativo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════
+       CORPO PRINCIPAL
+  ══════════════════════════════════════════════ -->
+  <div class="body">
+
+    <!-- ─────────── COLUNA ESQUERDA ─────────── -->
+    <div class="col-left">
+
+      <!-- INFORMAÇÕES GERAIS -->
+      <div class="card" style="flex-shrink:0">
+        <div class="card-header">
+          <span>🏢 Informações Gerais</span>
+          <button class="btn-expand" onclick="expandCard('info-gerais')" title="Expandir">⛶</button>
+        </div>
+        <div class="card-body" style="padding:8px 13px; gap:5px">
+
+          <div class="grid-3">
+            <div class="field" style="grid-column:1/3">
+              <label>Fornecedor</label>
+              <div class="value" style="font-weight:700">Tech Solutions Serviços de TI Ltda.</div>
+            </div>
+            <div class="field">
+              <label>CNPJ</label>
+              <div class="value">12.345.678/0001-99</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Objeto</label>
+            <div class="value" title="Prestação de serviços de suporte técnico e manutenção de sistemas">
+              Prestação de serviços de suporte técnico e manutenção de sistemas
+            </div>
+          </div>
+
+          <hr class="sep" />
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px 14px">
+            <div class="field">
+              <label>Unidade Demandante</label>
+              <div class="value">DITI / GESIT</div>
+            </div>
+            <div class="field">
+              <label>Fiscal do Contrato</label>
+              <div class="value">João Carlos Lima</div>
+            </div>
+            <div class="field">
+              <label>Tipo de Contrato</label>
+              <div class="value">Serviço Contínuo</div>
+            </div>
+            <div class="field">
+              <label>Mensalização</label>
+              <div class="value">Sim – 12 parcelas</div>
+            </div>
+          </div>
+
+          <hr class="sep" />
+
+          <!-- Progresso de execução -->
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="flex:1;cursor:pointer" onclick="openModal('modal-grafico')" title="Ver gráfico de execução financeira">
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" id="exec-bar" style="width:11.2%"></div>
+              </div>
+              <div class="progress-label">
+                <span style="color:var(--primary-lt);font-weight:700;text-decoration:underline dotted">📊 Execução Financeira</span>
+                <span id="exec-pct" style="font-weight:700;color:var(--accent)">11,2%</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RESUMO DA VIGÊNCIA — reorganizado por categoria -->
+      <div class="vig-wrap">
+        <div class="vig-header">
+          <span>📊 Resumo da Vigência</span>
+          <span id="vig-label" style="font-size:var(--fs-xxs);opacity:.85">Vigência 9567 — 03/04/2025 a 02/04/2027 — Rubrica: Total</span>
+          <button class="btn-expand-lt" onclick="expandCard('vig')" title="Expandir">⛶</button>
+        </div>
+        <div class="vig-body">
+
+          <!-- Coluna 1: Datas e prazo -->
+          <div class="vig-dates">
+            <div class="grid-2" style="gap:4px 10px">
+              <div class="field">
+                <label>Início</label>
+                <div class="value mono" id="vig-inicio">03/04/2025</div>
+              </div>
+              <div class="field">
+                <label>Término</label>
+                <div class="value mono" id="vig-termino">02/04/2027</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Prazo Remanescente</label>
+              <div class="value" id="vig-prazo" style="font-weight:700;font-size:var(--fs-sm)">1 Ano(s), 0 Mês(es), 30 Dia(s)</div>
+            </div>
+            <div class="alert-box alert-ok" id="vig-alerta" style="font-size:var(--fs-xxs);padding:3px 8px">
+              ✅ Consumo ABAIXO da média estimada
+            </div>
+          </div>
+
+          <!-- Coluna 2: Valores contratados vs executados -->
+          <div class="vig-col">
+            <div class="vig-col-title">💰 Valores Contratuais</div>
+            <div class="vig-num">
+              <label>Contratado (Vigência)</label>
+              <div class="v col-blue" id="vig-contratado">R$ 113.631.779,04</div>
+            </div>
+            <div class="vig-num">
+              <label>Saldo Remanescente</label>
+              <div class="v col-red" id="vig-saldo">R$ 100.882.995,60</div>
+            </div>
+          </div>
+
+          <!-- Coluna 3: Médias -->
+          <div class="vig-col">
+            <div class="vig-col-title">📈 Médias de Consumo</div>
+            <div class="vig-num">
+              <label>Estimada Mensal (Mensaliz.)</label>
+              <div class="v col-blue" id="vig-media-est">R$ 4.734.657,46</div>
+            </div>
+            <div class="vig-num">
+              <label>Últimos 3 Pagamentos</label>
+              <div class="v col-amber" id="vig-media-3">R$ 2.733.513,17</div>
+            </div>
+            <div class="vig-num">
+              <label>Todos os Pagamentos</label>
+              <div class="v" id="vig-media-todos">R$ 1.821.254,78</div>
+            </div>
+          </div>
+
+        </div>
+        <div class="vig-foot">
+          <span id="vig-proj">Mantendo a média mensal, o esgotamento ocorrerá em <strong>55 meses</strong> em relação à última referência paga.</span>
+          <span id="vig-exec-label" style="font-weight:700;color:var(--accent)">Execução: 11,2%</span>
+        </div>
+      </div>
+
+      <!-- RESUMO DOS PAGAMENTOS — ÚNICA seção com valores financeiros executados -->
+      <div class="card" style="flex-shrink:0">
+        <div class="card-header">
+          <span>💰 Resumo dos Pagamentos</span>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div><span style="color: white;">Sem retenção</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div><span style="color: white;">Com retenção</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--primary-90)"></div><span style="color: white;">Pendente</span></div>
+          </div>
+          <button class="btn-expand" onclick="expandCard('pagamentos')" title="Expandir">⛶</button>
+        </div>
+        <div class="card-body" style="padding:0; gap:0">
+          <div class="pgto-banner">
+            <div class="pgto-item">
+              <label>Estimado (Mensaliz.)</label>
+              <div class="pv col-blue" id="pgto-est">R$ 113.631.779,04</div>
+              <div class="ph">Total da vigência</div>
+            </div>
+            <div class="pgto-item clickable" onclick="openModal('modal-pagamentos')" title="Ver detalhes">
+              <label>Executado (Pago)</label>
+              <div class="pv col-green" id="pgto-exec">R$ 12.748.783,44</div>
+              <div class="click-hint">clique para detalhar</div>
+            </div>
+            <div class="pgto-item">
+              <label>Média Mensal Est.</label>
+              <div class="pv col-blue" id="pgto-media">R$ 4.734.657,46</div>
+              <div class="ph">por mensalização</div>
+            </div>
+            <div class="pgto-item">
+              <label>Média Últ. 3 Pag.</label>
+              <div class="pv col-amber" id="pgto-media3">R$ 2.733.513,17</div>
+              <div class="ph" id="pgto-alerta">⬇ abaixo da média est.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- ─────────── COLUNA DIREITA ─────────── -->
+    <div class="col-right">
+
+      <!-- PENALIDADES -->
+      <div class="card" style="flex-shrink:0">
+        <div class="card-header">
+          <span>⚠️ Penalidades</span>
+          <button class="btn-expand" onclick="expandCard('penalidades')" title="Expandir">⛶</button>
+        </div>
+        <div class="card-body" style="gap:5px">
+          <div class="kpi-strip">
+            <div class="kpi-item clickable" onclick="openModal('modal-retencoes')" title="Ver todas">
+              <label>Multas</label>
+              <div class="kval col-red">28</div>
+              <div class="click-hint col-red">detalhar</div>
+            </div>
+            <div class="kpi-item">
+              <label>Advertências</label>
+              <div class="kval col-amber">3</div>
+            </div>
+            <div class="kpi-item">
+              <label>Suspensões</label>
+              <div class="kval col-muted">0</div>
+            </div>
+          </div>
+          <div class="kpi-strip">
+            <div class="kpi-item">
+              <label>Em Tratamento</label>
+              <div class="kval sm col-amber">18</div>
+            </div>
+            <div class="kpi-item">
+              <label>Inst. Solicitada</label>
+              <div class="kval sm col-blue">10</div>
+            </div>
+            <div class="kpi-item">
+              <label>Encerradas</label>
+              <div class="kval sm col-green">3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATESTES -->
+      <div class="card" style="flex-shrink:0">
+        <div class="card-header">
+          <span>✅ Atestes</span>
+          <button class="btn-expand" onclick="expandCard('atestes')" title="Expandir">⛶</button>
+        </div>
+        <div class="card-body" style="gap:5px">
+          <div class="kpi-strip">
+            <div class="kpi-item clickable" onclick="openModal('modal-atestes')" title="Ver todos">
+              <label>Total Registros</label>
+              <div class="kval" style="color:var(--info)">4</div>
+              <div class="click-hint" style="color:var(--info)">detalhar</div>
+            </div>
+            <div class="kpi-item">
+              <label>Com Retenção</label>
+              <div class="kval col-red">1</div>
+            </div>
+            <div class="kpi-item">
+              <label>Sem Retenção</label>
+              <div class="kval col-green">3</div>
+            </div>
+          </div>
+          <div class="alert-box alert-amber" style="font-size:var(--fs-xxs);padding:3px 8px">
+            ⚠️ Jan/2026: retenção de R$ 100,02 — penalidade vinculada em aberto
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDENS DE SERVIÇO -->
+      <div class="card" style="flex-shrink:0">
+        <div class="card-header">
+          <span>🗂️ Ordens de Serviço</span>
+          <button class="btn btn-blue" onclick="alert('Gerar OS — em desenvolvimento')">+ Gerar OS</button>
+          <button class="btn-expand" onclick="expandCard('os')" title="Expandir">⛶</button>
+        </div>
+        <div class="card-body" style="gap:6px">
+          <div class="kpi-strip">
+            <div class="kpi-item clickable" onclick="openModal('modal-os')" title="Ver todas">
+              <label>Total de OS</label>
+              <div class="kval col-blue">1</div>
+              <div class="click-hint col-blue">detalhar</div>
+            </div>
+            <div class="kpi-item">
+              <label>Assinadas</label>
+              <div class="kval col-green">1</div>
+            </div>
+            <div class="kpi-item">
+              <label>Em Andamento</label>
+              <div class="kval col-amber">0</div>
+            </div>
+            <div class="kpi-item">
+              <label>Pendentes</label>
+              <div class="kval col-muted">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKFLOW PIPELINE -->
+      <div class="pipeline-wrap">
+        <div class="pipeline-header">
+          <span>🔄 Fluxo do Contrato — OS → Ateste → Pagamento → Retenções</span>
+          <button class="btn-expand-lt" onclick="expandCard('pipeline')" title="Expandir">⛶</button>
+        </div>
+        <div class="pipeline">
+
+          <div class="pipeline-step ps-os clickable" onclick="openModal('modal-os')" title="Ver Ordens de Serviço">
+            <div class="ps-icon">🗂️</div>
+            <div class="ps-label">Ordens de Serviço</div>
+            <div class="ps-count" id="wf-os">1</div>
+            <div class="ps-sub">Assinada</div>
+            <div class="ps-hint">clique para detalhar</div>
+          </div>
+
+          <div class="pipeline-arrow">›</div>
+
+          <div class="pipeline-step ps-ateste clickable" onclick="openModal('modal-atestes')" title="Ver Atestes">
+            <div class="ps-icon">✅</div>
+            <div class="ps-label">Atestes</div>
+            <div class="ps-count" id="wf-atestes" style="color:var(--info)">4</div>
+            <div class="ps-sub" id="wf-atestes-sub">2 competências</div>
+            <div class="ps-hint">clique para detalhar</div>
+          </div>
+
+          <div class="pipeline-arrow">›</div>
+
+          <div class="pipeline-step ps-pgto clickable" onclick="openModal('modal-pagamentos')" title="Ver Pagamentos">
+            <div class="ps-icon">💰</div>
+            <div class="ps-label">Pagamentos</div>
+            <div class="ps-count" id="wf-pgto">2</div>
+            <div class="ps-sub" id="wf-pgto-sub">de 8 competências</div>
+            <div class="ps-hint">clique para detalhar</div>
+          </div>
+
+          <div class="pipeline-arrow">›</div>
+
+          <div class="pipeline-step ps-reten clickable" onclick="openModal('modal-retencoes')" title="Ver Retenções e Penalidades">
+            <div class="ps-icon">⚠️</div>
+            <div class="ps-label" style="color:var(--warn)">Retenções</div>
+            <div class="ps-count" id="wf-reten">31</div>
+            <div class="ps-sub" id="wf-reten-sub">RTC abertos</div>
+            <div class="ps-hint">clique para detalhar</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /col-right -->
+
+  </div><!-- /body -->
+
+</div><!-- /page -->
+
+<!-- ══════════════════════════════════════════════
+     FULLSCREEN OVERLAY — Visão expandida dos cards
+══════════════════════════════════════════════ -->
+<div class="fs-overlay" id="fs-overlay">
+  <div class="fs-header">
+    <h2 id="fs-title">—</h2>
+    <span class="fs-hint" id="fs-hint">Contrato GC-2025 · Vigência Ativa</span>
+    <button class="fs-close" onclick="closeExpand()" title="Fechar (Esc)">✕</button>
+  </div>
+  <div class="fs-body" id="fs-body">
+    <!-- conteúdo injetado por JS via expandCard() -->
+  </div>
+</div>
+
+<script>
+  /* ═══════════════════════════════════════════
+     DADOS POR VIGÊNCIA (simulação)
+  ═══════════════════════════════════════════ */
+  const vigencias = {
+    '9567': {
+      label:        'Vigência 9567 — 03/04/2025 a 02/04/2027 — Rubrica: Total',
+      inicio:       '03/04/2025',
+      termino:      '02/04/2027',
+      prazo:        '1 Ano(s), 0 Mês(es), 30 Dia(s)',
+      alerta:       '✅ Consumo ABAIXO da média estimada',
+      alertaClass:  'alert-ok',
+      contratado:   'R$ 113.631.779,04',
+      saldo:        'R$ 100.882.995,60',
+      mediaEst:     'R$ 4.734.657,46',
+      media3:       'R$ 2.733.513,17',
+      mediaTodos:   'R$ 1.821.254,78',
+      proj:         'Mantendo a média mensal, o esgotamento ocorrerá em <strong>55 meses</strong> em relação à última referência paga.',
+      execPct:      '11,2%',
+      execBar:      '11.2',
+      pgtoEst:      'R$ 113.631.779,04',
+      pgtoExec:     'R$ 12.748.783,44',
+      pgtoMedia:    'R$ 4.734.657,46',
+      pgtoMedia3:   'R$ 2.733.513,17',
+      pgtoAlerta:   '⬇ abaixo da média est.',
+      wfOs:         '1',
+      wfAtestes:    '4',
+      wfAtestesSub: '2 competências',
+      wfPgto:       '2',
+      wfPgtoSub:    'de 8 competências',
+      wfReten:      '31',
+      wfRetenSub:   'RTC abertos',
+    },
+    '8132': {
+      label:        'Vigência 8132 — 01/01/2024 a 31/12/2024 — Rubrica: Total',
+      inicio:       '01/01/2024',
+      termino:      '31/12/2024',
+      prazo:        'Encerrada',
+      alerta:       '⚠️ Vigência encerrada',
+      alertaClass:  'alert-warn',
+      contratado:   'R$ 98.500.000,00',
+      saldo:        'R$ 0,00',
+      mediaEst:     'R$ 8.208.333,33',
+      media3:       'R$ 8.150.000,00',
+      mediaTodos:   'R$ 8.208.333,33',
+      proj:         'Vigência encerrada. Todos os valores foram liquidados.',
+      execPct:      '100%',
+      execBar:      '100',
+      pgtoEst:      'R$ 98.500.000,00',
+      pgtoExec:     'R$ 98.500.000,00',
+      pgtoMedia:    'R$ 8.208.333,33',
+      pgtoMedia3:   'R$ 8.150.000,00',
+      pgtoAlerta:   '✔ dentro da média est.',
+      wfOs:         '3',
+      wfAtestes:    '12',
+      wfAtestesSub: '12 competências',
+      wfPgto:       '12',
+      wfPgtoSub:    'de 12 competências',
+      wfReten:      '8',
+      wfRetenSub:   'RTC encerrados',
+    },
+    '7201': {
+      label:        'Vigência 7201 — 01/01/2023 a 31/12/2023 — Rubrica: Total',
+      inicio:       '01/01/2023',
+      termino:      '31/12/2023',
+      prazo:        'Encerrada',
+      alerta:       '⚠️ Vigência encerrada',
+      alertaClass:  'alert-warn',
+      contratado:   'R$ 72.000.000,00',
+      saldo:        'R$ 0,00',
+      mediaEst:     'R$ 6.000.000,00',
+      media3:       'R$ 5.980.000,00',
+      mediaTodos:   'R$ 6.000.000,00',
+      proj:         'Vigência encerrada. Todos os valores foram liquidados.',
+      execPct:      '100%',
+      execBar:      '100',
+      pgtoEst:      'R$ 72.000.000,00',
+      pgtoExec:     'R$ 72.000.000,00',
+      pgtoMedia:    'R$ 6.000.000,00',
+      pgtoMedia3:   'R$ 5.980.000,00',
+      pgtoAlerta:   '✔ dentro da média est.',
+      wfOs:         '2',
+      wfAtestes:    '12',
+      wfAtestesSub: '12 competências',
+      wfPgto:       '12',
+      wfPgtoSub:    'de 12 competências',
+      wfReten:      '3',
+      wfRetenSub:   'RTC encerrados',
+    }
+  };
+
+  function trocarVigencia(id) {
+    const d = vigencias[id];
+    if (!d) return;
+    document.getElementById('vig-label').textContent = d.label;
+    document.getElementById('vig-inicio').textContent = d.inicio;
+    document.getElementById('vig-termino').textContent = d.termino;
+    document.getElementById('vig-prazo').textContent = d.prazo;
+    const al = document.getElementById('vig-alerta');
+    al.textContent = d.alerta;
+    al.className = 'alert-box ' + d.alertaClass;
+    document.getElementById('vig-contratado').textContent = d.contratado;
+    document.getElementById('vig-saldo').textContent = d.saldo;
+    document.getElementById('vig-media-est').textContent = d.mediaEst;
+    document.getElementById('vig-media-3').textContent = d.media3;
+    document.getElementById('vig-media-todos').textContent = d.mediaTodos;
+    document.getElementById('vig-proj').innerHTML = d.proj;
+    document.getElementById('vig-exec-label').textContent = 'Execução: ' + d.execPct;
+    document.getElementById('exec-bar').style.width = d.execBar + '%';
+    document.getElementById('exec-pct').textContent = d.execPct;
+    document.getElementById('pgto-est').textContent = d.pgtoEst;
+    document.getElementById('pgto-exec').textContent = d.pgtoExec;
+    document.getElementById('pgto-media').textContent = d.pgtoMedia;
+    document.getElementById('pgto-media3').textContent = d.pgtoMedia3;
+    document.getElementById('pgto-alerta').textContent = d.pgtoAlerta;
+    document.getElementById('wf-os').textContent = d.wfOs;
+    document.getElementById('wf-atestes').textContent = d.wfAtestes;
+    document.getElementById('wf-atestes-sub').textContent = d.wfAtestesSub;
+    document.getElementById('wf-pgto').textContent = d.wfPgto;
+    document.getElementById('wf-pgto-sub').textContent = d.wfPgtoSub;
+    document.getElementById('wf-reten').textContent = d.wfReten;
+    document.getElementById('wf-reten-sub').textContent = d.wfRetenSub;
+  }
+
+  /* ═══════════════════════════════════════════
+     MODAIS
+  ═══════════════════════════════════════════ */
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (id === 'modal-grafico') setTimeout(desenharGrafico, 60);
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+      closeSidePanel();
+      closeExpand();
+    }
+  });
+
+  /* ═══════════════════════════════════════════
+     MENU SANDUÍCHE
+  ═══════════════════════════════════════════ */
+  function openSidePanel() {
+    document.getElementById('side-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidePanel() {
+    document.getElementById('side-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ═══════════════════════════════════════════
+     GRÁFICO DE EXECUÇÃO FINANCEIRA (Canvas puro)
+  ═══════════════════════════════════════════ */
+  let graficoDesenhado = false;
+  function desenharGrafico() {
+    const canvas = document.getElementById('grafico-canvas');
+    if (!canvas) return;
+    // Polyfill roundRect para Firefox antigo
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r){
+        r = Array.isArray(r) ? r[0] : r;
+        this.beginPath();
+        this.moveTo(x+r,y); this.lineTo(x+w-r,y);
+        this.quadraticCurveTo(x+w,y,x+w,y+r);
+        this.lineTo(x+w,y+h); this.lineTo(x,y+h); this.lineTo(x,y+r);
+        this.quadraticCurveTo(x,y,x+r,y);
+        this.closePath();
+        return this;
+      };
+    }
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.parentElement.clientWidth - 48;
+    canvas.height = 260;
+    const W = canvas.width, H = canvas.height;
+
+    // Dados
+    const meses = ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26'];
+    const estimado = [4734657, 4734657, 4734657, 4734657, 4734657, 4734657, 4734657, 4734657];
+    const executado = [1821254, 2733513, 0, 0, 0, 0, 0, 0];
+    const temRetencao= [true, false, false, false, false, false, false, false];
+    const media = 4734657;
+
+    const padL = 72, padR = 20, padT = 16, padB = 48;
+    const chartW = W - padL - padR;
+    const chartH = H - padT - padB;
+    const maxVal = Math.max(...estimado) * 1.12;
+    const n = meses.length;
+    const groupW = chartW / n;
+    const barW = groupW * 0.32;
+    const gap   = groupW * 0.06;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Eixo Y — grades
+    const steps = 5;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.font = '10px Segoe UI';
+    ctx.fillStyle = '#9aa5bc';
+    for (let i = 0; i <= steps; i++) {
+      const v = (maxVal / steps) * i;
+      const y = padT + chartH - (v / maxVal) * chartH;
+      ctx.strokeStyle = '#e5e9f2';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+      ctx.fillStyle = '#9aa5bc';
+      ctx.fillText('R$ ' + (v / 1e6).toFixed(1) + 'M', padL - 4, y);
+    }
+
+    // Barras
+    meses.forEach((m, i) => {
+      const x = padL + i * groupW + groupW * 0.08;
+      // Estimado
+      const hEst = (estimado[i] / maxVal) * chartH;
+      const yEst = padT + chartH - hEst;
+      // Estimado
+      ctx.fillStyle = 'rgba(0,67,122,0.18)';   /* Primary 110 translúcido */
+      ctx.beginPath();
+      ctx.roundRect(x, yEst, barW, hEst, [4,4,0,0]);
+      ctx.fill();
+      ctx.strokeStyle = '#00437A';             /* Primary 110 */
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Executado
+      if (executado[i] > 0) {
+        const hExec = (executado[i] / maxVal) * chartH;
+        const yExec = padT + chartH - hExec;
+        ctx.fillStyle = temRetencao[i] ? '#b22c2c' : '#127527'; /* Negative 90 / Positive 90 */
+        ctx.beginPath();
+        ctx.roundRect(x + barW + gap, yExec, barW, hExec, [4,4,0,0]);
+        ctx.fill();
+        // Valor acima da barra
+        ctx.font = 'bold 10px Segoe UI';
+        ctx.fillStyle = '#22292e';             /* Greyscale 130 */
+        ctx.textAlign = 'center';
+        ctx.fillText('R$ ' + (executado[i]/1e6).toFixed(2) + 'M', x + barW + gap + barW/2, yExec - 5);
+      }
+
+      // Label mês
+      ctx.font = '11px Segoe UI';
+      ctx.fillStyle = '#64747a';              /* Greyscale 90 */
+      ctx.textAlign = 'center';
+      ctx.fillText(m, x + barW + gap/2, H - padB + 14);
+    });
+
+    // Linha de média
+    const yMedia = padT + chartH - (media / maxVal) * chartH;
+    ctx.strokeStyle = '#d87b00';             /* Secondary 90 — Laranja CAIXA */
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 4]);
+    ctx.beginPath();
+    ctx.moveTo(padL, yMedia);
+    ctx.lineTo(W - padR, yMedia);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = 'bold 10px Segoe UI';
+    ctx.fillStyle = '#d87b00';              /* Secondary 90 */
+    ctx.textAlign = 'left';
+    ctx.fillText('Média Mensaliz.', W - padR - 94, yMedia - 6);
+
+    graficoDesenhado = true;
+  }
+
+  /* ═══════════════════════════════════════════
+     DETALHE DO PAGAMENTO
+  ═══════════════════════════════════════════ */
+  function abrirDetalhePgto(comp, est, exec, retencao, multa, delta, situacao,
+      fatura, nf, boleto, os, servico, sinapi,
+      vlBruto, vlDesconto, vlLiquido,
+      dtEmissao, dtAteste, dtPgto, prazo, dias, prazoStatus) {
+
+    document.getElementById('pgto-detalhe-title').textContent = '💰 Detalhe do Pagamento — ' + comp;
+    document.getElementById('pd-competencia').textContent = comp;
+    document.getElementById('pd-bruto').textContent = vlBruto;
+    document.getElementById('pd-desconto').textContent = vlDesconto;
+    document.getElementById('pd-liquido').textContent = vlLiquido;
+    document.getElementById('pd-situacao').textContent = situacao;
+    document.getElementById('pd-situacao').className = situacao === 'Pago' ? 'mv col-green' : 'mv col-amber';
+
+    document.getElementById('pd-fatura').textContent = fatura;
+    document.getElementById('pd-nf').textContent = nf;
+    document.getElementById('pd-boleto').textContent = boleto;
+    document.getElementById('pd-os').textContent = os;
+    document.getElementById('pd-servico').textContent = servico;
+    document.getElementById('pd-sinapi').textContent = sinapi === 'Sim'
+      ? '✅ Sim — com SINAPI' : '❌ Não';
+
+    document.getElementById('pd-vl-bruto').textContent = vlBruto;
+    document.getElementById('pd-vl-desconto').textContent = vlDesconto;
+    document.getElementById('pd-vl-liquido').textContent = vlLiquido;
+    document.getElementById('pd-retencao').textContent = retencao;
+    document.getElementById('pd-multa').textContent = multa;
+    document.getElementById('pd-delta').innerHTML =
+      '<span style="font-weight:700;color:' + (delta.startsWith('-') ? '#b22c2c' : '#127527') + '">' + delta + '</span> vs estimado';
+
+    document.getElementById('pd-dt-emissao').textContent = dtEmissao;
+    document.getElementById('pd-dt-ateste').textContent = dtAteste;
+    document.getElementById('pd-dt-pgto').textContent = dtPgto;
+    document.getElementById('pd-prazo').textContent = prazo + ' dias';
+    document.getElementById('pd-dias').textContent = dias + ' dias';
+    document.getElementById('pd-prazo-status').innerHTML = prazoStatus;
+
+    // Fechar pagamentos e abrir detalhe
+    closeModal('modal-pagamentos');
+    openModal('modal-pgto-detalhe');
+  }
+
+  /* ═══════════════════════════════════════════
+     FULLSCREEN EXPAND — expandCard / closeExpand
+  ═══════════════════════════════════════════ */
+  const fsContents = {
+
+    'info-gerais': {
+      title: '🏢 Informações Gerais — Visão Completa',
+      hint: 'Dados cadastrais, histórico e responsáveis pelo contrato',
+      render: () => `
+        <div class="fs-grid-3">
+          <div class="fs-section">
+            <div class="fs-section-title">📋 Identificação do Contrato</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Número</th><td class="mono col-blue" style="font-weight:700">GC-2025-0042</td></tr>
+                <tr><th>Tipo</th><td>Contrato de Prestação de Serviços</td></tr>
+                <tr><th>Modalidade</th><td>Pregão Eletrônico</td></tr>
+                <tr><th>Processo</th><td class="mono">6501.2024/0018-9</td></tr>
+                <tr><th>CNPJ</th><td class="mono">12.345.678/0001-99</td></tr>
+                <tr><th>Situação</th><td><span class="chip chip-assin">✔ ATIVO</span></td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">🏢 Fornecedor</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Razão Social</th><td style="font-weight:700">Tech Solutions Serviços de TI Ltda.</td></tr>
+                <tr><th>Nome Fantasia</th><td>TechSol</td></tr>
+                <tr><th>Representante</th><td>Maria da Silva Santos</td></tr>
+                <tr><th>Telefone</th><td class="mono">(11) 3456-7890</td></tr>
+                <tr><th>E-mail</th><td>contratos@techsol.com.br</td></tr>
+                <tr><th>Situação Cadastral</th><td><span class="chip chip-assin">ATIVA</span></td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">👤 Responsáveis pela Gestão</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Gestor</th><td>Carlos Eduardo Mendes</td></tr>
+                <tr><th>Matrícula</th><td class="mono">654321</td></tr>
+                <tr><th>Unidade</th><td>GETEL / DITEC</td></tr>
+                <tr><th>Fiscal Técnico</th><td>Ana Paula Rocha</td></tr>
+                <tr><th>Matrícula</th><td class="mono">789012</td></tr>
+                <tr><th>Substituto</th><td>Roberto Lima</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="fs-grid-2">
+          <div class="fs-section">
+            <div class="fs-section-title">📄 Objeto Contratual</div>
+            <div class="fs-section-body" style="line-height:1.6">
+              Prestação de serviços de tecnologia da informação e comunicação, compreendendo suporte técnico, manutenção preventiva e corretiva de equipamentos, infraestrutura de redes e sistemas de segurança da informação, conforme especificações técnicas do Termo de Referência.
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">📅 Histórico de Alterações</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <thead><tr><th>Termo</th><th>Data</th><th>Motivo</th></tr></thead>
+                <tbody>
+                  <tr><td>1º Aditivo</td><td class="mono">15/06/2025</td><td>Prorrogação de prazo</td></tr>
+                  <tr><td>2º Aditivo</td><td class="mono">01/10/2025</td><td>Acréscimo de valor</td></tr>
+                  <tr><td>3º Aditivo</td><td class="mono">03/04/2026</td><td>Reajuste IPCA</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>`
+    },
+
+    'vig': {
+      title: '📊 Resumo da Vigência — Análise Detalhada',
+      hint: 'Evolução financeira, projeções e indicadores por vigência',
+      render: () => `
+        <div class="fs-grid-3">
+          <div class="fs-section">
+            <div class="fs-section-title">📅 Datas e Prazos</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Vigência</th><td class="mono col-blue" style="font-weight:700">9567</td></tr>
+                <tr><th>Início</th><td class="mono">03/04/2025</td></tr>
+                <tr><th>Término</th><td class="mono">02/04/2027</td></tr>
+                <tr><th>Prazo Total</th><td>24 meses</td></tr>
+                <tr><th>Remanescente</th><td style="font-weight:700">1 Ano, 0 Mês, 30 Dias</td></tr>
+                <tr><th>% Decorrido</th><td style="color:var(--accent);font-weight:700">47,9%</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">💰 Valores Contratuais</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Contratado (Vigência)</th><td class="col-blue" style="font-weight:700">R$ 113.631.779,04</td></tr>
+                <tr><th>Executado (Pago)</th><td class="col-green" style="font-weight:700">R$ 12.748.783,44</td></tr>
+                <tr><th>Saldo Remanescente</th><td class="col-red" style="font-weight:700">R$ 100.882.995,60</td></tr>
+                <tr><th>% Executado</th><td class="col-accent" style="font-weight:700">11,2%</td></tr>
+                <tr><th>Retenções Totais</th><td class="col-warn">R$ 45.200,00</td></tr>
+                <tr><th>Multas Aplicadas</th><td class="col-red">R$ 12.500,00</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">📈 Médias de Consumo</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Média Mensal Estimada</th><td class="col-blue">R$ 4.734.657,46</td></tr>
+                <tr><th>Média Real (todos pagtos)</th><td class="col-green">R$ 1.821.254,78</td></tr>
+                <tr><th>Média Últ. 3 Pagamentos</th><td class="col-amber">R$ 2.733.513,17</td></tr>
+                <tr><th>Desvio da Média Est.</th><td class="col-red">−42,3%</td></tr>
+                <tr><th>Projeção Esgotamento</th><td style="font-weight:700">55 meses</td></tr>
+                <tr><th>Alerta</th><td><span class="chip chip-ok">✅ Abaixo da média</span></td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="fs-section">
+          <div class="fs-section-title">📊 Evolução Mensal de Pagamentos</div>
+          <div class="fs-section-body">
+            <table class="tbl" style="width:100%">
+              <thead><tr><th>Competência</th><th>Estimado</th><th>Pago</th><th>Retenção</th><th>Líquido</th><th>Δ vs Estimado</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">Abr/2025</td><td>R$ 4.734.657,46</td><td>R$ 2.100.000,00</td><td>—</td><td class="col-green">R$ 2.100.000,00</td><td class="col-red">−55,6%</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Mai/2025</td><td>R$ 4.734.657,46</td><td>R$ 2.200.000,00</td><td>—</td><td class="col-green">R$ 2.200.000,00</td><td class="col-red">−53,5%</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Jun/2025</td><td>R$ 4.734.657,46</td><td>R$ 2.050.000,00</td><td>—</td><td class="col-green">R$ 2.050.000,00</td><td class="col-red">−56,7%</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Jul/2025</td><td>R$ 4.734.657,46</td><td>R$ 2.400.000,00</td><td>R$ 100,02</td><td class="col-green">R$ 2.399.899,98</td><td class="col-red">−49,3%</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Ago/2025</td><td>R$ 4.734.657,46</td><td>R$ 1.998.783,44</td><td>—</td><td class="col-green">R$ 1.998.783,44</td><td class="col-red">−57,8%</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Set/2025</td><td>R$ 4.734.657,46</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="chip chip-pend">Pendente</span></td></tr>
+                <tr><td class="mono">Out/2025</td><td>R$ 4.734.657,46</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="chip chip-pend">Pendente</span></td></tr>
+                <tr><td class="mono">Nov/2025</td><td>R$ 4.734.657,46</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="chip chip-pend">Pendente</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>`
+    },
+
+    'pipeline': {
+      title: '🔄 Fluxo do Contrato — Detalhe Operacional',
+      hint: 'Rastreabilidade completa: OS → Ateste → Pagamento → Retenções',
+      render: () => `
+        <div class="fs-grid-2">
+          <div class="fs-section">
+            <div class="fs-section-title">🗂️ Ordens de Serviço</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <thead><tr><th>Nr. OS</th><th>Data</th><th>Unid.</th><th>Valor</th><th>Situação</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono col-blue">0030/2025</td><td class="mono">10/03/2025</td><td>GETEL</td><td>R$ 113.631.779,04</td><td><span class="chip chip-assin">✔ Assinada</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">✅ Atestes</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <thead><tr><th>ID Ateste</th><th>Competência</th><th>Retenção</th><th>Situação</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">AT-001</td><td class="mono">Jan/2026</td><td class="col-red">R$ 100,02</td><td><span class="chip chip-pend">Em Análise</span></td></tr>
+                  <tr><td class="mono">AT-002</td><td class="mono">Fev/2026</td><td>—</td><td><span class="chip chip-assin">Aprovado</span></td></tr>
+                  <tr><td class="mono">AT-003</td><td class="mono">Nov/2025</td><td>—</td><td><span class="chip chip-assin">Aprovado</span></td></tr>
+                  <tr><td class="mono">AT-004</td><td class="mono">Out/2025</td><td>—</td><td><span class="chip chip-assin">Aprovado</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="fs-grid-2">
+          <div class="fs-section">
+            <div class="fs-section-title">💰 Pagamentos Realizados</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <thead><tr><th>Competência</th><th>Fatura</th><th>Valor Bruto</th><th>Líquido</th><th>Data Pgto</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">Abr/2025</td><td class="mono">FAT-001</td><td>R$ 2.100.000,00</td><td class="col-green">R$ 2.100.000,00</td><td class="mono">05/05/2025</td></tr>
+                  <tr><td class="mono">Mai/2025</td><td class="mono">FAT-002</td><td>R$ 2.200.000,00</td><td class="col-green">R$ 2.200.000,00</td><td class="mono">07/06/2025</td></tr>
+                  <tr><td class="mono">Jun/2025</td><td class="mono">FAT-003</td><td>R$ 2.050.000,00</td><td class="col-green">R$ 2.050.000,00</td><td class="mono">10/07/2025</td></tr>
+                  <tr><td class="mono">Jul/2025</td><td class="mono">FAT-004</td><td>R$ 2.400.000,00</td><td class="col-green">R$ 2.399.899,98</td><td class="mono">08/08/2025</td></tr>
+                  <tr><td class="mono">Ago/2025</td><td class="mono">FAT-005</td><td>R$ 1.998.783,44</td><td class="col-green">R$ 1.998.783,44</td><td class="mono">09/09/2025</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">⚠️ Retenções e RTCs</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <thead><tr><th>RTC</th><th>Abertura</th><th>Tipo</th><th>Valor</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">RTC-001</td><td class="mono">Jan/2026</td><td>Retenção</td><td class="col-red">R$ 100,02</td><td><span class="chip chip-pend">Aberto</span></td></tr>
+                  <tr><td class="mono">RTC-002</td><td class="mono">Fev/2026</td><td>Multa</td><td class="col-red">R$ 1.500,00</td><td><span class="chip chip-pend">Em Tratamento</span></td></tr>
+                  <tr><td class="mono">RTC-003</td><td class="mono">Mar/2026</td><td>Advertência</td><td>—</td><td><span class="chip chip-assin">Encerrado</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>`
+    },
+
+    'pagamentos': {
+      title: '💰 Resumo dos Pagamentos — Visão Completa',
+      hint: 'Histórico financeiro, retenções e análise de prazos',
+      render: () => `
+        <div class="fs-grid-3">
+          <div class="fs-section">
+            <div class="fs-section-title">📊 Totalizadores</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Total Estimado (Vigência)</th><td class="col-blue" style="font-weight:700">R$ 113.631.779,04</td></tr>
+                <tr><th>Total Pago (Bruto)</th><td class="col-green" style="font-weight:700">R$ 12.748.783,44</td></tr>
+                <tr><th>Total Retenções</th><td class="col-warn">R$ 100,02</td></tr>
+                <tr><th>Total Multas</th><td class="col-red">R$ 12.500,00</td></tr>
+                <tr><th>Total Líquido</th><td class="col-green" style="font-weight:700">R$ 12.736.183,42</td></tr>
+                <tr><th>% Executado</th><td class="col-accent" style="font-weight:700">11,2%</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">📅 Análise de Prazos</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Pagamentos dentro do prazo</th><td class="col-green">4 (80%)</td></tr>
+                <tr><th>Pagamentos em atraso</th><td class="col-red">1 (20%)</td></tr>
+                <tr><th>Prazo médio de pagamento</th><td>28 dias</td></tr>
+                <tr><th>Maior atraso registrado</th><td class="col-red">5 dias</td></tr>
+                <tr><th>Prazo contratual</th><td>30 dias</td></tr>
+                <tr><th>Adimplência</th><td class="col-green" style="font-weight:700">100%</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">📈 Tendências</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Média Mensal Real</th><td class="col-green">R$ 2.549.756,69</td></tr>
+                <tr><th>Média Estimada</th><td class="col-blue">R$ 4.734.657,46</td></tr>
+                <tr><th>Desvio médio</th><td class="col-red">−46,2%</td></tr>
+                <tr><th>Meses pagos</th><td>5 de 24</td></tr>
+                <tr><th>Meses pendentes</th><td class="col-amber">19</td></tr>
+                <tr><th>Próximo pagamento est.</th><td class="mono">Dez/2025</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="fs-section">
+          <div class="fs-section-title">📋 Histórico Completo de Pagamentos</div>
+          <div class="fs-section-body">
+            <table class="tbl" style="width:100%">
+              <thead>
+                <tr>
+                  <th>Comp.</th><th>Fatura</th><th>NF</th><th>Boleto</th>
+                  <th>Bruto</th><th>Desconto</th><th>Retenção</th><th>Multa</th><th>Líquido</th>
+                  <th>Dt. Emissão</th><th>Dt. Ateste</th><th>Dt. Pgto</th><th>Prazo</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="mono">Abr/2025</td><td class="mono">FAT-001</td><td class="mono">NF-1001</td><td class="mono">BOL-001</td><td>R$ 2.100.000,00</td><td>—</td><td>—</td><td>—</td><td class="col-green">R$ 2.100.000,00</td><td class="mono">01/05/2025</td><td class="mono">03/05/2025</td><td class="mono">05/05/2025</td><td>30 dias</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Mai/2025</td><td class="mono">FAT-002</td><td class="mono">NF-1002</td><td class="mono">BOL-002</td><td>R$ 2.200.000,00</td><td>—</td><td>—</td><td>—</td><td class="col-green">R$ 2.200.000,00</td><td class="mono">02/06/2025</td><td class="mono">05/06/2025</td><td class="mono">07/06/2025</td><td>30 dias</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Jun/2025</td><td class="mono">FAT-003</td><td class="mono">NF-1003</td><td class="mono">BOL-003</td><td>R$ 2.050.000,00</td><td>—</td><td>—</td><td>—</td><td class="col-green">R$ 2.050.000,00</td><td class="mono">01/07/2025</td><td class="mono">08/07/2025</td><td class="mono">10/07/2025</td><td>30 dias</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Jul/2025</td><td class="mono">FAT-004</td><td class="mono">NF-1004</td><td class="mono">BOL-004</td><td>R$ 2.400.000,00</td><td>—</td><td class="col-red">R$ 100,02</td><td>—</td><td class="col-green">R$ 2.399.899,98</td><td class="mono">01/08/2025</td><td class="mono">06/08/2025</td><td class="mono">08/08/2025</td><td>30 dias</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr><td class="mono">Ago/2025</td><td class="mono">FAT-005</td><td class="mono">NF-1005</td><td class="mono">BOL-005</td><td>R$ 1.998.783,44</td><td>—</td><td>—</td><td>—</td><td class="col-green">R$ 1.998.783,44</td><td class="mono">02/09/2025</td><td class="mono">07/09/2025</td><td class="mono">09/09/2025</td><td>30 dias</td><td><span class="chip chip-assin">Pago</span></td></tr>
+                <tr style="opacity:.5"><td class="mono">Set/2025</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="chip chip-pend">Pendente</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>`
+    },
+
+    'penalidades': {
+      title: '⚠️ Penalidades — Visão Completa',
+      hint: 'Multas, advertências, RTCs e histórico de tratativas',
+      render: () => `
+        <div class="fs-grid-3">
+          <div class="fs-section">
+            <div class="fs-section-title">📊 Resumo de Penalidades</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Multas</th><td class="col-red" style="font-weight:700">28</td></tr>
+                <tr><th>Advertências</th><td class="col-amber">3</td></tr>
+                <tr><th>Suspensões</th><td class="col-muted">0</td></tr>
+                <tr><th>Em Tratamento</th><td class="col-amber">18</td></tr>
+                <tr><th>Inst. Solicitada</th><td class="col-blue">10</td></tr>
+                <tr><th>Encerradas</th><td class="col-green">3</td></tr>
+                <tr><th>Valor Total Aplicado</th><td class="col-red" style="font-weight:700">R$ 12.500,00</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">📋 RTCs por Tipo</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <thead><tr><th>Tipo</th><th>Qtd</th><th>Valor</th></tr></thead>
+                <tbody>
+                  <tr><td>Descumprimento de SLA</td><td>12</td><td class="col-red">R$ 6.000,00</td></tr>
+                  <tr><td>Atraso na Entrega</td><td>8</td><td class="col-red">R$ 3.200,00</td></tr>
+                  <tr><td>Qualidade Insuficiente</td><td>5</td><td class="col-red">R$ 2.500,00</td></tr>
+                  <tr><td>Documentação Incorreta</td><td>3</td><td class="col-warn">R$ 800,00</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">⏱️ Tempo Médio de Tratativa</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Abertura até 1ª resposta</th><td>3 dias</td></tr>
+                <tr><th>Abertura até encerramento</th><td>22 dias</td></tr>
+                <tr><th>RTCs acima de 30 dias</th><td class="col-red">5</td></tr>
+                <tr><th>RTCs acima de 60 dias</th><td class="col-red">2</td></tr>
+                <tr><th>Mais antigo em aberto</th><td class="col-red mono">45 dias</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="fs-section">
+          <div class="fs-section-title">📋 Histórico de RTCs — Últimos 10</div>
+          <div class="fs-section-body">
+            <table class="tbl" style="width:100%">
+              <thead><tr><th>RTC</th><th>Abertura</th><th>Tipo</th><th>Descrição</th><th>Valor</th><th>Responsável</th><th>Status</th><th>Encerramento</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">RTC-028</td><td class="mono">15/01/2026</td><td>Multa</td><td>SLA NIVEL 1 — chamado #4521 excedeu prazo</td><td class="col-red">R$ 500,00</td><td>Ana Paula</td><td><span class="chip chip-pend">Em Tratamento</span></td><td>—</td></tr>
+                <tr><td class="mono">RTC-027</td><td class="mono">10/01/2026</td><td>Multa</td><td>Entrega documentação técnica fora do prazo</td><td class="col-red">R$ 300,00</td><td>Carlos</td><td><span class="chip chip-pend">Inst. Solicitada</span></td><td>—</td></tr>
+                <tr><td class="mono">RTC-026</td><td class="mono">05/01/2026</td><td>Advertência</td><td>Equipe reduzida sem aviso prévio</td><td>—</td><td>Carlos</td><td><span class="chip chip-assin">Encerrado</span></td><td class="mono">20/01/2026</td></tr>
+                <tr><td class="mono">RTC-025</td><td class="mono">28/12/2025</td><td>Multa</td><td>Indisponibilidade sistema por 4h</td><td class="col-red">R$ 1.000,00</td><td>Roberto</td><td><span class="chip chip-pend">Em Tratamento</span></td><td>—</td></tr>
+                <tr><td class="mono">RTC-024</td><td class="mono">15/12/2025</td><td>Multa</td><td>Falha backup — não executado em 3 dias</td><td class="col-red">R$ 800,00</td><td>Ana Paula</td><td><span class="chip chip-assin">Encerrado</span></td><td class="mono">10/01/2026</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>`
+    },
+
+    'atestes': {
+      title: '✅ Atestes — Visão Completa',
+      hint: 'Histórico de atestes, fiscalização técnica e indicadores',
+      render: () => `
+        <div class="fs-grid-3">
+          <div class="fs-section">
+            <div class="fs-section-title">📊 Totalizadores</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Total de Atestes</th><td style="font-weight:700;color:var(--info)">4</td></tr>
+                <tr><th>Com Retenção</th><td class="col-red">1</td></tr>
+                <tr><th>Sem Retenção</th><td class="col-green">3</td></tr>
+                <tr><th>Em Análise</th><td class="col-amber">1</td></tr>
+                <tr><th>Aprovados</th><td class="col-green">3</td></tr>
+                <tr><th>Reprovados</th><td class="col-muted">0</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">⏱️ Prazos de Ateste</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Prazo contratual</th><td>5 dias úteis</td></tr>
+                <tr><th>Tempo médio real</th><td class="col-green">3,5 dias</td></tr>
+                <tr><th>Atestes dentro do prazo</th><td class="col-green">4 (100%)</td></tr>
+                <tr><th>Atestes em atraso</th><td class="col-muted">0</td></tr>
+                <tr><th>Maior prazo registrado</th><td>5 dias</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">👤 Fiscal Responsável</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Fiscal Técnico</th><td>Ana Paula Rocha</td></tr>
+                <tr><th>Matrícula</th><td class="mono">789012</td></tr>
+                <tr><th>Unidade</th><td>GETEL / DITEC</td></tr>
+                <tr><th>Atestes realizados</th><td>4</td></tr>
+                <tr><th>Último ateste</th><td class="mono">Fev/2026</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="fs-section">
+          <div class="fs-section-title">📋 Histórico Completo de Atestes</div>
+          <div class="fs-section-body">
+            <table class="tbl" style="width:100%">
+              <thead>
+                <tr>
+                  <th>ID Ateste</th><th>Competência</th><th>Tipo de Serviço</th>
+                  <th>Valor Atestado</th><th>Retenção</th><th>Dt. Recebimento</th>
+                  <th>Dt. Ateste</th><th>Prazo (dias)</th><th>Fiscal</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono col-blue">AT-001</td><td class="mono">Jan/2026</td>
+                  <td>Suporte Técnico + Infra</td><td>R$ 2.400.000,00</td>
+                  <td class="col-red">R$ 100,02</td><td class="mono">29/01/2026</td>
+                  <td class="mono">03/02/2026</td><td>5</td><td>Ana Paula</td>
+                  <td><span class="chip chip-pend">Em Análise</span></td>
+                </tr>
+                <tr>
+                  <td class="mono col-blue">AT-002</td><td class="mono">Fev/2026</td>
+                  <td>Suporte Técnico</td><td>R$ 2.200.000,00</td>
+                  <td>—</td><td class="mono">28/02/2026</td>
+                  <td class="mono">03/03/2026</td><td>3</td><td>Ana Paula</td>
+                  <td><span class="chip chip-assin">Aprovado</span></td>
+                </tr>
+                <tr>
+                  <td class="mono col-blue">AT-003</td><td class="mono">Nov/2025</td>
+                  <td>Infra + Redes</td><td>R$ 1.998.783,44</td>
+                  <td>—</td><td class="mono">30/11/2025</td>
+                  <td class="mono">04/12/2025</td><td>4</td><td>Ana Paula</td>
+                  <td><span class="chip chip-assin">Aprovado</span></td>
+                </tr>
+                <tr>
+                  <td class="mono col-blue">AT-004</td><td class="mono">Out/2025</td>
+                  <td>Suporte Técnico</td><td>R$ 2.050.000,00</td>
+                  <td>—</td><td class="mono">31/10/2025</td>
+                  <td class="mono">05/11/2025</td><td>5</td><td>Ana Paula</td>
+                  <td><span class="chip chip-assin">Aprovado</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>`
+    },
+
+    'os': {
+      title: '🗂️ Ordens de Serviço — Visão Completa',
+      hint: 'Detalhamento de OS, itens, cronograma e execução',
+      render: () => `
+        <div class="fs-grid-3">
+          <div class="fs-section">
+            <div class="fs-section-title">📊 Totalizadores</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Total de OS</th><td class="col-blue" style="font-weight:700">1</td></tr>
+                <tr><th>Assinadas</th><td class="col-green">1</td></tr>
+                <tr><th>Em Andamento</th><td class="col-amber">0</td></tr>
+                <tr><th>Pendentes</th><td class="col-muted">0</td></tr>
+                <tr><th>Canceladas</th><td class="col-muted">0</td></tr>
+                <tr><th>Valor Total OS</th><td class="col-blue" style="font-weight:700">R$ 113.631.779,04</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">📋 Dados da OS 0030/2025</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Número</th><td class="mono col-blue" style="font-weight:700">0030/2025</td></tr>
+                <tr><th>Data de Emissão</th><td class="mono">10/03/2025</td></tr>
+                <tr><th>Data de Assinatura</th><td class="mono">12/03/2025</td></tr>
+                <tr><th>Vigência da OS</th><td class="mono">03/04/2025 a 02/04/2027</td></tr>
+                <tr><th>Unidade Solicitante</th><td>GETEL</td></tr>
+                <tr><th>Unidade Executora</th><td>DITEC</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="fs-section">
+            <div class="fs-section-title">👤 Responsáveis pela OS</div>
+            <div class="fs-section-body">
+              <table class="tbl" style="width:100%">
+                <tr><th>Autorizador</th><td>Carlos Eduardo Mendes</td></tr>
+                <tr><th>Fiscal da OS</th><td>Ana Paula Rocha</td></tr>
+                <tr><th>Representante Fornecedor</th><td>João Ferreira</td></tr>
+                <tr><th>Cargo</th><td>Gerente de Projetos</td></tr>
+                <tr><th>Telefone</th><td class="mono">(11) 99876-5432</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="fs-section">
+          <div class="fs-section-title">📋 Itens e Serviços da OS</div>
+          <div class="fs-section-body">
+            <table class="tbl" style="width:100%">
+              <thead>
+                <tr><th>Item</th><th>Descrição do Serviço</th><th>Unidade</th><th>Qtd. Contratada</th><th>Valor Unit.</th><th>Valor Total</th><th>% Executado</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>Suporte Técnico Nível 1 — Help Desk</td><td>Posto/Mês</td><td>24</td><td>R$ 15.000,00</td><td class="col-blue">R$ 360.000,00</td><td class="col-green">45,8%</td></tr>
+                <tr><td>2</td><td>Suporte Técnico Nível 2 — Field Service</td><td>Posto/Mês</td><td>24</td><td>R$ 22.000,00</td><td class="col-blue">R$ 528.000,00</td><td class="col-green">45,8%</td></tr>
+                <tr><td>3</td><td>Administração de Infraestrutura e Redes</td><td>Posto/Mês</td><td>24</td><td>R$ 18.000,00</td><td class="col-blue">R$ 432.000,00</td><td class="col-green">45,8%</td></tr>
+                <tr><td>4</td><td>Segurança da Informação — SOC</td><td>Posto/Mês</td><td>24</td><td>R$ 35.000,00</td><td class="col-blue">R$ 840.000,00</td><td class="col-amber">20,8%</td></tr>
+                <tr><td>5</td><td>Gestão e Monitoramento de Ambientes Cloud</td><td>Mês</td><td>24</td><td>R$ 4.631.157,46</td><td class="col-blue">R$ 111.147.779,04</td><td class="col-red">10,2%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>`
+    }
+  };
+
+  function expandCard(id) {
+    const cfg = fsContents[id];
+    if (!cfg) return;
+    document.getElementById('fs-title').textContent = cfg.title;
+    document.getElementById('fs-body').innerHTML = cfg.render();
+    const overlay = document.getElementById('fs-overlay');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeExpand() {
+    document.getElementById('fs-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+</body>
+</html>

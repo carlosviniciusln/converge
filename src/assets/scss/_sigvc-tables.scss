@@ -1,0 +1,364 @@
+// =============================================================
+// SIGVC — Padronização Global de Tabelas e Filtros
+// Referência: layout-requisites.md + imagens de design aprovadas
+// =============================================================
+//
+// Padrão visual alvo:
+//  • Tabela: fundo branco, linhas com borda inferior cinza-clara,
+//    cabeçalho negrito, fonte 0.875rem, sem fundo escuro no header
+//  • Filtros: p-dropdown com borda suave, autocomplete interno,
+//    aparência clean (sem estilo de dropdown pesado)
+//  • Área de caption/toolbar: fundo branco, gap entre elementos,
+//    botões de ação pequenos
+// =============================================================
+
+// --- Tokens ---
+$tbl-bg:          #FFFFFF;
+$tbl-border:      #E5EDF0;      // cinza muito suave
+$tbl-header-bg:   #FFFFFF;
+$tbl-header-color:#22292E;      // greyscale-130
+$tbl-row-hover:   #F7FAFA;      // greyscale-10
+$tbl-stripe:      #FAFCFC;
+$tbl-font-size:   0.875rem;     // 14px
+$tbl-caption-bg:  #FFFFFF;
+$primary:         #005CA9;
+
+$filter-border:   #C9D6D8;
+$filter-radius:   6px;
+$filter-height:   36px;
+$filter-font:     0.875rem;
+
+// =============================================================
+// 1. CAPTION / TOOLBAR (área de título + filtros + botões)
+// =============================================================
+.p-datatable {
+
+  .p-datatable-header,
+  .table-header {
+    background-color: $tbl-caption-bg !important;
+    border: none !important;
+    padding: 12px 16px !important;
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .table-header-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: $tbl-header-color;
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding: 0 !important;
+    }
+
+    // Botões de ação na toolbar (exportar, adicionar)
+    .btn-sm,
+    button.btn-sm {
+      height: $filter-height;
+      min-width: $filter-height;
+      padding: 0 10px;
+      border-radius: $filter-radius;
+      border: 1px solid $filter-border;
+      background-color: $tbl-bg;
+      color: $tbl-header-color;
+      font-size: $filter-font;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+
+      &:hover {
+        border-color: $primary;
+        color: $primary;
+      }
+
+      i { font-size: 1rem; }
+    }
+
+    // Botão "Limpar filtros"
+    button.btn.btn-default,
+    button.p-button[label="Limpar filtros"] {
+      height: $filter-height !important;
+      padding: 0 16px !important;
+      border-radius: $filter-radius !important;
+      font-size: $filter-font !important;
+      background-color: $primary !important;
+      color: #fff !important;
+      border: none !important;
+      font-weight: 500;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken($primary, 8%) !important;
+      }
+    }
+
+    // Espaçamento de cada coluna de filtro
+    .pl-1, .pr-1 {
+      padding: 0 !important;
+    }
+  }
+}
+
+// =============================================================
+// 2. TABELA — cabeçalho
+// =============================================================
+.p-datatable {
+  font-size: $tbl-font-size !important;
+  color: $tbl-header-color;
+
+  // Reset do font-size forçado por styleClass legacy
+  &.p-datatable-customers {
+    font-size: $tbl-font-size !important;
+  }
+
+  .p-datatable-thead > tr > th {
+    background-color: $tbl-header-bg !important;
+    color: $tbl-header-color !important;
+    font-weight: 600 !important;
+    font-size: $tbl-font-size !important;
+    padding: 12px 16px !important;
+    border-bottom: 2px solid $tbl-border !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    white-space: nowrap;
+
+    // remove o fundo azul/escuro que o tema Lara aplica
+    &.p-highlight,
+    &.p-sortable-column.p-highlight {
+      background-color: $tbl-header-bg !important;
+      color: $primary !important;
+    }
+
+    .p-sortable-column-icon {
+      color: $filter-border;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// =============================================================
+// 3. TABELA — corpo
+// =============================================================
+.p-datatable {
+  .p-datatable-tbody > tr {
+    background-color: $tbl-bg !important;
+    transition: background-color 0.12s ease;
+
+    &:nth-child(even) {
+      background-color: $tbl-stripe !important;
+    }
+
+    &:hover,
+    &.p-highlight {
+      background-color: $tbl-row-hover !important;
+    }
+
+    > td {
+      padding: 11px 16px !important;
+      border-bottom: 1px solid $tbl-border !important;
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      font-size: $tbl-font-size !important;
+      color: $tbl-header-color;
+      vertical-align: middle;
+
+      // Remove o p-column-title que aparece em mobile mas polui desktop
+      .p-column-title {
+        display: none;
+      }
+    }
+
+    // Linha vazia
+    &.p-datatable-emptymessage > td {
+      padding: 24px 16px !important;
+      color: #7a9199;
+      text-align: center;
+      font-style: italic;
+    }
+  }
+}
+
+// =============================================================
+// 4. PAGINAÇÃO
+// =============================================================
+.p-datatable .p-paginator {
+  background-color: $tbl-bg !important;
+  border-top: 1px solid $tbl-border !important;
+  border-bottom: none !important;
+  padding: 8px 16px !important;
+  font-size: 0.8125rem;
+
+  .p-paginator-current {
+    color: #7a9199;
+  }
+
+  .p-paginator-page,
+  .p-paginator-first,
+  .p-paginator-prev,
+  .p-paginator-next,
+  .p-paginator-last {
+    border-radius: 6px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    font-size: 0.8125rem !important;
+
+    &.p-highlight {
+      background-color: $primary !important;
+      color: #fff !important;
+      border-color: $primary !important;
+    }
+
+    &:not(.p-highlight):hover {
+      background-color: $tbl-row-hover !important;
+    }
+  }
+
+  .p-dropdown {
+    height: 32px !important;
+    .p-dropdown-label { line-height: 30px !important; font-size: 0.8125rem !important; }
+  }
+}
+
+// =============================================================
+// 5. FILTROS — p-dropdown (autocomplete interno)
+// =============================================================
+.p-dropdown {
+  height: $filter-height;
+  border: 1px solid $filter-border !important;
+  border-radius: $filter-radius !important;
+  background-color: $tbl-bg !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:not(.p-disabled):hover {
+    border-color: darken($filter-border, 15%) !important;
+  }
+
+  &:not(.p-disabled).p-focus,
+  &.p-inputwrapper-focus {
+    border-color: $primary !important;
+    box-shadow: 0 0 0 2px rgba($primary, 0.16) !important;
+  }
+
+  .p-dropdown-label {
+    font-size: $filter-font !important;
+    color: $tbl-header-color;
+    line-height: calc(#{$filter-height} - 2px);
+    padding: 0 12px !important;
+
+    &.p-placeholder {
+      color: #9BB5BC;
+    }
+  }
+
+  .p-dropdown-trigger {
+    width: 32px;
+    color: #7a9199;
+  }
+
+  .p-dropdown-clear-icon {
+    color: #9BB5BC;
+    font-size: 0.75rem;
+  }
+}
+
+// Painel do dropdown (lista de opções)
+.p-dropdown-panel {
+  border: 1px solid $filter-border !important;
+  border-radius: $filter-radius !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10) !important;
+  background-color: $tbl-bg !important;
+
+  // Campo de busca interno do filtro
+  .p-dropdown-filter-container {
+    padding: 8px !important;
+    border-bottom: 1px solid $tbl-border;
+
+    .p-dropdown-filter {
+      height: 32px !important;
+      border-radius: $filter-radius !important;
+      border: 1px solid $filter-border !important;
+      font-size: $filter-font !important;
+      padding: 0 10px !important;
+      width: 100% !important;
+
+      &:focus {
+        border-color: $primary !important;
+        box-shadow: 0 0 0 2px rgba($primary, 0.14) !important;
+        outline: none;
+      }
+    }
+  }
+
+  .p-dropdown-items {
+    padding: 4px 0 !important;
+
+    .p-dropdown-item {
+      font-size: $filter-font !important;
+      padding: 9px 14px !important;
+      color: $tbl-header-color;
+      border-radius: 0;
+      transition: background-color 0.12s ease;
+
+      &:hover,
+      &.p-highlight {
+        background-color: rgba($primary, 0.08) !important;
+        color: $primary !important;
+      }
+    }
+
+    .p-dropdown-empty-message {
+      font-size: $filter-font !important;
+      padding: 9px 14px !important;
+      color: #9BB5BC;
+      font-style: italic;
+    }
+  }
+}
+
+// =============================================================
+// 6. CARD WRAPPER das telas (padroniza o .content > p-table)
+// =============================================================
+.content {
+  // Remove o padding-top excessivo que o tema aplica
+  // (o header sticky já ocupa o espaço com position:sticky)
+  padding-top: 20px !important;
+
+  .p-datatable {
+    background-color: $tbl-bg;
+    border-radius: 8px;
+    border: 1px solid $tbl-border;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+}
+
+// =============================================================
+// 7. ÍCONE de ação nas linhas (editar, detalhar etc.)
+// =============================================================
+.p-datatable tbody td {
+  i.pi-pencil,
+  i.pi-eye,
+  i.pi-trash,
+  i.pi-ellipsis-v {
+    color: $primary;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.12s ease;
+
+    &:hover {
+      background-color: rgba($primary, 0.10);
+    }
+  }
+}

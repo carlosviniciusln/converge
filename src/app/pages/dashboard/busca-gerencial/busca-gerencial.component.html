@@ -1,0 +1,251 @@
+<div class="painel-contrato">
+
+  <!-- BREADCRUMB: o componente já insere "Início" automaticamente -->
+  <dsc-breadcrumb [urls]="[
+    { label: 'Página Inicial', url: '/dashboard' },
+    { label: vigenciaLabel }
+  ]" style="margin-bottom: 16px;"></dsc-breadcrumb>
+
+  <!-- CABEÇALHO DO PAINEL -->
+  <div class="painel-header">
+    <div class="painel-header-left">
+    </div>
+    <div class="painel-header-right">
+      <div class="vigencia-selector">
+        <label class="vigencia-label" style="padding-top: 6px;">Visão:</label>
+        <select class="vigencia-select" [(ngModel)]="vigenciaSelecionada" (ngModelChange)="trocarVigencia($event)">
+          <option value="">Selecione</option>
+          <option *ngFor="let vig of vigencias" [value]="vig.id">{{ vig.label }}</option>
+        </select>
+        <!-- Diretoria selector only for VITEC visão -->
+        <div *ngIf="vigenciaSelecionada === 'vitec'" style="display:inline-block; margin-left:12px;">
+          <label class="vigencia-label">Diretoria:</label>
+          <select class="vigencia-select" [(ngModel)]="diretoriaSelecionada" (ngModelChange)="onDiretoriaChange($event)">
+            <option *ngFor="let d of diretorias" [value]="d.id">{{ d.label }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal template para diretoria (aberto ao clicar em uma fatia do gráfico) -->
+  <ng-template #diretoriaModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">{{ modalTitle }}</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Exibindo detalhes para a diretoria: <strong>{{ modalTitle }}</strong></p>
+      <!-- você pode trocar o conteúdo abaixo para algo mais útil: lista, filtros, rota, etc. -->
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close()">Fechar</button>
+    </div>
+  </ng-template>
+
+  <!-- CORPO: GRID 2 COLUNAS -->
+  <div class="painel-body">
+
+    <!-- COLUNA ESQUERDA -->
+    <div class="col-left">
+
+      <!-- VISÃO GERENCIAL (moved to top-left) -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">pie_chart</span>
+          Orçamento
+        </div>
+        <div class="card-body">
+          <div class="charts-row" style="display:flex; gap:16px; align-items:flex-start;">
+            <!-- When VITEC is selected, show one full-width chart inside Orçamento -->
+            <ng-container *ngIf="vigenciaSelecionada === 'vitec'; else nonVitecCharts">
+              <div style="flex: 1 1 100%;">
+                <canvas #orcBarChart class="orc-bar-canvas" style="width:100%; display:block;"></canvas>
+              </div>
+            </ng-container>
+            <ng-template #nonVitecCharts>
+              <div style="flex: 1 1 100%; display:flex; flex-direction:column; gap:8px;">
+                <!-- Monthly competence chart: Jan-Dec with CAPEX/OPEX planned & executed -->
+                <div style="margin-top:6px;">
+                  <canvas #orcMonthlyChart class="orc-monthly-canvas" style="width:100%; display:block;"></canvas>
+                </div>
+
+                <!-- KPI cards moved inside Orçamento for CAPEX/OPEX view -->
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                  <div class="kpi-card" style="flex:1 1 30%; padding:12px; border:1px solid #eee; border-radius:6px; text-align:center;">
+                    <div class="kpi-label">Capex Dotação</div>
+                    <div class="kpi-value">{{ capexDotacao }}</div>
+                  </div>
+                  <div class="kpi-card" style="flex:1 1 30%; padding:12px; border:1px solid #eee; border-radius:6px; text-align:center;">
+                    <div class="kpi-label">Capex Planejado</div>
+                    <div class="kpi-value">{{ capexPlanejado }}</div>
+                  </div>
+                  <div class="kpi-card" style="flex:1 1 30%; padding:12px; border:1px solid #eee; border-radius:6px; text-align:center;">
+                    <div class="kpi-label">Capex Executado</div>
+                    <div class="kpi-value">{{ capexExecutado }}</div>
+                  </div>
+                  <div class="kpi-card" style="flex:1 1 30%; padding:12px; border:1px solid #eee; border-radius:6px; text-align:center;">
+                    <div class="kpi-label">Opex Dotação</div>
+                    <div class="kpi-value">{{ opexDotacao }}</div>
+                  </div>
+                  <div class="kpi-card" style="flex:1 1 30%; padding:12px; border:1px solid #eee; border-radius:6px; text-align:center;">
+                    <div class="kpi-label">Opex Planejado</div>
+                    <div class="kpi-value">{{ opexPlanejado }}</div>
+                  </div>
+                  <div class="kpi-card" style="flex:1 1 30%; padding:12px; border:1px solid #eee; border-radius:6px; text-align:center;">
+                    <div class="kpi-label">Opex Executado</div>
+                    <div class="kpi-value">{{ opexExecutado }}</div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- NÚMEROS RÁPIDOS (hidden) -->
+      <div class="card" style="margin-top:12px;" *ngIf="false">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">timeline</span>
+          Números Rápidos
+        </div>
+      </div>
+
+      <!-- RESUMO DA VIGÊNCIA (hidden) -->
+      <div class="card" *ngIf="false">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">event_note</span>
+          Resumo da Vigência
+        </div>
+
+      </div>
+
+      <!-- RESUMO DOS PAGAMENTOS (hidden) -->
+      <div class="card" *ngIf="false">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">payments</span>
+          Resumo dos Pagamentos
+        </div>
+        <div class="card-body card-body--flush">
+          
+        </div>
+      </div>
+
+      <!-- INFORMAÇÕES GERAIS (hidden) -->
+      <div class="card" *ngIf="false">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">description</span>
+          Informações Gerais
+        </div>
+        <div class="card-body">
+        </div>
+
+         
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- COLUNA DIREITA -->
+    <div class="col-right">
+
+      <!-- CAPEX -->
+      <div class="card">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">trending_up</span>
+          CAPEX
+        </div>
+        <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; gap:12px;">
+            <div style="flex:1;">
+              <div class="small-kpi-label">Planejado</div>
+              <div class="small-kpi-value" style="color:#0b5ed7; font-weight:700">{{ capexPlanejado }}</div>
+            </div>
+            <div style="flex:1;">
+              <div class="small-kpi-label">Executado</div>
+              <div class="small-kpi-value" style="color:#333;">{{ capexExecutado }}</div>
+            </div>
+            <div style="flex:0 0 60px; text-align:right;">
+              <div class="small-kpi-label">Execução</div>
+              <div class="small-kpi-value">0,22%</div>
+            </div>
+          </div>
+          <div>
+            <div style="height:8px; background:#eef2f5; border-radius:8px; overflow:hidden;"><div style="width:22%; height:100%; background:#0b5ed7"></div></div>
+          </div>
+          <div>
+            <canvas #capexSmallChart style="width:100%; height:120px; display:block;"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPEX -->
+      <div class="card" style="margin-top:12px;">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">local_atm</span>
+          OPEX
+        </div>
+        <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; gap:12px;">
+            <div style="flex:1;">
+              <div class="small-kpi-label">Planejado</div>
+              <div class="small-kpi-value" style="color:#0b5ed7; font-weight:700">{{ opexPlanejado }}</div>
+            </div>
+            <div style="flex:1;">
+              <div class="small-kpi-label">Executado</div>
+              <div class="small-kpi-value" style="color:#333;">{{ opexExecutado }}</div>
+            </div>
+            <div style="flex:0 0 60px; text-align:right;">
+              <div class="small-kpi-label">Execução</div>
+              <div class="small-kpi-value">0,34%</div>
+            </div>
+          </div>
+          <div>
+            <div style="height:8px; background:#eef2f5; border-radius:8px; overflow:hidden;"><div style="width:34%; height:100%; background:#127527"></div></div>
+          </div>
+          <div>
+            <canvas #opexSmallChart style="width:100%; height:120px; display:block;"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ATESTES -->
+      <div class="card" *ngIf="false">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">check_circle</span>
+          Atestes
+        </div>
+        <div class="card-body">
+
+        </div>
+      </div>
+
+      <!-- ORDENS DE SERVIÇO -->
+      <div class="card" *ngIf="false">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">assignment</span>
+          Ordens de Serviço
+        </div>
+        <div class="card-body">
+
+        </div>
+      </div>
+
+      <!-- WORKFLOW: PIPELINE -->
+      <div class="card" *ngIf="false">
+        <div class="card-header">
+          <span class="material-icons card-header-icon">account_tree</span>
+          Fluxo do Contrato — OS → Ateste → Pgto → Retenção
+        </div>
+        <div class="card-body">
+
+        </div>
+      </div>
+
+    </div><!-- /col-right -->
+
+  </div><!-- /painel-body -->
+
+</div>
