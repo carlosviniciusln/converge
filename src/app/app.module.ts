@@ -1,17 +1,5 @@
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, APP_INITIALIZER } from "@angular/core";
-import { DscHeaderComponent } from 'sidsc-components/dsc-header';
-import { DscSidenavComponent } from 'sidsc-components/dsc-sidenav';
-import { DscButtonHeaderComponent } from 'sidsc-components/dsc-button-header';
-import { DscProgressSpinnerComponent } from 'sidsc-components/dsc-progress-spinner';
-import { DscButtonComponent } from 'sidsc-components/dsc-button';
-import { DscBreadcrumbComponent } from 'sidsc-components/dsc-breadcrumb';
-import { DscCheckboxComponent } from 'sidsc-components/dsc-checkbox';
-import { DscSelectComponent } from 'sidsc-components/dsc-select';
-import { DscFooterComponent } from 'sidsc-components/dsc-footer';
-import { DscPaginatorComponent } from 'sidsc-components/dsc-paginator';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { FileUploadModule } from 'primeng/fileupload';
@@ -19,7 +7,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AppComponent } from "./app.component";
 //import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRouting } from "./routing/app.routing";
@@ -28,7 +16,6 @@ import ptBr from '@angular/common/locales/pt';
 import { CommonModule, CurrencyPipe, DecimalPipe, DatePipe, registerLocaleData } from '@angular/common';
 import { LoaderInterceptor } from "./core/interceptors/loader.interceptor";
 import { ErrorInterceptor } from "./core/interceptors/error.interceptor";
-import { MockBackendInterceptor } from './interceptors/mock-backend.interceptor';
 
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -62,12 +49,15 @@ import { AtesteComponent } from './pages/ateste/ateste.component';
 import { NavbarAtesteComponent } from './pages/ateste/navbar-ateste/navbar-ateste.component';
 import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar-ateste.component';
 import { RegistrarAtesteComponent } from './pages/ateste/registrar-ateste/registrar-ateste.component';
-// LimitesComponent and its modal children moved to PagesModule
+import { LimitesComponent } from './pages/planejamento/limites/limites.component';
+import { ModalLimitesComponent } from "./pages/planejamento/limites/modal-limites/modal-limites.component";
+import { ModalUploadComponent } from './pages/planejamento/limites/modal-upload/modal-upload.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageService } from "primeng/api";
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { CargaGerais } from "src/assets/mock/Gcptb051CargaPlanejamentoItem";
 import { RelatorioContratoComponent } from './pages/relatorio/relatorio-contrato/relatorio-contrato.component';
+import { ModalHistoricoComponent } from "./pages/planejamento/limites/modal-historico/modal-historico.component";
 import { MatListModule } from "@angular/material/list";
 import { CardModule } from "primeng/card";
 import { TimelineModule } from "primeng/timeline";
@@ -76,6 +66,7 @@ import { PaginatorModule } from "primeng/paginator";
 import { DialogModule } from "primeng/dialog";
 import { MenuModule } from "primeng/menu";
 import { PagesComponent } from "./pages/pages.component";
+import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { NavbarComponent } from "./components/navbar/navbar.component";
 import { DevelopComponent } from "./components/develop/develop.component";
 import { KeycloakInitService } from "../keycloak.init";
@@ -84,6 +75,10 @@ import { CustomKeycloakInterceptor } from "./core/interceptors/keycloak.intercep
 import { DialogService } from "primeng/dynamicdialog";
 
 registerLocaleData(ptBr);
+
+const maskConfig: Partial<IConfig> = {
+  validation: false,
+};
 
 export function initializeKeycloak(keycloakInit: KeycloakInitService){
   return () => keycloakInit.init();
@@ -120,20 +115,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     FileUploadModule,
     MenuModule,
     SharedLibraryModule,
-    NgxMaskDirective,
-    NgxMaskPipe,
-    DscHeaderComponent,
-    DscSidenavComponent,
-    DscButtonHeaderComponent,
-    DscProgressSpinnerComponent,
-    DscButtonComponent,
-    DscBreadcrumbComponent,
-    DscCheckboxComponent,
-    DscSelectComponent,
-    DscFooterComponent,
-    DscPaginatorComponent,
-    MatDialogModule,
-    MatButtonModule,
+    NgxMaskModule.forRoot(maskConfig)
   ],
   exports: [
     //CommonModule,
@@ -159,10 +141,14 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     NavbarAtesteComponent,
     DetalharAtesteComponent,
     RegistrarAtesteComponent,
-  // LimitesComponent and its modal children moved to PagesModule
+    LimitesComponent,
+    ModalLimitesComponent,
+    ModalUploadComponent,
+    ModalHistoricoComponent,
     //AuthLayoutComponent
     RelatorioContratoComponent,
     PagesComponent,
+    SidebarComponent,
     NavbarComponent,
     DevelopComponent,
   ],
@@ -180,9 +166,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-  { provide: HTTP_INTERCEPTORS, useClass: MockBackendInterceptor, multi: true },
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
-    provideNgxMask({ validation: false }),
     KeycloakInitService,
     KeycloakService,
     // {

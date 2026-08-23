@@ -1,29 +1,19 @@
-import { ListarContratoPlanejamentoOrcamentarioResponse } from './../../../models/response/ListarContratoPlanejamentoOrcamentarioResponse';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
-  RequiredValidator,
   Validators,
 } from '@angular/forms';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import {
-  DemandaTipoResponse,
-  ObjetivoEstrategicoResponse,
   PlanejamentoOrcamentarioConsultaResponse,
-  PlanejamentoStatusResponse,
-  PlanejamentoTipoResponse
+  PlanejamentoStatusResponse
 } from 'src/app/models/generics/planejamento-response';
-import { Endpoints } from 'src/app/models/enums/endpoints';
 import { ApiResponse } from 'src/app/models/generics/api-response';
-import { Filial } from 'src/app/models/generics/filial';
-import { Rubrica } from 'src/app/models/generics/rubrica';
-import { PlanejamentoOrcamentarioItemRequest } from 'src/app/models/generics/planejamento-request';
-import { Orcamento } from 'src/app/models/generics/orcamento';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Select2Data } from 'ng-select2-component';
 import {
@@ -35,14 +25,13 @@ import {
 } from 'src/app/shared/services/token-storage.service';
 import Swal from 'sweetalert2';
 import { IUser } from 'src/app/models/DTOs/IUser';
-
-import { Gcptb060PlanejamentoItemHistoricoResponse } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoResponse';
 import { Gcptb063PrevisaoDesembolsoDTO } from 'src/app/models/DTOs/Gcptb063PrevisaoDesembolsoDTO';
 import { Gcpvw055DetalheTelaConsultaV2DTO } from 'src/app/models/DTOs/Gcpvw055DetalheTelaConsultaV2DTO';
-import { Gcpvw051VisaoContratoPlanejamentoOrcamentario } from 'src/app/models/generics/Gcpvw051VisaoContratoPlanejamentoOrcamentario';
 import { Gcptb051CriarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051CriarPlanejamentoItemRequest';
 import { Gcptb051AtualizarPlanejamentoItemRequest } from 'src/app/models/request/Gcptb051AtualizarPlanejamentoItemRequest';
 import { Gcptb060PlanejamentoItemHistoricoV2Response } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoV2Response';
+import { Gcptb060DiffRegistros } from 'src/app/models/DTOs/Gcptb060DiffRegistros';
+import { Gcpvw055DetalharPlanejamentoItensResponse } from 'src/app/models/response/Gcpvw055DetalharPlanejamentoItensResponse';
 
 @Component({
   selector: 'app-planejamento-cadastro-v2',
@@ -57,33 +46,29 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   @Input() public isEditable: boolean;
   @Input() public statusExercicio: string;
   @Input() public isCadastro: boolean;
-
-
   @Output() atualizarPagina: EventEmitter<boolean> = new EventEmitter();
 
-
-  public listaContratos: ListarContratoPlanejamentoOrcamentarioResponse[] = [];
   public previsoesExcluidas: {
   nuPlanejamentoItem: number;
-  nuPrevisaoDesembolso: number;
-}[] = [];
-  public listaFiliais: Filial[] = [];
-  public listaRubricas: Rubrica[] = [];
-  public listaTiposPlanejamento: PlanejamentoTipoResponse[] = [];
-  public listaTiposDemanda: DemandaTipoResponse[] = [];
-  public listaStatusPlanejamento: PlanejamentoStatusResponse[] = [];
-  public listaObjetivosEstrategicosPdti: ObjetivoEstrategicoResponse[] = [];
-  public listaObjetivosEstrategicosPei: ObjetivoEstrategicoResponse[] = [];
+  nuPrevisaoDesembolso: number; } [] = [];
+
+  public dadosDeDominio: Gcpvw055DetalharPlanejamentoItensResponse = new Gcpvw055DetalharPlanejamentoItensResponse();
 
   public form: FormGroup;
 
 
   public isFlagContrato : boolean = false;
   public isFlagObjeto : boolean = false;
+  public isFlagPlanoDeAquisicao : boolean = false;
+  public isFlagTipoModalidade : boolean = false;
+  public isFlagVrGlobal : boolean = false;
+  public isFlagPrazoVigencia : boolean = false;
+  public isFlagDtPrevisaoSiclg : boolean = false;
 
   public totalRubrica: number;
   public selectTab: number = 0;
   public loading: boolean = true;
+  public gestorETorresGEGAT: boolean = false;
   public isReadonly = true;
   public permissions: ActionPolicies;
 
@@ -127,11 +112,9 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   public currentPageAction: PageAction;
 
   public currentProfile: IUser;
+  public perfilAtual: string = '';
   public isPerfilPrivilegiado = false;
   rubricasSelecionadas: string[] = [];
-  selectContratos: Select2Data;
-  selectedContrato: string = null;
-
   submitted = false;
 
   /**
@@ -148,6 +131,8 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     TpOperacao: null,
     NuOrc: null
   };
+
+  // PASSAR PARA ENUM
 
   public filtros: any = [
     {
@@ -170,7 +155,7 @@ export class PlanejamentoCadastroV2Component implements OnInit {
 
   listaPlanejamentoItemHistorico: Gcptb060PlanejamentoItemHistoricoV2Response = new Gcptb060PlanejamentoItemHistoricoV2Response();
   dialogVisible = false;
-  selectedDiff: any = null;
+  selectedDiff: Gcptb060DiffRegistros[] | null = null;
   filtrosSelecionado: string | null = null;
 
   /**
@@ -185,23 +170,17 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     public token: TokenStorageService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.loading = true;
-    this.obterPermissoes();
-    this.definirPageAction();
-    this.formulario();
-    this.obterContratos();
-    this.obterFiliais();
-    this.obterRubricas();
-    this.obterTiposPlanejamento();
-    this.obterTiposDemanda();
-    this.obterStatusPlanejamento();
-    this.obterObjetivosEstrategicosPdti();
-    this.obterObjetivosEstrategicosPei();
+    await this.definirPageAction();
+    await this.formulario();
+    this.obterPermissoesIniciais()
+    await this.obterDadosDominio();
+
 
 
     if (this.planejamento?.nuOrc) {
-      this.obterPlanejamento();
+     await this.obterPlanejamento();
     } else {
 
       this.editarTextos();
@@ -210,14 +189,38 @@ export class PlanejamentoCadastroV2Component implements OnInit {
 
 
     if(this.tipoModal != 'adicionar'){
-    this.obterPlanejamentoItemHistorico();
+     await this.obterPlanejamentoItemHistorico();
     }
+
+     this.obterPermissoes();
+
 
   }
 
   verDetalhes(event: any) {
     this.selectedDiff = event;
     this.dialogVisible = true;
+  }
+
+  getMarkerColor(event: any): string {
+    if (event.tpOperacao === 'INCLUSAO') return '#4CAF50';
+    if (event.tpOperacao === 'ALTERACAO' && event.listaDiffs?.some((d: any) => d.depois === 'Validado')) return '#4CAF50';
+    if (event.tpOperacao === 'ALTERACAO') return '#2196F3';
+    return '#F44336';
+  }
+
+  getMarkerIcon(event: any): string {
+    if (event.tpOperacao === 'INCLUSAO') return 'pi pi-plus';
+    if (event.tpOperacao === 'ALTERACAO' && event.listaDiffs?.some((d: any) => d.depois === 'Validado')) return 'pi pi-check';
+    if (event.tpOperacao === 'ALTERACAO') return 'pi pi-pencil';
+    return 'pi pi-trash';
+  }
+
+  getCardHeader(event: any): string {
+    if (event.tpOperacao === 'INCLUSAO') return 'INCLUSÃO';
+    if (event.tpOperacao === 'ALTERACAO' && event.listaDiffs?.some((d: any) => d.depois === 'Validado')) return 'VALIDADO';
+    if (event.tpOperacao === 'ALTERACAO') return 'ALTERAÇÃO';
+    return 'EXCLUSÃO';
   }
 
   onTabChange(event) {
@@ -257,22 +260,52 @@ export class PlanejamentoCadastroV2Component implements OnInit {
    * FIM HISTORICO METODOS
    */
 
+  obterPermissoesIniciais(){
+     this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
+     const perfil = this.currentProfile.noPerfil;
+     const isTorresGEGAT = perfil === PerfisEnum.TorresGEGAT;
+     const isGestorOperacional = perfil === PerfisEnum.GestorOperacional;
+     this.gestorETorresGEGAT =  isTorresGEGAT || isGestorOperacional;
+  }
+
   obterPermissoes() {
+
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
-    this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
-    if (
-      this.planejamento?.coFilial == this.currentProfile.coUnidade ||
-      this.currentProfile.noPerfil == PerfisEnum.Orcamento ||
-      this.currentProfile.noPerfil == PerfisEnum.Administrador
-    ){
-      if(this.statusExercicio == "Cancelado"){ //nenhum perfil pode alterar
-        this.isPerfilPrivilegiado = false;
-      } else if (this.statusExercicio == "Encerrado" && this.currentProfile.noPerfil != PerfisEnum.Orcamento){ //encerrado apena so perfil orçamento pode alterar
-        this.isPerfilPrivilegiado = false;
-      } else {
-        this.isPerfilPrivilegiado = true;
-      }
+    // this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
+
+    const perfil = this.currentProfile.noPerfil;
+    this.perfilAtual = perfil;
+    const mesmaUnidade = this.planejamento?.coFilial === this.currentProfile.coUnidade;
+
+
+    const isAdministrador = perfil === PerfisEnum.Administrador;
+    const isOrcamento = perfil === PerfisEnum.Orcamento;
+    const isTorresGEGAT = perfil === PerfisEnum.TorresGEGAT;
+    const isGestorOperacional = perfil === PerfisEnum.GestorOperacional;
+
+    const perfisAceitos = isOrcamento || isAdministrador || isTorresGEGAT || (isGestorOperacional && mesmaUnidade);
+
+    if (!perfisAceitos) {
+      this.isPerfilPrivilegiado = false;
+      return;
     }
+
+    if (this.statusExercicio === "Cancelado") {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    if (this.statusExercicio === "Validado"  && !isAdministrador) {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    if(this.planejamento.nuStatusPlanejamentoItem == 3 && !isAdministrador && !isOrcamento){
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    this.isPerfilPrivilegiado = true;
   }
 
   definirPageAction() {
@@ -297,9 +330,6 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.actionButtonLabel = element.actionButtonLabel;
   }
 
-  /*ATRIBUTOS FORMULARIO NOVO */
-
-  public formNovo: FormGroup;
 
   /* REFATORAÇÃO HISTORICO */
 
@@ -353,11 +383,30 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       icServicoContinuo: new FormControl({ value: 0, disabled: true }, [
         Validators.required,
       ]),
-      // icDigital: new FormControl({ value: '', disabled: !this.isEditable }, [
-      //   Validators.required,
-      // ]),
+
+      nuTipoDigital: new FormControl({ value: '', disabled: !this.isEditable }, [
+        // Validators.required,
+      ]),
       nuSap: [''],
       deSap: [''],
+      nuModalidade: new FormControl(
+        { value: '', disabled: !this.isEditable },
+        // [Validators.required]
+      ),
+      dePrazoVigencia: new FormControl(
+        { value: '', disabled: !this.isEditable } ,
+        // [Validators.required]
+
+      ),
+      dtPrevisaoSiclg: new FormControl(
+        { value: '', disabled: !this.isEditable },
+        // [Validators.required]
+
+      ),
+      vrGlobal: new FormControl(
+        { value: '', disabled: !this.isEditable },
+        // [Validators.required]
+      ),
       previsoesDesembolso: new FormArray([]),
       vrTotalOrcamentoPlanejamento: new FormControl(
         { value: 0, disabled: true },
@@ -365,6 +414,8 @@ export class PlanejamentoCadastroV2Component implements OnInit {
       ),
     });
   }
+
+
 
   formularioLivre() {
     if (!this.form) return;
@@ -393,39 +444,11 @@ export class PlanejamentoCadastroV2Component implements OnInit {
     this.previsoesDesembolso.push(this.novaPrevisaoDesembolso());
   }
 
-  // async excluirPrevisaoDesembolso(i: number) {
-
-  //     const alert = await Swal.fire({
-  //     title: '',
-  //     text: `Deseja realmente excluir rubrica: ${i + 1}?`,
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonText: 'Sim, deletar!',
-  //     cancelButtonText: 'Não, cancelar!',
-  //   }).then((result) => {
-  //     if (result.value) {
-  //       return true;
-  //     } else if (result.dismiss === Swal.DismissReason.cancel) {
-  //       return false;
-  //     }
-  //   });
-
-  //   if (alert) {
-  //     this.previsoesDesembolso.removeAt(i);
-  //     this.somaValorTotalPlanejamentoOrcamentario();
-  //   }
-
-  //   return;
-  // }
 
   novaPrevisaoDesembolso(): FormGroup {
     return new FormGroup({
       nuPlanejamentoItem: new FormControl(0, [Validators.required]),
       nuPrevisaoDesembolso: new FormControl(0, [Validators.required]),
-      // nuPlanejamentoOrcamentario: new FormControl(
-      //   this.planejamento?.nuPlanejamentoOrcamentario ?? 0,
-      //   [Validators.required]
-      // ),
       nuRubrica: new FormControl({ value: '', disabled: !this.isEditable }, [
         Validators.required,
       ]),
@@ -450,18 +473,59 @@ export class PlanejamentoCadastroV2Component implements OnInit {
   onPlanejadoParaChange() {
     if (this.form.controls['nuDemandaTipo'].value == 4) {
       this.form.controls['icServicoContinuo'].setValue(1);
-    } else {
-      this.form.controls['icServicoContinuo'].setValue(0);
+      return;
     }
+    else if(this.form.controls['nuDemandaTipo'].value == 1){
+      this.isFlagPlanoDeAquisicao = true;
+      this.planoAquisicaoObrigatorio();
+      return
+    }
+
+     this.form.controls['icServicoContinuo'].setValue(0);
+     this.isFlagPlanoDeAquisicao = false;
+     this.limparValidatorsTipoPlano();
+
   }
+
+  private tornarObrigatorio(controlName: string) {
+      const control = this.form.get(controlName);
+      control?.setValidators([Validators.required]);
+      control?.updateValueAndValidity();
+  }
+
+  private removerObrigatorio(controlName: string) {
+    const control = this.form.get(controlName);
+    control?.clearValidators();
+    control?.reset();
+    control?.updateValueAndValidity();
+  }
+
+    private limparValidatorsTipoPlano(): void {
+    this.removerObrigatorio('vrGlobal');
+    this.removerObrigatorio('dtPrevisaoSiclg');
+    this.removerObrigatorio('dePrazoVigencia');
+    this.removerObrigatorio('nuModalidade');
+  }
+
+private normalizarDataParaInput(data?: string): string | null {
+  if (!data) return null;
+  return data.split('T')[0];
+}
+
+
+
+
+
 
   onIsServicoContinuoChange($event: MatSlideToggleChange) {
     if ($event.checked) {
       this.form.controls['icServicoContinuo'].setValue(1);
       this.form.controls['nuDemandaTipo'].setValue(4)
+
     } else {
       this.form.controls['icServicoContinuo'].setValue(0);
-      this.form.controls['nuDemandaTipo'].setValue(6)
+      this.form.controls['nuDemandaTipo'].setValue(6);
+
     }
   }
 
@@ -566,7 +630,6 @@ async removerRubrica(nuRubrica: string) {
   async obterDadosContrato(nuContrato: string) {
     try {
 
-      //VERIFICAR ESSE TIPO
       const response = await this.apiService.get<
         ApiResponse<PlanejamentoOrcamentarioConsultaResponse>
       >(
@@ -598,6 +661,7 @@ async removerRubrica(nuRubrica: string) {
 
  public async obterPlanejamento(): Promise<void> {
   try {
+
     const response = await this.apiService.get<
       ApiResponse<Gcpvw055DetalheTelaConsultaV2DTO>
     >(
@@ -618,8 +682,6 @@ async removerRubrica(nuRubrica: string) {
 
     const planejamento = response.data;
 
-    console.log('Planejamento obtido:', planejamento);
-
     this.planejamento = planejamento as any; // mantém compatibilidade interna
 
     // ===== Dados principais =====
@@ -634,11 +696,14 @@ async removerRubrica(nuRubrica: string) {
       nuDemandaTipo: planejamento.nuTipoDemanda,
       nuObjetivoEstrategicoPdti: planejamento.nuObjetivoPdtic,
       nuObjetivoEstrategicoPei: planejamento.nuObjetivoPei,
-      // icDigital: planejamento.nuDigital,
+      nuTipoDigital: planejamento.nuTipoDigital,
       noCriador: planejamento.coMatricula,
       deSap: planejamento.deSap,
       nuSap: planejamento.nuSap,
-
+      vrGlobal: planejamento.vrGlobal,
+      dePrazoVigencia: planejamento.dePrazoVigencia,
+      nuModalidade: planejamento.nuModalidade,
+      dtPrevisaoSiclg: this.normalizarDataParaInput(planejamento.dtPrevisaoSiclg),
       dhCadastro: this.formatarData(planejamento.dhCadastro),
     });
 
@@ -653,10 +718,23 @@ async removerRubrica(nuRubrica: string) {
     this.form.controls['nuContrato'].setValue(planejamento.nuContrato);
     this.form.controls['coContrato'].setValue(planejamento.coContrato);
 
+    if(planejamento.nuTipoDemanda == 1){
+      this.isFlagPlanoDeAquisicao = true;
+      this.planoAquisicaoObrigatorio()
+    }
+
+    if(planejamento.nuContrato != null && planejamento.nuContrato != 0){
+      this.isFlagContrato = true;
+    }
+
+    if(this.planejamento?.noModalidade != null){
+      this.form.get('nuModalidade')?.setValue(this.dadosDeDominio.listaTiposModalidade.find(x => x.descricao == this.planejamento?.noModalidade).id);
+    }
+
     // ===== Previsões =====
     this.previsoesDesembolso.clear();
-
     let total = 0;
+
     planejamento.previsoesDesembolso.forEach(p => {
       total += p.vrPlanejado;
       this.previsoesDesembolso.push(this.criarFormGroupPrevisao(p));
@@ -673,6 +751,30 @@ async removerRubrica(nuRubrica: string) {
   this.editarTextos();
 }
 
+private planoAquisicaoObrigatorio(): void {
+  this.limparValidatorsTipoPlanoSemReset();
+  this.tornarObrigatorio('vrGlobal');
+  this.tornarObrigatorio('dtPrevisaoSiclg');
+  this.tornarObrigatorio('dePrazoVigencia');
+  // this.tornarObrigatorio('nuModalidade');
+}
+
+
+  private limparValidatorsTipoPlanoSemReset(): void {
+  this.form.get('vrGlobal')?.clearValidators();
+  this.form.get('dePrazoVigencia')?.clearValidators();
+  // this.form.get('nuModalidade')?.clearValidators();
+  this.form.get('dtPrevisaoSiclg')?.clearValidators();
+
+  this.form.get('vrGlobal')?.updateValueAndValidity();
+  this.form.get('dePrazoVigencia')?.updateValueAndValidity();
+  // this.form.get('nuModalidade')?.updateValueAndValidity();
+  this.form.get('dtPrevisaoSiclg')?.updateValueAndValidity();
+}
+
+
+
+
 private formatarData(data: string | Date | null | undefined): string {
   if (!data) return '';
 
@@ -685,6 +787,15 @@ private formatarData(data: string | Date | null | undefined): string {
 
   return `${dia}/${mes}/${ano}`;
 }
+
+bloquearCaracteresInvalidos(event: KeyboardEvent): void {
+  const teclasBloqueadas = ['e', 'E', '+', '-', '.', ','];
+
+  if (teclasBloqueadas.includes(event.key)) {
+    event.preventDefault();
+  }
+}
+
 
 private criarFormGroupPrevisao(
   x: Gcptb063PrevisaoDesembolsoDTO
@@ -722,9 +833,19 @@ private criarFormGroupPrevisao(
 
 async excluirPrevisaoDesembolso(i: number) {
 
-  const grupo = this.previsoesDesembolso.at(i) as FormGroup;
 
-  console.log(grupo.value, "VALORES DO GRUPO");
+
+if (this.previsoesDesembolso.length === 1) {
+    await Swal.fire({
+      text: 'Não é possível excluir. Deve haver pelo menos uma rubrica.',
+      icon: 'warning',
+      confirmButtonText: 'Ok'
+    });
+    return;
+  }
+
+
+  const grupo = this.previsoesDesembolso.at(i) as FormGroup;
 
   const nuPlanejamentoItem = grupo.get('nuPlanejamentoItem')?.value;
   const nuPrevisaoDesembolso = grupo.get('nuPrevisaoDesembolso')?.value;
@@ -739,7 +860,7 @@ async excluirPrevisaoDesembolso(i: number) {
 
   if (!confirm.isConfirmed) return;
 
-  if (nuPlanejamentoItem && nuPrevisaoDesembolso) {
+  if (nuPlanejamentoItem && (nuPrevisaoDesembolso != 0 && nuPrevisaoDesembolso != null)) {
     this.previsoesExcluidas.push({
       nuPlanejamentoItem,
       nuPrevisaoDesembolso
@@ -750,98 +871,45 @@ async excluirPrevisaoDesembolso(i: number) {
   this.somaValorTotalPlanejamentoOrcamentario();
 }
 
-
-  //alterar para ativos - ### inviabiliza visualizar os não ativos #### pediu ta feito
-  public async obterContratos(): Promise<void> {
+   public async obterDadosDominio(): Promise<Gcpvw055DetalharPlanejamentoItensResponse> {
     try {
-        const response = await this.apiService.get<
-          ApiResponse<ListarContratoPlanejamentoOrcamentarioResponse[]>
-        >(`v1/Contrato/lista-contrato-planejamento`);
-
-        this.listaContratos = response.data;
-
-    } catch (error) {}
-  }
-
-  public async obterFiliais(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<Filial[]>>(
-        `${Endpoints.URL_FILIAL}/unidade-demandante`
+      const response = await this.apiService.get<ApiResponse<Gcpvw055DetalharPlanejamentoItensResponse>>(
+        `v1/PlanejamentoOrcamentarioV/planejamento-item-dados-de-dominio`
       );
 
-    this.listaFiliais = (response.data ?? [])
-    .sort((a, b) => a.sgFilial.localeCompare(b.sgFilial))
-    .map(f => ({
-      ...f,
-      nuFilialEcoFilial: `${f.coFilial} - ${f.sgFilial}`
-    }));
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  public async obterRubricas(): Promise<void> {
-    try {
-      const response = await this.apiService.get<ApiResponse<Rubrica[]>>(
-        `${Endpoints.URL_RUBRICA}/ativas`
-      );
-
-      this.listaRubricas = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-
-  public async obterTiposPlanejamento(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<PlanejamentoTipoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/tipos-planejamento`);
-
-      this.listaTiposPlanejamento = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  public async obterTiposDemanda(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<DemandaTipoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/tipos-demanda`);
-
-      this.listaTiposDemanda = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-
-  public async obterStatusPlanejamento(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<PlanejamentoStatusResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
-
-      this.listaStatusPlanejamento = response.data;
-      //conflito de regras - o backend impedi a visualização do status cancelado e encerrado
-      /*
-      if(this.isPerfilPrivilegiado){
-        this.listaStatusPlanejamento.push({
-          nuPlanejamentoStatus: 4,
-          noPlanejamentoStatus: 'Cancelado',
-        },{
-          nuPlanejamentoStatus: 6,
-          noPlanejamentoStatus: 'Encerrado',
-        });
+      if(!response.succeeded) {
+        this.toastr.error(
+          'Não foi possível obter os dados de domínio para este detalhamento.',
+          'Erro'
+        );
+        return;
       }
-      */
+
+      const dadosDeDominio = response.data as Gcpvw055DetalharPlanejamentoItensResponse;
+
+      this.dadosDeDominio =  {
+        ...dadosDeDominio,
+        listaStatusPlanejamento: this.planejamento?.nuStatusPlanejamentoItem === 3 || this.planejamento?.nuStatusPlanejamento === 3
+          ? dadosDeDominio.listaStatusPlanejamento
+          : this.gestorETorresGEGAT ? dadosDeDominio.listaStatusPlanejamento.filter(
+              s => s.noPlanejamentoStatus !== 'Validado'
+            ) : dadosDeDominio.listaStatusPlanejamento
+
+            }
+      this.tratarStatusPlanejamento()
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+  public tratarStatusPlanejamento() {
+
       this.buildStatusRank_();
             //Define o campo como criado ao criar um novo contrato e desabilita o campo
             if (this.isCadastro) {
-              const criadoId = this.listaStatusPlanejamento.find(
+              const criadoId = this.dadosDeDominio.listaStatusPlanejamento.find(
                 s => s.noPlanejamentoStatus === 'Criado'
               )?.nuPlanejamentoStatus;
 
@@ -850,15 +918,14 @@ async excluirPrevisaoDesembolso(i: number) {
                 this.form.controls['nuPlanejamentoStatus'].disable();
               }
             }
-    } catch (error) {
-      console.error(error);
-    } finally {
+
       const c = this.form?.get('nuPlanejamentoStatus')?.value;
+
       if (c != null && c !== '') {
         this.originalStatusId = this.originalStatusId ?? c;
         this.setupNoRegressionGuard_();
       }
-    }
+
   }
   // TODO: Em outra oportunidade mover essa validacao para o Backend.
   private originalStatusId: number | null = null;
@@ -874,9 +941,9 @@ async excluirPrevisaoDesembolso(i: number) {
 
   private buildStatusRank_(): void {
     this.statusRank.clear();
-    if (!this.listaStatusPlanejamento?.length) return;
+    if (!this.dadosDeDominio.listaStatusPlanejamento?.length) return;
     const mapByName = new Map<string, number>();
-    this.listaStatusPlanejamento.forEach((s) =>
+    this.dadosDeDominio.listaStatusPlanejamento.forEach((s) =>
       mapByName.set(
         (s.noPlanejamentoStatus || '').trim(),
         s.nuPlanejamentoStatus
@@ -888,17 +955,6 @@ async excluirPrevisaoDesembolso(i: number) {
     });
   }
 
-  private getCurrentStatusId_(): number | null {
-    const v = this.form?.get('nuPlanejamentoStatus')?.value;
-    return v == null || v === '' ? this.originalStatusId : v;
-  }
-
-  private getNameById_(id: number): string {
-    return (
-      this.listaStatusPlanejamento?.find((s) => s.nuPlanejamentoStatus === id)
-        ?.noPlanejamentoStatus || ''
-    ).trim();
-  }
 
   private rank_(id: number): number {
     const r = this.statusRank.get(id);
@@ -935,13 +991,6 @@ async excluirPrevisaoDesembolso(i: number) {
     });
   }
 
-  public get visibleStatusList(): PlanejamentoStatusResponse[] {
-
-    if (!this.listaStatusPlanejamento?.length) return [];
-
-      return this.listaStatusPlanejamento;
-
-  }
 
   public async obterPlanejamentoItemHistorico(): Promise<void> {
     try {
@@ -977,43 +1026,10 @@ async excluirPrevisaoDesembolso(i: number) {
     }
   }
 
-  public async obterObjetivosEstrategicosPdti(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<ObjetivoEstrategicoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/objetivos-estrategicos-pdti`);
-
-      // Limita o texto de cada objetivo a 70 caracteres
-      this.listaObjetivosEstrategicosPdti = response.data.map((obj) => ({
-        ...obj,
-        deObjetivoEstrategico:
-          obj.deObjetivoEstrategico?.slice(0, 70) +
-          (obj.deObjetivoEstrategico?.length > 70 ? '...' : ''),
-      }));
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  public async obterObjetivosEstrategicosPei(): Promise<void> {
-    try {
-      const response = await this.apiService.get<
-        ApiResponse<ObjetivoEstrategicoResponse[]>
-      >(`${Endpoints.URL_ORCAMENTO}/objetivos-estrategicos-pei`);
-
-      this.listaObjetivosEstrategicosPei = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   public async onSubmit(): Promise<void> {
+    this.submitted = true;
     const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
-
-    console.log(totalContratacao,  "TESTE1000");
-    console.log(this.form,  "TESTE1000");
-
-    console.log()
 
     switch (this.currentPageAction) {
       case PageAction.Cadastrar:
@@ -1027,6 +1043,17 @@ async excluirPrevisaoDesembolso(i: number) {
       });
       return;
     }
+
+    if (this.temPrevisaoZerada()) {
+      await Swal.fire({
+        title: 'Atenção!',
+        text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
         this.Cadastrar();
         break;
       case PageAction.Alterar:
@@ -1040,6 +1067,17 @@ async excluirPrevisaoDesembolso(i: number) {
       });
       return;
     }
+
+    if (this.temPrevisaoZerada()) {
+      await Swal.fire({
+        title: 'Atenção!',
+        text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
         this.Alterar();
         break;
       case PageAction.Consultar:
@@ -1047,6 +1085,17 @@ async excluirPrevisaoDesembolso(i: number) {
         this.activeModal.dismiss('Cross click');
         break;
     }
+  }
+
+  private temPrevisaoZerada(): boolean {
+    for (let i = 0; i < this.previsoesDesembolso.length; i++) {
+      const raw = (this.previsoesDesembolso.at(i) as FormGroup).getRawValue();
+      const total = Number(raw.vrTotalRubrica);
+      if (isNaN(total) || total <= 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /* nova conversao  - inicio */
@@ -1065,7 +1114,7 @@ async excluirPrevisaoDesembolso(i: number) {
        const totalContratacao = this.form.get('vrTotalOrcamentoPlanejamento')?.value;
           const previsoes = obj.previsoesDesembolso;
 
-          console.log('TESTE 12', previsoes)
+
           for (var p in previsoes) {
             var item: Gcptb063PrevisaoDesembolsoDTO = {
 
@@ -1131,6 +1180,15 @@ async excluirPrevisaoDesembolso(i: number) {
         return;
       }
 
+      if (this.temPrevisaoZerada()) {
+        await Swal.fire({
+          title: 'Atenção!',
+          text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
 
       const previsoes = obj.previsoesDesembolso;
 
@@ -1144,13 +1202,20 @@ async excluirPrevisaoDesembolso(i: number) {
 
             NuStatusPlanejamentoItem: obj.nuPlanejamentoStatus == null ? 5 : obj.nuPlanejamentoStatus,
             // NuVigencia: obj.nuAno,
-            // DeDigital: digital?.code,
+            nuTipoDigital: obj?.nuTipoDigital,
             DeObjeto: obj.deObjeto,
             DeObservacao: obj.deObservacao,
             NuDemandaTipo: obj.nuDemandaTipo,
             NuObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
             NuObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
+            NuModalidade: obj.nuModalidade,
+            VrGlobal: this.parseDecimal(obj.vrGlobal),
+            DePrazoVigencia: obj.dePrazoVigencia,
+            DtPrevisaoSiclg: obj.dtPrevisaoSiclg,
+            IcPlanoAquisicao: this.isFlagPlanoDeAquisicao ? true : null,
+
+
             // NuOrc: this.planejamento?.nuOrc,
             // NuSap: Number(previsoes[p].nuSap),
             // DeSap: String(previsoes[p].deSap),
@@ -1192,13 +1257,23 @@ async excluirPrevisaoDesembolso(i: number) {
       await this.habilitarCampoRubrica(true);
       var obj = this.form.getRawValue();
 
-
       var totalRubrica = await this.ValidarValores(obj);
 
       if(totalRubrica){
         await Swal.fire({
           title: 'Atenção!',
           text: 'A previsão de desembolso não pode ser zero. Informe um valor válido.',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        this.habilitarCampoRubrica(false);
+        return;
+      }
+
+      if (this.temPrevisaoZerada()) {
+        await Swal.fire({
+          title: 'Atenção!',
+          text: 'Todas as previsões de desembolso devem ter valor maior que zero. Corrija ou remova as previsões zeradas.',
           icon: 'warning',
           confirmButtonText: 'OK'
         });
@@ -1336,6 +1411,12 @@ async excluirPrevisaoDesembolso(i: number) {
             NuObjetivoPDTIC: obj.nuObjetivoEstrategicoPdti?.toString(),
             NuObjetivoPEI: obj.nuObjetivoEstrategicoPei?.toString(),
             DeJustificativa: obj.deJustificativa,
+            NuModalidade: obj.nuModalidade,
+            VrGlobal: this.parseDecimal(obj.vrGlobal),
+            DePrazoVigencia: obj.dePrazoVigencia,
+            DtPrevisaoSiclg: obj.dtPrevisaoSiclg,
+            nuTipoDigital: obj?.nuTipoDigital,
+            IcPlanoAquisicao: this.isFlagPlanoDeAquisicao ? true : null,
 
           previsaoDesembolso: obj.previsoesDesembolso.map(p => ({
             NuPrevisaoDesembolso: p.nuPrevisaoDesembolso ?? 0,
@@ -1395,6 +1476,8 @@ async excluirPrevisaoDesembolso(i: number) {
     }
   }
 
+
+
   public async habilitarCamposMesId(): Promise<void> {
     const meses = [
       'vrJaneiro','vrFevereiro','vrMarco','vrAbril','vrMaio','vrJunho',
@@ -1446,24 +1529,6 @@ async excluirPrevisaoDesembolso(i: number) {
       item.VrSetembro, item.VrOutubro, item.VrNovembro, item.VrDezembro
     ];
     return meses.reduce((total, valor) => total + (valor ?? 0), 0);
-  }
-
-  public async ExcluirItens(
-    planejamento: any
-  ): Promise<void> {
-
-
-    console.log(planejamento, "TESTE EXCLUSÃO");
-    // try {
-
-
-
-    //   return
-    // } catch (error) {
-    //   console.error('Erro ao excluir planejamento item:', error);
-    //   this.atualizarPagina.emit(false);
-    //   return
-    // }
   }
 
 

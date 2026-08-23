@@ -31,13 +31,9 @@ import { DevelopComponent } from 'src/app/components/develop/develop.component';
 import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
 import { RelatorioContratoComponent } from 'src/app/pages/relatorio/relatorio-contrato/relatorio-contrato.component';
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
-import { BuscaContratoComponent } from '../pages/dashboard/busca-contrato/busca-contrato.component';
-import { BuscaUdComponent } from '../pages/dashboard/busca-ud/busca-ud.component';
 import { DashboardV2Component } from '../pages/dashboard-v2/dashboard-v2.component';
 import { ContratoComponent } from '../pages/contrato/contrato.component';
 import { DotacaoComponent } from '../pages/dotacao/dotacao.component';
-import { NovoPlanejamentoComponent } from 'src/app/pages/planejamento/novo-planejamento/novo-planejamento.component';
-import { BuscaGerencialComponent } from '../pages/dashboard/busca-gerencial/busca-gerencial.component';
 import { PlanejamentoV2Component } from '../pages/planejamento-v2/planejamento-v2.component';
 import { PlanejamentoGeralV2Component } from '../pages/planejamento-v2/planejamento-geral-v2/planejamento-geral-v2.component';
 
@@ -47,9 +43,6 @@ export const PagesRoutes: Routes = [
   { path: 'develop', component: DevelopComponent },
   { path: 'dashboard-old', component: DashboardComponent },
   { path: 'dashboard', component: DashboardV2Component },
-  { path: 'busca-contrato', component: BuscaContratoComponent },
-  { path: 'busca-ud', component: BuscaUdComponent },
-  { path: 'busca-gerencial', component: BuscaGerencialComponent },
   { path: 'contrato', component: ContratoComponent },
   { path: 'contrato/atas', component: ContratoComponent },
   { path: 'contrato/create', component: ContratoCadastroComponent },
@@ -83,6 +76,5 @@ export const PagesRoutes: Routes = [
   { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
   { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
   { path: 'relatorio-contrato', component: RelatorioContratoComponent },
-  { path: 'dotacao', component: DotacaoComponent},
-  { path: 'novo-planejamento', component: NovoPlanejamentoComponent }
+  { path: 'dotacao', component: DotacaoComponent}
 ];

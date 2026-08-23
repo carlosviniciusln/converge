@@ -8,10 +8,12 @@
                     <div class="table-header">
                         <div class="row">
                             <div class="col-md-7 table-header-title">Conciliação</div>
-                            <div class="col-md-1 pl-1 pr-1 text-right" style="display: flex; justify-content: flex-end; align-items: center;">
+                            <div class="col-md-1 pl-1 pr-1 text-right">
                                 <!-- *ngIf="isAllowedToExport" -->
-                                <dsc-button variant="secondary-outlined" icon="cloud_download" iconButton (click)="exportExcel()"
-                                    *ngIf="permissions?.Exportar ?? false"></dsc-button>
+                                <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()"
+                                    *ngIf="permissions?.Exportar ?? false">
+                                    <i class="tim-icons icon-cloud-download-93"></i>
+                                </button>
                             </div>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" #myInput (input)="filterItem(myInput.value)"

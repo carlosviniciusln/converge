@@ -49,7 +49,7 @@ export class ConsumoComponent implements OnInit {
   selectedTipoAcuracia: string = null;
 
   isRotaAtas: boolean = false;
-  tituloPage: string = '';
+  tituloPage: string = 'Lista de Contratos';
   rota: string = '';
   filtroRegistros: any = {
     pageNumber: 1,
@@ -148,11 +148,11 @@ rowsOptions = [
       const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
         (`${Endpoints.URL_CONTRATOS}/relatorio-consumo`, filtrosLimpos);
       this.contratosOrigem = this.mapObject(response?.data?.contratos);
-      this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: String(c), value: c }));
-      this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: String(f), value: f }));
-      this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: String(t), value: t }));
-      this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: String(g), value: g }));
-      this.selectTiposStatus = response?.data?.listaStatus.map(s => ({ label: String(s), value: s }));
+      this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
+      this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
+      this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
+      this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
+      this.selectTiposStatus = response?.data?.listaStatus.map(s => ({ label: s, value: s }));
       this.quantidadeTotal = response.data.totalRecords;
       this.assignCopy();
       this.loading = false;
@@ -250,8 +250,8 @@ rowsOptions = [
   }
 
   loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
 
     if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;
@@ -320,7 +320,7 @@ rowsOptions = [
     this.rota = rota;
     this.isRotaAtas = (rota && rota == 'atas') ? true : false;
     if (this.isRotaAtas) {
-      this.tituloPage = ''
+      this.tituloPage = 'Lista de Atas'
     }
   }
 

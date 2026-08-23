@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Gcptb002ContratoTipo, Gcpvw008Mensalizacao, Gcpvw018EexcucaoOrcamentaria, TotalPorRubrica } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { ContratoResponse, Gcptb006Vigencia } from 'src/app/models/generics/contrato-response';
@@ -49,7 +49,6 @@ export class MensalizacaoComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private apiService: ApiService,
     public token: TokenStorageService,
     private location: Location,
@@ -199,14 +198,6 @@ export class MensalizacaoComponent implements OnInit {
     const contratoFormatado = this.contrato.coContrato.replace('/','_');
 
     window.open('https://caixa.sharepoint.com/:f:/r/sites/Arquivos7550/Documentos%20Compartilhados/TIPO_2_DIGITAL/' + partesContrato[1] + '/' + contratoFormatado ,'_blank');
-  }
-
-  linkDetalhar() {
-    this.router.navigate(['/contrato/detalhe/v', this.contrato?.nuContrato]);
-  }
-
-  linkEvolucaoFinanceira() {
-    this.router.navigate(['/contrato/evolucao-financeira', this.contrato?.nuContrato]);
   }
 
   montaVigenciaAtual(){

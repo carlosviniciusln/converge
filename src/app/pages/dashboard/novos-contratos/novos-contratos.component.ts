@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { LazyLoadEvent } from 'primeng/api';
+import { TableLazyLoadEvent } from 'primeng/table';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { ContratoApiResponse, ContratoItem, Gcptb001ContratoResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { ApiService } from 'src/app/shared/services/api.service';
@@ -34,7 +36,6 @@ export class NovosContratosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.obterContratos();
   }
 
   navegarParaDetalhes(nuContrato: number) {
@@ -42,9 +43,9 @@ export class NovosContratosComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
+  loadPage(event: TableLazyLoadEvent) {
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
 
     if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;

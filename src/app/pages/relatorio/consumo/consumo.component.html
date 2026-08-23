@@ -1,9 +1,8 @@
 <div class="content">
-    <dsc-breadcrumb [urls]="[{label: 'Relatórios'}, {label: 'Consumo'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
     <div class="row">
         <div style="flex:1">
             <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
-                styleClass="p-datatable-customers" 
+                styleClass="p-datatable-customers"
                 sortMode="single"
                 (onSort)="aoOrdenar($event)"
                 [globalFilterFields]="['coContrato','noEmpresa','dhCadastro']" [rowHover]="true">
@@ -15,49 +14,62 @@
                             <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button> -->
                             <div class=" pl-1 pr-1">
                                 <!-- *ngIf="isAllowedToExport" -->
-                                <dsc-button variant="secondary-outlined" icon="cloud_download" iconButton (click)="exportExcel()"
-                                    *ngIf="permissions?.Exportar ?? false"></dsc-button>
+                                <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()"
+                                    *ngIf="permissions?.Exportar ?? false">
+                                    <i class="tim-icons icon-cloud-download-93"></i>
+                                </button>
                             </div>
                             <div class="pl-1 pr-1">
-                                <dsc-select [options]="selectTiposContrato" [(ngModel)]="selectedTipoContrato"
-                                    [showFilter]="true"
-                                    (ngModelChange)="updateRelatorio({ value: $event }, 1)"
-                                    placeholder="Contrato"></dsc-select>
+                                <p-dropdown [options]="selectTiposContrato" [(ngModel)]="selectedTipoContrato"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 1)" [showClear]="true"
+                                    placeholder="Contrato"></p-dropdown>
                             </div>
                             <div class="pl-1 pr-1">
-                                <dsc-select [options]="selectTiposFornecedor" [(ngModel)]="selectedTipoFornecedor"
-                                    [showFilter]="true"
-                                    (ngModelChange)="updateRelatorio({ value: $event }, 2)"
-                                    placeholder="Fornecedor"></dsc-select>
+                                <p-dropdown [options]="selectTiposFornecedor" [(ngModel)]="selectedTipoFornecedor"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 2)" [showClear]="true"
+                                    placeholder="Fornecedor"></p-dropdown>
                             </div>
                             <div class="pl-1 pr-1">
-                                <dsc-select [options]="selectTiposTpContrato" [(ngModel)]="selectedTipoTpContrato"
-                                    [showFilter]="true"
-                                    (ngModelChange)="updateRelatorio({ value: $event }, 3)"
-                                    placeholder="Tipo de Contrato"></dsc-select>
+                                <p-dropdown [options]="selectTiposTpContrato" [(ngModel)]="selectedTipoTpContrato"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 3)" [showClear]="true"
+                                    placeholder="Tipo Objeto"></p-dropdown>
                             </div>
                             <div class="pl-1 pr-1">
-                                <dsc-select [options]="selectTiposGestor" [(ngModel)]="selectedTipoGestor"
-                                    [showFilter]="true"
-                                    (ngModelChange)="updateRelatorio({ value: $event }, 4)"
-                                    placeholder="Unidade Demandante"></dsc-select>
+                                <p-dropdown [options]="selectTiposGestor" [(ngModel)]="selectedTipoGestor"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 4)" [showClear]="true"
+                                    placeholder="Unidade Demandante"></p-dropdown>
                             </div>
                             <div class="pl-1 pr-1">
-                                <dsc-select [options]="selectTiposStatus" [(ngModel)]="selectedTipoStatus"
-                                    [showFilter]="true"
-                                    (ngModelChange)="updateRelatorio({ value: $event }, 5)"
-                                    placeholder="Status"></dsc-select>
+                                <p-dropdown [options]="selectTiposStatus" [(ngModel)]="selectedTipoStatus"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 5)" [showClear]="true"
+                                    placeholder="Status"></p-dropdown>
                             </div>
 
                             <div class="pl-1 pr-1">
-                                <dsc-select [options]="selectTiposAcuracia" [(ngModel)]="selectedTipoAcuracia"
-                                    [showFilter]="true"
-                                    (ngModelChange)="updateRelatorio({ value: $event }, 6)"
-                                    placeholder="Acurácia"></dsc-select>
-                            </div>                            <div>
-                            <dsc-button variant="secondary-outlined" label="Limpar filtros" (click)="limparFiltros()"></dsc-button>
+                                <p-dropdown [options]="selectTiposAcuracia" [(ngModel)]="selectedTipoAcuracia"
+                                    [filter]="true" optionLabel="label" optionValue="value"
+                                    (onChange)="updateRelatorio($event, 6)" [showClear]="true"
+                                    placeholder="Acurácia">
+
+                                 <ng-template let-option pTemplate="item">
+                                   <div [ngStyle]="{'background-color': getColor(option.value), 'color': 'black'}">
+                                   <span> {{ option.label }}</span>
+                                    </div>
+                                </ng-template>
+
+                                </p-dropdown>
                             </div>
-                            
+
+                            <div>
+                                <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+                                (click)="limparFiltros()"></button>
+                            </div>
+
                         </div>
                     </div>
                 </ng-template>
@@ -218,14 +230,9 @@
                     </tr>
                 </ng-template>
             </p-table>
-            <dsc-paginator
-              *ngIf="quantidadeTotal > 0"
-              [length]="quantidadeTotal"
-              [pageSize]="filtroRegistros.pageSize"
-              [pageIndex]="filtroRegistros.pageNumber - 1"
-              [pageSizeOptions]="[10, 20, 50]"
-              (page)="loadPage($event)">
-            </dsc-paginator>
+            <div class="card flex justify-center">
+                <p-paginator [showCurrentPageReport]="true"  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos" (onPageChange)="loadPage($event)" [first]="0"  [rows]="filtroRegistros.pageSize" [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50, this.quantidadeTotal]" ></p-paginator>
+            </div>
         </div>
     </div>
 </div>

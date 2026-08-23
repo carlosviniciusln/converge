@@ -16,7 +16,7 @@
 
       <div class="col-11">
         <div class="row divCenter">
-          <span class="texto1">CEGTI - SDGVC - Alerta de Pendências </span>
+          <span class="texto1">CEGTI - SIGVC - Alerta de Pendências </span>
         </div>
         <div class="row">
           <span class="texto2">Atenção Equipes CEGTI, GEGAT e gestores demandantes: <br>Apresentamos abaixo a lista de
@@ -26,8 +26,11 @@
         <div class="row">
           <div class="col-12">
             <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
-              [rowHover]="true"
-              [globalFilterFields]="['coContrato', 'noEmpresa', 'dhCadastro']"
+              [rows]="filtroRegistros.pageSize" [paginator]="true" [loading]="loading" [totalRecords]="quantidadeTotal"
+              [rowsPerPageOptions]="[5, 10, 20]" [lazy]="true" (onLazyLoad)="loadPage($event)"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"
+              [globalFilterFields]="['coContrato', 'noEmpresa', 'dhCadastro']" [rowHover]="true"
               class="table-transparent table-alerta">
               <ng-template pTemplate="header">
                 <tr class="table-transparent border border-black">
@@ -73,15 +76,14 @@
                   <td colspan="4">Nenhum contrato cadastrado.</td>
                 </tr>
               </ng-template>
+
+              <ng-template pTemplate="paginatorleft">
+                <div class="table-transparent"></div>
+              </ng-template>
+              <ng-template pTemplate="paginatorright">
+                <div class="table-transparent"></div>
+              </ng-template>
             </p-table>
-            <dsc-paginator
-              *ngIf="quantidadeTotal > 0"
-              [length]="quantidadeTotal"
-              [pageSize]="filtroRegistros.pageSize"
-              [pageIndex]="filtroRegistros.pageNumber - 1"
-              [pageSizeOptions]="[5, 10, 20]"
-              (page)="loadPage($event)">
-            </dsc-paginator>
           </div>
         </div>
       </div>

@@ -91,6 +91,9 @@ export class ModalPlanejamentoComponent implements OnInit {
       this.ultimoPlanejamento = lista[this.listaPlanejamentos.length - 1];
       this.validarBotoes(this.ultimoPlanejamento);
     }
+    else{
+      this.validarBotoes(lista[0]);
+    }
   }
 
   //TODO: MELHORIA: REFATOR EM JSON OU CRIAR METODOS PARA CADA CENARIO

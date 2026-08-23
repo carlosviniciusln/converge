@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { DscSnackbarService } from 'sidsc-components/dsc-snackbar';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { listaErroUploadModel } from 'src/app/models/generics/limites-model';
 import { LimitesRubricaResponse, LimitesRubricasUpdate } from 'src/app/models/generics/limites-rubrica-response';
@@ -37,8 +36,7 @@ export class ModalUploadComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
-    private toastr: ToastrService,
-    private snackbar: DscSnackbarService
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -99,7 +97,7 @@ export class ModalUploadComponent implements OnInit {
         for (const name in controls) {
           if (controls[name].invalid) invalids.push(name);
         }
-        this.snackbar.add({ data: { message: 'Todos os campos são obrigatórios.', variant: 'danger' }, duration: 4000 });
+        this.toastr.error('Todos os campos são obrigatórios.', 'Campo Obrigatório');
         console.log(invalids);
         return;
       }
@@ -109,7 +107,7 @@ export class ModalUploadComponent implements OnInit {
           formData
         );
       if (response.data.succeeded) {
-        this.snackbar.add({ data: { message: response.data.data, variant: 'success' }, duration: 4000 });
+        this.toastr.success(response.data.data, 'Sucesso');
         this.atualizarPagina.emit(true);
         this.activeModal.dismiss();
         setTimeout(() => {
@@ -129,43 +127,46 @@ export class ModalUploadComponent implements OnInit {
 
   }
 
-  public async Alterar(): Promise<void> {
-    try {
-      this.submitted = true;
+  // public async Alterar(): Promise<void> {
+  //   try {
 
-      if (this.form.invalid) {
-        const invalids = [];
-        const controls = this.form.controls;
-        for (const name in controls) {
-          if (controls[name].invalid) invalids.push(name);
-        }
-        console.log(invalids);
-        return;
-      }
 
-      const updateRequest: LimitesRubricasUpdate = {
-        nuAnoOrcamentario: this.limiteRubrica.nuAnoOrcamentario,
-        nuRubrica: this.limiteRubrica.nuRubrica,
-        nuFilial: this.limiteRubrica.nuFilial,
-        nuPlanejamentoTipo: this.limiteRubrica.nuPlanejamentoTipo,
-        vrLimiteRubrica: this.form.controls['vrLimiteRubrica'].value,
-      };
+  //     console.log('Alterar limite rubrica:', this.form.value);
+  //     this.submitted = true;
 
-      await this.apiService.put<LimitesRubricasUpdate>(
-        `${Endpoints.URL_ORCAMENTO}/limite-orcamentario`,
-        updateRequest
-      );
+  //     if (this.form.invalid) {
+  //       const invalids = [];
+  //       const controls = this.form.controls;
+  //       for (const name in controls) {
+  //         if (controls[name].invalid) invalids.push(name);
+  //       }
+  //       console.log(invalids);
+  //       return;
+  //     }
 
-      this.snackbar.add({ data: { message: 'Alteração efetuada com sucesso.', variant: 'success' }, duration: 4000 });
-      this.atualizarPagina.emit(true);
-      this.activeModal.dismiss();
-      setTimeout(() => {
-        window.location.reload()
-      }, 3000);
-    } catch (error) {
-      this.atualizarPagina.emit(false);
-    }
-  }
+  //     const updateRequest: LimitesRubricasUpdate = {
+  //       nuAnoOrcamentario: this.limiteRubrica.nuAnoOrcamentario,
+  //       nuRubrica: this.limiteRubrica.nuRubrica,
+  //       nuFilial: this.limiteRubrica.nuFilial,
+  //       nuPlanejamentoTipo: this.limiteRubrica.nuPlanejamentoTipo,
+  //       vrLimiteRubrica: this.form.controls['vrLimiteRubrica'].value,
+  //     };
+
+  //     await this.apiService.put<LimitesRubricasUpdate>(
+  //       `${Endpoints.URL_ORCAMENTO}/limite-orcamentario`,
+  //       updateRequest
+  //     );
+
+  //     this.toastr.success('Alteração efetuada com sucesso.', 'Sucesso');
+  //     this.atualizarPagina.emit(true);
+  //     this.activeModal.dismiss();
+  //     setTimeout(() => {
+  //       window.location.reload()
+  //     }, 3000);
+  //   } catch (error) {
+  //     this.atualizarPagina.emit(false);
+  //   }
+  // }
 
   formulario() {
     this.form = this.formBuilder.group({
@@ -200,7 +201,7 @@ export class ModalUploadComponent implements OnInit {
     if (file) {
       this.selectFile = file;
       this.form.get('arquivoAnexado')?.setValue(file);
-      this.snackbar.add({ data: { message: 'Anexo salvo com sucesso.', variant: 'success' }, duration: 3000 });
+      this.toastr.success('Anexo salvo com sucesso.', 'Sucesso');
       this.isDisabled = false;
       this.isUploaded = true;
     }
@@ -213,7 +214,7 @@ export class ModalUploadComponent implements OnInit {
     this.isDisabled = true;
     this.isUploaded = false;
     this.listaErros = [];
-    this.snackbar.add({ data: { message: 'Anexo removido com sucesso.', variant: 'warning' }, duration: 3000 });
+    this.toastr.warning('Anexo removido com sucesso.', 'Anexo')
   }
 
   baixarModelo() {

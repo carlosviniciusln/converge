@@ -1,5 +1,4 @@
 <div class="content">
-  <dsc-breadcrumb [urls]="[{label: 'Planejamento'}, {label: 'Limites Orçamentários'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
   <div class="row">
     <div class="col-12">
 
@@ -34,7 +33,10 @@
               Limite <i class="pi pi-download" aria-hidden="true" style="color:white"></i>
             </button> -->
 
-            <dsc-button style="margin-left: 5px; margin-right: 5px" variant="secondary-outlined" icon="cloud_download" iconButton (click)="exportExcel()"></dsc-button>
+            <button style=" margin-left: 5px; margin-right: 5px" type="button"
+              class="btn btn-sm btn-secondary" (click)="exportExcel()">
+              <i class="tim-icons icon-cloud-download-93"></i>
+            </button>
 
             <p-dropdown [(ngModel)]="selectedExercicio" [filter]="true" [showClear]="true"
               placeholder="Exercício" optionLabel="label" optionValue="value" [options]="listaExercicios"

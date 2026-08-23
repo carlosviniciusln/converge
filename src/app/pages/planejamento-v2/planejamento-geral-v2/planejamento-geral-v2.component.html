@@ -8,9 +8,7 @@
     >
       Voltar
     </button>
-    <p class="card-title date-info">
-      <b>Atualizado em: 09/06/2025 18:29</b>
-    </p>
+
   </div>
 
   <div class="card">
@@ -23,7 +21,7 @@
           <span style="color: green">{{ statusExercio }}</span>
         </p>
 
-        <div style="margin: 14px">
+        <div style="margin: 14px;">
           <table
             border="1"
             width="100%"
@@ -36,7 +34,7 @@
 
             <tr style="background-color: rgb(245, 245, 245)">
               <td style="font-weight: bold">
-                Solicitado
+                Planejado
                 <p
                   [ngStyle]="{
                     color: item.noRubricaTipo === 'CAPEX' ? 'blue' : 'orange',
@@ -141,22 +139,51 @@
 
                   <div class="pl-1 pr-1">
                     <p-dropdown
-                      [options]="planejamentos.listaNuOrc"
+                      [options]="planejamentos.listaDiretoria"
                       [filter]="true"
-                      (onChange)="updateRelatorio($event.value, 1)"
+                      (onChange)="updateRelatorio($event.value, 7)"
                       [showClear]="true"
-                      placeholder="NUORC"
+                      placeholder="DE"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
                     ></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="planejamentos.listaSuperintendencia"
+                      [filter]="true"
+                      (onChange)="updateRelatorio($event.value, 8)"
+                      [showClear]="true"
+                      placeholder="SN"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
+                    ></p-dropdown>
+                  </div>
+
+                   <div class="pl-1 pr-1">
                     <p-dropdown
                       [options]="planejamentos.listaUnidadeDemandante"
                       [filter]="true"
                       (onChange)="updateRelatorio($event.value, 2)"
                       [showClear]="true"
-                      placeholder="UD"
+                      placeholder="GN"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
                     ></p-dropdown>
                   </div>
+
+                  <div class="pl-1 pr-1">
+                    <p-dropdown
+                      [options]="planejamentos.listaNuOrc"
+                      [filter]="true"
+                      (onChange)="updateRelatorio($event.value, 1)"
+                      [showClear]="true"
+                      placeholder="NUORC"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
+                    ></p-dropdown>
+                  </div>
+
                   <div class="pl-1 pr-1">
                     <p-dropdown
                       [options]="planejamentos.listaContrato"
@@ -164,6 +191,8 @@
                       (onChange)="updateRelatorio($event.value, 3)"
                       [showClear]="true"
                       placeholder="Contrato"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
                     ></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
@@ -173,6 +202,21 @@
                       (onChange)="updateRelatorio($event.value, 4)"
                       [showClear]="true"
                       placeholder="Tipo"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
+                    ></p-dropdown>
+                  </div>
+
+                  <div class="pl-1 pr-1">
+                    <p-dropdown
+                      class="objet-dropdown"
+                      [options]="planejamentos.listaDigital"
+                      [filter]="true"
+                      (onChange)="updateRelatorio($event.value, 6)"
+                      [showClear]="true"
+                      placeholder="Digital"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
                     ></p-dropdown>
                   </div>
 
@@ -183,9 +227,11 @@
                       (onChange)="updateRelatorio($event.value, 5)"
                       [showClear]="true"
                       placeholder="Status"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
                     ></p-dropdown>
                   </div>
-                  <div class="pl-1 pr-1">
+                  <!-- <div class="pl-1 pr-1">
                     <p-dropdown
                       class="objet-dropdown"
                       [options]="planejamentos.listaObjeto"
@@ -193,13 +239,18 @@
                       (onChange)="updateRelatorio($event.value, 6)"
                       [showClear]="true"
                       placeholder="Objeto"
+                      emptyFilterMessage="Sem registros"
+                      emptyMessage="Sem registros"
                     ></p-dropdown>
-                  </div>
+                  </div> -->
+
+
+
                   <div
                     class="pl-1 pr-1 me-3"
                     *ngIf="
                       selectStatusPlanejamentoCompleto?.length > 0 &&
-                      isPerfilPrivilegiado
+                      IsHabilitarSalvarStatusEmLote()
                     "
                   >
                     <button
@@ -211,8 +262,6 @@
                       Salvar status
                     </button>
                   </div>
-
-
                 </div>
               </ng-template>
               <ng-template pTemplate="header">
@@ -222,7 +271,13 @@
                   </th>
 
                   <th>
-                    <div class="p-d-flex p-jc-between text-center">UD</div>
+                    <div class="p-d-flex p-jc-between text-center">DE</div>
+                  </th>
+                  <th>
+                    <div class="p-d-flex p-jc-between text-center">SN</div>
+                  </th>
+                  <th>
+                    <div class="p-d-flex p-jc-between text-center">GN</div>
                   </th>
                   <th>
                     <div class="p-d-flex p-jc-between text-center">
@@ -236,26 +291,16 @@
                     <div class="p-d-flex p-jc-between text-center">Tipo</div>
                   </th>
                   <th>
-                    <!-- Exibe "Status" somente quando NÃO houver opções no dropdown -->
-                    <div
-                      *ngIf="
-                        !(selectStatusPlanejamentoCompleto?.length > 0) ||
-                        !isPerfilPrivilegiado
-                      "
-                      class="p-d-flex p-jc-between text-center"
-                    >
-                      Status
-                    </div>
 
-                    <!--  Exibe checkbox + dropdown SOMENTE quando houver opções -->
-                    <ng-container
-                      *ngIf="
-                        selectStatusPlanejamentoCompleto?.length > 0 &&
-                        isPerfilPrivilegiado
-                      "
-                    >
+
+
+                    <ng-container>
                       <div class="c-dropdown-status">
                         <p-checkbox
+                         *ngIf="
+                        selectStatusPlanejamentoCompleto?.length > 0 &&
+                        podeCadastrar()"
+
                           [(ngModel)]="selecionarTodos"
                           (onChange)="selecionarTodosItens()"
                           [binary]="true"
@@ -273,8 +318,22 @@
                       </div>
                     </ng-container>
                   </th>
+                    <th>
+                    <div class="p-d-flex p-jc-between text-center">Valor Original (GEGAT)</div>
+                  </th>
+
+                    <th>
+                    <div class="p-d-flex p-jc-between text-center">Valor em Revisão (GESTOR)</div>
+                  </th>
+
+                  <!-- <th>
+                    <div class="p-d-flex p-jc-between text-center"> Diferença GESTOR-GEGAT</div>
+                  </th>
                   <th>
-                    <div class="p-d-flex p-jc-between text-center">Valor</div>
+                    <div class="p-d-flex p-jc-between text-center">%DIF</div>
+                  </th> -->
+                  <th>
+                    <div class="p-d-flex p-jc-between text-center">Valor Final (GEORC)</div>
                   </th>
 
                 </tr>
@@ -299,6 +358,14 @@
 
                   <td style="text-align: center">
                     <span class="p-column-title">UD</span>
+                    {{ planejamento.sgDiretoria === null ? "-" : planejamento.sgDiretoria }}
+                  </td>
+                  <td style="text-align: center">
+                    <span class="p-column-title">UD</span>
+                     {{ planejamento.sgSuperintendencia === null ? "-" : planejamento.sgSuperintendencia }}
+                  </td>
+                  <td style="text-align: center">
+                    <span class="p-column-title">UD</span>
                     {{ planejamento.sgFilial }}
                   </td>
                   <td style="text-align: center">
@@ -321,22 +388,16 @@
                     (keydown.enter)="$event.stopPropagation()"
                     (keydown.space)="$event.stopPropagation()"
                   >
-                    <div class="cef-status-em-lote">
+                    <div class="cef-status-em-lote" style="text-align: center;">
                       <ng-container
                         *ngIf="
                           selectStatusPlanejamentoCompleto?.length > 0 &&
-                          (perfilOrcamento ||
-                            perfilAdm ||
-                            (perfilOperacional &&
-                              planejamento.coFilial == perfilUnidade) ||
-                            (perfilTorre &&
-                              planejamento.coFilial == perfilUnidade))
+                          podeAlterarStatusEmLote(planejamento)
                         "
                       >
                         <p-checkbox
                           [(ngModel)]="planejamento.stSelecionado"
                           [binary]="true"
-                          *ngIf="isPerfilPrivilegiado"
                           (click)="$event.stopPropagation()"
                         >
                         </p-checkbox>
@@ -344,16 +405,37 @@
                       <label>{{ planejamento.noStatus }}</label>
                     </div>
                   </td>
-                  <td style="text-align: right">
-                    <span class="p-column-title">Valor</span>
-                    {{ planejamento.vrPlanejamento | currency: "BRL" }}
+                  <td style="text-align: center">
+                    <span class="p-column-title"></span>
+                    {{ (planejamento.vrGegat == null || planejamento.vrGegat == 0) ? "-" : (planejamento.vrGegat | currency: "BRL") }}
                   </td>
+
+                  <td style="text-align: center">
+                    <span class="p-column-title"></span>
+                    {{ (planejamento.vrPlanejamento == null || planejamento.vrPlanejamento === 0) ? "-" : (planejamento.vrPlanejamento | currency: "BRL") }}
+                  </td>
+
+                  <!-- <td style="text-align: left">
+                    <span class="p-column-title"></span>
+                    {{ planejamento.vrDiferenca || 0 | currency: "BRL" }}
+                  </td>
+
+                  <td style="text-align: left">
+                    <span class="p-column-title"></span>
+                    {{ planejamento.pcDiferenca || 0 | number: "1.2-2" }}%
+                  </td> -->
+                  <td style="text-align: center">
+                    <span class="p-column-title"></span>
+                    {{ (planejamento.vrGeorc == null || planejamento.vrGeorc === 0) ? "-" : (planejamento.vrGeorc | currency: "BRL" )}}
+                  </td>
+
+
 
                 </tr>
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <td colspan="12">Nenhum planejamento cadastrado.</td>
+                  <td colspan="9">Nenhum planejamento cadastrado.</td>
                 </tr>
               </ng-template>
             </p-table>

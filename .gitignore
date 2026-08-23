@@ -50,3 +50,9 @@ Thumbs.db
 src/environments/environment.ts
 
 .env
+package-lock.json
+environments/environment.ts
+src/assets/md/dsc-components.md
+src/assets/md/layout-requisites.md
+src/assets/md/lessons-learned.md
+src/assets/md/next-tasks.md

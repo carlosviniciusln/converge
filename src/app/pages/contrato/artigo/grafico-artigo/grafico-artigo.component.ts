@@ -113,17 +113,8 @@ export class GraficoArtigoComponent implements OnInit {
   }
 
   chartCallback: Highcharts.ChartCallbackFunction = function (chart): void {
-    // guard: chart may be undefined the first times this callback is invoked
-    if (!chart) {
-      return;
-    }
-    // periodically reflow to keep the chart responsive in the layout
     setInterval(() => {
-      try {
-        chart?.reflow();
-      } catch (e) {
-        // swallow occasional reflow errors in async environments
-      }
+      chart.reflow();
     }, 500);
   }
 
@@ -170,7 +161,6 @@ export class GraficoArtigoComponent implements OnInit {
 }
 
 function montalabel(artigos: RetornoArtigo[], ano: string | number) {
-  const found = artigos.find(x => x.coContrato?.split('/')[1] === String(ano));
-  const nuContrato = found ? found.nuContrato : ano;
+  const nuContrato = artigos.filter(x => x.coContrato?.split('/')[1] === ano)[0].nuContrato;
   return `<a class="nav-link" href="#/contrato/detalhe/v/${nuContrato}" target="_blank" style="color: #000000; font-weight: bold; font-size: 20px;">${ano}</a>`;
 }

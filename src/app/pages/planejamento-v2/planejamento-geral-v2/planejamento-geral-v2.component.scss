@@ -1,3 +1,10 @@
+:host ::ng-deep .mat-mdc-tab-body-content {
+    height: 100%;
+    overflow: hidden !important;
+}
+:host ::ng-deep .p-datatable>.p-datatable-wrapper {
+    overflow: hidden !important;
+}
 :host ::ng-deep .c-dropdown-status{
   color: red;
   display: flex;
@@ -211,7 +218,7 @@ tr.template-body td a:hover {
   display: flex;
   align-items: center;
   width: 100% !important;
-  justify-content: flex-end;
+  justify-content: end;
   margin: 0 !important;
   font-family: "Poppins", sans-serif;
 }
@@ -389,7 +396,7 @@ h3.card-title.text-center {
   display: flex;
   align-items: center;
   width: 100% !important;
-  justify-content: flex-end;
+  justify-content: end;
   margin: 0 !important;
   font-family: "Poppins", sans-serif;
 }
@@ -400,7 +407,7 @@ h3.card-title.text-center {
   display: flex;
   align-items: center;
   width: 100% !important;
-  justify-content: flex-end;
+  justify-content: end;
   font-family: "Poppins", sans-serif;
   font-size: 15px !important;
 }

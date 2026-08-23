@@ -68,8 +68,7 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn-sm btn-secondary no-print"
-    routerLink="/contrato/detalhe/v/{{this.contrato.nU_CONTRATO}}" mat-raised-button
-    (click)="activeModal.dismiss('Cross click')"> Detalhar Pagamentos
+   (click)="irParaDetalhes()" mat-raised-button> Detalhar Pagamentos
   </button>
   <button class="btn-sm btn-default" type="submit" (click)="onSubmit()"
     *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false">

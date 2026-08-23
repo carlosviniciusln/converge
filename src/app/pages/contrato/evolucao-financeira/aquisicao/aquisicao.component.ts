@@ -7,7 +7,6 @@ import * as html2pdf from 'html2pdf.js';
 import { Location } from '@angular/common';
 import { EvolucaoFinanceiraAquisicao } from 'src/app/models/generics/evolucao-financeira-aquisicao';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { LoaderService } from 'src/app/core/services/loader.service';
 import {
   ActionPolicies,
   ModuleEnum,
@@ -36,7 +35,6 @@ export class AquisicaoComponent implements OnInit {
     private apiService: ApiService,
     private location: Location,
     public spinner: NgxSpinnerService,
-    public loader: LoaderService,
     public token: TokenStorageService
   ) {
     this.obterPermissoes();
@@ -78,7 +76,7 @@ export class AquisicaoComponent implements OnInit {
   }
 
   downloadPDF() {
-    this.loader.show();
+    this.spinner.show();
     var grafico = document.getElementById('divGrafico');
     grafico.style.width = '1050px';
 
@@ -160,7 +158,7 @@ export class AquisicaoComponent implements OnInit {
       html2pdf().from(elementCopy).set(opt).save();
 
       grafico.style.width = 'auto';
-      this.loader.hide();
+      this.spinner.hide();
       elementCopy.remove();
     }, 1000);
   }

@@ -58,17 +58,8 @@
     margin-bottom: 5px;
   }
 
-  #area-pdf {
-    overflow-x: hidden;
-  }
-
   :host ::ng-deep .mat-tab-body-content {
     overflow: hidden !important;
-}
-
-:host {
-  display: block;
-  overflow-x: hidden;
 }
 
 h3.card-title.text-center b {

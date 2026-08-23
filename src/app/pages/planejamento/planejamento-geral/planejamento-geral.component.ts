@@ -20,10 +20,10 @@ import { PlanejamentoCadastroComponent } from '../planejamento-cadastro/planejam
 import { ModalUploadComponent } from '../limites/modal-upload/modal-upload.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContratoPlanejamentosOrcamentario, PlanejamentoOrcamentarioModel, PlanejamentosOrcamentariosResponse } from 'src/app/models/generics/planejamento-orcamentario';
+import { TableLazyLoadEvent } from 'primeng/table';
 import Swal from 'sweetalert2';
 import { AlterarStatusPlanejamento } from 'src/app/models/request/status-planejamento-request';
 import { MenuItem } from 'primeng/api';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-planejamento-geral',
@@ -80,7 +80,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   selectedObjeto: string = null;
 
   selecionarTodos: boolean = false;
-  statusSelecionados: (number | null)[] = [null];
+  statusSelecionados: number[] = [];
 
   dadosDashboard: PlanejamentoOrcamentarioModel[] = [];
   quantidadeTotal: number = 0;
@@ -92,7 +92,7 @@ export class PlanejamentoGeralComponent implements OnInit {
   perfilTorre: boolean = false;
   perfilUnidade: string = '';
   previousPage: any;
-  ultimaAtualizacaoOrcamento : string = '';
+  ultimaAtualizacaoOrcamento : string = '09/06/2025 18:29';
 
   permissions: ActionPolicies;
   public isUltimaReprogramacao: boolean = false
@@ -125,52 +125,20 @@ export class PlanejamentoGeralComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.obterPermissoes();
-     this.items = [
 
-      {
-        id: 'acao-novo-registro',
-        label: 'Novo Registro',
-        icon: 'pi pi-plus',
-        command: () => {
-          this.openModalPlanejamento('adicionar', true, true, null, this.nuPlanejamentoExercicio, this.anoExercicio);
-        }
-      },
-            // {
-            //     label: 'Salvar Status',
-            //     icon: "pi pi-pencil",
-            //     command: () => {
-            //         this.onSalvarMudancasStatus();
-            //     }
-            // },
-
-      {
-        id: 'acao-gerar-excel',
-        label: 'Gerar Excel',
-        icon: 'tim-icons icon-cloud-download-93',
-        command: () => {
-          this.downloadPlanejamentoDesembolso();
-        }
-      },
-      {
-        id: 'acao-gerar-atualizacao-sap',
-        label: 'Gerar Atualização SAP',
-        icon: 'tim-icons icon-cloud-download-93',
-        command: () => {
-          this.exportarExcelAtualizacaoSAP(this.anoExercicio);
-        }
-      }
-        ];
   }
 
   async ngOnInit(): Promise<void> {
-    const params = await this.route.queryParams.pipe(take(1)).toPromise();
-    this.isUltimaReprogramacao = params['isUltimaReprogramacao'] === 'true';
-    this.anoExercicio = params['cO_EXERCICIO'];
-    this.ordemTipoExercicio = params['tipo'];
-    this.statusExercio = params['statusPlanejamento'];
+    this.route.queryParams.subscribe(params => {
+      this.isUltimaReprogramacao = params['isUltimaReprogramacao'] === 'true';
+      this.anoExercicio =params['cO_EXERCICIO'];
+      this.ordemTipoExercicio = params['tipo'];
+      this.statusExercio = params['statusPlanejamento'];
 
-    const valor = Number(params['nuPlanejamento']);
-    this.nuPlanejamentoExercicio = isNaN(valor) ? 0 : valor;
+      const valor = Number(params['nuPlanejamento']);
+      this.nuPlanejamentoExercicio = isNaN(valor) ? 0 : valor;
+
+    });
 
     this.filtroRegistros = {
       pageNumber: 1,
@@ -250,9 +218,9 @@ export class PlanejamentoGeralComponent implements OnInit {
     this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
   }
 
-  async loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
+  async loadPage(event: TableLazyLoadEvent) {
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
 
     if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;
@@ -333,7 +301,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
       return;
     }
 
-    if(this.statusSelecionados[0] == null){
+    if(this.statusSelecionados.length == 0){
       this.toastr.warning('Selecione uma opção de status.', 'Aviso');
       return;
     }
@@ -413,7 +381,7 @@ public async onSalvarMudancasStatus(): Promise<void> {
             p1.nO_STATUS = p1.nO_STATUS_Original;
           }
       });
-    if (!this.statusSelecionados || this.statusSelecionados[0] == null) return;
+    if (!this.statusSelecionados || this.statusSelecionados.length === 0) return;
 
     const idSelecionado = this.statusSelecionados[0];
     const novoStatus = this.listaStatusPlanejamento.find(s => s.nuPlanejamentoStatus === idSelecionado);
@@ -541,12 +509,12 @@ public async onSalvarMudancasStatus(): Promise<void> {
       const response = await this.apiService.get<ApiResponse<PlanejamentosOrcamentariosResponse>>
       (`${Endpoints.URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO}`, this.filtroRegistros);
       this.planejamentos = response?.data?.contratos.map(p => ({...p,sT_SELECIONADO: false }));
-      this.selectContratos = [{label: 'SEM CONTRATOS', value: 0}, ...(response?.data?.listaContrato ?? []).map(c => ({ label: String(c), value: c }))];
-      this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: String(g), value: g }));
-      this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: String(g), value: g }));
-      this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: String(g), value: g }));
-      this.selectStatusPlanejamento = response?.data?.listaStatus.map(g => ({ label: String(g), value: g }));
-      this.selectNuOrcs = response?.data?.listaNuOrc.map(g => ({ label: String(g), value: g }));
+      this.selectContratos = [{label: 'SEM CONTRATOS', value: 0}, ...(response?.data?.listaContrato ?? []).map(c => ({ label: c, value: c }))];
+      this.selectFiliais = response?.data?.listaUnidadeDemandante.map(g => ({ label: g, value: g }));
+      this.selectTiposDemanda = response?.data?.listaTipo.map(g => ({ label: g, value: g }));
+      this.selectObjeto = response?.data?.listaObjeto.map(g => ({ label: g, value: g }));
+      this.selectStatusPlanejamento = response?.data?.listaStatus.map(g => ({ label: g, value: g }));
+      this.selectNuOrcs = response?.data?.listaNuOrc.map(g => ({ label: g, value: g }));
       this.selectOpcoesIsDigital = this.listaOpcoesIsDigital.map(g => ({ label: g.label, value: g.value }));
       this.quantidadeTotal = response.data.totalRecords;
       this.loading = false;

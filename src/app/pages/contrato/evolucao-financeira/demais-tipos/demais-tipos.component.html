@@ -5,37 +5,36 @@
                 style="display: flex; justify-content: center;">
                 <div class="row cl-grafico">
                     <div class="col-md-12" style="margin-top: 10px;">
-                        <mat-card appearance="outlined">
-                            <mat-card-header class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <h3 class="card-title text-left"></h3>
                                     <h3 class="card-title text-left table-header-title">EVOLUÇÃO E PAGAMENTOS -
-                                        <!-- <span>{{titulo()}}</span> -->
-                                        <span>Contrato C1001/2025</span>
-                                    </h3>
+                                        <span>{{titulo()}}</span></h3>
                                 </div>
-                                <dsc-button *ngIf="!loadingPDF" variant="secondary-outlined" label="PDF" icon="cloud_download"
-                                    (click)="gerarPDF()" aria-label="Download PDF"></dsc-button>
+                                <button *ngIf="!loadingPDF" type="button" class="btn-sm btn-secondary no-print" (click)="gerarPDF()"
+                                    aria-label="Download PDF">
+                                     <i class="fas fa-download"></i>
+                                </button>
                                 <div *ngIf="loadingPDF" class="spinner-button"></div>
-                            </mat-card-header>
-                            <mat-card-content>
+                            </div>
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <app-grafico id="divGrafico_{{ rubrica.cO_RUBRICA }}" class="divGrafico"
-                                            [titulo]="vigenciaAtual?.labeL_VIGENCIA || vigenciaAnterior?.labeL_VIGENCIA || ''"
-                                            [categorias]="rubrica.periodos" [series]="rubrica.series">
+                                            [titulo]="vigenciaAtual?.labeL_VIGENCIA ? vigenciaAtual.labeL_VIGENCIA : vigenciaAnterior.labeL_VIGENCIA"
+                                            [categorias]="rubrica.periodos" [series]="rubrica.series || []">
                                         </app-grafico>
                                     </div>
                                 </div>
-                            </mat-card-content>
-                        </mat-card>
-                        <mat-card appearance="outlined" style="margin-top: 24px;">
-                            <mat-card-header>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
                                 <h3 class="card-title text-left table-header-title">RESUMO DA VIGÊNCIA -
-                                    <span>{{titulo()}}</span>
-                                </h3>
-                            </mat-card-header>
-                            <mat-card-content>
+                                    <span>{{titulo()}}</span></h3>
+                            </div>
+                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-2 text-right">Início Vigência:</div>
                                     <div class="col-md-4 text-left">
@@ -65,7 +64,7 @@
                                     <div class="col-md-6 text-right">Valor Total da Vigência - EXECUTADO:</div>
                                     <div class="col-md-2 text-right">
                                         <b>{{
-                                            vigenciaUsuarioSelecionada?.vR_EXECUTADO | currency:
+                                            vigenciaUsuarioSelecionada.vR_EXECUTADO | currency:
                                             "BRL" }}</b>
                                         <!-- <b>{{
                                             vigenciaAnterior?.vR_EXECUTADO ?? vigenciaAtual.vR_EXECUTADO| currency:
@@ -155,7 +154,7 @@
                                             vigenciaAtual.mediA_MENSAL_PAGAMENTOS | currency:
                                             "BRL"}}</b>
                                         <b *ngIf="vigenciaAnterior">{{
-                                            vigenciaUsuarioSelecionada?.mediA_MENSAL_PAGAMENTOS |
+                                            vigenciaUsuarioSelecionada.mediA_MENSAL_PAGAMENTOS |
                                             currency: "BRL"}}</b>
                                     </div>
                                 </div>
@@ -169,17 +168,16 @@
                                     em
                                     relação à última referência paga.
                                 </div>
-                            </mat-card-content>
-                        </mat-card>
-                        <div class="row cl-header" style="margin-top: 24px;" *ngIf="listaResumoPagamentos.length !== 0; else elsePagamentoBlock">
+                            </div>
+                        </div>
+                        <div class="row cl-header" *ngIf="listaResumoPagamentos.length !== 0; else elsePagamentoBlock">
                             <div class="col-md-12">
-                                <mat-card appearance="outlined">
-                                    <mat-card-header>
+                                <div class="card">
+                                    <div class="card-header">
                                         <h3 class="card-title text-left table-header-title">RESUMO DOS PAGAMENTOS -
-                                            <span>{{titulo()}}</span>
-                                        </h3>
-                                    </mat-card-header>
-                                    <mat-card-content>
+                                            <span>{{titulo()}}</span></h3>
+                                    </div>
+                                    <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <p-table #dt [value]="listaResumoPagamentos" dataKey="dE_PERIODO"
@@ -309,23 +307,22 @@
                                             </div>
                                         </div>
                                     </div>
-                                </mat-card-content>
-                            </mat-card>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <ng-template #elsePagamentoBlock>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title text-left table-header-title">RESUMO DOS PAGAMENTOS -
+                                    <span>{{titulo()}}</span></h3>
+                            </div>
+                            <div class="card-body">
+                                Não existem pagamentos para a rubrica {{coRubricaSelecionada}}.
+                            </div>
+                        </div>
+                    </ng-template>
                 </div>
-                <ng-template #elsePagamentoBlock>
-                    <mat-card appearance="outlined" style="margin-top: 24px;">
-                        <mat-card-header>
-                            <h3 class="card-title text-left table-header-title">RESUMO DOS PAGAMENTOS -
-                                <span>{{titulo()}}</span>
-                            </h3>
-                        </mat-card-header>
-                        <mat-card-content>
-                            Não existem pagamentos para a rubrica {{coRubricaSelecionada}}.
-                        </mat-card-content>
-                    </mat-card>
-                </ng-template>
     </div>
     </mat-tab>
     </mat-tab-group>
@@ -334,5 +331,5 @@
 
 
 <div style="opacity: 0; height: 0; overflow: hidden;">
-    <app-detalhe-financeiro [nuContrato]="this.nuContrato"></app-detalhe-financeiro>
+<app-detalhe-financeiro [nuContrato]="this.nuContrato"></app-detalhe-financeiro>
 </div>

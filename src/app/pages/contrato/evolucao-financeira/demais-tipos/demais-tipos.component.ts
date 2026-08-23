@@ -1,3 +1,5 @@
+/// <reference path="../../../../../html2pdf.d.ts" />
+
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { EvolucaoFinanceira } from 'src/app/models/generics/evolucao-financeira';
@@ -6,7 +8,6 @@ import { Endpoints } from 'src/app/models/enums/endpoints';
 import * as html2pdf from 'html2pdf.js';
 import { Location } from '@angular/common';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { LoaderService } from 'src/app/core/services/loader.service';
 import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
 import * as Highcharts from 'highcharts';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,6 +18,35 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { DetalheFinanceiroComponent } from '../detalhe-financeiro/detalhe-financeiro.component';
 
+interface GraficoSerie {
+  name: string;
+  data: number[];
+}
+
+interface GraficoContrato {
+  categorias: string[];
+  series: GraficoSerie[];
+}
+
+interface RubricaEvolucao {
+  cO_RUBRICA: string;
+  vR_EXECUTADO_MENSAL: number;
+  vR_VIGENCIA_MENSAL: number;
+  dE_PERIODO: string;
+}
+
+interface RubricaAgrupada {
+  cO_RUBRICA: string;
+  valoresExecutados: number[];
+  valoresMensais: number[];
+  periodos: string[];
+  series: Array<{
+    color: string;
+    data: number[];
+    name: string;
+  }>;
+}
+
 
 @Component({
   selector: 'app-demais-tipos',
@@ -25,23 +55,23 @@ import { DetalheFinanceiroComponent } from '../detalhe-financeiro/detalhe-financ
 
 })
 export class DemaisTiposComponent implements OnInit, OnChanges {
-  @ViewChild('chart', { static: true }) chartElement: ElementRef;
+  @ViewChild('chart', { static: true }) chartElement!: ElementRef<HTMLDivElement>;
   @ViewChild(DetalheFinanceiroComponent) relatorioCompletoPdf!: DetalheFinanceiroComponent;
-  chart: Highcharts.Chart;
-  @Input() permissions: ActionPolicies;
-  @Input() vigenciaAnterior: any;
-  @Input() vigenciaAtual: any;
-  @Input() vigenciaAnteriorSelect: any
-  @Input() contrato : ContratoResponse;
+  chart?: Highcharts.Chart;
+  @Input() permissions!: ActionPolicies;
+  @Input() vigenciaAnterior: any = null;
+  @Input() vigenciaAtual: any = null;
+  @Input() vigenciaAnteriorSelect: any = null;
+  @Input() contrato!: ContratoResponse;
   @Output() abaSelecionada = new EventEmitter<string>();
 
-  nuContrato!: string;
-  series: any[] = []
-  periodos: any;
+  nuContrato = '';
+  series: any[] = [];
+  periodos: string[] = [];
   loading: boolean = true;
   loadingPDF: boolean = false;
-  rubricas = [];
-  listaEvolucaoFinanceira: EvolucaoFinanceira[];
+  rubricas: RubricaAgrupada[] = [];
+  listaEvolucaoFinanceira: EvolucaoFinanceira[] = [];
   listaResumoPagamentos: any[] = [];
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
@@ -112,7 +142,6 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
     private apiService: ApiService,
     private location: Location,
     public spinner: NgxSpinnerService,
-    public loader: LoaderService,
     public token: TokenStorageService,
     private modalService: NgbModal,
   ) {
@@ -124,12 +153,9 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.populaVariaveis();
-    // Only fetch graph and resumo when we have a selected vigencia and nuContrato
-    if (this.vigenciaUsuarioSelecionada && this.nuContrato) {
-      this.obterDadosGraficosVigencias(this.vigenciaUsuarioSelecionada);
-      this.obterResumoPagamentos(this.nuContrato, this.vigenciaUsuarioSelecionada, this.coRubricaSelecionada);
-    }
+    this.populaVariaveis()
+    this.obterDadosGraficosVigencias(this.vigenciaUsuarioSelecionada);
+    this.obterResumoPagamentos(this.nuContrato, this.vigenciaUsuarioSelecionada, this.coRubricaSelecionada);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -143,14 +169,14 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
   }
 
   populaVariaveis() {
-    if (!this.coRubricaSelecionada) {
+    if (this.coRubricaSelecionada == null || this.coRubricaSelecionada == '') {
       this.coRubricaSelecionada = 'TOTAL';
     }
     if (this.vigenciaAtual) {
-      this.nuContrato = this.vigenciaAtual?.nU_CONTRATO || this.nuContrato;
+      this.nuContrato = this.vigenciaAtual.nU_CONTRATO;
       this.vigenciaUsuarioSelecionada = this.vigenciaAtual;
-    } else if (this.vigenciaAnterior) {
-      this.nuContrato = this.vigenciaAnterior?.nU_CONTRATO || this.nuContrato;
+    } else {
+      this.nuContrato = this.vigenciaAnterior.nU_CONTRATO;
       this.vigenciaUsuarioSelecionada = this.vigenciaAnterior;
     }
   }
@@ -200,136 +226,139 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
     }
   }
 
-  public async obterDadosGraficosVigencias(params): Promise<void> {
+  public async obterDadosGraficosVigencias(params: { nU_CONTRATO: string; nU_VIGENCIA: string }): Promise<void> {
     try {
-      const response = await this.apiService.get<
-        ApiResponse<EvolucaoFinanceira[]>
-      >(`${Endpoints.URL_CONTRATOS}/grafico-vigencias-contrato?nuContrato=${params.nU_CONTRATO}&nuVigencia=${params.nU_VIGENCIA}`);
-      const resp: any = response.data
+      const response = await this.apiService.get<ApiResponse<EvolucaoFinanceira[]>>(
+        `${Endpoints.URL_CONTRATOS}/grafico-vigencias-contrato?nuContrato=${params.nU_CONTRATO}&nuVigencia=${params.nU_VIGENCIA}`
+      );
+      const resp = response.data as unknown as RubricaEvolucao[];
 
       this.listaEvolucaoFinanceira = [this.vigenciaAtual];
       if (this.vigenciaAnterior) {
-        this.listaEvolucaoFinanceira = [this.vigenciaAnterior]
+        this.listaEvolucaoFinanceira = [this.vigenciaAnterior];
       }
-      this.rubricas = this.agruparDadosPorRubrica(resp);
 
-      this.rubricas = this.rubricas.map(item => {
-        return item = {
-          ...item,
-          series: [
-            {
-              color: '#ffffff',
-              data: item.valoresMensais,
-              name: 'Vigência Mensal'
-            },
-            {
-              color: '#000000',
-              data: item.valoresExecutados,
-              name: 'Valores Executados'
-            }
-          ]
-        }
-      })
+      this.rubricas = this.agruparDadosPorRubrica(resp).map((item: RubricaAgrupada) => ({
+        ...item,
+        series: [
+          {
+            color: '#ffffff',
+            data: item.valoresMensais,
+            name: 'Vigência Mensal'
+          },
+          {
+            color: '#000000',
+            data: item.valoresExecutados,
+            name: 'Valores Executados'
+          }
+        ]
+      }));
 
       this.loading = false;
     } catch (error) {
       console.error(error, 'error');
-
+      this.loading = false;
     }
   }
 
-  createChart() {
-    const info: any = this.listaEvolucaoFinanceira;
-    if (!info || !info.length || !info[0]?.grafico) {
-      // nothing to draw yet
+  createChart(): void {
+    const info: EvolucaoFinanceira[] = this.listaEvolucaoFinanceira;
+    const grafico = info[0]?.grafico as GraficoContrato | undefined;
+    if (!grafico) {
       return;
     }
 
-    const grafico = info[0].grafico;
-    const seriesEstimativa = grafico.series?.find?.(item => item.name == 'Estimativa Mensal')?.data || [];
-    const seriesExecutado = grafico.series?.find?.(item => item.name == 'Valor Executado')?.data || [];
-
     this.chartOptions.xAxis = {
-      categories: grafico.categorias || []
-    };
+      categories: grafico.categorias
+    } as Highcharts.XAxisOptions;
+
     this.chartOptions.series = [
       {
         type: 'line',
         name: 'Estimativa Mensal',
-        data: seriesEstimativa as number[],
+        data: grafico.series.find((item: GraficoSerie) => item.name === 'Estimativa Mensal')?.data ?? [],
         color: '#F9B200'
       },
       {
         type: 'column',
         name: 'Valor Executado',
-        data: seriesExecutado as number[],
+        data: grafico.series.find((item: GraficoSerie) => item.name === 'Valor Executado')?.data ?? [],
         color: '#005CA9'
-      },
-    ];
+      }
+    ] as Highcharts.SeriesOptionsType[];
 
     this.updateChart();
   }
 
-  agruparDadosPorRubrica(array) {
+  agruparDadosPorRubrica(array: RubricaEvolucao[]): RubricaAgrupada[] {
+    const agrupados: Record<string, RubricaAgrupada> = {};
 
-    const agrupados = {};
-
-    array.forEach(item => {
+    array.forEach((item: RubricaEvolucao) => {
       const { cO_RUBRICA, vR_EXECUTADO_MENSAL, vR_VIGENCIA_MENSAL, dE_PERIODO } = item;
 
       if (!agrupados[cO_RUBRICA]) {
-        agrupados[cO_RUBRICA] = { cO_RUBRICA: cO_RUBRICA, valoresExecutados: [], valoresMensais: [], periodos: [] }
+        agrupados[cO_RUBRICA] = {
+          cO_RUBRICA,
+          valoresExecutados: [],
+          valoresMensais: [],
+          periodos: [],
+          series: []
+        };
       }
 
       agrupados[cO_RUBRICA].valoresExecutados.push(vR_EXECUTADO_MENSAL);
       agrupados[cO_RUBRICA].valoresMensais.push(vR_VIGENCIA_MENSAL);
       agrupados[cO_RUBRICA].periodos.push(dE_PERIODO);
-    }
+    });
 
-    )
-    return Object.values(agrupados)
-
+    return Object.values(agrupados);
   }
 
-  getLatestDate(lista) {
-    if (lista.length) {
-      return lista.reduce((m, v, i) =>
-        v.dtPagamentoEfetivo > m.dtPagamentoEfetivo && i ? v : m
-      ).dtPagamentoEfetivo;
+  getLatestDate(lista: Array<{ dtPagamentoEfetivo: string }>): string | undefined {
+    if (!lista.length) {
+      return undefined;
     }
+
+    return lista
+      .reduce(
+        (m: { dtPagamentoEfetivo: string }, v: { dtPagamentoEfetivo: string }, i: number) =>
+          v.dtPagamentoEfetivo > m.dtPagamentoEfetivo && i ? v : m
+      )
+      .dtPagamentoEfetivo;
   }
 
-  downloadPDF() {
-    this.loader.show();
+  downloadPDF(): void {
+    this.spinner.show();
 
-    for (var i = 0; i < this.listaEvolucaoFinanceira.length; i++) {
-      document.getElementById('divGrafico_' + i).style.width = '1050px';
+    for (let i = 0; i < this.listaEvolucaoFinanceira.length; i++) {
+      const graficoElement = document.getElementById('divGrafico_' + i);
+      if (graficoElement) {
+        graficoElement.style.width = '1050px';
+      }
     }
 
     setTimeout(() => {
-      var element = document.getElementById('divPDF');
+      const element = document.getElementById('divPDF');
 
-      const elementCopy = element.cloneNode(true) as HTMLElement; // copy of the element to be printed
-      const tableBodies = elementCopy.querySelectorAll('.cl-body'); // store div of table body
+      if (!element) {
+        this.spinner.hide();
+        return;
+      }
+
+      const elementCopy = element.cloneNode(true) as HTMLElement;
+      const tableBodies = elementCopy.querySelectorAll('.cl-body');
       const maxRowsPerPage = 13;
 
-      // For each table
-      for (let k = 0; k < tableBodies?.length; k++) {
-        // Check table size
+      for (let k = 0; k < tableBodies.length; k++) {
         const tableRows = tableBodies[k].getElementsByTagName('tr');
 
-        // Ignore table if it is less or equal than maximum
-        if (tableRows?.length <= maxRowsPerPage) continue;
+        if (tableRows.length <= maxRowsPerPage) {
+          continue;
+        }
 
-        // Get number of new tables
-        const newTableCount = Math.ceil(
-          (tableRows?.length - 1) / maxRowsPerPage
-        );
-
-        // Create array of resulting tables
+        const newTableCount = Math.ceil((tableRows.length - 1) / maxRowsPerPage);
         const newTableBodies: HTMLElement[] = [];
 
-        // Copy table body and clean content
         const tableBodyClean = tableBodies[k].cloneNode(true) as HTMLElement;
         const toDeleteRows = tableBodyClean.getElementsByTagName('tr');
         while (toDeleteRows.length > 1) {
@@ -337,48 +366,37 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
           toDeleteRow.parentNode?.removeChild(toDeleteRow);
         }
 
-        // Break the table in smaller ones
         for (let i = 0; i < newTableCount; i++) {
-          // Creating new table
           const newTable = tableBodyClean.cloneNode(true) as HTMLElement;
-          const dataTables =
-            newTable.getElementsByClassName('p-datatable-tbody');
-          const dataTable = dataTables?.length > 0 ? dataTables[0] : null;
-          if (dataTable == null) break;
+          const dataTables = newTable.getElementsByClassName('p-datatable-tbody');
+          const dataTable = dataTables.length > 0 ? dataTables[0] : null;
+          if (dataTable == null) {
+            break;
+          }
 
-          // Adding rows to new table
           const startIndex = i * maxRowsPerPage + 1;
-          const endIndex = Math.min(
-            (i + 1) * maxRowsPerPage + 1,
-            tableRows.length
-          );
+          const endIndex = Math.min((i + 1) * maxRowsPerPage + 1, tableRows.length);
           for (let j = startIndex; j < endIndex; j++) {
             const row = tableRows[j].cloneNode(true) as HTMLTableRowElement;
             dataTable.appendChild(row);
           }
 
-          // Adding new table to array
           newTableBodies.push(newTable);
         }
 
-        tableBodies[k].parentNode?.replaceChild(
-          newTableBodies[0],
-          tableBodies[k]
-        );
+        tableBodies[k].parentNode?.replaceChild(newTableBodies[0], tableBodies[k]);
         for (let i = 1; i < newTableBodies.length; i++) {
-          elementCopy
-            .querySelectorAll('.cl-table-component')
-          [k].insertAdjacentElement('beforeend', newTableBodies[i]);
+          elementCopy.querySelectorAll('.cl-table-component')[k].insertAdjacentElement('beforeend', newTableBodies[i]);
         }
       }
 
-      var opt = {
+      const opt = {
         margin: [5, 5, 5, 5],
         filename: 'SobDemanda.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, dpi: 192, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-        pagebreak: { before: ['.cl-body', '.cl-consumo'], mode: 'avoid-all' },
+        pagebreak: { before: ['.cl-body', '.cl-consumo'], mode: 'avoid-all' }
       };
 
       html2pdf()
@@ -386,21 +404,24 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
         .set(opt)
         .toPdf()
         .get('pdf')
-        .then((pdf) => {
+        .then((pdf: jsPDF) => {
           pdf.deletePage(1);
         })
         .save();
 
-      for (var i = 0; i < this.listaEvolucaoFinanceira.length; i++) {
-        document.getElementById('divGrafico_' + i).style.width = 'auto';
+      for (let i = 0; i < this.listaEvolucaoFinanceira.length; i++) {
+        const graficoElement = document.getElementById('divGrafico_' + i);
+        if (graficoElement) {
+          graficoElement.style.width = 'auto';
+        }
       }
 
-      this.loader.hide();
+      this.spinner.hide();
       elementCopy.remove();
     }, 1000);
   }
 
-  public downloadExcel() {
+  public downloadExcel(): string {
     return this.apiService.downloadfile(
       `${Endpoints.URL_CONTRATOS_EVOLUCAO_FINANCEIRA}/excel/` + this.nuContrato
     );
@@ -420,101 +441,90 @@ export class DemaisTiposComponent implements OnInit, OnChanges {
     }
   }
 
-  destroyChart() {
+  destroyChart(): void {
     if (this.chart) {
-
       this.chart.destroy();
-      this.chart = null;
+      this.chart = undefined;
     }
   }
 
   titulo(): string {
     if (this.vigenciaAnterior) {
-      return 'CONTRATO ' + (this.vigenciaAnterior?.cO_CONTRATO || '') + ' - RUBRICA: ' + this.coRubricaSelecionada;
-    } else if (this.vigenciaAtual) {
-      return 'CONTRATO ' + (this.vigenciaAtual?.cO_CONTRATO || '') + ' - RUBRICA: ' + this.coRubricaSelecionada;
+      return 'CONTRATO ' + this.vigenciaAnterior.cO_CONTRATO + ' - RUBRICA: ' + this.coRubricaSelecionada;
     }
-    return 'CONTRATO' + ' - RUBRICA: ' + this.coRubricaSelecionada;
+
+    return 'CONTRATO ' + this.vigenciaAtual.cO_CONTRATO + ' - RUBRICA: ' + this.coRubricaSelecionada;
   }
 
-  onTabChange(event: MatTabChangeEvent) {
+  onTabChange(event: MatTabChangeEvent): void {
     const tabLabel = event.tab.textLabel;
     this.coRubricaSelecionada = tabLabel;
+
     if (this.vigenciaAtual != undefined) {
       this.vigenciaUsuarioSelecionada = this.vigenciaAtual;
-    } else if (this.vigenciaAnterior != undefined) {
-      this.vigenciaUsuarioSelecionada = this.vigenciaAnterior;
     } else {
-      this.vigenciaUsuarioSelecionada = null;
+      this.vigenciaUsuarioSelecionada = this.vigenciaAnterior;
     }
 
-    if (this.vigenciaUsuarioSelecionada && this.nuContrato) {
-      this.obterResumoPagamentos(this.nuContrato, this.vigenciaUsuarioSelecionada, this.coRubricaSelecionada);
-    }
-
-    // Emit only with safe values
-    const nU = this.vigenciaUsuarioSelecionada?.nU_VIGENCIA ?? '';
-    const ic = this.vigenciaUsuarioSelecionada?.iC_VIGENCIA_ATUAL ?? '';
-    this.abaSelecionada.emit(`${this.coRubricaSelecionada},${nU},${ic}`);
-    //this.obterDadosGraficosVigencias(this.vigenciaUsuarioSelecionada);
+    this.obterResumoPagamentos(this.nuContrato, this.vigenciaUsuarioSelecionada, this.coRubricaSelecionada);
+    this.abaSelecionada.emit(
+      this.coRubricaSelecionada + ',' + this.vigenciaUsuarioSelecionada.nU_VIGENCIA + ',' + this.vigenciaUsuarioSelecionada.iC_VIGENCIA_ATUAL
+    );
   }
 
-  async gerarPDF() {
+  async gerarPDF(): Promise<void> {
     this.loadingPDF = true;
 
-    if(this.coRubricaSelecionada !== 'TOTAL'){
-    const element = document.getElementById('area-pdf');
-    if (!element) {
+    if (this.coRubricaSelecionada !== 'TOTAL') {
+      const element = document.getElementById('area-pdf');
+      if (!element) {
+        this.loadingPDF = false;
+        return;
+      }
+
+      html2canvas(element)
+        .then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const imgProps = pdf.getImageProperties(imgData);
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeigth = (imgProps.height * pdfWidth) / imgProps.width;
+
+          pdf.setFontSize(18);
+          pdf.text('Evolução Financeira', pdfWidth / 2, 12, {
+            align: 'center'
+          });
+
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeigth);
+          pdf.save('Evolução Financeira.pdf');
+        })
+        .finally(() => {
+          this.loadingPDF = false;
+        });
       return;
     }
 
-    html2canvas(element).then(canvas => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeigth = (imgProps.height * pdfWidth) / imgProps.width;
-
-      pdf.setFontSize(18);
-      pdf.text('Evolução Financeira', pdfWidth / 2, 12, {
-        align: 'center'
-      });
-
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeigth);
-      pdf.save('Evolução Financeira.pdf');
-
-    }).finally(()=>{
-      this.loadingPDF = false;
-  });
-
-
-  }
-  else{
     const aguardarDados = async (): Promise<boolean> => {
-      return new Promise(resolse => {
+      return new Promise((resolve) => {
         const intervalo = setInterval(() => {
-            if(this.relatorioCompletoPdf?.Contrato !== undefined){
-              clearInterval(intervalo);
-              resolse(true);
-            }
+          if (this.relatorioCompletoPdf?.Contrato !== undefined) {
+            clearInterval(intervalo);
+            resolve(true);
+          }
         }, 100);
-      })
-    }
+      });
+    };
 
     const dadosProntos = await aguardarDados();
 
-    if(dadosProntos){
+    if (dadosProntos) {
       const sucesso = await this.relatorioCompletoPdf.gerarRelatorioCompleto();
       this.loadingPDF = false;
-      if(sucesso){
-        console.log("PDF gerado com sucesso!")
-      }
-      else{
-        console.log("Falha ao gerar o PDF!")
+      if (sucesso) {
+        console.log('PDF gerado com sucesso!');
+      } else {
+        console.log('Falha ao gerar o PDF!');
       }
     }
   }
-
-}
-
 }

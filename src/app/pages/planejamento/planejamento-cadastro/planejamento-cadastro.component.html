@@ -14,7 +14,7 @@
   </h4>
 
 <div class="modal-body">
-  <form *ngIf="form" [formGroup]="form">
+  <form [formGroup]="form">
     <div class="row">
       <div class="col-md-12">
         <div class="row">
@@ -436,7 +436,10 @@
 
     <mat-tab label="Histórico" >
 
-<ng-template #planejamentoCadastroHistoricoTpl>
+
+
+      <p-card>
+
       <h4 class="modal-title" style="padding: 0px 0px 24px 12px ;">
         <b>Histórico</b> <br/> <small>Histórico Planejamento Orçamentário {{ this.planejamento?.coContrato }}</small>
       </h4>
@@ -490,8 +493,7 @@
 
 
             <ng-template pTemplate="content" let-event>
-              <div class="card-outlined-event">
-                <div class="card-outlined-event-header">{{ event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO' }}</div>
+              <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
                 <div class="card-content">
                   <p *ngIf="event.deObservacao">{{ event.deObservacao }}</p>
                   <small *ngIf="event.coRubrica">{{event.coRubrica}} - {{event.deRubrica}}</small>
@@ -512,21 +514,23 @@
                     </button>
                   </div>
                 </div>
-              </div>
+              </p-card>
             </ng-template>
           </p-timeline>
 
 
 
-          <dsc-paginator
-            [length]="listaPlanejamentoItemHistorico.totalRegistros"
-            [pageSize]="100"
-            [pageIndex]="0">
-          </dsc-paginator>
+          <p-paginator
+            [rows]="filtroRegistros.tamanhoPagina"
+            [first]="0"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            (onPageChange)="loadPage($event)"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+            [totalRecords]="listaPlanejamentoItemHistorico.totalRegistros"
+          ></p-paginator>
         </div>
-</ng-template>
-
-      <dsc-card [data]="{appearance: 'outlined', content: {template: planejamentoCadastroHistoricoTpl}}"></dsc-card>
+      </p-card>
 
       <!-- Modal Detalhes -->
       <p-dialog

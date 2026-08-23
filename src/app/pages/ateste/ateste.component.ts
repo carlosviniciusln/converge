@@ -50,8 +50,8 @@ export class AtesteComponent implements OnInit {
   /* MÉTODOS AUXILIARES */
 
   loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
 
     if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;
@@ -78,8 +78,8 @@ export class AtesteComponent implements OnInit {
         if(response.data.totalRecords > 0){
           this.sgFilial = response.data?.contratos[0].sgFilial;
           this.listaGcpvw030Ateste = response.data.contratos || [];
-          this.selectTiposContrato = response.data.listaContratos.map(x => ({label: String(x), value: x}));
-          this.selectTiposFornecedor = response.data.listaFornecedor.map(x => ({label: String(x), value: x}));
+          this.selectTiposContrato = response.data.listaContratos.map(x => ({label: x, value: x}));
+          this.selectTiposFornecedor = response.data.listaFornecedor.map(x => ({label: x, value: x}));
           this.totalRecords = response.data.totalRecords;
           this.loading = false;
         }else{

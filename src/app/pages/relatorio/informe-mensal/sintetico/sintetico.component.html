@@ -21,13 +21,14 @@
                 Relatório de Rubrica - Sintético
               </div>
               <div class="col-md-1 pl-1 pr-1 text-right">
-                <dsc-button
-                  variant="secondary-outlined"
-                  icon="cloud_download"
-                  iconButton
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary"
                   (click)="downloadInformeMensal()"
                   *ngIf="permissions?.Exportar ?? false"
-                ></dsc-button>
+                >
+                  <i class="tim-icons icon-cloud-download-93"></i>
+                </button>
               </div>
               <div class="col-md-3 pl-1 pr-1">
                 <select

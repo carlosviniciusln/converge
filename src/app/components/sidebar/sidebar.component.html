@@ -4,41 +4,41 @@
       <img src="./assets/img/logo.png" />
     </div>
   </a>
-  <a href="" class="simple-text logo-normal"> GVC:<br>Gestão Estratégica<br>de Contratos,<br>Planejamento<br>e Orçamento
+  <a href="/#" class="simple-text logo-normal"> GVC:<br>Gestão Estratégica<br>de Contratos,<br>Planejamento<br>e Orçamento
   </a>
 </div>
 <div class="sidebar-wrapper">
   <ul class="nav">
-    <li routerLinkActive="active" *ngFor="let menuItem of menuItems; let i = index" class="{{ menuItem.class }} nav-item">
+    <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item">
       <a *ngIf="
           !menuItem.checkForAccess ||
           (menuItem.checkForAccess && hasAccess(menuItem.path))
-        " [routerLink]="[menuItem.path]" [attr.id]="'menu-item-'+i">
+        " [attr.href]="'/#' + menuItem.path">
         <i class="tim-icons  {{ menuItem.icon }}"></i>
         <p>{{ menuItem.title }}</p>
       </a>
     </li>
     <li routerlinkactive="active" class="nav-item">
-      <a data-toggle="collapse" class="nav-link" (click)="isContratoCollapsed = !isContratoCollapsed" id="menu-execucao">
+      <a data-toggle="collapse" class="nav-link" (click)="isContratoCollapsed = !isContratoCollapsed">
         <i class="tim-icons icon-single-copy-04"></i>
         <p>Execução<b class="caret"></b></p>
       </a>
-      <div [ngClass]="isContratoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+      <div class="collapse" [class.show]="isContratoCollapsed" id="relatorios">
         <ul class="nav">
           <li routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/contrato" id="menu-contratos">
+            <a class="nav-link" href="#/contrato">
               <i class="tim-icons"></i>
               <p>Contratos</p>
             </a>
           </li>
           <li routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/contrato/atas" id="menu-atas">
+            <a class="nav-link" href="#/contrato/atas">
               <i class="tim-icons"></i>
               <p>Atas de Registro</p>
             </a>
           </li>
           <li routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/contrato/artigos" id="menu-pagamentos-art81">
+            <a class="nav-link" href="#/contrato/artigos">
               <i class="tim-icons"></i>
               <p>Pagamentos Art.81</p>
             </a>
@@ -64,7 +64,7 @@
             </div>
           </li-->
           <li routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/contrato/conciliacao" id="menu-conciliacao">
+            <a class="nav-link" href="#/contrato/conciliacao">
               <i class="tim-icons"></i>
               <p>Conciliação de Registros</p>
             </a>
@@ -92,18 +92,18 @@
         <i class="tim-icons icon-coins"></i>
         <p>Orçamento<b class="caret"></b></p>
       </a>
-      <div [ngClass]="isOrcamentoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+      <div class="collapse" [class.show]="isOrcamentoCollapsed" id="relatorios">
         <ul class="nav">
 
-          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
-            <a class="nav-link" href="#/novo-planejamento">
+          <!-- <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/planejamento-orcamentario">
               <p>Planejamento</p>
             </a>
-          </li>
+          </li> -->
 
-          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+          <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/planejamento-orcamentario-novo">
-              <p>Planejamento novo</p>
+              <p>Planejamento</p>
             </a>
           </li>
 
@@ -113,11 +113,11 @@
             </a>
           </li>
 
-          <li routerlinkactive="active" class="nav-item">
+          <!-- <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/valores-executados">
               <p>Valores Executados</p>
             </a>
-          </li>
+          </li> -->
 
           <li *ngIf="isPerfilOrcamento" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/export-data-pagamento">
@@ -125,17 +125,17 @@
             </a>
           </li>
 
-          <li routerlinkactive="active" class="nav-item">
+          <!-- <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/planejamento">
               <p>Planejamento Legado</p>
             </a>
-          </li>
+          </li> -->
 
-          <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
+          <!-- <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/planejamento/limites">
               <p>Limites Legado</p>
             </a>
-          </li>
+          </li> -->
 
         </ul>
       </div>
@@ -145,7 +145,7 @@
         <i class="tim-icons icon-puzzle-10"></i>
         <p>Relatórios<b class="caret"></b></p>
       </a>
-      <div [ngClass]="isRelatoriosCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+      <div class="collapse" [class.show]="isRelatoriosCollapsed" id="relatorios">
         <ul class="nav">
           <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/pagamento">

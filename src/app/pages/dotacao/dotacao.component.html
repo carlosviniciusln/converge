@@ -1,5 +1,4 @@
 <div class="content">
-  <dsc-breadcrumb [urls]="[{label: 'Dotação'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
   <div class="row">
     <div class="col-12">
       <p-table
@@ -19,12 +18,13 @@
               </div>
 
               <div class="col-md-1 pl-1 pr-1 text-right">
-                <dsc-button
-                  variant="secondary-outlined"
-                  icon="cloud_download"
-                  iconButton
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary"
                   (click)="exportExcel()"
-                ></dsc-button>
+                >
+                  <i class="tim-icons icon-cloud-download-93"></i>
+                </button>
               </div>
 
               <div class="col-md-4">
@@ -290,13 +290,9 @@
         </ng-template>
       </p-table>
 
-           <dsc-paginator
-             [length]="totalRecords"
-             [pageSize]="10"
-             [pageIndex]="filtroRegistros.paginaAtual - 1"
-             [pageSizeOptions]="[10, 20, 50]"
-             (page)="loadPage($event)">
-           </dsc-paginator>
+           <div class="card flex justify-center">
+                    <p-paginator [showCurrentPageReport]="true" (onPageChange)="loadPage($event)" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"  [first]="1"  [rows]="10" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10, 20, 50]" ></p-paginator>
+            </div>
 
       <p-dialog
         [(visible)]="visible"
@@ -343,12 +339,13 @@
                   style="justify-content: end"
                 >
                   <div class="col-md-1 pl-1 pr-1 text-right">
-                    <dsc-button
-                      variant="secondary-outlined"
-                      icon="cloud_download"
-                      iconButton
+                    <button
+                      type="button"
+                      class="btn-sm btn-secondary"
                       (click)="exportExcel()"
-                    ></dsc-button>
+                    >
+                      <i class="tim-icons icon-cloud-download-93"></i>
+                    </button>
                   </div>
 
                   <div class="col-md-4">

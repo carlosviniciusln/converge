@@ -40,29 +40,11 @@ import { GraficoComponent } from 'src/app/pages/contrato/evolucao-financeira/dem
 import { HighchartsChartModule } from 'highcharts-angular';
 import { EmpenhoComponent } from 'src/app/pages/relatorio/empenho/empenho.component';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { ContratoDetalheComponent } from 'src/app/pages/contrato/contrato-detalhe/contrato-detalhe.component';
 import { ContratoCadastroComponent } from 'src/app/pages/contrato/contrato-cadastro/contrato-cadastro.component';
 import { RetencaoCadastroComponent } from 'src/app/pages/contrato/retencao/retencao-cadastro.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
-import { DscSidenavComponent } from 'sidsc-components/dsc-sidenav';
-import { DscSelectComponent } from 'sidsc-components/dsc-select';
-import { DscProgressSpinnerComponent } from 'sidsc-components/dsc-progress-spinner';
-import { DscFooterComponent } from 'sidsc-components/dsc-footer';
-import { DscAccordionComponent } from 'sidsc-components/dsc-accordion';
-import { DscAlertComponent } from 'sidsc-components/dsc-alert';
-import { DscButtonComponent } from 'sidsc-components/dsc-button';
-import { DscSnackbarModule } from 'sidsc-components/dsc-snackbar';
-import { DscBreadcrumbComponent } from 'sidsc-components/dsc-breadcrumb';
-import { DscCardComponent } from 'sidsc-components/dsc-card';
-import { DscCheckboxComponent } from 'sidsc-components/dsc-checkbox';
-import { DscInputComponent } from 'sidsc-components/dsc-input';
-import { DscTagsComponent } from 'sidsc-components/dsc-tags';
-import { DscProgressBarComponent } from 'sidsc-components/dsc-progress-bar';
-import { DscChipComponent } from 'sidsc-components/dsc-chips';
-import { DscPaginatorComponent } from 'sidsc-components/dsc-paginator';
+import { NgxMaskModule } from 'ngx-mask';
 import { PagamentoCadastroComponent } from 'src/app/pages/contrato/pagamento-cadastro/pagamento-cadastro.component';
 import { EditarPagamentoComponent } from 'src/app/pages/contrato/contrato-pendente/editar-pagamento/editar-pagamento.component';
 import { ValoresRubricaComponent } from 'src/app/pages/dashboard/valores-rubrica/valores-rubrica.component';
@@ -94,11 +76,6 @@ import { ConsumoComponent } from 'src/app/pages/relatorio/consumo/consumo.compon
 import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-pagamento.component';
 import { GraficoArtigoComponent } from 'src/app/pages/contrato/artigo/grafico-artigo/grafico-artigo.component';
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
-import { NovoPlanejamentoComponent } from 'src/app/pages/planejamento/novo-planejamento/novo-planejamento.component';
-import { LimitesComponent } from 'src/app/pages/planejamento/limites/limites.component';
-import { ModalLimitesComponent } from 'src/app/pages/planejamento/limites/modal-limites/modal-limites.component';
-import { ModalUploadComponent } from 'src/app/pages/planejamento/limites/modal-upload/modal-upload.component';
-import { ModalHistoricoComponent } from 'src/app/pages/planejamento/limites/modal-historico/modal-historico.component';
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
 import { DetalheFinanceiroComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
 import { MatListModule } from '@angular/material/list';
@@ -111,9 +88,6 @@ import { MenuModule } from 'primeng/menu';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardV2Component } from './dashboard-v2/dashboard-v2.component';
-import { BuscaContratoComponent } from './dashboard/busca-contrato/busca-contrato.component';
-import { BuscaGerencialComponent } from './dashboard/busca-gerencial/busca-gerencial.component';
-import { BuscaUdComponent } from './dashboard/busca-ud/busca-ud.component';
 import { ContratoComponent } from './contrato/contrato.component';
 import { PagamentoComponent } from './relatorio/pagamento/pagamento.component';
 import { AnaliticoComponent } from './relatorio/informe-mensal/analitico/analitico.component';
@@ -163,15 +137,13 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ToastModule,
     InputTextModule,
     ProgressBarModule,
-  HighchartsChartModule,
+    HighchartsChartModule,
     MatMenuModule,
-    MatIconModule,
     MatSlideToggleModule,
     PickListModule,
     MatTooltipModule,
     Select2Module,
-    NgxMaskDirective,
-    NgxMaskPipe,
+    NgxMaskModule.forRoot(),
     MatTabsModule,
     CurrencyMaskModule,
     FileUploadModule,
@@ -183,31 +155,11 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     FormsModule,
     PaginatorModule,
     MenuModule,
-    SharedLibraryModule,
-    DscSidenavComponent,
-    DscSelectComponent,
-    DscProgressSpinnerComponent,
-    DscFooterComponent,
-    DscAccordionComponent,
-    DscAlertComponent,
-    DscButtonComponent,
-    DscSnackbarModule,
-    DscBreadcrumbComponent,
-    DscCardComponent,
-    DscCheckboxComponent,
-    DscInputComponent,
-    DscTagsComponent,
-    DscProgressBarComponent,
-    DscChipComponent,
-    DscPaginatorComponent,
-    MatCardModule,
+    SharedLibraryModule
   ],
   declarations: [
     DashboardComponent,
     DashboardV2Component,
-    BuscaContratoComponent,
-  BuscaGerencialComponent,
-    BuscaUdComponent,
     ContratoComponent,
     PagamentoComponent,
     ContratoVigenciaComponent,
@@ -245,11 +197,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DetalheEvolucaoComponent,
     ConsumoComponent,
     PlanejamentoOrcamentarioComponent,
-  NovoPlanejamentoComponent,
-  LimitesComponent,
-  ModalLimitesComponent,
-  ModalUploadComponent,
-  ModalHistoricoComponent,
     ArtigoPagamentoComponent,
     GraficoArtigoComponent,
     ConsumoArpComponent,

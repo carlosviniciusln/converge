@@ -16,7 +16,6 @@ import { LoaderService } from "src/app/core/services/loader.service";
   styleUrls: ["./navbar.component.scss"]
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-
   currentUser: any;
   isLoggedIn = false;
   ultimaAtualizacao = '';
@@ -39,11 +38,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.routerSub = this.router.events
-      .pipe(filter(e => e instanceof NavigationEnd))
+      .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.sidenav.close());
 
-    this.infSub = this.appInfo.ultimaAtualizacao$.subscribe(v => {
-      this.ultimaAtualizacao = v ? `Atualizado em: ${v}` : '';
+    this.infSub = this.appInfo.ultimaAtualizacao$.subscribe(value => {
+      this.ultimaAtualizacao = value ? `Atualizado em: ${value}` : '';
     });
 
     this.appInfo.carregar();
@@ -87,5 +86,3 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.infSub?.unsubscribe();
   }
 }
-
-

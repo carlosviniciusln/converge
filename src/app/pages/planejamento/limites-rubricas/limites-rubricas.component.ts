@@ -271,13 +271,10 @@ export class LimitesRubricasComponent implements OnInit {
     this.loading = false;
   }
 
-  loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
-    if (page !== this.previousPage || pageSize !== this.filtroRegistros.pageSize) {
+  loadPage(page: number) {
+    if (page !== this.previousPage) {
       this.previousPage = page;
       this.filtroRegistros.pageNumber = page;
-      this.filtroRegistros.pageSize = pageSize;
       this.obterLimitesRubrica();
     }
   }

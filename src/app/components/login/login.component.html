@@ -1,50 +1,38 @@
-<h2 mat-dialog-title style="font-size:18px; font-weight:700; margin-bottom:4px;">Login</h2>
 
-<mat-dialog-content>
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" id="loginForm">
-    <div style="display:flex; flex-direction:column; gap:16px; padding: 8px 0;">
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title"><b>LOGIN</b><br/></h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')" >
+    <span aria-hidden="true">×</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()"> 
 
-      <div>
-        <label for="login-matricula" style="display:block; font-size:14px; font-weight:500; margin-bottom:6px;">
-          Matrícula:
-        </label>
-        <input
-          id="login-matricula"
-          type="text"
-          formControlName="matricula"
-          class="form-control"
-          [class.is-invalid]="submitted && f['matricula'].invalid"
-          placeholder="Digite sua matrícula">
-        <div *ngIf="submitted && f['matricula'].invalid" class="invalid-feedback">
-          Matrícula obrigatória.
+        <div class="row">
+            <div class="col-md-12">
+                <label for="matricula">Matricula:</label>
+                <input 
+                    formControlName="matricula"
+                    id="matricula" 
+                    type="text" 
+                    class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.matricula.invalid}"
+                    >
+            </div>
+            <div class="col-md-12">
+                <label for="NoEmpresa">Senha:</label>
+                <input 
+                    formControlName="senha"
+                    id="senha" 
+                    type="password" 
+                    class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f.senha.invalid}">
+            </div>
         </div>
-      </div>
 
-      <div>
-        <label for="login-senha" style="display:block; font-size:14px; font-weight:500; margin-bottom:6px;">
-          Senha:
-        </label>
-        <input
-          id="login-senha"
-          type="password"
-          formControlName="senha"
-          class="form-control"
-          [class.is-invalid]="submitted && f['senha'].invalid"
-          placeholder="Digite sua senha">
-        <div *ngIf="submitted && f['senha'].invalid" class="invalid-feedback">
-          Senha obrigatória.
-        </div>
-      </div>
-
-      <div *ngIf="isLoginFailed" style="color:#d32f2f; font-size:13px;">
-        {{ errorMessage }}
-      </div>
-
-    </div>
-  </form>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button id="btn-login-cancel" mat-button type="button" (click)="dialogRef.close()">Cancelar</button>
-  <button id="btn-login-entrar" mat-raised-button color="primary" type="button" (click)="onSubmit()">Entrar</button>
-</mat-dialog-actions>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn-sm btn-default" type="submit" (click)="onSubmit()">Entrar</button>
+    <!-- <button type="button" class="btn btn-default" (click)="obterValoresRubricaExcel(2021,1,1)">Exportar</button> -->
+</div>

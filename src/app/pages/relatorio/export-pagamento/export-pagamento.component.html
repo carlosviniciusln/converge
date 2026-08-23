@@ -7,8 +7,10 @@
                         Relatório para Extração de Pagamentos
                     </div>
                     <div class="col-md-1 pl-1 pr-1 text-right">
-                        <dsc-button variant="secondary-outlined" icon="cloud_download" label="Exportar" (click)="downloadPagamento()"
-                            *ngIf="permissions?.Exportar ?? false"></dsc-button>
+                        <button type="button" class="btn-sm btn-secondary" (click)="downloadPagamento()"
+                            *ngIf="permissions?.Exportar ?? false">
+                            <i class="tim-icons icon-cloud-download-93"></i> Exportar
+                        </button>
                     </div>
                 </div>
             </div>

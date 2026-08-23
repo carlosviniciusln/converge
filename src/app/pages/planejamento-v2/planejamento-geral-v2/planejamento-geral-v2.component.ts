@@ -22,6 +22,7 @@ import Swal from 'sweetalert2';
 import { PlanejamentoCadastroV2Component } from '../planejamento-cadastro-v2/planejamento-cadastro-v2.component';
 import { Gcpvw051VisaoContratoPlanejamentoOrcamentario } from 'src/app/models/generics/Gcpvw051VisaoContratoPlanejamentoOrcamentario';
 import { Gcptb051AtualizarStatusEmLoteRequest } from 'src/app/models/request/Gcptb051AtualizarStatusEmLoteRequest';
+import { IUser } from 'src/app/models/DTOs/IUser';
 
 @Component({
   selector: 'app-planejamento-geral-v2',
@@ -46,9 +47,12 @@ export class PlanejamentoGeralV2Component implements OnInit {
     Status: null,
     NuPlanejamentoTipo: null,
     tipo: null,
-    objeto: '',
+    // objeto: '',
+    noTipoDigital: null,
     nuPlanejamento: 0,
     tipoPlanejamento: '',
+    sgDiretoria: null,
+    sgSuperintendencia: null,
   };
 
   public isUltimaReprogramacao: boolean = false;
@@ -57,8 +61,10 @@ export class PlanejamentoGeralV2Component implements OnInit {
   public statusExercio: string;
   public nuPlanejamentoExercicio: number;
 
+  public dadosUsuarioLogado : IUser;
   currentUser: any;
-  currentProfile: PerfisEnum;
+  // currentProfile: PerfisEnum;
+  public currentProfile: IUser;
   perfilOrcamento: boolean = false;
   perfilAdm: boolean = false;
   perfilOperacional: boolean = false;
@@ -77,7 +83,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
   ) {
-    this.obterPermissoes();
+
   }
 
   async ngOnInit(): Promise<void> {
@@ -88,6 +94,8 @@ export class PlanejamentoGeralV2Component implements OnInit {
       this.statusExercio = params['statusPlanejamento'] ?? '';
       this.nuPlanejamentoExercicio = Number(params['nuPlanejamento']) || 0;
     });
+
+     this.obterPermissoes();
 
     this.filtroRegistros = {
       paginaAtual: 1,
@@ -102,6 +110,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
       {
         label: 'Novo Registro',
         icon: 'pi pi-plus',
+        disabled: !this.podeCadastrar(),
         command: () => {
           this.openModalAddPlanejamento('adicionar', true, true, this.nuPlanejamentoExercicio, this.anoExercicio);
         },
@@ -114,13 +123,14 @@ export class PlanejamentoGeralV2Component implements OnInit {
           this.downloadPlanejamentoDesembolso();
         },
       },
-      // {
-      //   label: 'Gerar Atualização SAP',
-      //   icon: 'tim-icons icon-cloud-download-93',
-      //   command: () => {
-      //     this.exportarExcelAtualizacaoSAP(this.anoExercicio);
-      //   },
-      // },
+      {
+        label: 'Gerar Atualização SAP',
+        icon: 'tim-icons icon-cloud-download-93',
+        command: () => {
+          // this.exportarExcelAtualizacaoSAP(this.anoExercicio);
+          this.downloadPlanejamentoDesembolso();
+        },
+      },
       // {
       //   label: 'Upload de Limites',
       //   icon: 'tim-icons icon-upload',
@@ -139,40 +149,103 @@ export class PlanejamentoGeralV2Component implements OnInit {
     ];
   }
 
-  obterPermissoes() {
-    this.permissions = this.token.getActionPolicies(ModuleEnum.Planejamento);
-    this.currentProfile = this.token.getUserPerfil();
-    if (this.currentProfile == 'Administrador') this.perfilAdm = true;
-    if (this.currentProfile == 'Orçamento') this.perfilOrcamento = true;
-    if (this.currentProfile == 'Gestor Operacional')
-      this.perfilOperacional = true;
-    if (this.currentProfile == 'Torres GEGAT') this.perfilTorre = true;
-
-    if (this.statusExercio == 'Cancelado') {
-      //nenhum perfil pode alterar
-      this.isPerfilPrivilegiado = false;
-    } else if (this.statusExercio == 'Encerrado' && !this.perfilOrcamento) {
-      //encerrado so perfil orçamento pode alterar
-      this.isPerfilPrivilegiado = false;
-    } else {
-      this.isPerfilPrivilegiado = true;
-    }
-
+  obterPermissoes(){
+    this.currentProfile = this.token.obterUsuarioEstruturado() as IUser;
     this.currentUser = this.token.getUser();
     this.perfilUnidade = this.currentUser?.coUnidade;
+
+    const perfil = this.currentProfile.noPerfil;
+
+    this.perfilAdm = perfil === PerfisEnum.Administrador;
+    this.perfilOrcamento = perfil === PerfisEnum.Orcamento;
+    this.perfilTorre = perfil === PerfisEnum.TorresGEGAT;
+    this.perfilOperacional = perfil === PerfisEnum.GestorOperacional;
+
+    const podeAlterarContexto = this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
+
+    if (!podeAlterarContexto) {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    if (this.statusExercio === "Cancelado") {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    if (this.statusExercio === "Validado"  && !this.perfilAdm) {
+      this.isPerfilPrivilegiado = false;
+      return;
+    }
+
+    this.isPerfilPrivilegiado = true;
+
+
+
+
   }
+
+    podeCadastrar(): boolean {
+      const itensSelecionados =  this.planejamentos.contratos.filter((p) => p.stSelecionado);
+
+      if (this.statusExercio === 'Cancelado') return false;
+      if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
+
+      return this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional;
+    }
+
+    IsHabilitarSalvarStatusEmLote(): boolean {
+
+       const itensSelecionados =  this.planejamentos.contratos.filter((p) => p.stSelecionado);
+
+      if (this.statusExercio === 'Cancelado') return false;
+      if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
+
+      return (this.perfilOrcamento || this.perfilAdm || this.perfilTorre || this.perfilOperacional) && itensSelecionados.length !== 0;
+    }
+
+
+    podeAlterarStatusEmLote(planejamento : any) {
+    if (this.statusExercio === 'Cancelado') return false;
+    if (this.statusExercio === 'Validado' && !this.perfilAdm) return false;
+
+    if(this.perfilOperacional){
+      return planejamento.coFilial == this.perfilUnidade && planejamento.nuStatusPlanejamento !== 3 && planejamento.nuStatusPlanejamento !== 7;
+    }
+
+    if(this.perfilTorre){
+      return planejamento.nuStatusPlanejamento !== 3 && planejamento.nuStatusPlanejamento !== 7;
+    }
+
+    return this.perfilOrcamento || this.perfilAdm
+
+    }
 
   async obterStatusPlanejamento(): Promise<void> {
     const response = await this.apiService.get<
       ApiResponse<PlanejamentoStatusResponse[]>
-    >(`${Endpoints.URL_ORCAMENTO}/status-planejamento`);
+    >(`v1/PlanejamentoOrcamentarioV/status-planejamento`);
     this.listaStatusPlanejamento = response.data;
-    this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.map(
+
+    if(this.perfilOperacional || this.perfilTorre){
+      this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.filter(s => s.nuPlanejamentoStatus !== 5 && s.nuPlanejamentoStatus !== 3).map(
       (status) => ({
         label: status.noPlanejamentoStatus,
         value: status.nuPlanejamentoStatus,
       }),
     );
+    }
+
+    else{
+
+      this.selectStatusPlanejamentoCompleto = this.listaStatusPlanejamento.map(
+      (status) => ({
+        label: status.noPlanejamentoStatus,
+        value: status.nuPlanejamentoStatus,
+      }),
+    );
+    }
+
   }
 
   public async onSalvarMudancasStatus(): Promise<void> {
@@ -181,30 +254,25 @@ export class PlanejamentoGeralV2Component implements OnInit {
       const novoStatusObj = this.listaStatusPlanejamento.find(
         (s) => s.nuPlanejamentoStatus === idSelecionado,
       );
-      const itensSelecionados =
-        this.perfilOrcamento || this.perfilAdm
-          ? this.planejamentos.contratos.filter((p) => p.stSelecionado)
-          : this.planejamentos.contratos.filter(
-              (p) => p.stSelecionado && this.perfilUnidade == p.coFilial,
-            );
+      const itensSelecionados =  this.planejamentos.contratos.filter((p) => p.stSelecionado)
 
       if (itensSelecionados.length === 0) {
         this.toastr.warning('Nenhum item selecionado para alteração.', 'Aviso');
         return;
       }
 
-      if (this.statusSelecionados.length == 0) {
+     if (!this.statusSelecionados || !this.statusSelecionados[0]) {
         this.toastr.warning('Selecione uma opção de status.', 'Aviso');
         return;
       }
 
-      if (this.statusExercio === 'Encerrado') {
-        this.toastr.warning(
-          'Não é permitido alterar status em planejamentos encerrados.',
-          'Aviso',
-        );
-        return;
-      }
+      // if (this.statusExercio === 'Encerrado') {
+      //   this.toastr.warning(
+      //     'Não é permitido alterar status em planejamentos encerrados.',
+      //     'Aviso',
+      //   );
+      //   return;
+      // }
 
       const alert = await Swal.fire({
         text: `Deseja realmente alterar o Status de todos os registros selecionados desta página para o Status ${novoStatusObj?.noPlanejamentoStatus} `,
@@ -232,9 +300,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
 
       try {
-
-          console.log(statusNovo, 'Resposta da alteração de status');
-
 
        const response = await this.apiService.put<ApiResponse<any>>(
           `v1/PlanejamentoOrcamentarioV/alterar-status-lote-planejamento-item`,
@@ -266,13 +331,15 @@ export class PlanejamentoGeralV2Component implements OnInit {
     }
   }
 
-  selecionarTodosItens() {
-    this.planejamentos.contratos.forEach((p) => {
+selecionarTodosItens() {
+  this.planejamentos.contratos.forEach((p) => {
+    if (this.podeAlterarStatusEmLote(p)) {
       p.stSelecionado = this.selecionarTodos;
-    });
-    this.atualizarStatusSelecionados();
-  }
-
+    } else {
+      p.stSelecionado = false;
+    }
+  });
+}
   atualizarStatusSelecionados() {
     const itensNaoSelecionados = this.planejamentos.contratos.filter(
       (p) => p.stSelecionado == false,
@@ -293,12 +360,8 @@ export class PlanejamentoGeralV2Component implements OnInit {
     );
     if (!novoStatus) return;
 
-    const itensSelecionados =
-      this.perfilOrcamento || this.perfilAdm
-        ? this.planejamentos.contratos.filter((p) => p.stSelecionado)
-        : this.planejamentos.contratos.filter(
-            (p) => p.stSelecionado && this.perfilUnidade == p.coFilial,
-          );
+    const itensSelecionados = this.planejamentos.contratos.filter((p) => p.stSelecionado)
+
     if (itensSelecionados.length === 0) return;
 
     itensSelecionados.forEach((p) => {
@@ -389,11 +452,17 @@ export class PlanejamentoGeralV2Component implements OnInit {
 
   public async obterdadosDashboard(): Promise<void> {
     try {
+
+      const params: Record<string, any> = {
+        nuPlanejamento: this.nuPlanejamentoExercicio,
+        sgUnidade: this.filtroRegistros.Ud ?? '',
+        sgDiretoria: this.filtroRegistros.sgDiretoria ?? '',
+        sgSuperintendencia: this.filtroRegistros.sgSuperintendencia ?? '',
+      };
+
       const response = await this.apiService.get<
         ApiResponse<Gcpvw54VisaoDashboardPlanejamentoOrcamentario[]>
-      >(`v1/PlanejamentoOrcamentarioV/dashboard`, {
-        nuPlanejamento: this.nuPlanejamentoExercicio,
-      });
+      >(`v1/PlanejamentoOrcamentarioV/dashboard`, params);
       this.dadosDashboard = response?.data;
 
       if (!response?.succeeded) {
@@ -412,7 +481,6 @@ export class PlanejamentoGeralV2Component implements OnInit {
   async updateRelatorio(valor: string | null, op: number): Promise<void> {
     this.loading = true;
 
-    console.log(valor, 'VALOR DA UD');
     switch (op) {
       case 1: {
         this.filtroRegistros.nuOrc = valor;
@@ -421,6 +489,7 @@ export class PlanejamentoGeralV2Component implements OnInit {
       }
       case 2: {
         this.filtroRegistros.Ud = valor;
+        await this.obterdadosDashboard();
         break;
       }
       case 3: {
@@ -435,8 +504,22 @@ export class PlanejamentoGeralV2Component implements OnInit {
         this.filtroRegistros.Status = valor;
         break;
       }
+      // case 6: {
+      //   this.filtroRegistros.objeto = valor;
+      //   break;
+      // }
       case 6: {
-        this.filtroRegistros.objeto = valor;
+        this.filtroRegistros.noTipoDigital = valor;
+        break;
+      }
+      case 7: {
+        this.filtroRegistros.sgDiretoria = valor;
+        await this.obterdadosDashboard();
+        break;
+      }
+      case 8: {
+        this.filtroRegistros.sgSuperintendencia = valor;
+        await this.obterdadosDashboard();
         break;
       }
     }
@@ -482,13 +565,16 @@ export class PlanejamentoGeralV2Component implements OnInit {
       this.planejamentos.listaUnidadeDemandante =
         response?.data?.listaUnidadeDemandante ?? [];
       this.planejamentos.listaTipo = response?.data?.listaTipo ?? [];
-      this.planejamentos.listaObjeto = response?.data?.listaObjeto ?? [];
+      // this.planejamentos.listaObjeto = response?.data?.listaObjeto ?? [];
+      this.planejamentos.listaDigital = ['SEM CLASSIFICAÇÃO', ...(response?.data?.listaDigital ?? [])];
       this.planejamentos.listaStatus = response?.data?.listaStatus ?? [];
       this.planejamentos.listaNuOrc = response?.data?.listaNuOrc ?? [];
+      this.planejamentos.listaDiretoria = response?.data?.listaDiretoria ?? [];
+      this.planejamentos.listaSuperintendencia = response?.data?.listaSuperintendencia ?? [];
       this.planejamentos.totalRegistros = response.data.totalRegistros;
       this.loading = false;
       this.planejamentos.contratos.forEach((p) => {
-        p.noStatusOriginal = p.noStatus; // adiciona propriedade auxiliar
+        p.noStatusOriginal = p.noStatus;
       });
     } catch (error) {
       this.loading = false;

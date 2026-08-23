@@ -43,12 +43,18 @@ export interface Gcpvw055DetalheTelaConsultaV2DTO {
 
   icServicoContinuo: 'SIM' | 'NÃO';
 
-  nuDigital: number | null;
+  nuTipoDigital: number | null;
 
   nuUsuario: number;
   coMatricula: number;
   dhCadastro: string; // ISO Date
   icInclusaoManual: boolean;
+
+
+  nuModalidade: number | null;
+  dePrazoVigencia: string | null;
+  dtPrevisaoSiclg : string | null;
+  vrGlobal : string | null;
 
   previsoesDesembolso: Gcptb063PrevisaoDesembolsoDTO[];
 }

@@ -112,8 +112,9 @@ export class PagamentoComponent implements OnInit {
   }
 
   loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
+
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
 
     if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;
@@ -153,7 +154,7 @@ export class PagamentoComponent implements OnInit {
       );
 
       this.selectAnos =  response.data.listaTodosOsAnos.map(
-        (m) => ({ value: m, label: String(m) } as Select2Option)
+        (m) => ({ value: m, label: m } as Select2Option)
       );
 
 

@@ -1,38 +1,44 @@
 <div class="content" *ngIf="this.Contrato">
-  <dsc-breadcrumb [urls]="[{label: 'Contratos', url: '/contrato'}, {label: this.Contrato.coContrato}, {label: 'Detalhe'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
   <div class="row" style="justify-content: space-between;">
     <div>
-  <div style="padding-left: 15px" class="text-left pb-1" *ngIf="!validaContratoArtigo81(Contrato?.coContrato)">
-      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Evolução Financeira"
-          (click)="linkEvolucaoFinanceira()"></dsc-button>
-        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Mensalização"
-          (click)="linkMensalizacao()"></dsc-button>
-        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Documentação"
-          (click)="linkContrato()"></dsc-button>
-        <dsc-button *ngIf="!isRotaAtas" variant="secondary-outlined" label="Simular Revisão"
-          (click)="openModalSimulacao(this.Contrato.nuContrato)"></dsc-button>
-        <dsc-button variant="secondary-outlined" label="Prepostos"
-          (click)="openModalPreposto(this.Contrato.nuContrato)"></dsc-button>
-        <label class="title-ata" *ngIf="isRotaAtas">Este instrumento é uma Ata de Registro de Preços (ARP).</label>
-      </div>
+    <div style="padding-left: 15px" class="text-left pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
+      <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print"
+        routerLink="/contrato/evolucao-financeira/{{nuContrato}}" mat-raised-button> Evolução Financeira
+      </button>
+      <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print"
+        routerLink="/contrato/exec-orc-mensalizacao/{{nuContrato}}" mat-raised-button> Mensalização
+      </button>
+      <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print" (click)="linkContrato()"
+        mat-raised-button>
+        Documentação
+      </button>
+      <button *ngIf="!isRotaAtas" type="button" class="btn-sm btn-secondary no-print"
+        (click)="openModalSimulacao(this.Contrato.nuContrato)" mat-raised-button> Simular Revisão
+      </button>
+      <button type="button" class="btn-sm btn-secondary no-print" (click)="openModalPreposto(this.Contrato.nuContrato)"
+      mat-raised-button>
+      Prepostos
+    </button>
+  </div>
+      <label class="title-ata" *ngIf="isRotaAtas">Este instrumento é uma Ata de Registro de Preços (ARP).</label>
     </div>
-  <div class="edit-contrato text-right pb-1" *ngIf="!validaContratoArtigo81(Contrato?.coContrato)">
-      <dsc-button *ngIf="((this.currentUser | keyvalue)?.length) && this.permissaoEditar"
-        variant="secondary-outlined" label="Editar contrato"
-        (click)="openModalContrato(this.Contrato.nuContrato)"></dsc-button>
+    <div class="edit-contrato text-right pb-1" *ngIf="!this.Contrato.coContrato.startsWith('81000')">
+      <button type="button" class="btn-sm btn-secondary" (click)="openModalContrato(this.Contrato.nuContrato)"
+        *ngIf="((this.currentUser | keyvalue)?.length) && this.permissaoEditar">
+        <i class="tim-icons icon-simple-add"></i> Editar contrato
+      </button>
     </div>
     <div class="col-md-12">
-      <mat-card appearance="outlined" *ngIf="!validaContratoArtigo81(ContratoV2.cO_CONTRATO)">
-        <mat-card-header>
-          <mat-card-title class="text-left">
+      <div class="card" *ngIf="!validaContratoArtigo81(ContratoV2.cO_CONTRATO)">
+        <div class="card-header">
+          <h3 class="card-title text-left">
             {{this.isRotaAtas ? 'ARP' : 'CONTRATO'}} {{ this.ContratoV2.cO_CONTRATO }} - INFORMAÇÕES GERAIS <b
               *ngIf="isDerivadoAta && ContratoAtaPai && ContratoAtaPai.nuContrato">(Contrato
               Derivado da Ata <a href="/#/contrato/detalhe/v/{{ContratoAtaPai?.nuContrato}}"
                 target="_blank">{{ContratoAtaPai.coContrato}}</a>)</b>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+          </h3>
+        </div>
+        <div class="card-body">
           <div class="row">
             <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
             <div class="col-md-9 col-sm-6"><b>{{ this.ContratoV2.nO_FORNECEDOR }}</b></div>
@@ -97,7 +103,7 @@
             <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.cO_MATRICULA_CADASTRO }} - {{
                 this.ContratoV2.nO_USUARIO_CADASTRO }}</b></div>
 
-            <div class="col-md-3 col-sm-6 text-right">Tipo de Contrato:</div>
+            <div class="col-md-3 col-sm-6 text-right">Tipo Objeto:</div>
             <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2.contratO_TIPO }}</b></div>
           </div>
           <br />
@@ -105,14 +111,14 @@
             <div class="col-md-3 col-sm-6 text-right">Objeto do Contrato:</div>
             <div class="col-md-9 col-sm-6"><b>{{ ContratoV2.nO_OBJETO }}</b></div>
           </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card appearance="outlined" style="margin-top: 24px;" *ngIf="!validaContratoArtigo81(ContratoV2.cO_CONTRATO)">
-        <mat-card-header>
-          <mat-card-title class="text-left">{{this.isRotaAtas ? 'ARP' : 'CONTRATO'}} {{ this.ContratoV2.cO_CONTRATO }} -
-            ADITIVOS E VIGÊNCIAS</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+        </div>
+      </div>
+      <div class="card" *ngIf="!validaContratoArtigo81(ContratoV2.cO_CONTRATO)">
+        <div class="card-header">
+          <h3 class="card-title text-left">{{this.isRotaAtas ? 'ARP' : 'CONTRATO'}} {{ this.ContratoV2.cO_CONTRATO }} -
+            ADITIVOS E VIGÊNCIAS</h3>
+        </div>
+        <div class="card-body">
           <div class="row" *ngIf="dadosVigenciaAtual?.length">
             <div class="col-md-4">
               <b>VIGÊNCIA ATUAL</b>
@@ -188,23 +194,32 @@
               </div>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <!-- RESUMO DOS PAGAMENTOS -->
-      <mat-tab-group *ngIf="!isRotaAtas" style="margin-top: 24px;">
+  <div class="row">
+    <!-- <div class="col-md-12 text-right pb-1">
+      <button type="button" class="btn-sm btn-secondary" (click)="openModalPagamento(this.Contrato.nuContrato, null)"
+        *ngIf="(this.currentUser | keyvalue)?.length">
+        <i class="tim-icons icon-simple-add"></i> Adicionar pagamento
+      </button>
+    </div> -->
+    <div class="col-md-12">
+      <mat-tab-group *ngIf="!isRotaAtas">
         <mat-tab label="PAGAMENTOS">
-    <p-table #dt [value]="Contrato?.gcptb011Pagamentos" styleClass="p-datatable-customers" [rowHover]="true"
+          <p-table #dt [value]="this.Contrato.gcptb011Pagamentos" styleClass="p-datatable-customers" [rowHover]="true"
             [filterDelay]="0" sortField="gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica"
             [globalFilterFields]="['dePeriodo', 'coRubrica', 'vrCredito', 'vrExecutado', 'dtFaturamento', 'dtNotaFiscal', 'dtPagamento', 'dtPagamentoEfetivo', 'coNumeroAteste', 'qtdItens', 'qtdTradeIn', 'nuSap', 'noPagamentoTipo']"
             sortMode="single" [scrollable]="true" scrollHeight="500px" rowGroupMode="subheader"
             groupRowsBy="gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica">
             <ng-template pTemplate="caption">
-              <mat-card appearance="outlined">
-                <mat-card-header>
-                  <mat-card-title class="text-left"> {{ this.tituloPagamentos }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title text-left"> {{ this.tituloPagamentos }}</h3>
+                </div>
+                <div class="card-body">
                   <div class="row">
                     <div class="col-md-6 col-sm-12" *ngIf="hasEntries(currentVigenciaSum)">
                       <h4 class="card-title text-left">Valores PAGOS - Vigência Atual</h4>
@@ -237,8 +252,8 @@
                       </div>
                     </div>
                   </div>
-                </mat-card-content>
-              </mat-card>
+                </div>
+              </div>
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
@@ -325,11 +340,11 @@
               [globalFilterFields]="['dE_PERIODO', 'nU_PEDIDO', 'nU_ATESTE', 'vR_PENALIDADE', 'observacao', 'dE_TIPO_PENALIDADE']"
               sortMode="single" [scrollable]="true" scrollHeight="500px">
               <ng-template pTemplate="caption">
-                <mat-card appearance="outlined">
-                  <mat-card-header>
-                    <mat-card-title class="text-center">RESUMO DE RETENÇÕES</mat-card-title>
-                  </mat-card-header>
-                  <mat-card-content>
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title text-center">RESUMO DE RETENÇÕES</h3>
+                  </div>
+                  <div class="card-body">
                     <div class="col-md-12 text-right" *ngFor="let retencao of sumByTipoRetencao | keyvalue">
                       <div class="row">
                         <div class="col-md-6"></div>
@@ -339,8 +354,8 @@
                         </div>
                       </div>
                     </div>
-                  </mat-card-content>
-              </mat-card>
+                  </div>
+                </div>
               </ng-template>
               <ng-template pTemplate="header">
                 <tr>
@@ -367,7 +382,7 @@
           </ng-container>
         </mat-tab>
       </mat-tab-group>
-      <div class="row" *ngIf="isRotaAtas" style="margin-top: 24px;">
+      <div class="row" *ngIf="isRotaAtas">
         <div class="col-12">
           <mat-tab-group>
             <mat-tab label="Contratos Derivados">

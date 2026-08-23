@@ -1,20 +1,20 @@
 
     <div #conteudo class="col-md-12" style="font-size: 15px;">
-        <mat-card appearance="outlined">
-          <mat-card-header>
-            <mat-card-title class="text-left">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title text-left">
               CONTRATO {{ContratoV2?.cO_CONTRATO}} - VISÃO GERAL DE EXECUÇÃO
-            </mat-card-title>
+            </h3>
               <h3>INFORMAÇÕES GERAIS</h3>
-          </mat-card-header>
-          <mat-card-content style="margin-right: 150px;">
+          </div>
+          <div style="margin-right: 150px;" class="card-body" >
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Fornecedor:</div>
               <div class="col-md-9 col-sm-6"><b>{{ ContratoV2?.nO_FORNECEDOR }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">CNPJ:</div>
               <div class="col-md-3 col-sm-6"><b>{{ ContratoV2?.cO_CNPJ }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Pagamento Artigo 81?</div>
               <div class="col-md-3 col-sm-6">
                 <b>
@@ -24,55 +24,55 @@
                 </b>
               </div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Status:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.iC_ATIVO ? "Ativo" : "Encerrado" }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Unidade Demandante:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.filial }} - {{ this.ContratoV2?.sG_FILIAL }}</b></div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Data Início (1° vigência):</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.dT_INICIO | date : "dd/MM/yyyy" }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Data Fim (Vigência Atual):</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.dT_TERMINO | date : "dd/MM/yyyy" }}</b></div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Valor Global Total:</div>
               <div class="col-md-3 col-sm-6"><b>{{ somaVigencias(this.Contrato?.gcptb006Vigencias) | currency : "BRL"
                   }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Valor Global Vigente:</div>
               <div class="col-md-3 col-sm-6"><b>{{ ContratoV2?.vR_GLOBAL_VIGENTE | currency : "BRL" }}</b></div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Dia Pagamento Fatura:</div>
               <div class="col-md-3 col-sm-6"><b>{{ ContratoV2?.diA_PAGAMENTO_FATURA }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Dia Fechamento Fatura:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.diA_FECHAMENTO_FATURA }}</b></div>
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Fiscal Técnico (Demandante):</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.nO_FISCAL_TEC ?? 'Não Informado' }}</b></div>
-  
+
               <div class="col-md-3 col-sm-6 text-right">Fiscal Administrativo (CEGTI):</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.nO_FISCAL_ADM ?? 'Não Informado' }}</b></div>
-  
+
             </div>
-  
+
             <div class="row">
               <div class="col-md-3 col-sm-6 text-right">Cadastrado/Alterado por:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.cO_MATRICULA_CADASTRO }} - {{
                   this.ContratoV2?.nO_USUARIO_CADASTRO }}</b></div>
-  
-              <div class="col-md-3 col-sm-6 text-right">Tipo de Contrato:</div>
+
+              <div class="col-md-3 col-sm-6 text-right">Tipo Objeto:</div>
               <div class="col-md-3 col-sm-6"><b>{{ this.ContratoV2?.contratO_TIPO }}</b></div>
             </div>
             <br />
@@ -80,15 +80,15 @@
               <div class="col-md-3 col-sm-6 text-right">Objeto do Contrato:</div>
               <div style="text-align: justify;" class="col-md-9 col-sm-6"><b>{{ ContratoV2?.nO_OBJETO }}</b></div>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
 
-        <mat-card appearance="outlined" *ngIf="!validaContratoArtigo81(ContratoV2?.cO_CONTRATO)">
-          <mat-card-header>
-            <mat-card-title class="text-left">{{this.isRotaAtas ? 'ARP' : 'CONTRATO'}} {{ this.ContratoV2?.cO_CONTRATO }} -
-              ADITIVOS E VIGÊNCIAS</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
+        <div class="card" *ngIf="!validaContratoArtigo81(ContratoV2?.cO_CONTRATO)">
+          <div class="card-header">
+            <h3 class="card-title text-left">{{this.isRotaAtas ? 'ARP' : 'CONTRATO'}} {{ this.ContratoV2?.cO_CONTRATO }} -
+              ADITIVOS E VIGÊNCIAS</h3>
+          </div>
+          <div class="card-body">
             <div class="row" *ngIf="dadosVigenciaAtual?.length">
               <div class="col-md-4">
                 <b>VIGÊNCIA ATUAL</b>
@@ -102,7 +102,7 @@
               <div class="col-md-2">
                 <b>{{ totalCurrentVigencia | currency : "BRL" }}</b>
               </div>
-  
+
               <div class="col-md-12" *ngFor="let rubrica of  ordenaVigenciaAtualRubricas(currentVigenciaRubricas)">
                 <div class="row">
                   <div class="col-md-10">
@@ -113,11 +113,11 @@
                   </div>
                 </div>
               </div>
-  
+
               <hr class="custom-hr-large" />
-  
+
             </div>
-  
+
             <div class="row" *ngFor="
                 let vigencia of this.Contrato?.gcptb006Vigencias;
                 let i = index
@@ -145,7 +145,7 @@
               <div class="col-md-2">
                 <b>{{ vigencia.vrGlobal | currency : "BRL" }}</b>
               </div>
-  
+
               <div class="col-md-12" *ngFor="
                   let rubrica of ordenaVigenciaRubricas(vigencia.gcptb017VigenciaRubricas);
                   let i = index
@@ -164,17 +164,17 @@
                 </div>
               </div>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
 
-        
+
     <div *ngFor="let vigenciaRubrica of ListaVigenciasRubricas let i = index">
-      <mat-card appearance="outlined">
+      <div class="card">
 
-  <mat-card-header>
-  <mat-card-title class="text-left table-header-title">
+  <div class="card-header">
+  <h3 class="card-title text-left table-header-title">
       EVOLUÇÃO E PAGAMENTOS
-  </mat-card-title>
+  </h3>
     <h3 class="card-title text-left table-header-title">VIGÊNCIA <b style="background-color: yellow;">{{
       vigenciaRubrica.vigencia.iniciO_VIGENCIA | date:
       "dd/MM/yyyy"}}</b> a <b style="background-color: aqua;"> {{ vigenciaRubrica.vigencia.fiM_VIGENCIA |
@@ -185,8 +185,8 @@
   <h3 class="card-title text-left table-header-title">
   RUBRICA - {{vigenciaRubrica.vigencia.cO_RUBRICA}}
   </h3>
-  </mat-card-header>
-  <mat-card-content>
+  </div>
+  <div class="card-body">
     <div class="row">
         <div class="col-md-2 text-right">Início Vigência:</div>
         <div class="col-md-4 text-left">
@@ -198,13 +198,13 @@
         <div class="col-md-2 text-right">
             <b>{{ vigenciaRubrica.vigencia.totaL_CONTRATO
                 | currency: "BRL" }}</b>
-           
+
         </div>
         <div class="col-md-2 text-right">Término Vigência:</div>
         <div class="col-md-2 text-left">
             <b>{{ vigenciaRubrica.vigencia.fiM_VIGENCIA |
                 date: "dd/MM/yyyy" }}</b>
-          
+
         </div>
         <div class="col-md-6 text-right">Valor Total da Vigência - EXECUTADO:</div>
         <div class="col-md-2 text-right">
@@ -216,14 +216,14 @@
         <div class="col-md-3 text-left">
             <b >{{
                 vigenciaRubrica.vigencia.prazO_REMANESCENTE }}</b>
-          
+
         </div>
         <div class="col-md-5 text-right">Saldo Atual da Vigência (Contratado - Executado):
         </div>
         <div class="col-md-2 text-right">
             <b >{{ vigenciaRubrica.vigencia.saldO_VIGENCIA
                 | currency: "BRL" }}</b>
-          
+
         </div>
         <div class="col-md-6 text-right">
             <small>
@@ -233,7 +233,7 @@
                 <b>{{
                     vigenciaRubrica.vigencia.fiM_VIGENCIA | date: "dd/MM/yyyy"
                     }}</b>
-              
+
             </small>
         </div>
         <div class="col-md-4 text-right">Média Mensal Estimada:
@@ -250,7 +250,7 @@
         <div class="col-md-2 text-right">
             <b>{{vigenciaRubrica.vigencia.mediA_ULTIMOS_3_MESES
                 | currency: "BRL"}}</b>
-     
+
         </div>
         <div class="col-md-5 d-flex justify-content-end">
             <div class="col-md-12"
@@ -283,22 +283,23 @@
         em
         relação à última referência paga.
     </div>
-  </mat-card-content>
-  <mat-card-content>
+  </div>
+  </div>
+  <div class="card-body">
           <app-grafico   id="divGrafico_{{ vigenciaRubrica.rubrica.cO_RUBRICA }}"
               [titulo]="vigenciaRubrica.rubrica?.labeL_VIGENCIA ? vigenciaRubrica.rubrica?.labeL_VIGENCIA : vigenciaRubrica.rubrica?.labeL_VIGENCIA"
               [categorias]="vigenciaRubrica.rubrica.periodos" [series]="vigenciaRubrica.rubrica.series">
           </app-grafico>
-  </mat-card-content>
+  </div>
 
   <div class="row cl-header" *ngIf="vigenciaRubrica.lista.length !== 0; else elsePagamentoBlock">
       <div class="col-md-12">
-          <mat-card appearance="outlined">
-              <mat-card-header>
-                  <mat-card-title class="text-left table-header-title">RESUMO DOS PAGAMENTOS -
-                      <span> CONTRATO {{vigenciaRubrica.vigencia.cO_CONTRATO}} - RUBRICA: {{vigenciaRubrica.vigencia.cO_RUBRICA}}</span></mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
+          <div class="card">
+              <div class="card-header">
+                  <h3 class="card-title text-left table-header-title">RESUMO DOS PAGAMENTOS -
+                      <span> CONTRATO {{vigenciaRubrica.vigencia.cO_CONTRATO}} - RUBRICA: {{vigenciaRubrica.vigencia.cO_RUBRICA}}</span></h3>
+              </div>
+              <div class="card-body">
                   <div class="row">
                       <div class="col-md-12">
                           <p-table #dt [value]="vigenciaRubrica.lista" dataKey="dE_PERIODO"
@@ -334,7 +335,7 @@
                                   <tr class="template-body">
                                       <td>
                                           <button type="button" pButton pRipple
-                                              [pRowToggler]="evolucao"             
+                                              [pRowToggler]="evolucao"
                                               class="p-button p-component p-button-icon-only p-element p-button-text p-button-rounded p-button-plain"><span
                                                   [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span></button>
                                       </td>
@@ -425,22 +426,21 @@
                       </div>
                   </div>
               </div>
-          </mat-card-content>
-          </mat-card>
+          </div>
       </div>
     </div>
+    </div>
     <ng-template #elsePagamentoBlock>
-    <mat-card appearance="outlined">
-      <mat-card-header>
-          <mat-card-title class="text-left table-header-title">RESUMO DOS PAGAMENTOS -
-            <span> CONTRATO {{vigenciaRubrica.vigencia.cO_CONTRATO}} - RUBRICA: {{vigenciaRubrica.vigencia.cO_RUBRICA}}</span></mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+    <div class="card">
+      <div class="card-header">
+          <h3 class="card-title text-left table-header-title">RESUMO DOS PAGAMENTOS -
+            <span> CONTRATO {{vigenciaRubrica.vigencia.cO_CONTRATO}} - RUBRICA: {{vigenciaRubrica.vigencia.cO_RUBRICA}}</span></h3>
+      </div>
+      <div class="card-body">
           Não existem pagamentos para a rubrica {{vigenciaRubrica.vigencia.cO_RUBRICA}}.
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
     </ng-template>
-    </mat-card>
     </div>
 
 
@@ -454,7 +454,7 @@
 </div> -->
 
 
- 
- 
+
+
 
 

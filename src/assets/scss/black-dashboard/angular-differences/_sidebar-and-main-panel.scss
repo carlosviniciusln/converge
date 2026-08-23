@@ -4,10 +4,8 @@
   }
 
   .content {
-    padding: 30px 30px 30px 30px;
+    padding: 78px 30px 30px 130px;
     min-height: calc(100vh - 70px);
-    display: flex;
-    flex-direction: column;
     //padding-left: -130px !important;
   }
 }
@@ -44,5 +42,9 @@
   }
   .fixed-plugin .dropdown-toggle:after{
     display: none;
+  }
+
+  .sidebar-mini .main-panel .content, .sidebar-mini footer {
+    padding-left: -130px!important;
   }
 }

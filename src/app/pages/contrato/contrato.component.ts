@@ -13,6 +13,7 @@ import {
   TokenStorageService,
 } from 'src/app/shared/services/token-storage.service';
 import * as fileSaver from 'file-saver';
+import { TableLazyLoadEvent } from 'primeng/table';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -46,7 +47,7 @@ export class ContratoComponent implements OnInit {
   selectedTipoStatus: string = null;
 
   isRotaAtas: boolean = false;
-  tituloPage: string = '';
+  tituloPage: string = 'Lista de Contratos';
   rota: string = '';
   filtroRegistros: any = {
     paginaAtual: 1,
@@ -80,11 +81,6 @@ export class ContratoComponent implements OnInit {
   }
 
   navegarInfoContrato(coContrato: string,nuContrato: number){
-    if(!coContrato){
-      // missing contract code: fallback to details route
-      this.navegarParaDetalhes(nuContrato);
-      return;
-    }
     if(coContrato.startsWith('81000') || this.isRotaAtas){
       this.navegarParaDetalhes(nuContrato)
     }else{
@@ -103,7 +99,7 @@ export class ContratoComponent implements OnInit {
   }
 
 
-  public async obterContratos(): Promise<void> {
+   public async obterContratos(): Promise<void> {
 
     this.loading = true;
     try {
@@ -114,39 +110,13 @@ export class ContratoComponent implements OnInit {
       const response = await this.apiService.get<ApiResponse<Gcpvw045ListarContratosResponse>>
         (`${Endpoints.URL_CONTRATOS}/listar-contratos`, filtrosLimpos);
 
-      // The backend may return either { data: { contratos: [...] } } or { data: [...] }
-      const rawData: any = response?.data;
-      let payload: any = {};
-
-      if (Array.isArray(rawData)) {
-        // older mock format returned an array directly
-        payload.contratos = rawData;
-        payload.totalRecords = rawData.length;
-      } else if (rawData && typeof rawData === 'object') {
-        payload = rawData;
-      } else {
-        payload = {};
-      }
-
-      this.contratos = payload.contratos || [];
-
-      // Populate selects defensively: accept either explicit lists or derive them from contratos
-      // derive list of contract codes: prefer explicit listaContrato, otherwise derive from contratos array
-      const deriveContratoList = (payload.listaContrato && payload.listaContrato.length)
-        ? payload.listaContrato
-        : (this.contratos || []).map(c => (c as any).coContrato || (c as any).co_contrato || (c as any).coContrato).filter(Boolean);
-      const deriveFornecedorList = (payload.listaFornecedor && payload.listaFornecedor.length) ? payload.listaFornecedor : [];
-      const deriveTipoList = (payload.listaTipo && payload.listaTipo.length) ? payload.listaTipo : [];
-      const deriveGestorList = (payload.listaGestor && payload.listaGestor.length) ? payload.listaGestor : [];
-      const deriveStatusList = (payload.listaStatus && payload.listaStatus.length) ? payload.listaStatus : [];
-
-      this.selectTiposContrato = (deriveContratoList || []).map(c => ({ label: String(c), value: c }));
-      this.selectTiposFornecedor = (deriveFornecedorList || []).map(f => ({ label: String(f), value: f }));
-      this.selectTiposTpContrato = (deriveTipoList || []).map(t => ({ label: String(t), value: t }));
-      this.selectTiposGestor = (deriveGestorList || []).map(g => ({ label: String(g), value: g }));
-      this.selectTiposStatus = (deriveStatusList || []).slice().sort((a, b) => Number(b) - Number(a)).map(s => ({ label: s ? 'Ativo' : 'Encerrado', value: s }));
-
-      this.quantidadeTotal = payload.totalRecords || this.contratos.length || 0;
+      this.contratos = response?.data?.contratos;
+      this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
+      this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
+      this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
+      this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
+      this.selectTiposStatus = response?.data?.listaStatus.sort((a, b) => Number(b) - Number(a)).map(s => ({ label: s ? 'Ativo' : 'Encerrado', value: s }));
+      this.quantidadeTotal = response.data.totalRecords;
       this.loading = false;
     } catch (error) {
       this.loading = false;
@@ -188,9 +158,9 @@ export class ContratoComponent implements OnInit {
     this.loading = false;
   }
 
-  loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.tamanhoPagina;
+  loadPage(event: TableLazyLoadEvent) {
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.tamanhoPagina) + 1;
+    const pageSize = event.rows || this.filtroRegistros.tamanhoPagina;
 
     if (page !== this.filtroRegistros.paginaAtual || pageSize !== this.filtroRegistros.tamanhoPagina) {
       this.filtroRegistros.paginaAtual = page;
@@ -232,7 +202,7 @@ export class ContratoComponent implements OnInit {
     this.rota = rota;
     this.isRotaAtas = (rota && rota == 'atas') ? true : false;
     if (this.isRotaAtas) {
-      this.tituloPage = ''
+      this.tituloPage = 'Lista de Atas'
     }
   }
 

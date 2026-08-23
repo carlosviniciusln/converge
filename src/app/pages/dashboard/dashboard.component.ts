@@ -1,271 +1,286 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
-import { TokenStorageService, PerfisEnum } from 'src/app/shared/services/token-storage.service';
-
-const HISTORICO_KEY = 'sigvc_historico_busca';
-const HISTORICO_MAX = 5;
-
-// Tipagem do SpeechRecognition (Web Speech API — não está no lib padrão do TS)
-declare const webkitSpeechRecognition: any;
-declare const SpeechRecognition: any;
+import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ApiResponse, ApiResponsePaginado } from 'src/app/models/generics/api-response';
+import { ContratoVigencia } from 'src/app/models/generics/contratoVigencia';
+import { Dashboard, NumerosRapidosExecContratual } from 'src/app/models/generics/dashboard';
+import { ApiService } from 'src/app/shared/services/api.service';
+import {
+  ActionPolicies,
+  ModuleEnum,
+  PerfisEnum,
+  TokenStorageService,
+} from 'src/app/shared/services/token-storage.service';
+import { Endpoints } from 'src/app/models/enums/endpoints';
+import { ContratoVigenciaComponent } from './contrato-vigencia/contrato-vigencia.component';
+import { ValoresRubricaComponent } from './valores-rubrica/valores-rubrica.component';
+import { ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { NovosContratosComponent } from './novos-contratos/novos-contratos.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
-  termoBusca: string = '';
-  historico: string[] = [];
+export class DashboardComponent implements OnInit {
+  permissions: ActionPolicies;
+  tabs: string[] = ['Execução Contratual', 'Orçamento']
+  tabsCapexOpex: string[] = ['Investimento (CAPEX)', 'Custeio (OPEX)']
+  dashboard: Dashboard;
+  orcamentos: any = [];
+  execucao: any = [];
+  anos: number[] = [];
+  anoSelected: number = new Date().getFullYear();
+  loading: boolean = true;
+  modalRef: any
+  listaContratosVigencia: ContratoVigencia[];
+  titleContratosVigencia: string;
+  filial1885Data: any = null;
+  ultimaAtualizacao: string = '';
+  currentProfile: PerfisEnum;
+  numerosRapidosExecContratual: NumerosRapidosExecContratual;
+  contratosOrigem: ContratoItem[];
+  contratos: ContratoItem[];
+  filtroRegistros: any = {
+    pageNumber: 1,
+    pageSize: 4,
+    Contrato: null,
+    Fornecedor: null,
+    Tipo: null,
+    Gestor: null,
+    Status: null,
+    NoTipoArp: null
+  };
 
-  // Estado do microfone
-  micEscutando: boolean = false;
-  private recognition: any = null;
-  private _stopping: boolean = false; // evita criar nova instância enquanto a anterior ainda fecha
+  quantidadeTotal: number = 0;
 
-  constructor(private router: Router, private ngZone: NgZone, private token: TokenStorageService) {}
+  closeResult: string = '';
+  exibeResultado = false;
+  constructor(
+    private apiService: ApiService,
+    private modalService: NgbModal,
+    public token: TokenStorageService
+  ) {
+    this.obterPermissoes();
+  }
 
-  ngOnInit(): void {
-    this.carregarHistorico();
+  obterPermissoes() {
+    this.currentProfile = this.token.getUserPerfil();
+    this.permissions = this.token.getActionPolicies(ModuleEnum.Dashboard);
+  }
 
-    // Redirecionamento automático para busca-gerencial quando o usuário for
-    // Administrador ou pertencer a uma unidade que começa com 'VI' ou 'DI'.
+  ngOnInit() {
+    this.obterDashboard();
+    this.obterContratos();
+  }
+
+  public async obterDashboard() {
     try {
-      const perfil = this.token.getUserPerfil();
-      const currentUser: any = this.token.getUser();
-      const unidade = (currentUser?.coUnidade || '').toString().toUpperCase();
+      this.getExecucao();
+      this.getAtualizacao();
+      this.getNumerosRapidosExecContratual();
+      this.loading = false;
+    } catch (error) {
+      console.error(error);
+      this.loading = false;
+    }
+  }
+  filterGerencias(gerencias) {
+    return gerencias
+      .map((gerencia) => {
+        if (gerencia.filhos) {
+          gerencia.filhos = this.filterGerencias(gerencia.filhos);
+        }
+        const allZeros =
+          gerencia.qT_CONTRATO_ATIVO === 0 &&
+          gerencia.qT_ACIMA_ESTIMADO === 0 &&
+          gerencia.qT_ABAIXO_ESTIMADO === 0 &&
+          gerencia.qT_SALDO_ESGOTADO === 0 &&
+          gerencia.qT_PROXIMO30 === 0 &&
+          gerencia.qT_PROXIMO90 === 0 &&
+          gerencia.qT_PROXIMO180 === 0 &&
+          gerencia.qT_CONTRATO_INATIVO === 0;
+        const hasNonZeroChild = gerencia.filhos && gerencia.filhos.length > 0;
+        return !allZeros || hasNonZeroChild ? gerencia : null;
+      })
+      .filter((gerencia) => gerencia !== null);
+  }
 
-      const isAdmin = perfil === PerfisEnum.Administrador;
-      const isViOuDi = unidade.startsWith('VI') || unidade.startsWith('DI');
+  async getOrcamento() {
+    const responseOrcamento = await this.apiService.get<ApiResponse<any>>(
+      `${Endpoints.URL_DASHBOARD_ORCAMENTO}`
+    );
+    let data: any = responseOrcamento.data;
 
-      if (isAdmin || isViOuDi) {
-        // Extrai o termo 'vitec' das claims quando disponível
-        let vitec = '';
-        const claims = currentUser?.claims;
-        if (claims && Array.isArray(claims)) {
-          // procura um claim cujo type contenha 'vitec' (case-insensitive)
-          const found = claims.find((c: any) => c?.type && c.type.toLowerCase().includes('vitec'))
-            || claims.find((c: any) => c?.type && c.type.toLowerCase().includes('upn'))
-            || claims.find((c: any) => c?.type && c.type.toLowerCase().includes('name'));
-          if (found) vitec = found.value || '';
+    data = data.map(item => {
+      if (item.iC_UNIDADE_PAI) {
+        const pertencentes = data.filter(i => i.nU_FILIAL_PAI == item.nU_FILIAL);
+
+        item = {
+          ...item,
+          filhos: pertencentes
         }
 
-        // fallback: coUnidade ou nome do usuário
-        if (!vitec) vitec = currentUser?.coUnidade || currentUser?.noUsuario || '';
-
-        vitec = (vitec || '').toString().trim();
-        if (vitec) {
-          this.router.navigate(['/busca-gerencial'], { queryParams: { q: vitec } });
-        }
       }
-    } catch (e) {
-      console.warn('Erro ao avaliar redirecionamento automático do dashboard', e);
-    }
+      return item
+    });
+    data = data.filter(item => item.iC_UNIDADE_PAI == true);
+
+
+    this.filial1885Data = data.find(item => item.sG_FILIAL === "GERAL");
+
+    this.orcamentos = data.filter(item => item.sG_FILIAL !== "GERAL");
   }
+  async getExecucao() {
+    const response = await this.apiService.get<ApiResponse<Dashboard>>(
+      `${Endpoints.URL_DASHBOARD_EXECUCAO}`
+    );
 
-  ngOnDestroy(): void {
-    if (this.recognition) {
-      try { this.recognition.abort(); } catch (_) {}
-      this.recognition = null;
-    }
-    this.micEscutando = false;
-  }
+    let data: any = response.data;
 
-  // ─── Busca ────────────────────────────────────────────────────────────────
+    data = data.map(item => {
+      if (item.iC_UNIDADE_PAI) {
+        const pertencentes = data.filter(i => i.nU_FILIAL_PAI == item.nU_FILIAL);
 
-  buscar(): void {
-    const termo = (this.termoBusca || '').trim();
-    if (!termo) return;
-    this.salvarHistorico(termo);
-    const lower = termo.toLowerCase();
-    // Redirecionamento especial: se o termo contiver 'vitec', abrir busca-gerencial
-    if (lower.includes('vitec')) {
-      this.router.navigate(['/busca-gerencial'], { queryParams: { q: termo } });
-      return;
-    }
-    this.router.navigate(['/busca-contrato'], { queryParams: { contrato: termo } });
-  }
-
-  buscarPorTermo(termo: string): void {
-    if (!termo) return;
-    this.termoBusca = termo;
-    this.salvarHistorico(termo);
-    const lower = termo.toLowerCase();
-    if (lower.includes('vitec')) {
-      this.router.navigate(['/busca-gerencial'], { queryParams: { q: termo } });
-      return;
-    }
-    this.router.navigate(['/busca-contrato'], { queryParams: { contrato: termo } });
-  }
-
-  removerTermo(termo: string, event: Event): void {
-    event.stopPropagation();
-    const historico = this.lerHistoricoStorage().filter(h => h !== termo);
-    localStorage.setItem(HISTORICO_KEY, JSON.stringify(historico));
-    this.carregarHistorico();
-  }
-
-  buscarUD(): void {
-    const termo = (this.termoBusca || '').trim();
-    this.router.navigate(['/busca-ud'], { queryParams: { ud: termo } });
-  }
-
-  // ─── Microfone ────────────────────────────────────────────────────────────
-
-  alternarMicrofone(): void {
-    if (this.micEscutando) {
-      this.pararMicrofone();
-    } else if (!this._stopping) {
-      // Só inicia se não há instância anterior ainda encerrando
-      this.iniciarMicrofone();
-    }
-  }
-
-  private iniciarMicrofone(): void {
-    const Recognizer = typeof SpeechRecognition !== 'undefined'
-      ? SpeechRecognition
-      : typeof webkitSpeechRecognition !== 'undefined'
-        ? webkitSpeechRecognition
-        : null;
-
-    if (!Recognizer) {
-      alert('Seu navegador não suporta reconhecimento de voz. Use Google Chrome.');
-      return;
-    }
-
-    // Garante que não haja instância anterior viva
-    if (this.recognition) {
-      try { this.recognition.abort(); } catch (_) {}
-      this.recognition = null;
-    }
-
-    const rec = new Recognizer();
-    rec.lang = 'pt-BR';
-    rec.interimResults = false;
-    rec.maxAlternatives = 1;
-    rec.continuous = false;
-
-    // Todos os callbacks rodam dentro da NgZone para garantir detecção de mudanças
-    rec.onstart = () => {
-      this.ngZone.run(() => {
-        this._stopping = false;
-        this.micEscutando = true;
-      });
-    };
-
-    rec.onresult = (event: any) => {
-      this.ngZone.run(() => {
-        const transcript: string = event.results[0][0].transcript;
-        this.processarFalaContrato(transcript);
-      });
-    };
-
-    rec.onerror = (event: any) => {
-      this.ngZone.run(() => {
-        if (event.error !== 'no-speech') {
-          console.warn('[Voz] Erro:', event.error);
+        item = {
+          ...item,
+          filhos: pertencentes
         }
-        this._stopping = false;
-        this.micEscutando = false;
-        this.recognition = null;
-      });
-    };
 
-    rec.onend = () => {
-      this.ngZone.run(() => {
-        this._stopping = false;
-        this.micEscutando = false;
-        this.recognition = null;
-      });
-    };
+      }
+      return item
+    });
+    this.execucao = this.filterGerencias(data);
+  }
 
-    this.recognition = rec;
-    this._stopping = false;
+  async getAtualizacao() {
+    const response = await this.apiService.get<ApiResponse<string>>(
+      `${Endpoints.URL_DASHBOARD}/dt-ultima-atualizacao`
+    );
+
+    this.ultimaAtualizacao = response.data;
+
+  }
+
+  async getNumerosRapidosExecContratual() {
+    const response = await this.apiService.get<ApiResponse<NumerosRapidosExecContratual>>(
+      `${Endpoints.URL_DASHBOARD}/numeros-rapidos-exec-contratual`
+    );
+    this.numerosRapidosExecContratual = response.data;
+  }
+
+  public async obterContratosVigencias(
+    nuFilial: number | null,
+    nuDiasInicio: number | null,
+    nuDiasFim: number | null
+  ): Promise<void> {
     try {
-      rec.start();
-    } catch (e) {
-      console.warn('[Voz] Erro ao iniciar:', e);
-      this.micEscutando = false;
-      this.recognition = null;
+      this.listaContratosVigencia = null;
+
+      const response = await this.apiService.get<
+        ApiResponse<ContratoVigencia[]>
+      >(
+        `${Endpoints.URL_CONTRATOS_VIGENCIAS}/${nuFilial}/${nuDiasInicio}/${nuDiasFim}`
+      );
+      this.listaContratosVigencia = response.data;
+      this.loading = false;
+    } catch (error) {
+      this.loading = true;
     }
   }
 
-  private pararMicrofone(): void {
-    this._stopping = true;
-    if (this.recognition) {
-      try { this.recognition.stop(); } catch (_) {}
-    }
-    this.micEscutando = false;
+  openModalRubrica(nuRubricaTipo: number, nuFilial: number, noFilial: string) {
+    const modalRef = this.modalService.open(ValoresRubricaComponent, {
+      ariaLabelledBy: 'modal-basic-title',
+      windowClass: 'custom-class',
+    });
+
+    modalRef.componentInstance.nuRubricaTipo = nuRubricaTipo;
+    modalRef.componentInstance.nuFilial = nuFilial;
+    modalRef.componentInstance.noFilial = noFilial;
+    modalRef.componentInstance.nuAno = this.anoSelected;
   }
 
-  // ─── Interpretação da fala ────────────────────────────────────────────────
+  openModalContratoVigencia(
+    noFilial: string,
+    nuFilial: number | null,
+    nuDiasInicio: number | null,
+    nuDiasFim: number | null,
+    icSemSaldo: boolean | null,
+    tipo?: string,
+    coContrato?: string
+  ) {
+    const modalRef = this.modalService.open(ContratoVigenciaComponent, {
+      ariaLabelledBy: 'modal-basic-title',
+      windowClass: 'modal-dialog-full-width',
+    });
 
-  /**
-   * Recebe o texto falado e tenta extrair um número de contrato no formato
-   * NNNNN/AAAA (ex: "525 barra 2023" → "00525/2023").
-   *
-   * Padrões reconhecidos:
-   *   "525 barra 2023"
-   *   "525 de 2023"
-   *   "525/2023"            (reconhecimento já transcreveu a barra)
-   *   "pesquisa o contrato 525 barra 2023"
-   *   "consulta contrato 525 de 2023"
-   */
-  private processarFalaContrato(fala: string): void {
-    const texto = this.normalizarFala(fala);
+    modalRef.componentInstance.nuFilial = nuFilial;
+    modalRef.componentInstance.noFilial = noFilial;
+    modalRef.componentInstance.nuDiasInicio = nuDiasInicio;
+    modalRef.componentInstance.nuDiasFim = nuDiasFim;
+    modalRef.componentInstance.icSemSaldo = icSemSaldo;
+    modalRef.componentInstance.tipo = tipo;
+    modalRef.componentInstance.coContrato = coContrato;
+  }
 
-    // Regex: captura número + separador ("barra" | "de" | "/") + ano de 4 dígitos
-    const regex = /(\d+)\s*(?:barra|de|\/)\s*(\d{4})/i;
-    const match = texto.match(regex);
+  exibeDetalhes(aba: number) {
 
-    if (match) {
-      const numero = match[1].padStart(5, '0'); // preenche com zeros à esquerda até 5 dígitos
-      const ano    = match[2];
-      const contrato = `${numero}/${ano}`;
-      this.termoBusca = contrato;
-      this.buscar();
+    if (aba == 1) {
+      if (this.orcamentos.length === 0) {
+        this.getOrcamento();
+      }
+
     } else {
-      // Fala não reconhecida como contrato: apenas preenche o campo
-      this.termoBusca = fala;
+      if (this.execucao.length === 0) {
+        this.getExecucao();
+      }
     }
   }
 
-  /**
-   * Normaliza variações de transcrição de voz:
-   * Remove acentos, converte para minúsculas e substitui palavras numéricas
-   * que o reconhecedor possa gerar (ex: "vinte e três" não é esperado aqui,
-   * mas "barra" e "de" precisam ser preservados literalmente).
-   */
-  private normalizarFala(fala: string): string {
-    return fala
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // remove acentos
-      .toLowerCase()
-      .trim();
-  }
-
-  // ─── Histórico ────────────────────────────────────────────────────────────
-
-  private salvarHistorico(termo: string): void {
-    let historico = this.lerHistoricoStorage();
-    historico = historico.filter(h => h.toLowerCase() !== termo.toLowerCase());
-    historico.unshift(termo);
-    historico = historico.slice(0, HISTORICO_MAX);
-    localStorage.setItem(HISTORICO_KEY, JSON.stringify(historico));
-    this.carregarHistorico();
-  }
-
-  private carregarHistorico(): void {
-    this.historico = this.lerHistoricoStorage();
-  }
-
-  private lerHistoricoStorage(): string[] {
+  public async obterContratos(): Promise<void> {
+    const url = window.location.hostname;
+    this.loading = true;
     try {
-      return JSON.parse(localStorage.getItem(HISTORICO_KEY) || '[]');
-    } catch {
-      return [];
+      const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
+
+      const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
+        (`${Endpoints.URL_CONTRATOS}/novos-contratos`, filtrosLimpos);
+
+      this.contratosOrigem = response?.data?.contratos;
+      this.quantidadeTotal = response.data.totalRecords;
+      // this.openModalRedirect(url);
+      this.openModalNovosContratos();
+      this.assignCopy();
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      console.error('Erro ao obter contratos', error);
     }
   }
+
+  openModalNovosContratos() {
+    if(this.currentProfile === PerfisEnum.Pagadoria || this.currentProfile === PerfisEnum.Administrador){
+      const modalRef = this.modalService.open(NovosContratosComponent, {
+        ariaLabelledBy: 'modal-basic-title',
+        windowClass: 'modal-dialog-medium-width',
+      });
+      modalRef.componentInstance.contratos = this.contratosOrigem;
+      modalRef.componentInstance.quantidadeTotal = this.quantidadeTotal;
+    }
+  }
+
+  assignCopy() {
+    this.contratos = Object.assign([], this.contratosOrigem);
+  }
+
+  private limparFiltrosNulos(filtros: any): any {
+    const filtrosLimpos: any = {};
+    Object.keys(filtros).forEach((key) => {
+      if (filtros[key] !== null && filtros[key] !== undefined && filtros[key] !== '') {
+        filtrosLimpos[key] = filtros[key];
+      }
+    });
+    return filtrosLimpos;
+  }
+
 }
-
-

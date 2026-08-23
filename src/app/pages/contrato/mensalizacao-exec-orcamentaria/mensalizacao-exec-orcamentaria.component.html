@@ -1,20 +1,22 @@
 <div class="content">
-    <dsc-breadcrumb [urls]="[{label: 'Contratos', url: '/contrato'}, {label: 'Mensalização'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
     <div class="row">
         <div class="col-md-10 text-left pb-1">
-            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-                <dsc-button variant="secondary-outlined" label="Detalhar"
-                    (click)="linkDetalhar()"></dsc-button>
-                <dsc-button variant="secondary-outlined" label="Evolução Financeira"
-                    (click)="linkEvolucaoFinanceira()"></dsc-button>
-                <dsc-button variant="secondary-outlined" label="Documentação"
-                    (click)="linkContrato()"></dsc-button>
-                <dsc-button variant="secondary-outlined" label="Simular Revisão"
-                    (click)="openModalSimulacao(this.contrato.nuContrato)"></dsc-button>
-            </div>
+            <button type="button" class="btn-sm btn-secondary no-print"
+                routerLink="/contrato/detalhe/v/{{contrato?.nuContrato}}" mat-raised-button> Detalhar
+            </button>
+            <button type="button" class="btn-sm btn-secondary no-print"
+                routerLink="/contrato/evolucao-financeira/{{contrato?.nuContrato}}" mat-raised-button> Evolução
+                Financeira
+            </button>
+            <button type="button" class="btn-sm btn-secondary no-print" (click)="linkContrato()" mat-raised-button>
+                Documentação
+            </button>
+            <button type="button" class="btn-sm btn-secondary no-print"
+                (click)="openModalSimulacao(this.contrato.nuContrato)" mat-raised-button> Simular Revisão
+            </button>
         </div>
         <div class="col-md-12">
-            <ng-template #resumoVigenciaTpl>
+            <div class="card">
                 <div class="card-header">
                     <h3 class="card-title text-left">
                         <b>CONTRATO {{this.contrato?.coContrato}} - {{this.contrato?.noEmpresa}}</b>
@@ -95,13 +97,12 @@
                         </ul>
                     </ng-template>
                 </div>
-            </ng-template>
-            <dsc-card [data]="{appearance: 'outlined', content: {template: resumoVigenciaTpl}}"></dsc-card>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <ng-template #mensalizacaoTpl>
+            <div class="card">
                 <div class="card-header">
                     <h3 class="card-title text-left">MENSALIZAÇÃO</h3>
                     <div class="row">
@@ -137,8 +138,7 @@
                         </mat-tab>
                     </mat-tab-group>
                 </div>
-            </ng-template>
-            <dsc-card [data]="{appearance: 'outlined', content: {template: mensalizacaoTpl}}"></dsc-card>
+            </div>
         </div>
     </div>
 </div>

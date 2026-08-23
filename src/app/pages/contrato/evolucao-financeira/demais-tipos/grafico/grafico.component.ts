@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { Series } from 'src/app/models/generics/evolucao-financeira';
 
@@ -7,7 +7,7 @@ import { Series } from 'src/app/models/generics/evolucao-financeira';
   templateUrl: './grafico.component.html',
   styleUrls: ['./grafico.component.scss']
 })
-export class GraficoComponent implements OnInit, OnChanges {
+export class GraficoComponent implements OnInit {
 
   @Input()
   titulo: string = "";
@@ -26,7 +26,7 @@ export class GraficoComponent implements OnInit, OnChanges {
   chartOptions: Highcharts.Options = {
     chart:{
       type: 'column',
-      height: 300,
+      height: "300vh",
       zoomType: 'xy',
       reflow: true,
     },
@@ -86,17 +86,8 @@ export class GraficoComponent implements OnInit, OnChanges {
     this.updateData();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // If categorias or series inputs change, refresh chart
-    if (changes['categorias'] || changes['series']) {
-      this.updateData();
-    }
-  }
-
   updateData() {
-    // only update when series structure is present
-    if (!this.series || this.series.length < 2) return;
-    this.updateFlag = false;
+    this.updateFlag = true;
     this.chartOptions.xAxis["categories"] = this.categorias;
     const estimativaMensal = this.series[0];
     const valoresExecutados = this.series[1];
@@ -116,10 +107,6 @@ export class GraficoComponent implements OnInit, OnChanges {
         color: '#005CA9'
         },
   ];
-    // trigger Highcharts update
-    // toggle updateFlag to inform the highcharts wrapper
-    this.updateFlag = true;
-    setTimeout(() => this.updateFlag = false, 50);
   }
 
   chartCallback: Highcharts.ChartCallbackFunction = function (chart): void {

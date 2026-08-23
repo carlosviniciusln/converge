@@ -8,6 +8,7 @@ export class Gcpvw049ResumoPlanejamento {
       dtAbertura?: string
       dtFechamento?: string | null
       statusPlanejamento?: string
+      noStatusExercicio?: string
       nuPlanejamentoTipo?: number
       dePlanejamentoTipo?: string
       ordem?: number

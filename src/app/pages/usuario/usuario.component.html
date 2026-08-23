@@ -1,5 +1,4 @@
 <div class="content">
-  <dsc-breadcrumb [urls]="[{label: 'Usuários'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
   <div class="row">
     <div class="column-45 pr-1">
       <p-table
@@ -84,33 +83,54 @@
           </tr>
         </ng-template>
       </p-table>
-      <dsc-paginator
-        *ngIf="quantidadeTotal > 0"
-        [length]="quantidadeTotal"
-        [pageSize]="filtroRegistros.pageSize"
-        [pageIndex]="filtroRegistros.pageNumber - 1"
-        [pageSizeOptions]="[10, 20, 50]"
-        (page)="loadPage($event)">
-      </dsc-paginator>
+      <div class="paginator-content" *ngIf="quantidadeTotal > 0">
+        <span class="pagination-text">
+          <p>{{ quantidadeTotal }} registro(s) encontrado(s)</p>
+        </span>
+
+        <ngb-pagination
+          *ngIf="quantidadeTotal > listaUsuarios.length"
+          [collectionSize]="quantidadeTotal"
+          [pageSize]="filtroRegistros.pageSize"
+          [(page)]="filtroRegistros.pageNumber"
+          (pageChange)="loadPage($event)"
+          [maxSize]="4"
+          [boundaryLinks]="true"
+        >
+        </ngb-pagination>
+      </div>
     </div>
     <div class="column-10 vertical-center">
-      <dsc-button
-        variant="primary"
-        icon="double_arrow"
+      <button
+        type="button"
+        class="btn-sm btn-secondary"
         (click)="Autorizar()"
         [disabled]="!arrayUsuarios.length"
+        mat-raised-button
         matTooltip="selecione o(s) usuário(s) não autorizados para conceder o acesso."
         *ngIf="permissions?.Alterar ?? false"
-      ></dsc-button>&nbsp;
-      <!-- <button ... /> -->
-      <dsc-button
-        variant="secondary-outlined"
-        icon="keyboard_double_arrow_left"
+      >
+        <i class="tim-icons icon-double-right"></i></button
+      >&nbsp;
+      <!-- <button
+        type="button"
+        class="btn-sm btn-secondary"
+        (click)="RemoverAcesso()"
+        [disabled]="!arrayUsuariosAutorizados.length"
+        mat-raised-button
+        matTooltip="selecione o(s) usuário(s) autorizados para retirar o acesso."
+      > -->
+      <button
+        type="button"
+        class="btn-sm btn-secondary"
         (click)="atualizaPerfilUsuarios(false)"
         [disabled]="!arrayUsuariosAutorizados.length"
+        mat-raised-button
         matTooltip="selecione o(s) usuário(s) autorizados para retirar o acesso."
         *ngIf="permissions?.Alterar ?? false"
-      ></dsc-button>
+      >
+        <i class="tim-icons icon-double-left"></i>
+      </button>
     </div>
     <div class="column-45 pl-1">
       <p-table
@@ -196,14 +216,22 @@
           </tr>
         </ng-template>
       </p-table>
-      <dsc-paginator
-        *ngIf="quantidadeTotalAutorizados > 0"
-        [length]="quantidadeTotalAutorizados"
-        [pageSize]="filtroRegistrosAutorizados.pageSize"
-        [pageIndex]="filtroRegistrosAutorizados.pageNumber - 1"
-        [pageSizeOptions]="[10, 20, 50]"
-        (page)="loadPageAutorizados($event)">
-      </dsc-paginator>
+      <div class="paginator-content" *ngIf="quantidadeTotalAutorizados > 0">
+        <span class="pagination-text">
+          <p>{{ quantidadeTotalAutorizados }} registro(s) encontrado(s)</p>
+        </span>
+
+        <ngb-pagination
+          *ngIf="quantidadeTotalAutorizados > listaUsuariosAutorizados.length"
+          [collectionSize]="quantidadeTotalAutorizados"
+          [pageSize]="filtroRegistrosAutorizados.pageSize"
+          [(page)]="filtroRegistrosAutorizados.pageNumber"
+          (pageChange)="loadPageAutorizados($event)"
+          [maxSize]="4"
+          [boundaryLinks]="true"
+        >
+        </ngb-pagination>
+      </div>
     </div>
   </div>
 </div>

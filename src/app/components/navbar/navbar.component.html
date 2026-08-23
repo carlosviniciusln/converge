@@ -1,34 +1,21 @@
-﻿<!-- HEADER customizado — replica visual do DSC sem usar dsc-header
+<!-- HEADER customizado — replica visual do DSC sem usar dsc-header
      para permitir o uso de logo customizada (assets/img/logo.png) -->
 <header id="app-header" class="custom-header">
-
-  <!-- Linha principal -->
   <div class="custom-header__row">
-
-    <!-- Botão sanduíche -->
     <button id="btn-sandwich" class="custom-header__toggle" aria-label="Botão de navegação" (click)="toggleMenu()">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <!-- Logo customizada -->
     <a href="/" class="custom-header__brand" aria-label="Início">
       <img src="assets/images/logo.png" alt="CONVERGE" class="custom-header__logo" />
     </a>
 
-    <!-- Separador vertical -->
     <div class="custom-header__separator"></div>
-
-    <!-- Sigla + nome -->
     <span class="custom-header__acronym">CONVERGE</span>
     <span class="custom-header__title"> - Plataforma de Gestão de Contratos</span>
-
-    <!-- Spacer -->
     <div class="custom-header__spacer"></div>
 
-    <!-- Ações + usuário agrupados à direita -->
     <div class="custom-header__right">
-
-      <!-- Saudação / usuário -->
       <div *ngIf="isLoggedIn && currentUser" class="custom-header__user">
         <div class="custom-header__greeting">
           <span class="custom-header__greeting-label">Olá</span>
@@ -37,40 +24,21 @@
         <span class="custom-header__workunit">{{ currentUser?.noPerfil }}</span>
       </div>
 
-      <!-- Ações -->
-      <button
-        *ngIf="isLoggedIn"
-        id="btn-logout"
-        type="button"
-        class="custom-header__action"
-        (click)="signOut()"
-        aria-label="Sair"
-      >
+      <button *ngIf="isLoggedIn" id="btn-logout" type="button" class="custom-header__action" (click)="signOut()" aria-label="Sair">
         <mat-icon>logout</mat-icon>
         <span>Sair</span>
       </button>
 
-      <button
-        *ngIf="!isLoggedIn"
-        id="btn-entrar"
-        type="button"
-        class="custom-header__action"
-        (click)="openModalLogin()"
-        aria-label="Entrar"
-      >
+      <button *ngIf="!isLoggedIn" id="btn-entrar" type="button" class="custom-header__action" (click)="openModalLogin()" aria-label="Entrar">
         <mat-icon>login</mat-icon>
         <span>Entrar</span>
       </button>
-
     </div>
-
   </div>
 
-  <!-- Linha de classificação de conteúdo -->
   <div class="custom-header__classification">
     <span class="custom-header__classification-label">Conteúdo</span>
     <span class="custom-header__classification-title">OS DADOS PESSOAIS ESTÃO DE ACORDO COM AS NORMAS DA LGPD</span>
     <span class="custom-header__classification-info">{{ ultimaAtualizacao }}</span>
   </div>
-
 </header>

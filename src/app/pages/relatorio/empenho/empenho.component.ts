@@ -75,7 +75,7 @@ export class EmpenhoComponent implements OnInit {
       this.listaAnos = response.data;
 
       this.selectAnos = this.listaAnos.map(
-        (m) => ({ value: m, label: String(m) } as Select2Option)
+        (m) => ({ value: m, label: m } as Select2Option)
       );
 
       this.loading = false;
@@ -157,13 +157,10 @@ export class EmpenhoComponent implements OnInit {
     await this.obterEmpenhos();
   }
 
-  loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
-    if (page !== this.previousPage || pageSize !== this.filtroRegistros.pageSize) {
+  loadPage(page: number) {
+    if (page !== this.previousPage) {
       this.previousPage = page;
       this.filtroRegistros.pageNumber = page;
-      this.filtroRegistros.pageSize = pageSize;
       this.obterEmpenhos();
     }
   }

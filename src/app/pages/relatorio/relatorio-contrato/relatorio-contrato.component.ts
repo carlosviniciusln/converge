@@ -34,7 +34,7 @@ export class RelatorioContratoComponent implements OnInit {
   selectedTipoGestor: string = null;
   selectedTipoStatus: string = null;
 
-  tituloPage: string = '';
+  tituloPage: string = 'Relatório de Contratos';
   rota: string = '';
 
   filtroRegistros: any = {
@@ -90,11 +90,11 @@ export class RelatorioContratoComponent implements OnInit {
       );
 
       this.contratosOrigem = response?.data?.contratos || [];
-      this.selectTiposContrato = response?.data?.listaContrato?.map(c => ({ label: String(c), value: c })) || [];
-      this.selectTiposFornecedor = response?.data?.listaFornecedor?.map(f => ({ label: String(f), value: f })) || [];
-      this.selectTiposTpContrato = response?.data?.listaTipo?.map(t => ({ label: String(t), value: t })) || [];
-      this.selectTiposGestor = response?.data?.listaGestor?.map(g => ({ label: String(g), value: g })) || [];
-      this.selectTiposStatus = response?.data?.listaStatus?.map(s => ({ label: String(s), value: s })) || [];
+      this.selectTiposContrato = response?.data?.listaContrato?.map(c => ({ label: c, value: c })) || [];
+      this.selectTiposFornecedor = response?.data?.listaFornecedor?.map(f => ({ label: f, value: f })) || [];
+      this.selectTiposTpContrato = response?.data?.listaTipo?.map(t => ({ label: t, value: t })) || [];
+      this.selectTiposGestor = response?.data?.listaGestor?.map(g => ({ label: g, value: g })) || [];
+      this.selectTiposStatus = response?.data?.listaStatus?.map(s => ({ label: s, value: s })) || [];
       this.quantidadeTotal = response?.data?.totalRecords || 0;
       this.assignCopy();
     } catch (error) {

@@ -27,6 +27,7 @@
       "sidsc-components/dsc-chips": ["sidsc-stubs/dsc-chips/index.ts"]
     },
     "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,

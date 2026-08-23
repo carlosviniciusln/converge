@@ -1,5 +1,4 @@
 <div class="content">
-    <dsc-breadcrumb [urls]="[{label: 'Valores Executados'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
     <div class="row">
         <div class="col-12">
             <p-table #dt [value]="listaValoresExecutados" dataKey="id" [rows]="10" [paginator]="true" [globalFilterFields]="['ano', 'contrato', 'gn', 'objeto', 'vrTotalPrevisto', 'vrTotalExecutado']" currentPageReportTemplate="{totalRecords} registro(s) encontrado(s)"
@@ -7,9 +6,13 @@
                 <ng-template pTemplate="caption">
                     <div class="table-header">
                         <div class="row">
-                            <div class="table-header-title" style="flex: 1;">Valores Executados Orçamento</div>
-                            <dsc-button variant="secondary-outlined" icon="cloud_download" iconButton (click)="exportExcel()" *ngIf="permissions?.Exportar ?? false"></dsc-button>
-                            <input type="text" class="form-control" #myInput (input)="filterItem(myInput.value)" id="pPesquisar" placeholder="Digite para pesquisar" style="width: 280px; flex: none;" />
+                            <div class="col-md-7 table-header-title">Valores Executados Orçamento</div>
+                            <div class="col-md-1 pl-1 pr-1 text-right">
+                                <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()" *ngIf="permissions?.Exportar ?? false"><i class="tim-icons icon-cloud-download-93"></i></button>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" #myInput (input)="filterItem(myInput.value)" id="pPesquisar" placeholder="Digite para pesquisar" />
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 table-header-subtitle">

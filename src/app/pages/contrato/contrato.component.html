@@ -1,20 +1,24 @@
 <div class="content">
-    <dsc-breadcrumb [urls]="[{label: rota == 'atas' ? 'Atas de Registro de Preço' : 'Contratos'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
     <div class=" row">
         <div class=" col-12">
             <p-table #dt [value]="contratos" dataKey="id"
-                styleClass="p-datatable-customers"
+                styleClass="p-datatable-customers" [rows]="filtroRegistros.tamanhoPagina" [paginator]="true"
+                [totalRecords]="quantidadeTotal" [rowsPerPageOptions]="[10, 20, 50]" [lazy]="true"
+                (onLazyLoad)="loadPage($event)" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} contratos"
                 [globalFilterFields]="['coContrato','noEmpresa','dhCadastro']" [rowHover]="true">
                 <ng-template pTemplate="caption">
                     <div class="table-header">
                         <div class="row">
-                            <div class="col-md-1 pl-1 pr-1 table-header-title">
+                            <div class="col-md-1 pl-1 pr-1 table-header-title">{{tituloPage}}
                             </div>
                             <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button> -->
                             <div class=" pl-1 pr-1 text-right">
                                 <!-- *ngIf="isAllowedToExport" -->
-                                <dsc-button variant="secondary-outlined" icon="cloud_download" iconButton (click)="exportExcel()"
-                                    *ngIf="permissions?.Exportar ?? false"></dsc-button>
+                                <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()"
+                                    *ngIf="permissions?.Exportar ?? false">
+                                    <i class="tim-icons icon-cloud-download-93"></i>
+                                </button>
                             </div>
                             <div class="pl-1 pr-1">
                                 <p-dropdown [options]="selectTiposContrato" [(ngModel)]="selectedTipoContrato"
@@ -32,7 +36,7 @@
                                 <p-dropdown [options]="selectTiposTpContrato" [(ngModel)]="selectedTipoTpContrato"
                                     [filter]="true" optionLabel="label" optionValue="value"
                                     (onChange)="updateRelatorio($event, 3)" [showClear]="true"
-                                    placeholder="Tipo de Contrato"></p-dropdown>
+                                    placeholder="Tipo Objeto"></p-dropdown>
                             </div>
                             <div class="pl-1 pr-1">
                                 <p-dropdown [options]="selectTiposGestor" [(ngModel)]="selectedTipoGestor"
@@ -75,7 +79,7 @@
                         </th>
                         <th>
                             <div class="p-d-flex p-jc-between p-ai-center">
-                                Tipo de contrato
+                                Tipo Objeto
                             </div>
                         </th>
                         <th>
@@ -130,7 +134,7 @@
                             <span class="image-text">{{contrato.noEmpresa}}</span>
                         </td>
                         <td>
-                            <span class="p-column-title">Tipo de contrato</span>
+                            <span class="p-column-title">Tipo Objeto</span>
                             {{contrato.noContratoTipo}}
                         </td>
                         <td>
@@ -163,14 +167,6 @@
                     </tr>
                 </ng-template>
             </p-table>
-            <dsc-paginator
-              *ngIf="quantidadeTotal > 0"
-              [length]="quantidadeTotal"
-              [pageSize]="filtroRegistros.tamanhoPagina"
-              [pageIndex]="filtroRegistros.paginaAtual - 1"
-              [pageSizeOptions]="[10, 20, 50]"
-              (page)="loadPage($event)">
-            </dsc-paginator>
         </div>
     </div>
 </div>

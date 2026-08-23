@@ -171,11 +171,13 @@
               <th class="col-7">Item(s) de Faturamento</th>
               <th class="col-3">Valor apurado</th>
               <th class="col-2">
-                <dsc-button
-                  variant="primary"
-                  icon="add"
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary"
                   (click)="adicionarFaturamento()"
-                ></dsc-button>
+                >
+                  <i class="tim-icons icon-simple-add"></i>
+                </button>
               </th>
             </tr>
           </ng-template>
@@ -221,7 +223,9 @@
               </td>
 
               <td>
-                <dsc-button variant="danger" icon="delete" (click)="removerFaturamento(i)"></dsc-button>
+                <button type="button" class="btn-sm btn-secondary" (click)="removerFaturamento(i)">
+                  <i class="tim-icons icon-trash-simple"></i>
+                </button>
               </td>
             </tr>
           </ng-template>
@@ -319,6 +323,7 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
             align-content: flex-end;
             justify-content: space-around;
             align-items: center;">
+          <p-toast></p-toast>
           <p-fileUpload
               mode="basic"
               chooseLabel="Anexar arquivo"
@@ -339,8 +344,8 @@ As multas a serem informadas neste formulário se tratam especificamente daquela
               gap: 15px;
               padding: 0px 24px 0px 0px;
               justify-content: flex-end;">
-                <dsc-button variant="primary" label="Salvar Ateste" (click)="onSubmit()"></dsc-button>
-                <dsc-button variant="secondary" label="Cancelar" (click)="activeModal.dismiss('Cross click')"></dsc-button>
+                <button style="background-color: #005ca9;" class="btn-sm btn-default" type="submit" (click)="onSubmit()">Salvar Ateste</button>
+                <button class="btn-sm btn-secondary" type="submit" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
          </div>
 
   </div>

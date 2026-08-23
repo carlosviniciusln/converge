@@ -74,7 +74,7 @@ export class AnaliticoComponent implements OnInit {
       this.listaAnos = response.data;
 
       this.selectAnos = this.listaAnos.map(
-        (m) => ({ value: m, label: String(m) } as Select2Option)
+        (m) => ({ value: m, label: m } as Select2Option)
       );
 
       this.loading = false;
