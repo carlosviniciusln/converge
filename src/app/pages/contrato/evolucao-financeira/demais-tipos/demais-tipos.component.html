@@ -23,7 +23,7 @@
                                     <div class="col-md-12">
                                         <app-grafico id="divGrafico_{{ rubrica.cO_RUBRICA }}" class="divGrafico"
                                             [titulo]="vigenciaAtual?.labeL_VIGENCIA ? vigenciaAtual.labeL_VIGENCIA : vigenciaAnterior.labeL_VIGENCIA"
-                                            [categorias]="rubrica.periodos" [series]="rubrica.series">
+                                            [categorias]="rubrica.periodos" [series]="rubrica.series || []">
                                         </app-grafico>
                                     </div>
                                 </div>

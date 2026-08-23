@@ -4,7 +4,7 @@
       <img src="./assets/img/logo.png" />
     </div>
   </a>
-  <a href="" class="simple-text logo-normal"> GVC:<br>Gestão Estratégica<br>de Contratos,<br>Planejamento<br>e Orçamento
+  <a href="/#" class="simple-text logo-normal"> GVC:<br>Gestão Estratégica<br>de Contratos,<br>Planejamento<br>e Orçamento
   </a>
 </div>
 <div class="sidebar-wrapper">
@@ -13,7 +13,7 @@
       <a *ngIf="
           !menuItem.checkForAccess ||
           (menuItem.checkForAccess && hasAccess(menuItem.path))
-        " [routerLink]="[menuItem.path]">
+        " [attr.href]="'/#' + menuItem.path">
         <i class="tim-icons  {{ menuItem.icon }}"></i>
         <p>{{ menuItem.title }}</p>
       </a>
@@ -23,7 +23,7 @@
         <i class="tim-icons icon-single-copy-04"></i>
         <p>Execução<b class="caret"></b></p>
       </a>
-      <div [ngClass]="isContratoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+      <div class="collapse" [class.show]="isContratoCollapsed" id="relatorios">
         <ul class="nav">
           <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/contrato">
@@ -92,7 +92,7 @@
         <i class="tim-icons icon-coins"></i>
         <p>Orçamento<b class="caret"></b></p>
       </a>
-      <div [ngClass]="isOrcamentoCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+      <div class="collapse" [class.show]="isOrcamentoCollapsed" id="relatorios">
         <ul class="nav">
 
           <!-- <li *ngIf="isPerfilPrivilegiado" routerlinkactive="active" class="nav-item">
@@ -145,7 +145,7 @@
         <i class="tim-icons icon-puzzle-10"></i>
         <p>Relatórios<b class="caret"></b></p>
       </a>
-      <div [ngClass]="isRelatoriosCollapsed == true ? 'collapse show' : 'collapse'" id="relatorios">
+      <div class="collapse" [class.show]="isRelatoriosCollapsed" id="relatorios">
         <ul class="nav">
           <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/pagamento">
