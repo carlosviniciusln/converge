@@ -23,6 +23,7 @@ import { PlanejamentoCadastroV2Component } from '../planejamento-cadastro-v2/pla
 import { Gcpvw051VisaoContratoPlanejamentoOrcamentario } from 'src/app/models/generics/Gcpvw051VisaoContratoPlanejamentoOrcamentario';
 import { Gcptb051AtualizarStatusEmLoteRequest } from 'src/app/models/request/Gcptb051AtualizarStatusEmLoteRequest';
 import { IUser } from 'src/app/models/DTOs/IUser';
+import * as fileSaver from 'file-saver';
 
 @Component({
   selector: 'app-planejamento-geral-v2',
@@ -369,19 +370,33 @@ selecionarTodosItens() {
     });
   }
 
-  public exportarExcelAtualizacaoSAP(coExercicio: number) {
-    const alert = Swal.fire({
+  public async exportarExcelAtualizacaoSAP(coExercicio: number): Promise<void> {
+    await Swal.fire({
       title: 'Aviso',
       text: `Para esta opção nenhum filtro será levado em consideração e o arquivo será gerado com todos os registros que foram atualizados.`,
       icon: 'warning',
       showCancelButton: false,
       confirmButtonText: 'Ok!',
-    }).then(() => {
-      return this.apiService.downloadfile(
-        `v1/PlanejamentoOrcamentario/obter-atualizacao-planejamento-item-excel`,
-        { coExercicio: coExercicio },
-      );
     });
+
+    // Em localhost, força consumo do mock via HttpClient (interceptor) em vez de navegação direta.
+    if (this.isLocalhost()) {
+      try {
+        const response = await this.apiService.get<ApiResponse<any>>(
+          `v1/PlanejamentoOrcamentario/obter-atualizacao-planejamento-item-excel`,
+          { coExercicio: coExercicio },
+        );
+        this.downloadJsonMock('atualizacao-planejamento-item-mock.json', response?.data);
+        return;
+      } catch (error) {
+        console.error('Erro ao gerar mock de exportacao SAP', error);
+      }
+    }
+
+    this.apiService.downloadfile(
+      `v1/PlanejamentoOrcamentario/obter-atualizacao-planejamento-item-excel`,
+      { coExercicio: coExercicio },
+    );
   }
 
   openModalEditPlanejamento(
@@ -528,9 +543,24 @@ selecionarTodosItens() {
     this.loading = false;
   }
 
-  public downloadPlanejamentoDesembolso() {
+  public async downloadPlanejamentoDesembolso(): Promise<void> {
     const filtrosLimpos = this.limparFiltrosNulos(this.filtroRegistros);
-    return this.apiService.downloadfile(
+
+    // Em localhost, força consumo do mock via HttpClient (interceptor) em vez de navegação direta.
+    if (this.isLocalhost()) {
+      try {
+        const response = await this.apiService.get<ApiResponse<any>>(
+          `v1/PlanejamentoOrcamentarioV/listar-itens-planejados-excel`,
+          filtrosLimpos,
+        );
+        this.downloadJsonMock('itens-planejados-mock.json', response?.data);
+        return;
+      } catch (error) {
+        console.error('Erro ao gerar mock de exportacao de itens planejados', error);
+      }
+    }
+
+    this.apiService.downloadfile(
       `v1/PlanejamentoOrcamentarioV/listar-itens-planejados-excel`,
       filtrosLimpos,
     );
@@ -610,5 +640,19 @@ selecionarTodosItens() {
       this.filtroRegistros.tamanhoPagina = pageSize;
       await this.obterPlanejamentosOrc();
     }
+  }
+
+  private isLocalhost(): boolean {
+    return (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+    );
+  }
+
+  private downloadJsonMock(fileName: string, payload: any): void {
+    const blob = new Blob([JSON.stringify(payload ?? {}, null, 2)], {
+      type: 'application/json;charset=utf-8',
+    });
+    fileSaver.saveAs(blob, fileName);
   }
 }

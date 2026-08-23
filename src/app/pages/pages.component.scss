@@ -1,17 +1,6 @@
-// Remove o espaço reservado para o sidebar — agora o menu é o drawer do header
 .wrapper {
   .sidebar {
-    display: none;
-  }
-
-  .main-panel--full {
-    float: none;
-    width: 100%;
-    margin-left: 0;
-
-    > .content {
-      padding-left: 30px;
-    }
+    display: block;
   }
 }
 

@@ -86,52 +86,92 @@
             {
               "coContrato": "04466/2025",
               "nuContrato": 4,
-              "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados"
+              "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
+              "sgFilial": "GEAUS",
+              "dtInicioContrato": "2026-01-01T00:00:00",
+              "dtTerminoContrato": "2026-12-31T00:00:00",
+              "icAtivo": false
             },
             {
               "coContrato": "07500/2024",
               "nuContrato": 4544,
-              "noEmpresa": "EMBRATEL - Empresa Brasileira de Telecomunicações S.A."
+              "noEmpresa": "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.",
+              "sgFilial": "GETEL",
+              "dtInicioContrato": "2025-04-01T00:00:00",
+              "dtTerminoContrato": "2027-03-31T00:00:00",
+              "icAtivo": false
             },
             {
               "coContrato": "12870/2024",
               "nuContrato": 4630,
-              "noEmpresa": "TOTVS S.A."
+              "noEmpresa": "TOTVS S.A.",
+              "sgFilial": "GESTI",
+              "dtInicioContrato": "2025-02-15T00:00:00",
+              "dtTerminoContrato": "2026-12-31T00:00:00",
+              "icAtivo": false
             },
             {
               "coContrato": "07231/2024",
               "nuContrato": 3539,
-              "noEmpresa": "IBM Brasil Indústria, Máquinas e Serviços Ltda."
+              "noEmpresa": "IBM Brasil Indústria, Máquinas e Serviços Ltda.",
+              "sgFilial": "GEINF",
+              "dtInicioContrato": "2024-10-01T00:00:00",
+              "dtTerminoContrato": "2026-09-30T00:00:00",
+              "icAtivo": false
             },
             {
               "coContrato": "04962/2024",
               "nuContrato": 3102,
-              "noEmpresa": "Accenture do Brasil Ltda."
+              "noEmpresa": "Accenture do Brasil Ltda.",
+              "sgFilial": "GEMSE",
+              "dtInicioContrato": "2024-08-20T00:00:00",
+              "dtTerminoContrato": "2026-08-19T00:00:00",
+              "icAtivo": false
             },
             {
               "coContrato": "05730/2024",
               "nuContrato": 2908,
-              "noEmpresa": "Capgemini Brasil S.A."
+              "noEmpresa": "Capgemini Brasil S.A.",
+              "sgFilial": "GEMSE",
+              "dtInicioContrato": "2024-06-01T00:00:00",
+              "dtTerminoContrato": "2026-05-31T00:00:00",
+              "icAtivo": false
             },
             {
               "coContrato": "04012/2025",
               "nuContrato": 8124,
-              "noEmpresa": "Claro S.A."
+              "noEmpresa": "Claro S.A.",
+              "sgFilial": "GETEL",
+              "dtInicioContrato": "2025-05-01T00:00:00",
+              "dtTerminoContrato": "2027-04-30T00:00:00",
+              "icAtivo": true
             },
             {
               "coContrato": "01975/2024",
               "nuContrato": 1768,
-              "noEmpresa": "Stefanini IT Solutions e Services S.A."
+              "noEmpresa": "Stefanini IT Solutions e Services S.A.",
+              "sgFilial": "GESTI",
+              "dtInicioContrato": "2024-03-01T00:00:00",
+              "dtTerminoContrato": "2026-02-28T00:00:00",
+              "icAtivo": true
             },
             {
               "coContrato": "09454/2023",
               "nuContrato": 1702,
-              "noEmpresa": "Oi S.A. - Em Recuperação Judicial"
+              "noEmpresa": "Oi S.A. - Em Recuperação Judicial",
+              "sgFilial": "GETEL",
+              "dtInicioContrato": "2023-11-01T00:00:00",
+              "dtTerminoContrato": "2025-10-31T00:00:00",
+              "icAtivo": false
             },
             {
               "coContrato": "06016/2024",
               "nuContrato": 1797,
-              "noEmpresa": "Tivit Terceirização de Processos, Serviços e Tecnologia S.A."
+              "noEmpresa": "Tivit Terceirização de Processos, Serviços e Tecnologia S.A.",
+              "sgFilial": "GEAUS",
+              "dtInicioContrato": "2024-07-15T00:00:00",
+              "dtTerminoContrato": "2026-07-14T00:00:00",
+              "icAtivo": true
             }
           ],
           "listaContrato": [
@@ -145,6 +185,32 @@
             "01975/2024",
             "09454/2023",
             "06016/2024"
+          ],
+          "listaFornecedor": [
+            "SERPRO - Serviço Federal de Processamento de Dados",
+            "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.",
+            "TOTVS S.A.",
+            "IBM Brasil Indústria, Máquinas e Serviços Ltda.",
+            "Accenture do Brasil Ltda.",
+            "Capgemini Brasil S.A.",
+            "Claro S.A.",
+            "Stefanini IT Solutions e Services S.A.",
+            "Oi S.A. - Em Recuperação Judicial",
+            "Tivit Terceirização de Processos, Serviços e Tecnologia S.A."
+          ],
+          "listaTipo": [
+            "SERVICO_CONTINUO",
+            "ATA_DE_REGISTRO_DE_PRECOS",
+            "AQUISICAO"
+          ],
+          "listaGestor": [
+            "Carlos Vinicius",
+            "Maria Silva",
+            "Joao Pereira"
+          ],
+          "listaStatus": [
+            true,
+            false
           ]
         },
         "errors": []
@@ -369,6 +435,66 @@
           "vR_LIQUIDADO": 1000,
           "vR_PAGO": 1000
         },
+        "errors": []
+      }
+    },
+    "/v1/Retencao/obter-retencoes-contrato": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nU_RETENCAO": 1,
+            "nU_CONTRATO": 4,
+            "nO_PENALIDADE": "Glosa por indisponibilidade",
+            "vR_PENALIDADE": 1200.5,
+            "dT_CADASTRO": "2026-06-10T00:00:00",
+            "dT_COMPETENCIA": "2026-06-01T00:00:00",
+            "iC_LIBERADO": false
+          },
+          {
+            "nU_RETENCAO": 2,
+            "nU_CONTRATO": 4,
+            "nO_PENALIDADE": "Atraso de SLA",
+            "vR_PENALIDADE": 800,
+            "dT_CADASTRO": "2026-07-12T00:00:00",
+            "dT_COMPETENCIA": "2026-07-01T00:00:00",
+            "iC_LIBERADO": true
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/contrato/resumo-vigencia-aditivo-contrato": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nO_RUBRICA": "TOTAL",
+            "dE_RUBRICA": "TOTAL",
+            "dT_INICIO": "2026-01-01T00:00:00",
+            "dT_TERMINO": "2026-12-31T00:00:00",
+            "vR_GLOBAL": 100000,
+            "vR_EXECUTADO": 44000
+          },
+          {
+            "nO_RUBRICA": "001-01",
+            "dE_RUBRICA": "Servico A",
+            "dT_INICIO": "2026-01-01T00:00:00",
+            "dT_TERMINO": "2026-12-31T00:00:00",
+            "vR_GLOBAL": 50000,
+            "vR_EXECUTADO": 20000
+          },
+          {
+            "nO_RUBRICA": "001-02",
+            "dE_RUBRICA": "Servico B",
+            "dT_INICIO": "2026-01-01T00:00:00",
+            "dT_TERMINO": "2026-12-31T00:00:00",
+            "vR_GLOBAL": 50000,
+            "vR_EXECUTADO": 24000
+          }
+        ],
         "errors": []
       }
     },
@@ -800,6 +926,774 @@
             "8317": "01018/2026"
           },
           "dhUltimaAtualizacao": "09/02/2026 12:30"
+        },
+        "errors": []
+      }
+    },
+    "/v1/dashboard/execucao-contratual": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nU_FILIAL": 1885,
+            "nU_FILIAL_PAI": 0,
+            "sG_FILIAL": "VISEC",
+            "iC_UNIDADE_PAI": true,
+            "qT_CONTRATO_ATIVO": 12,
+            "qT_ACIMA_ESTIMADO": 2,
+            "qT_ABAIXO_ESTIMADO": 3,
+            "qT_SALDO_ESGOTADO": 1,
+            "qT_PROXIMO30": 2,
+            "qT_PROXIMO90": 4,
+            "qT_PROXIMO180": 5,
+            "qT_CONTRATO_INATIVO": 1,
+            "coContrato": null
+          },
+          {
+            "nU_FILIAL": 2001,
+            "nU_FILIAL_PAI": 1885,
+            "sG_FILIAL": "GEAUS",
+            "iC_UNIDADE_PAI": false,
+            "qT_CONTRATO_ATIVO": 5,
+            "qT_ACIMA_ESTIMADO": 1,
+            "qT_ABAIXO_ESTIMADO": 1,
+            "qT_SALDO_ESGOTADO": 0,
+            "qT_PROXIMO30": 1,
+            "qT_PROXIMO90": 2,
+            "qT_PROXIMO180": 2,
+            "qT_CONTRATO_INATIVO": 0,
+            "coContrato": "04466/2025"
+          },
+          {
+            "nU_FILIAL": 2002,
+            "nU_FILIAL_PAI": 1885,
+            "sG_FILIAL": "GETEL",
+            "iC_UNIDADE_PAI": false,
+            "qT_CONTRATO_ATIVO": 7,
+            "qT_ACIMA_ESTIMADO": 1,
+            "qT_ABAIXO_ESTIMADO": 2,
+            "qT_SALDO_ESGOTADO": 1,
+            "qT_PROXIMO30": 1,
+            "qT_PROXIMO90": 2,
+            "qT_PROXIMO180": 3,
+            "qT_CONTRATO_INATIVO": 1,
+            "coContrato": "07500/2024"
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/dashboard/numeros-rapidos-exec-contratual": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "qT_CONTRATO_VIGENTE": 301,
+          "qT_PAGAMENTO_ANO": 374,
+          "vR_EXECUTADO_VIGENTE": 5656336608.42,
+          "vR_GLOBAL_VIGENTE": 15610962826.04,
+          "vR_RETIDO_VIGENTE": 194458854.37,
+          "vR_EXECUTADO_ANO": 564104867.95
+        },
+        "errors": []
+      }
+    },
+    "/v1/dashboard/orcamento": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nU_FILIAL": 1885,
+            "nU_FILIAL_PAI": 0,
+            "sG_FILIAL": "GERAL",
+            "iC_UNIDADE_PAI": true,
+            "vR_INVESTIMENTO_PLANEJADO": 2690589237.88,
+            "vR_CUSTEIO_PLANEJADO": 3692636651.61,
+            "vR_INVESTIMENTO_EXECUTADO": 619117990.5,
+            "vR_CUSTEIO_EXECUTADO": 760611826.23,
+            "pC_INVESTIMENTO_REALIZADO": 23.01,
+            "pC_CUSTEIO_REALIZADO": 20.6
+          },
+          {
+            "nU_FILIAL": 2001,
+            "nU_FILIAL_PAI": 1885,
+            "sG_FILIAL": "GEAUS",
+            "iC_UNIDADE_PAI": false,
+            "vR_INVESTIMENTO_PLANEJADO": 3500000,
+            "vR_CUSTEIO_PLANEJADO": 5100000,
+            "vR_INVESTIMENTO_EXECUTADO": 1150000,
+            "vR_CUSTEIO_EXECUTADO": 1420000,
+            "pC_INVESTIMENTO_REALIZADO": 32.86,
+            "pC_CUSTEIO_REALIZADO": 27.84
+          },
+          {
+            "nU_FILIAL": 2002,
+            "nU_FILIAL_PAI": 1885,
+            "sG_FILIAL": "GETEL",
+            "iC_UNIDADE_PAI": false,
+            "vR_INVESTIMENTO_PLANEJADO": 2800000,
+            "vR_CUSTEIO_PLANEJADO": 4200000,
+            "vR_INVESTIMENTO_EXECUTADO": 970000,
+            "vR_CUSTEIO_EXECUTADO": 1280000,
+            "pC_INVESTIMENTO_REALIZADO": 34.64,
+            "pC_CUSTEIO_REALIZADO": 30.48
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/dashboard/execucao-contratual-detalhe": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nU_CONTRATO": 4,
+            "cO_CONTRATO": "04466/2025",
+            "nO_EMPRESA": "SERPRO - Serviço Federal de Processamento de Dados",
+            "sG_FILIAL": "GEAUS",
+            "icArtigo81": false,
+            "dT_INICIO": "2026-01-01T00:00:00",
+            "dT_TERMINO": "2026-12-31T00:00:00",
+            "dT_TERMINO_PRORROGACAO": "0001-01-01T00:00:00",
+            "vR_GLOBAL": 100000,
+            "vR_PAGO": 44000,
+            "vR_ULT_PRORROGACAO": 20000,
+            "vR_PAGO_ULT_PRORROGACAO": 9000,
+            "vR_ULT_FATURA_PAGA": 3200,
+            "vR_MEDIA_ESTIMADA": 2900,
+            "vR_MEDIA3_MESES": 3050,
+            "vR_SALDO_CONTRATO": 56000,
+            "dT_ULT_COMPETENCIA_PAGA": "07/2026",
+            "contratoVigenciaRubrica": [
+              {
+                "coRubrica": "TOTAL",
+                "vR_GLOBAL": 100000,
+                "vR_PAGO": 44000,
+                "vR_ULT_PRORROGACAO": 20000,
+                "vR_PAGO_ULT_PRORROGACAO": 9000,
+                "vR_ULT_FATURA_PAGA": 3200,
+                "vR_MEDIA_ESTIMADA": 2900,
+                "vR_MEDIA3_MESES": 3050,
+                "vR_SALDO_CONTRATO": 56000
+              }
+            ]
+          },
+          {
+            "nU_CONTRATO": 4544,
+            "cO_CONTRATO": "07500/2024",
+            "nO_EMPRESA": "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.",
+            "sG_FILIAL": "GETEL",
+            "icArtigo81": false,
+            "dT_INICIO": "2025-04-01T00:00:00",
+            "dT_TERMINO": "2027-03-31T00:00:00",
+            "dT_TERMINO_PRORROGACAO": "2027-09-30T00:00:00",
+            "vR_GLOBAL": 240000,
+            "vR_PAGO": 120000,
+            "vR_ULT_PRORROGACAO": 40000,
+            "vR_PAGO_ULT_PRORROGACAO": 18000,
+            "vR_ULT_FATURA_PAGA": 7200,
+            "vR_MEDIA_ESTIMADA": 6800,
+            "vR_MEDIA3_MESES": 7050,
+            "vR_SALDO_CONTRATO": 120000,
+            "dT_ULT_COMPETENCIA_PAGA": "07/2026",
+            "contratoVigenciaRubrica": [
+              {
+                "coRubrica": "TOTAL",
+                "vR_GLOBAL": 240000,
+                "vR_PAGO": 120000,
+                "vR_ULT_PRORROGACAO": 40000,
+                "vR_PAGO_ULT_PRORROGACAO": 18000,
+                "vR_ULT_FATURA_PAGA": 7200,
+                "vR_MEDIA_ESTIMADA": 6800,
+                "vR_MEDIA3_MESES": 7050,
+                "vR_SALDO_CONTRATO": 120000
+              }
+            ]
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/contrato/novos-contratos": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "totalRecords": 5,
+          "contratos": [
+            {
+              "nuContrato": 4,
+              "coContrato": "04466/2025",
+              "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
+              "sgFilial": "GEAUS",
+              "dtInicioContrato": "2026-01-01T00:00:00"
+            },
+            {
+              "nuContrato": 4544,
+              "coContrato": "07500/2024",
+              "noEmpresa": "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.",
+              "sgFilial": "GETEL",
+              "dtInicioContrato": "2025-04-01T00:00:00"
+            },
+            {
+              "nuContrato": 4630,
+              "coContrato": "12870/2024",
+              "noEmpresa": "TOTVS S.A.",
+              "sgFilial": "GESTI",
+              "dtInicioContrato": "2025-02-15T00:00:00"
+            },
+            {
+              "nuContrato": 3539,
+              "coContrato": "07231/2024",
+              "noEmpresa": "IBM Brasil Indústria, Máquinas e Serviços Ltda.",
+              "sgFilial": "GEINF",
+              "dtInicioContrato": "2024-10-01T00:00:00"
+            },
+            {
+              "nuContrato": 3102,
+              "coContrato": "04962/2024",
+              "noEmpresa": "Accenture do Brasil Ltda.",
+              "sgFilial": "GEMSE",
+              "dtInicioContrato": "2024-08-20T00:00:00"
+            }
+          ]
+        },
+        "errors": []
+      }
+    },
+    "/v1/dashboard/orcamento-filial-detalhe": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nU_RUBRICA": 101,
+            "cO_RUBRICA": "339039",
+            "vR_EXECUTADO": 550000
+          },
+          {
+            "nU_RUBRICA": 102,
+            "cO_RUBRICA": "449052",
+            "vR_EXECUTADO": 370000
+          },
+          {
+            "nU_RUBRICA": 103,
+            "cO_RUBRICA": "339040",
+            "vR_EXECUTADO": 240000
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/dashboard/orcamento-rubrica-detalhe": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nU_RUBRICA": 101,
+            "nU_CONTRATO": 4,
+            "cO_CONTRATO": "04466/2025",
+            "cO_RUBRICA": "339039",
+            "dT_INICIO_VIGENCIA": "2026-01-01T00:00:00",
+            "dT_FIM_VIGENCIA": "2026-12-31T00:00:00",
+            "vR_EXECUTADO": 210000
+          },
+          {
+            "nU_RUBRICA": 101,
+            "nU_CONTRATO": 4544,
+            "cO_CONTRATO": "07500/2024",
+            "cO_RUBRICA": "339039",
+            "dT_INICIO_VIGENCIA": "2025-04-01T00:00:00",
+            "dT_FIM_VIGENCIA": "2027-03-31T00:00:00",
+            "vR_EXECUTADO": 340000
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/dashboard/2026/1/2001/101/4": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
+            "coContrato": "04466/2025",
+            "coRubrica": "339039",
+            "dePeriodo": "07/2026",
+            "noPagamentoTipo": "Fatura",
+            "coNumeroAteste": "AT-10231",
+            "dtPagamentoEfetivo": "2026-07-22T00:00:00",
+            "nuAno": 2026,
+            "vrExecutado": 115000
+          },
+          {
+            "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
+            "coContrato": "04466/2025",
+            "coRubrica": "339039",
+            "dePeriodo": "06/2026",
+            "noPagamentoTipo": "Fatura",
+            "coNumeroAteste": "AT-10184",
+            "dtPagamentoEfetivo": "2026-06-21T00:00:00",
+            "nuAno": 2026,
+            "vrExecutado": 95000
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/resumo-planejamento": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nuPlanejamento": 101,
+            "coExercicio": 2026,
+            "capexPlanejado": 3500000,
+            "capexExecutado": 1200000,
+            "opexPlanejado": 5200000,
+            "opexExecutado": 1700000,
+            "dtAbertura": "2026-01-02T00:00:00",
+            "dtFechamento": null,
+            "statusPlanejamento": "Aberta",
+            "noStatusExercicio": "Aberta",
+            "nuPlanejamentoTipo": 1,
+            "dePlanejamentoTipo": "1 - Programação",
+            "ordem": 1,
+            "percOpex": "32.69",
+            "percCapex": "34.29"
+          },
+          {
+            "nuPlanejamento": 102,
+            "coExercicio": 2026,
+            "capexPlanejado": 3600000,
+            "capexExecutado": 1250000,
+            "opexPlanejado": 5400000,
+            "opexExecutado": 1900000,
+            "dtAbertura": "2026-05-01T00:00:00",
+            "dtFechamento": null,
+            "statusPlanejamento": "Criado",
+            "noStatusExercicio": "Criado",
+            "nuPlanejamentoTipo": 2,
+            "dePlanejamentoTipo": "2 - Reprogramação",
+            "ordem": 2,
+            "percOpex": "35.19",
+            "percCapex": "34.72"
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/novo-exercicio": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nuPlanejamento": 103,
+            "coExercicio": 2027,
+            "capexPlanejado": 4100000,
+            "capexExecutado": 0,
+            "opexPlanejado": 6100000,
+            "opexExecutado": 0,
+            "dtAbertura": "2027-01-01T00:00:00",
+            "dtFechamento": null,
+            "statusPlanejamento": "Criado",
+            "noStatusExercicio": "Criado",
+            "nuPlanejamentoTipo": 1,
+            "dePlanejamentoTipo": "1 - Programação",
+            "ordem": 1,
+            "percOpex": "0",
+            "percCapex": "0"
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/atualizar-planejamento": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nuPlanejamento": 104,
+            "coExercicio": 2026,
+            "capexPlanejado": 3600000,
+            "capexExecutado": 1400000,
+            "opexPlanejado": 5400000,
+            "opexExecutado": 2100000,
+            "dtAbertura": "2026-06-01T00:00:00",
+            "dtFechamento": null,
+            "statusPlanejamento": "Criado",
+            "noStatusExercicio": "Criado",
+            "nuPlanejamentoTipo": 2,
+            "dePlanejamentoTipo": "2 - Reprogramação",
+            "ordem": 3,
+            "percOpex": "38.89",
+            "percCapex": "38.89"
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/status-planejamento": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuPlanejamentoStatus": 5, "noPlanejamentoStatus": "Criado" },
+          { "nuPlanejamentoStatus": 7, "noPlanejamentoStatus": "Revisado" },
+          { "nuPlanejamentoStatus": 9, "noPlanejamentoStatus": "Ajustado" },
+          { "nuPlanejamentoStatus": 3, "noPlanejamentoStatus": "Validado" },
+          { "nuPlanejamentoStatus": 4, "noPlanejamentoStatus": "Cancelado" }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/alterar-status-lote-planejamento-item": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": true,
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/dashboard": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nuPlanejamento": 102,
+            "nuExercicioOrcamento": 2026,
+            "coExercicio": 2026,
+            "noRubricaTipo": "CAPEX",
+            "vrLimite": 3500000,
+            "vrSolicitado": "2900000",
+            "vrExecutado": 1200000,
+            "vrDiferenca": 600000,
+            "pcEp": 34.29
+          },
+          {
+            "nuPlanejamento": 102,
+            "nuExercicioOrcamento": 2026,
+            "coExercicio": 2026,
+            "noRubricaTipo": "OPEX",
+            "vrLimite": 5200000,
+            "vrSolicitado": "4300000",
+            "vrExecutado": 1700000,
+            "vrDiferenca": 900000,
+            "pcEp": 32.69
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/listar-itens-planejados": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "contratos": [
+            {
+              "nuOrc": 7001,
+              "nuPlanejamento": 102,
+              "nuExercicioOrcamento": 2026,
+              "coExercicio": 2026,
+              "nuContrato": 4,
+              "coContrato": "04466/2025",
+              "coFilial": "1885",
+              "sgFilial": "GEAUS",
+              "nuFilial": 2001,
+              "noObjeto": "Prestacao de servicos de nuvem e sustentacao.",
+              "nuStatusPlanejamento": 5,
+              "noStatus": "Criado",
+              "nuTipoDemanda": 1,
+              "deDemanda": "Nova Contratacao",
+              "nuPlanejamentoItem": 90001,
+              "nuPlanejamentoTipo": 2,
+              "dePlanejamentoTipo": "2 - Reprogramação",
+              "nuSap": null,
+              "deSap": null,
+              "deUnidadeDemandante": "GEAUS",
+              "nuObjetivoPdtic": 10,
+              "deObjetivoPdtic": "Cloud e Infraestrutura",
+              "nuObjetivoPei": 20,
+              "deObjetivoPei": "Modernizacao",
+              "deJustificativa": "Demanda recorrente da unidade.",
+              "deObservacao": "Mock item 1",
+              "vrPlanejamento": 750000,
+              "coMatricula": "p723401",
+              "dhCadastro": "2026-08-01T10:00:00"
+            },
+            {
+              "nuOrc": 7002,
+              "nuPlanejamento": 102,
+              "nuExercicioOrcamento": 2026,
+              "coExercicio": 2026,
+              "nuContrato": 4544,
+              "coContrato": "07500/2024",
+              "coFilial": "1885",
+              "sgFilial": "GETEL",
+              "nuFilial": 2002,
+              "noObjeto": "Servicos de telecom e conectividade.",
+              "nuStatusPlanejamento": 7,
+              "noStatus": "Revisado",
+              "nuTipoDemanda": 2,
+              "deDemanda": "Alteracao Contratual",
+              "nuPlanejamentoItem": 90002,
+              "nuPlanejamentoTipo": 2,
+              "dePlanejamentoTipo": "2 - Reprogramação",
+              "nuSap": 123456,
+              "deSap": "Lote SAP 2026/08",
+              "deUnidadeDemandante": "GETEL",
+              "nuObjetivoPdtic": 11,
+              "deObjetivoPdtic": "Conectividade",
+              "nuObjetivoPei": 21,
+              "deObjetivoPei": "Eficiencia",
+              "deJustificativa": "Ajuste de escopo.",
+              "deObservacao": "Mock item 2",
+              "vrPlanejamento": 980000,
+              "coMatricula": "p723401",
+              "dhCadastro": "2026-08-02T10:00:00"
+            }
+          ],
+          "listaUnidadeDemandante": ["GEAUS", "GETEL", "GESTI"],
+          "listaNuOrc": ["7001", "7002"],
+          "listaContrato": ["04466/2025", "07500/2024"],
+          "listaTipo": ["Nova Contratacao", "Alteracao Contratual"],
+          "listaObjeto": ["Prestacao de servicos de nuvem e sustentacao.", "Servicos de telecom e conectividade."],
+          "listaDigital": ["SEM CLASSIFICAÇÃO", "Nuvem", "Dados"],
+          "listaStatus": ["Criado", "Revisado"],
+          "listaDiretoria": ["DIRTI"],
+          "listaSuperintendencia": ["SUGTI"],
+          "totalRegistros": 2
+        },
+        "errors": []
+      }
+    },
+    "/v1/Contrato/lista-contrato-planejamento": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nuContrato": 4,
+            "coContrato": "04466/2025",
+            "nuFilial": 2001,
+            "coFilial": "1885",
+            "sgFilial": "GEAUS",
+            "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
+            "noObjeto": "Prestacao de servicos de nuvem e sustentacao.",
+            "nuObjetivoPdtic": 10,
+            "deObjetivoPdtic": "Cloud e Infraestrutura",
+            "nuObjetivoPei": 20,
+            "noObjetivoPei": "Modernizacao"
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/planejamento-item-dados-de-dominio": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "listaTiposModalidade": [
+            { "id": 1, "descricao": "Pregão" },
+            { "id": 2, "descricao": "Inexigibilidade" }
+          ],
+          "listaUnidadesDemandantes": [
+            { "nuFilial": 2001, "nuFilialPai": 1885, "coFilial": "1885", "sgFilial": "GEAUS", "dhExclusao": null },
+            { "nuFilial": 2002, "nuFilialPai": 1885, "coFilial": "1885", "sgFilial": "GETEL", "dhExclusao": null }
+          ],
+          "listaDigital": [
+            { "nuTipoDigital": 1, "noTipoDigital": "Nuvem" },
+            { "nuTipoDigital": 2, "noTipoDigital": "Dados" }
+          ],
+          "listaRubricas": [
+            { "nuRubrica": 101, "coRubrica": "339039", "nuRubricaTipo": 1, "dhExclusao": null, "deRubrica": "Outros Servicos" },
+            { "nuRubrica": 102, "coRubrica": "449052", "nuRubricaTipo": 2, "dhExclusao": null, "deRubrica": "Equipamentos" }
+          ],
+          "listaTiposPlanejamento": [
+            { "nuPlanejamentoTipo": 1, "dePlanejamentoTipo": "1 - Programação" },
+            { "nuPlanejamentoTipo": 2, "dePlanejamentoTipo": "2 - Reprogramação" }
+          ],
+          "listaTiposDemanda": [
+            { "nuDemanda": 1, "deDemanda": "Nova Contratacao" },
+            { "nuDemanda": 2, "deDemanda": "Alteracao Contratual" }
+          ],
+          "listaStatusPlanejamento": [
+            { "nuPlanejamentoStatus": 5, "noPlanejamentoStatus": "Criado" },
+            { "nuPlanejamentoStatus": 7, "noPlanejamentoStatus": "Revisado" },
+            { "nuPlanejamentoStatus": 9, "noPlanejamentoStatus": "Ajustado" },
+            { "nuPlanejamentoStatus": 3, "noPlanejamentoStatus": "Validado" },
+            { "nuPlanejamentoStatus": 4, "noPlanejamentoStatus": "Cancelado" }
+          ],
+          "listaObjetivosEstrategicosPdti": [
+            { "nuObjetivoEstrategico": 10, "coObjetivoEstrategico": "PDTI-10", "deObjetivoEstrategico": "Cloud e Infraestrutura", "coObjetivoDeObjetivoEstrategico": null }
+          ],
+          "listaObjetivosEstrategicosPei": [
+            { "nuObjetivoEstrategico": 20, "coObjetivoEstrategico": "PEI-20", "deObjetivoEstrategico": "Modernizacao", "coObjetivoDeObjetivoEstrategico": null }
+          ],
+          "listaContratos": [
+            {
+              "nuContrato": "4",
+              "coContrato": "04466/2025",
+              "coFilial": "1885",
+              "nuFilial": 2001,
+              "sgFilial": "GEAUS",
+              "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
+              "noObjeto": "Prestacao de servicos de nuvem e sustentacao.",
+              "nuObjetivoPdtic": 10,
+              "deObjetivoPdtic": "Cloud e Infraestrutura",
+              "nuObjetivoPei": 20,
+              "noObjetivoPei": "Modernizacao"
+            }
+          ]
+        },
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/detalhar-itens-planejados-novo": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "nuPlanejamentoItem": 90001,
+          "nuOrc": 7001,
+          "nuPlanejamento": 102,
+          "nuContrato": 4,
+          "coContrato": "04466/2025",
+          "nuContratoOriginal": null,
+          "coContratoOriginal": null,
+          "nuSap": null,
+          "deSap": null,
+          "nuExercicioOrcamento": 2026,
+          "coExercicio": 2026,
+          "nuFilial": 2001,
+          "coFilial": "1885",
+          "deUnidadeDemandante": "GEAUS",
+          "nuStatusPlanejamentoItem": 5,
+          "noStatus": "Criado",
+          "nuTipoDemanda": 1,
+          "deDemanda": "Nova Contratacao",
+          "nuPlanejamentoTipo": 2,
+          "dePlanejamentoTipo": "2 - Reprogramação",
+          "deObjeto": "Prestacao de servicos de nuvem e sustentacao.",
+          "nuObjetivoPdtic": 10,
+          "deObjetivoPdtic": "Cloud e Infraestrutura",
+          "nuObjetivoPei": 20,
+          "deObjetivoPei": "Modernizacao",
+          "deJustificativa": "Demanda recorrente da unidade.",
+          "deObservacao": "Item gerado para testes de mock",
+          "icServicoContinuo": "SIM",
+          "nuTipoDigital": 1,
+          "nuUsuario": 1,
+          "coMatricula": 723401,
+          "dhCadastro": "2026-08-10T10:00:00",
+          "icInclusaoManual": false,
+          "nuModalidade": 1,
+          "dePrazoVigencia": "12 meses",
+          "dtPrevisaoSiclg": "2026-09-10",
+          "vrGlobal": "1200000",
+          "previsoesDesembolso": [
+            {
+              "nuPrevisaoDesembolso": 1,
+              "nuPlanejamentoItem": 90001,
+              "nuRubrica": 101,
+              "vrJaneiro": 10000,
+              "vrFevereiro": 10000,
+              "vrMarco": 10000,
+              "vrAbril": 10000,
+              "vrMaio": 10000,
+              "vrJunho": 10000,
+              "vrJulho": 10000,
+              "vrAgosto": 10000,
+              "vrSetembro": 10000,
+              "vrOutubro": 10000,
+              "vrNovembro": 10000,
+              "vrDezembro": 10000,
+              "vrPlanejado": 120000
+            }
+          ]
+        },
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/obter-historico-planejamento-item": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "listaHistorico": [
+            {
+              "nuPlanejamento": 102,
+              "nuHistorico": 1,
+              "dhCadastro": "2026-08-10T10:00:00",
+              "nuPlanejamentoItem": 90001,
+              "nuPrevisaoDesembolso": 1,
+              "deRegistroAntigo": "Status: Criado",
+              "deRegistroNovo": "Status: Revisado",
+              "descricaoRubrica": "339039 - Outros Servicos",
+              "nuUsuarioAlteracao": 1,
+              "noUsuarioAlteracao": "p723401",
+              "sgFilial": "GEAUS",
+              "deObservacao": "Ajuste de planejamento",
+              "tpOperacao": "ALTERACAO",
+              "listaDiffs": []
+            }
+          ],
+          "totalRegistros": 1
+        },
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/atualizar-planejamento-item": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": true,
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/inativar-planejamento-item": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": true,
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/novo-planejamento-item": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": true,
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentario/obter-atualizacao-planejamento-item-excel": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "message": "Mock de exportacao SAP configurado."
+        },
+        "errors": []
+      }
+    },
+    "/v1/PlanejamentoOrcamentarioV/listar-itens-planejados-excel": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "message": "Mock de exportacao de itens planejados configurado."
         },
         "errors": []
       }

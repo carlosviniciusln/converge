@@ -1,10 +1,10 @@
 <div class="logo">
-  <a href="/#" class="simple-text logo-mini">
+  <a routerLink="/dashboard" class="simple-text logo-mini">
     <div class="logo-img">
       <img src="./assets/img/logo.png" />
     </div>
   </a>
-  <a href="/#" class="simple-text logo-normal"> GVC:<br>Gestão Estratégica<br>de Contratos,<br>Planejamento<br>e Orçamento
+  <a routerLink="/dashboard" class="simple-text logo-normal"> GVC:<br>Gestão Estratégica<br>de Contratos,<br>Planejamento<br>e Orçamento
   </a>
 </div>
 <div class="sidebar-wrapper">
@@ -13,7 +13,7 @@
       <a *ngIf="
           !menuItem.checkForAccess ||
           (menuItem.checkForAccess && hasAccess(menuItem.path))
-        " [attr.href]="'/#' + menuItem.path">
+        " [routerLink]="[menuItem.path]">
         <i class="tim-icons  {{ menuItem.icon }}"></i>
         <p>{{ menuItem.title }}</p>
       </a>
