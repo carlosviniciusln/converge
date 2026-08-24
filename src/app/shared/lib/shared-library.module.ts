@@ -5,9 +5,6 @@ import { TagModule } from 'primeng/tag';
 import { InputTextModule } from 'primeng/inputtext';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-
-//DSC CAIXA
-import { DscBreadcrumbComponent, DscBreadcrumbItem } from 'sidsc-components/dsc-breadcrumb';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 
@@ -22,9 +19,6 @@ imports:[
 
   // ANGULAR MATERIAL
 
-  // DSC CAIXA
-  DscBreadcrumbComponent,
-  // DscBreadcrumbItem
 ],
 exports:[
 
@@ -39,11 +33,6 @@ exports:[
     CheckboxModule,
 
   // ANGULAR MATERIAL
-
-
-  // DSC CAIXA
-
-  DscBreadcrumbComponent
 
 
 ]

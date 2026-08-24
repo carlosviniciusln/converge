@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe, registerLocaleData } from '@angular/common';
@@ -20,6 +20,7 @@ import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { DropdownModule } from 'primeng/dropdown';
+import { CheckboxModule } from 'primeng/checkbox';
 
 import { SinteticoComponent } from 'src/app/pages/relatorio/informe-mensal/sintetico/sintetico.component';
 import { UsuarioComponent } from 'src/app/pages/usuario/usuario.component';
@@ -36,7 +37,6 @@ import { PlanejamentoComponent } from 'src/app/pages/planejamento/planejamento.c
 import { KeysPipe } from 'src/app/core/pipes/key-pipe';
 import { SortByPipe } from 'src/app/core/pipes/sort-by-pipe';
 import { EvolucaoFinanceiraComponent } from 'src/app/pages/contrato/evolucao-financeira/evolucao-financeira.component';
-import { GraficoComponent } from 'src/app/pages/contrato/evolucao-financeira/demais-tipos/grafico/grafico.component';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { EmpenhoComponent } from 'src/app/pages/relatorio/empenho/empenho.component';
 import { MatMenuModule } from '@angular/material/menu';
@@ -44,7 +44,6 @@ import { ContratoDetalheComponent } from 'src/app/pages/contrato/contrato-detalh
 import { ContratoCadastroComponent } from 'src/app/pages/contrato/contrato-cadastro/contrato-cadastro.component';
 import { RetencaoCadastroComponent } from 'src/app/pages/contrato/retencao/retencao-cadastro.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NgxMaskModule } from 'ngx-mask';
 import { PagamentoCadastroComponent } from 'src/app/pages/contrato/pagamento-cadastro/pagamento-cadastro.component';
 import { EditarPagamentoComponent } from 'src/app/pages/contrato/contrato-pendente/editar-pagamento/editar-pagamento.component';
 import { ValoresRubricaComponent } from 'src/app/pages/dashboard/valores-rubrica/valores-rubrica.component';
@@ -77,7 +76,6 @@ import { ArtigoPagamentoComponent } from 'src/app/pages/contrato/artigo/artigo-p
 import { GraficoArtigoComponent } from 'src/app/pages/contrato/artigo/grafico-artigo/grafico-artigo.component';
 import { PlanejamentoOrcamentarioComponent } from 'src/app/pages/planejamento/planejamento-lista/planejamento-orcamentario.component';
 import { ConsumoArpComponent } from 'src/app/pages/relatorio/consumo-arp/consumo-arp.component';
-import { DetalheFinanceiroComponent } from 'src/app/pages/contrato/evolucao-financeira/detalhe-financeiro/detalhe-financeiro.component';
 import { MatListModule } from '@angular/material/list';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
@@ -89,11 +87,9 @@ import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardV2Component } from './dashboard-v2/dashboard-v2.component';
 import { ContratoComponent } from './contrato/contrato.component';
-import { PagamentoComponent } from './relatorio/pagamento/pagamento.component';
 import { AnaliticoComponent } from './relatorio/informe-mensal/analitico/analitico.component';
 import { PagesRoutes } from '../routing/pages.routing';
 import { DotacaoComponent } from './dotacao/dotacao.component';
-import { SharedLibraryModule } from '../shared/lib/shared-library.module';
 import { DotacaoDoadoresComponent } from './dotacao/dotacao-doadores/dotacao-doadores.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { PlanejamentoCadastroLegadoComponent } from './planejamento/planejamento-cadastro-legado/planejamento-cadastro-legado.component';
@@ -143,7 +139,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     PickListModule,
     MatTooltipModule,
     Select2Module,
-    NgxMaskModule.forRoot(),
     MatTabsModule,
     CurrencyMaskModule,
     FileUploadModule,
@@ -152,16 +147,16 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     CardModule,
     TableModule,
     DropdownModule,
+    CheckboxModule,
     FormsModule,
     PaginatorModule,
     MenuModule,
-    SharedLibraryModule
+    DemaisTiposComponent
   ],
   declarations: [
     DashboardComponent,
     DashboardV2Component,
     ContratoComponent,
-    PagamentoComponent,
     ContratoVigenciaComponent,
     PlanejamentoComponent,
     PlanejamentoCadastroComponent,
@@ -175,7 +170,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     EvolucaoFinanceiraAquisicaoComponent,
     GraficoAquisicaoComponent,
     GraficoAquisicaoGeralComponent,
-    GraficoComponent,
     EmpenhoComponent,
     ContratoDetalheComponent,
     ContratoCadastroComponent,
@@ -189,7 +183,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     AquisicaoComponent,
     GraficoAquisComponent,
     GraficoGeralComponent,
-    DemaisTiposComponent,
     CartaQuitacaoCadastroComponent,
     MensalizacaoEditarComponent,
     KeysPipe,
@@ -200,7 +193,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ArtigoPagamentoComponent,
     GraficoArtigoComponent,
     ConsumoArpComponent,
-    DetalheFinanceiroComponent,
     FormatDiffPipe,
     DotacaoComponent,
     DotacaoDoadoresComponent,
@@ -221,6 +213,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig },
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
   bootstrap: [PagesComponent],
 })
 export class PagesModule { }

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -7,12 +8,18 @@ import { Endpoints } from 'src/app/models/enums/endpoints';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { EvolucaoFinanceira } from 'src/app/models/generics/evolucao-financeira';
 import { Gcptb002ContratoTipo } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+import { TableModule } from 'primeng/table';
+import { GraficoComponent } from '../demais-tipos/grafico/grafico.component';
 
 
 @Component({
   selector: 'app-detalhe-financeiro',
   templateUrl: './detalhe-financeiro.component.html',
-  styleUrls: ['./detalhe-financeiro.component.scss']
+  styleUrls: ['./detalhe-financeiro.component.scss'],
+  standalone: true,
+  imports: [CommonModule, TableModule, ButtonModule, RippleModule, GraficoComponent]
 })
 export class DetalheFinanceiroComponent implements OnInit {
 

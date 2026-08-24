@@ -110,13 +110,23 @@ export class ContratoComponent implements OnInit {
       const response = await this.apiService.get<ApiResponse<Gcpvw045ListarContratosResponse>>
         (`${Endpoints.URL_CONTRATOS}/listar-contratos`, filtrosLimpos);
 
-      this.contratos = response?.data?.contratos;
-      this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
-      this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
-      this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
-      this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
-      this.selectTiposStatus = response?.data?.listaStatus.sort((a, b) => Number(b) - Number(a)).map(s => ({ label: s ? 'Ativo' : 'Encerrado', value: s }));
-      this.quantidadeTotal = response.data.totalRecords;
+      const data = response?.data;
+      const contratos = data?.contratos ?? [];
+      const listaContrato = data?.listaContrato ?? [];
+      const listaFornecedor = data?.listaFornecedor ?? [];
+      const listaTipo = data?.listaTipo ?? [];
+      const listaGestor = data?.listaGestor ?? [];
+      const listaStatus = data?.listaStatus ?? [];
+
+      this.contratos = contratos;
+      this.selectTiposContrato = listaContrato.map(c => ({ label: c, value: c }));
+      this.selectTiposFornecedor = listaFornecedor.map(f => ({ label: f, value: f }));
+      this.selectTiposTpContrato = listaTipo.map(t => ({ label: t, value: t }));
+      this.selectTiposGestor = listaGestor.map(g => ({ label: g, value: g }));
+      this.selectTiposStatus = listaStatus
+        .sort((a, b) => Number(b) - Number(a))
+        .map(s => ({ label: s ? 'Ativo' : 'Encerrado', value: s }));
+      this.quantidadeTotal = data?.totalRecords ?? 0;
       this.loading = false;
     } catch (error) {
       this.loading = false;

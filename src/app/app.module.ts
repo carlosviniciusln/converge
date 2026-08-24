@@ -7,7 +7,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AppComponent } from "./app.component";
 //import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRouting } from "./routing/app.routing";
@@ -44,7 +43,6 @@ import { ModalPlanejamentoComponent } from "./pages/planejamento/planejamento-li
 import { PlanejamentoGeralComponent } from './pages/planejamento/planejamento-geral/planejamento-geral.component';
 import { PlanejamentoAbaRubricaComponent } from "./pages/planejamento/planejamento-aba-rubrica/planejamento-aba-rubrica.component";
 import {MatTableModule} from '@angular/material/table';
-import { SharedLibraryModule } from "./shared/lib/shared-library.module";
 import { AtesteComponent } from './pages/ateste/ateste.component';
 import { NavbarAtesteComponent } from './pages/ateste/navbar-ateste/navbar-ateste.component';
 import { DetalharAtesteComponent } from './pages/ateste/detalhar-ateste/detalhar-ateste.component';
@@ -73,12 +71,9 @@ import { KeycloakInitService } from "../keycloak.init";
 import { KeycloakService } from "keycloak-angular";
 import { CustomKeycloakInterceptor } from "./core/interceptors/keycloak.interceptor";
 import { DialogService } from "primeng/dynamicdialog";
+import { MockBackendInterceptor } from "./interceptors/mock-backend.interceptor";
 
 registerLocaleData(ptBr);
-
-const maskConfig: Partial<IConfig> = {
-  validation: false,
-};
 
 export function initializeKeycloak(keycloakInit: KeycloakInitService){
   return () => keycloakInit.init();
@@ -113,9 +108,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     PaginatorModule,
     MatToolbarModule,MatTableModule,
     FileUploadModule,
-    MenuModule,
-    SharedLibraryModule,
-    NgxMaskModule.forRoot(maskConfig)
+    MenuModule
   ],
   exports: [
     //CommonModule,
@@ -166,6 +159,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MockBackendInterceptor, multi: true },
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     KeycloakInitService,
     KeycloakService,

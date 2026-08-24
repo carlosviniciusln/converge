@@ -17,6 +17,13 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { DetalheFinanceiroComponent } from '../detalhe-financeiro/detalhe-financeiro.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+import { TableModule } from 'primeng/table';
+import { GraficoComponent } from './grafico/grafico.component';
 
 interface GraficoSerie {
   name: string;
@@ -52,6 +59,8 @@ interface RubricaAgrupada {
   selector: 'app-demais-tipos',
   templateUrl: './demais-tipos.component.html',
   styleUrls: ['./demais-tipos.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, MatTabsModule, TableModule, ButtonModule, RippleModule, GraficoComponent, DetalheFinanceiroComponent],
 
 })
 export class DemaisTiposComponent implements OnInit, OnChanges {

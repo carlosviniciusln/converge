@@ -5,6 +5,7 @@
     "ignoreDeprecations": "6.0",
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "rootDir": "./src",
     "paths": {
       "sidsc-components/dsc-header": ["sidsc-stubs/dsc-header/index.ts"],
       "sidsc-components/dsc-sidenav": ["sidsc-stubs/dsc-sidenav/index.ts"],
@@ -27,7 +28,6 @@
       "sidsc-components/dsc-chips": ["sidsc-stubs/dsc-chips/index.ts"]
     },
     "forceConsistentCasingInFileNames": true,
-    "ignoreDeprecations": "6.0",
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,

@@ -1,11 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { Series } from 'src/app/models/generics/evolucao-financeira';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 @Component({
   selector: 'app-grafico',
   templateUrl: './grafico.component.html',
-  styleUrls: ['./grafico.component.scss']
+  styleUrls: ['./grafico.component.scss'],
+  standalone: true,
+  imports: [CommonModule, HighchartsChartModule]
 })
 export class GraficoComponent implements OnInit {
 
