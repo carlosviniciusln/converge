@@ -30,6 +30,7 @@ import { MensalizacaoComponent } from './pages/contrato/mensalizacao-exec-orcame
 import { ValoresExecutadosComponent } from './pages/valores-executados/valores-executados.component';
 import { ContratoPendenteComponent } from './pages/contrato/contrato-pendente/contrato-pendente.component'
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
 import { HighchartsChartModule } from "highcharts-angular";
 import { MatIconModule } from '@angular/material/icon';
 import { MensalizacaoEditarComponent } from './pages/contrato/mensalizacao-exec-orcamentaria/mensalizacao-editar/mensalizacao-editar.component';
@@ -83,6 +84,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
   imports: [
     BrowserModule,
     MatMenuModule,
+    MatDialogModule,
     CommonModule,
     CheckboxModule,
     BrowserAnimationsModule,
