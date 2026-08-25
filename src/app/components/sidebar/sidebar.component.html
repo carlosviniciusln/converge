@@ -8,6 +8,12 @@
   </a>
 </div>
 <div class="sidebar-wrapper">
+  <div class="mobile-menu-header">
+    <span>Menu</span>
+    <button type="button" aria-label="Fechar menu" (click)="sidenav.close()">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+  </div>
   <ul class="nav">
     <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{ menuItem.class }} nav-item">
       <a *ngIf="
@@ -31,18 +37,18 @@
               <p>Contratos</p>
             </a>
           </li>
-          <li routerlinkactive="active" class="nav-item">
+          <!-- <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/contrato/atas">
               <i class="tim-icons"></i>
               <p>Atas de Registro</p>
             </a>
-          </li>
-          <li routerlinkactive="active" class="nav-item">
+          </li> -->
+          <!-- <li routerlinkactive="active" class="nav-item">
             <a class="nav-link" href="#/contrato/artigos">
               <i class="tim-icons"></i>
               <p>Pagamentos Art.81</p>
             </a>
-          </li>
+          </li> -->
           <!--li routerlinkactive="active" class="nav-item">
             <a data-toggle="collapse" class="nav-link" (click)="isContratoCollapsedArt81 = !isContratoCollapsedArt81">
               <i class="tim-icons"></i>

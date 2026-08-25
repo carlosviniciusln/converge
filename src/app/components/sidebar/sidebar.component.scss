@@ -1,3 +1,48 @@
-#relatorios{
-    padding-left: 50px;
+#relatorios {
+    padding-left: 16px;
+
+    .nav {
+        border-left: 1px solid rgba(255, 255, 255, 0.24);
+        padding-left: 8px;
+    }
+
+    .nav-link {
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: none;
+    }
+}
+
+.mobile-menu-header {
+    display: none;
+}
+
+@media (max-width: 991px) {
+    .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 48px;
+        margin: -4px 0 10px;
+        padding: 0 8px 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 0;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 18px;
+        }
+    }
 }

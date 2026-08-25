@@ -1,7 +1,14 @@
-<div class="wrapper">
+<div class="wrapper" [class.nav-open]="sidenav.opened$ | async">
     <div class="sidebar">
       <app-sidebar></app-sidebar>
     </div>
+    <button
+      *ngIf="sidenav.opened$ | async"
+      class="sidebar-backdrop"
+      type="button"
+      aria-label="Fechar menu de navegação"
+      (click)="sidenav.close()">
+    </button>
     <div class="main-panel">
       <app-navbar></app-navbar>
       <router-outlet></router-outlet>

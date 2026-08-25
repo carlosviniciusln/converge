@@ -59,9 +59,19 @@ button{
 
 .sidebar .sidebar-wrapper,.off-canvas-sidebar .sidebar-wrapper {
     width: 100%;
-    min-height: 100%;
-    max-height: calc(100vh - 705px);
+  height: 100%;
+  min-height: 0;
+  max-height: none;
     z-index: 4;
     position: relative;
-    overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+@media (max-width: 991px) {
+  .main-panel .content {
+    width: 100%;
+    padding: 16px !important;
+    box-sizing: border-box;
+  }
 }

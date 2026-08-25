@@ -126,8 +126,8 @@
   }
 
   &--pct {
-    border-top-color: #10b981;
-    background: #f0fdf8;
+    border-top-color: #2D8AD8;
+    background: #E5F1FC;
   }
 
   span{
@@ -155,7 +155,7 @@
 }
 
 .kpi-card--pct .kpi-value {
-  color: #059669;
+  color: #005CA9;
 }
 
 /* ── RESPONSIVE ───────────────────────────────────────────── */
@@ -265,8 +265,8 @@
   }
 
   .kpi-group-header--opex & {
-    background: #d1fae5;
-    color: #059669;
+    background: #E5F1FC;
+    color: #005CA9;
   }
 }
 

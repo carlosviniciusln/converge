@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SidenavService } from '../services/sidenav.service';
 
 @Component({
   selector: 'app-pages',
@@ -8,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class PagesComponent implements OnInit {
   public sidebarColor: string = "red";
 
-  constructor() {}
+  constructor(public sidenav: SidenavService) {}
   changeSidebarColor(color: string){
     var sidebar = document.getElementsByClassName('sidebar')[0];
     var mainPanel = document.getElementsByClassName('main-panel')[0];

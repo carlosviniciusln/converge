@@ -9,6 +9,7 @@ import {
   TokenStorageService,
 } from 'src/app/shared/services/token-storage.service';
 import { Endpoints } from 'src/app/models/enums/endpoints';
+import { SidenavService } from 'src/app/services/sidenav.service';
 
 declare interface RouteInfo {
   path: string;
@@ -75,7 +76,11 @@ export class SidebarComponent implements OnInit {
     NoTipoArp: null
   };
 
-  constructor(private apiService: ApiService,public token: TokenStorageService) {
+  constructor(
+    private apiService: ApiService,
+    public token: TokenStorageService,
+    public sidenav: SidenavService
+  ) {
     this.concedeAccess();
   }
 
