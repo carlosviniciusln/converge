@@ -1,15 +1,8 @@
-<div style="
-    background-image: url('../../../../assets/img/BG-novoscontratos.png');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    width: 1000px;
-    margin-left: -40%;
-  ">
+<div class="pending-modal">
   <div class="content">
 
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')" style="margin-top: 24px !important; margin-right: 24px;">
-      <span aria-hidden="true">x</span>
+    <button type="button" class="close" aria-label="Fechar" (click)="activeModal.dismiss('Cross click')">
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
 
     <div class="row divCenter">
@@ -25,6 +18,7 @@
         </div>
         <div class="row">
           <div class="col-12">
+            <div class="table-scroll">
             <p-table #dt [value]="contratos" [(selection)]="selectedContratos" dataKey="id"
               [rows]="filtroRegistros.pageSize" [paginator]="true" [loading]="loading" [totalRecords]="quantidadeTotal"
               [rowsPerPageOptions]="[5, 10, 20]" [lazy]="true" (onLazyLoad)="loadPage($event)"
@@ -84,6 +78,7 @@
                 <div class="table-transparent"></div>
               </ng-template>
             </p-table>
+            </div>
           </div>
         </div>
       </div>

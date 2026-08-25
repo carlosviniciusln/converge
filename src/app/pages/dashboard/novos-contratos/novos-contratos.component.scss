@@ -41,3 +41,70 @@
   text-align: center !important;
   vertical-align: middle !important;
 }
+
+.pending-modal {
+  width: 100%;
+  min-height: min(680px, calc(100dvh - 16px));
+  max-height: calc(100dvh - 16px);
+  overflow-y: auto;
+  background-image: url('../../../../assets/img/BG-novoscontratos.png');
+  background-size: cover;
+  background-position: center;
+
+  .content {
+    width: 100%;
+    padding: 20px 24px 24px;
+    box-sizing: border-box;
+  }
+
+  .close {
+    position: sticky;
+    top: 8px;
+    z-index: 2;
+    float: right;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    background: rgba(0, 42, 77, 0.72);
+    color: #fff;
+    opacity: 1;
+  }
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  p-table {
+    display: block;
+    min-width: 680px;
+  }
+}
+
+@media (max-width: 600px) {
+  .pending-modal {
+    min-height: calc(100dvh - 16px);
+
+    .content {
+      padding: 12px;
+    }
+  }
+
+  .texto1 {
+    padding: 10px 44px 8px 0;
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .texto2 {
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
