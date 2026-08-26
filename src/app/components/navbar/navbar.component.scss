@@ -57,6 +57,12 @@
   }
 }
 
+@media (min-width: 992px) {
+  .custom-header__toggle {
+    display: none;
+  }
+}
+
 // ── Logo ──────────────────────────────────────────────────────
 .custom-header__brand {
   display: inline-flex;

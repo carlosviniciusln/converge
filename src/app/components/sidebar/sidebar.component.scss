@@ -1,15 +1,32 @@
-#relatorios {
+:host .sidebar-wrapper > .nav > .nav-item > .collapse,
+:host .sidebar-wrapper > .nav > .nav-item > .collapsing {
     padding-left: 16px;
 
-    .nav {
-        border-left: 1px solid rgba(255, 255, 255, 0.24);
+    > .nav {
+        margin: 4px 0 8px;
         padding-left: 8px;
-    }
+        border-left: 1px solid rgba(255, 255, 255, 0.24);
 
-    .nav-link {
-        font-size: 11px;
-        font-weight: 500;
-        text-transform: none;
+        > .nav-item > .nav-link {
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+            margin: 0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 20px;
+            text-transform: none;
+
+            > i:empty {
+                display: none;
+            }
+
+            > p {
+                line-height: 20px;
+            }
+        }
     }
 }
 
