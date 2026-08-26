@@ -42,6 +42,7 @@ export class SidenavService {
         children: [
           { title: 'Contrato',  url: '/contrato/create' },
           { title: 'Pagamento', url: '/contrato?modo=cadastro-pagamento' },
+          { title: 'Ateste',    url: '/ateste' },
         ]
       });
     }
@@ -75,10 +76,6 @@ export class SidenavService {
           { title: 'Relatório de Contratos',  url: '/relatorio-contrato' },
         ]
       });
-    }
-
-    if (this.tokenStorage.isAuthenticated()) {
-      items.push({ title: 'Ateste', icon: 'description', url: '/ateste' });
     }
 
     if (this.canView(ModuleEnum.Usuarios)) {

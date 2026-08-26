@@ -1,5 +1,48 @@
 {
   "endpoints": {
+    "/v1/usuario/paginado?pageNumber=1&pageSize=11&nuPerfil=null&filtro=": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "results": [
+            { "nuUsuario": 1005, "coMatricula": "elisa.monte", "noUsuario": "Elisa Monteiro", "perfil": null }
+          ],
+          "pageNumber": 1,
+          "pageSize": 11,
+          "totalPages": 1,
+          "totalRecords": 1,
+          "firstPage": null,
+          "lastPage": null,
+          "nextPage": null,
+          "previousPage": null
+        },
+        "errors": []
+      }
+    },
+    "/v1/usuario/paginado?pageNumber=1&pageSize=11&nuPerfil=1&filtro=": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "results": [
+            { "nuUsuario": 1001, "coMatricula": "ana.lima", "noUsuario": "Ana Lima", "perfil": { "nuPerfil": 2, "noPerfil": "Usuário" } },
+            { "nuUsuario": 1002, "coMatricula": "bruno.souza", "noUsuario": "Bruno Souza", "perfil": { "nuPerfil": 3, "noPerfil": "Orçamento" } },
+            { "nuUsuario": 1003, "coMatricula": "carla.nunes", "noUsuario": "Carla Nunes", "perfil": { "nuPerfil": 4, "noPerfil": "Pagadoria" } },
+            { "nuUsuario": 1004, "coMatricula": "diego.alves", "noUsuario": "Diego Alves", "perfil": { "nuPerfil": 5, "noPerfil": "Gestor Operacional" } }
+          ],
+          "pageNumber": 1,
+          "pageSize": 11,
+          "totalPages": 1,
+          "totalRecords": 4,
+          "firstPage": null,
+          "lastPage": null,
+          "nextPage": null,
+          "previousPage": null
+        },
+        "errors": []
+      }
+    },
     "/v1/filial/ativos": {
       "status": 200,
       "body": {
@@ -380,7 +423,7 @@
         "succeeded": true,
         "data": {
           "nuContrato": 4,
-          "coContrato": "C1001",
+          "coContrato": "04466/2025",
           "noEmpresa": "Fornecedor 1",
           "noContratoTipo": "Tipo A",
           "sgFilial": "UDCEN",
@@ -393,6 +436,59 @@
             "objeto": "Serviços de exemplo (mock)",
             "numeroProcesso": "P1001"
           },
+          "gcptb011Pagamentos": [
+            {
+              "nuPagamento": 9001,
+              "nuPagamentoTipo": 1,
+              "nuContrato": 4,
+              "nuVigencia": 438,
+              "nuVigenciaRubrica": 1,
+              "nuOrcamento": 2026,
+              "dePeriodo": "01/2026",
+              "coNumeroAteste": "AT-2026-001",
+              "vrCredito": 47500,
+              "vrExecutado": 50000,
+              "dtNotaFiscal": "2026-01-08T00:00:00",
+              "dtPagamentoEfetivo": "2026-01-20T00:00:00",
+              "gcptb017VigenciaRubrica": {
+                "gcptb003Rubrica": { "coRubrica": "001-01", "deRubrica": "Serviços de tecnologia" }
+              }
+            },
+            {
+              "nuPagamento": 9002,
+              "nuPagamentoTipo": 1,
+              "nuContrato": 4,
+              "nuVigencia": 438,
+              "nuVigenciaRubrica": 1,
+              "nuOrcamento": 2026,
+              "dePeriodo": "02/2026",
+              "coNumeroAteste": "AT-2026-002",
+              "vrCredito": 45600,
+              "vrExecutado": 48000,
+              "dtNotaFiscal": "2026-02-09T00:00:00",
+              "dtPagamentoEfetivo": null,
+              "gcptb017VigenciaRubrica": {
+                "gcptb003Rubrica": { "coRubrica": "001-01", "deRubrica": "Serviços de tecnologia" }
+              }
+            },
+            {
+              "nuPagamento": 9003,
+              "nuPagamentoTipo": 1,
+              "nuContrato": 4,
+              "nuVigencia": 438,
+              "nuVigenciaRubrica": 1,
+              "nuOrcamento": 2026,
+              "dePeriodo": "03/2026",
+              "coNumeroAteste": "AT-2026-003",
+              "vrCredito": 0,
+              "vrExecutado": 50000,
+              "dtNotaFiscal": null,
+              "dtPagamentoEfetivo": null,
+              "gcptb017VigenciaRubrica": {
+                "gcptb003Rubrica": { "coRubrica": "001-01", "deRubrica": "Serviços de tecnologia" }
+              }
+            }
+          ],
           "gcptb006Vigencias": [
             {
               "gcptb007VigenciaTipo": {
@@ -518,7 +614,7 @@
         "succeeded": true,
         "data": {
           "nuContrato": 4,
-          "cO_CONTRATO": "C1001",
+          "cO_CONTRATO": "04466/2025",
           "nO_FORNECEDOR": "Fornecedor 1",
           "cO_CNPJ": "00.000.000/0001-00",
           "iC_ARTIGO_81": false,

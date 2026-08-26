@@ -153,7 +153,7 @@ export class PlanejamentoGeralComponent implements OnInit {
     if(this.currentProfile == 'Administrador') this.perfilAdm = true;
     if(this.currentProfile == 'Orçamento') this.perfilOrcamento = true;
     if(this.currentProfile == 'Gestor Operacional') this.perfilOperacional = true;
-    if(this.currentProfile == 'Torres GEGAT') this.perfilTorre = true;
+    if(this.currentProfile == 'Finanças e Orçamento') this.perfilTorre = true;
 
     if(this.statusExercio == "Cancelado"){ //nenhum perfil pode alterar
       this.isPerfilPrivilegiado = false;

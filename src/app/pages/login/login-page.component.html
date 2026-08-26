@@ -53,20 +53,20 @@
       <!-- form -->
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form" novalidate autocomplete="off">
 
-        <!-- Matrícula -->
+        <!-- Usuário -->
         <div class="form-field">
-          <label for="login-matricula">Matrícula</label>
+          <label for="login-matricula">Usuário</label>
           <div class="input-box" [class.input-box--error]="submitted && f['matricula'].invalid">
             <mat-icon class="input-box__icon">person</mat-icon>
             <input
               id="login-matricula"
               type="text"
               formControlName="matricula"
-              placeholder="Digite sua matrícula"
+              placeholder="Digite seu usuário"
               autocomplete="username" />
           </div>
           <span *ngIf="submitted && f['matricula'].invalid" class="field-error">
-            Matrícula obrigatória.
+            Usuário obrigatório.
           </span>
         </div>
 

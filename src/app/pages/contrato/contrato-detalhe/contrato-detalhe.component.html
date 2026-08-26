@@ -335,13 +335,13 @@
         </mat-tab>
 
         <mat-tab label="NOTAS FISCAIS">
-          <div class="fiscal-source-notice" role="note">
+          <!-- <div class="fiscal-source-notice" role="note">
             <i class="fas fa-info-circle" aria-hidden="true"></i>
             <div>
               <strong>Simulação de consulta fiscal</strong>
               <span>Visão gerada com os dados dos pagamentos cadastrados. Não representa uma consulta em tempo real à Receita Federal.</span>
             </div>
-          </div>
+          </div> -->
 
           <div class="fiscal-layout" *ngIf="pagamentosComNotaFiscal.length; else semNotasFiscais">
             <section class="fiscal-list" aria-label="Notas fiscais relacionadas aos pagamentos">
@@ -371,7 +371,7 @@
                   <span class="fiscal-document__eyebrow">Espelho da nota fiscal</span>
                   <h3>{{ identificadorNotaFiscal(notaFiscalSelecionada) }}</h3>
                 </div>
-                <span class="fiscal-status">Simulado</span>
+                <span class="fiscal-status">Conciliado</span>
               </header>
 
               <div class="fiscal-document__supplier">

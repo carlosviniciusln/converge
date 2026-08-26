@@ -357,7 +357,7 @@ export enum PerfisEnum {
   Orcamento = 'Orçamento',
   Pagadoria = 'Pagadoria',
   GestorOperacional = 'Gestor Operacional',
-  TorresGEGAT = 'Torres GEGAT',
+  TorresGEGAT = 'Finanças e Orçamento',
   FiscalTecnico = 'Fiscal Técnico',
   NaoLogado = 'Não Logado',
 }

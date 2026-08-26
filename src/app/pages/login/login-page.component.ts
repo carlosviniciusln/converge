@@ -76,7 +76,7 @@ export class LoginPageComponent implements OnInit {
         this.router.navigate(['/dashboard']);
       } else {
         this.isLoginFailed = true;
-        this.errorMessage  = 'Matrícula ou senha inválidos. Verifique suas credenciais.';
+        this.errorMessage  = 'Usuário ou senha inválidos. Verifique suas credenciais.';
         this.loading       = false;
       }
     }, 600); // simula latência de rede

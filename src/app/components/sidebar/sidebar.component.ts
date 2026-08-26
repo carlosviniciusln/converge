@@ -110,7 +110,7 @@ async getContratos(filtro: any): Promise<ApiResponse<ContratoApiResponse>>{
 
     if(this.currentProfile === 'Administrador'
       || this.currentProfile === 'Pagadoria'
-      || this.currentProfile === 'Torres GEGAT'
+      || this.currentProfile === 'Finanças e Orçamento'
       || this.currentProfile === 'Gestor Operacional'
       || this.currentProfile === PerfisEnum.Orcamento
     ){
