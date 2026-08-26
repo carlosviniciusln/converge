@@ -58,6 +58,7 @@ export class SidebarComponent implements OnInit {
   isRelatoriosCollapsed: boolean = false;
   isOrcamentoCollapsed: boolean = false;
   isContratoCollapsed: boolean = false;
+  isCadastroCollapsed: boolean = false;
   isDotacaoCollapsed: boolean = false;
   isContratoCollapsedArt81: boolean = false;
   isPerfilOrcamento = false;

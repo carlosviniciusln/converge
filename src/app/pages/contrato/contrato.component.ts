@@ -15,6 +15,7 @@ import {
 import * as fileSaver from 'file-saver';
 import { TableLazyLoadEvent } from 'primeng/table';
 import { ActivatedRoute } from '@angular/router';
+import { PagamentoCadastroComponent } from './pagamento-cadastro/pagamento-cadastro.component';
 
 @Component({
   selector: 'app-contrato',
@@ -47,6 +48,7 @@ export class ContratoComponent implements OnInit {
   selectedTipoStatus: string = null;
 
   isRotaAtas: boolean = false;
+  isCadastroPagamento: boolean = false;
   tituloPage: string = 'Lista de Contratos';
   rota: string = '';
   filtroRegistros: any = {
@@ -76,8 +78,25 @@ export class ContratoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isCadastroPagamento = this.route.snapshot.queryParamMap.get('modo') === 'cadastro-pagamento';
+    if (this.isCadastroPagamento) {
+      this.tituloPage = 'Cadastrar pagamento';
+    }
     this.validarRotaAtas();
     this.obterContratos();
+  }
+
+  selecionarContratoParaPagamento(contrato: Gcpvw045ListarContratosDTO, event: Event): void {
+    event.stopPropagation();
+
+    const modalRef = this.modalService.open(PagamentoCadastroComponent, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false,
+    });
+
+    modalRef.componentInstance.nuContrato = contrato.nuContrato;
   }
 
   navegarInfoContrato(coContrato: string,nuContrato: number){

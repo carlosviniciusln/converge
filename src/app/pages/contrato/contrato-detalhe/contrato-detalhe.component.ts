@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiResponse } from 'src/app/models/generics/api-response';
-import { ContratoResponse, RetencaoResponse, Retencao, Gcptb002ContratoTipo, ContratoResponseV2 } from 'src/app/models/generics/contrato-response';
+import { ContratoResponse, RetencaoResponse, Retencao, Gcptb002ContratoTipo, ContratoResponseV2, Gcptb011Pagamento } from 'src/app/models/generics/contrato-response';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { EvolucaoFinanceira } from 'src/app/models/generics/evolucao-financeira';
 import {
@@ -67,6 +67,7 @@ export class ContratoDetalheComponent implements OnInit {
   expandedRowKeys: { [key: string]: boolean } = {};
 
   tituloPagamentos: string = '';
+  notaFiscalSelecionada: Gcptb011Pagamento;
 
   currentProfile: PerfisEnum;
 	permissaoEditar: boolean = false;
@@ -181,6 +182,7 @@ export class ContratoDetalheComponent implements OnInit {
       this.obterValorVigencias();
       this.validarRotaAtas();
       this.setTituloPagamentos();
+      this.notaFiscalSelecionada = this.pagamentosComNotaFiscal[0];
       this.loading = false;
     } catch (error) {
       console.error(error, 'obterContrato');
@@ -221,6 +223,18 @@ export class ContratoDetalheComponent implements OnInit {
 
   hasEntries(obj: any): boolean {
     return obj && Object.keys(obj).length > 0;
+  }
+
+  get pagamentosComNotaFiscal(): Gcptb011Pagamento[] {
+    return this.Contrato?.gcptb011Pagamentos?.filter(pagamento => pagamento.dtNotaFiscal) ?? [];
+  }
+
+  selecionarNotaFiscal(pagamento: Gcptb011Pagamento): void {
+    this.notaFiscalSelecionada = pagamento;
+  }
+
+  identificadorNotaFiscal(pagamento: Gcptb011Pagamento): string {
+    return `SIM-${pagamento.nuPagamento}`;
   }
 
   public async obterRubricaDescriptions(): Promise<void> {

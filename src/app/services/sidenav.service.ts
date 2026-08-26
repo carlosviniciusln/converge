@@ -35,6 +35,17 @@ export class SidenavService {
       });
     }
 
+    if (this.canCreate(ModuleEnum.Contratos)) {
+      items.push({
+        title: 'Cadastros',
+        icon: 'add_box',
+        children: [
+          { title: 'Contrato',  url: '/contrato/create' },
+          { title: 'Pagamento', url: '/contrato?modo=cadastro-pagamento' },
+        ]
+      });
+    }
+
     const orcamentoChildren: DscMenu[] = [];
     if (this.canView(ModuleEnum.Planejamento)) {
       orcamentoChildren.push(
@@ -85,6 +96,11 @@ export class SidenavService {
   private canView(module: ModuleEnum): boolean {
     const policies = this.tokenStorage.getActionPolicies(module);
     return !!(policies && policies.Consultar);
+  }
+
+  private canCreate(module: ModuleEnum): boolean {
+    const policies = this.tokenStorage.getActionPolicies(module);
+    return !!(policies && policies.Cadastrar);
   }
 
   toggle(): void {

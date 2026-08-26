@@ -1,4 +1,10 @@
 <div class="content">
+    <div class="card cadastro-pagamento-context" *ngIf="isCadastroPagamento">
+        <div class="card-body">
+            <h3>Selecione o contrato</h3>
+            <p>Use os filtros para localizar o contrato ao qual o novo pagamento será vinculado.</p>
+        </div>
+    </div>
     <div class=" row">
         <div class=" col-12">
             <p-table #dt [value]="contratos" dataKey="id"
@@ -117,6 +123,7 @@
                                 Valor Pago
                             </div>
                         </th>
+                        <th *ngIf="isCadastroPagamento" class="text-center">Ação</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-contrato>
@@ -158,6 +165,13 @@
                         </td>
                         <td  *ngIf="!isRotaAtas">
                             {{contrato.vrExecutado | currency : 'BRL'}}
+                        </td>
+                        <td *ngIf="isCadastroPagamento" class="text-center">
+                            <button type="button" class="btn-sm btn-secondary"
+                                (click)="selecionarContratoParaPagamento(contrato, $event)">
+                                <i class="tim-icons icon-simple-add" aria-hidden="true"></i>
+                                Cadastrar pagamento
+                            </button>
                         </td>
                     </tr>
                 </ng-template>

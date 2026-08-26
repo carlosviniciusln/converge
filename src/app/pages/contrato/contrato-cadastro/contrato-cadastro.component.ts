@@ -126,8 +126,6 @@ export class ContratoCadastroComponent implements OnInit {
     this.obterServicos();
 
     this.formulario();
-    this.obterContatos();
-    this.obterProtocoloVigencia();
     this.contatosForm();
     this.adicionarVigencia(false);
 
@@ -139,6 +137,8 @@ export class ContratoCadastroComponent implements OnInit {
     this.subscribeToDtInicioChanges(0);
 
     if (this.nuContrato) {
+      this.obterContatos();
+      this.obterProtocoloVigencia();
       this.obterVigencias();
       this.obterContratoV2();
       this.obterDatasContrato();

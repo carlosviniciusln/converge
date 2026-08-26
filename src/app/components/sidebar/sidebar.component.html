@@ -78,6 +78,28 @@
         </ul>
       </div>
     </li>
+    <li routerlinkactive="active" class="nav-item" *ngIf="permissionsContratos?.Cadastrar ?? false">
+      <a data-toggle="collapse" class="nav-link" (click)="isCadastroCollapsed = !isCadastroCollapsed">
+        <i class="tim-icons icon-simple-add"></i>
+        <p>Cadastros<b class="caret"></b></p>
+      </a>
+      <div class="collapse" [class.show]="isCadastroCollapsed">
+        <ul class="nav">
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/contrato/create">
+              <i class="tim-icons"></i>
+              <p>Contrato</p>
+            </a>
+          </li>
+          <li routerlinkactive="active" class="nav-item">
+            <a class="nav-link" href="#/contrato?modo=cadastro-pagamento">
+              <i class="tim-icons"></i>
+              <p>Pagamento</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
      <!-- <li routerlinkactive="active" class="nav-item">
       <a data-toggle="collapse" class="nav-link" (click)="isDotacaoCollapsed = !isDotacaoCollapsed">
         <i class="tim-icons icon-single-copy-04"></i>

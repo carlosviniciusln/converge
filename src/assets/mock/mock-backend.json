@@ -1,5 +1,130 @@
 {
   "endpoints": {
+    "/v1/filial/ativos": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuFilial": 101, "nuFilialPai": 1, "coFilial": "UDNOR", "sgFilial": "UDNOR", "dhExclusao": null },
+          { "nuFilial": 102, "nuFilialPai": 1, "coFilial": "UDCEN", "sgFilial": "UDCEN", "dhExclusao": null },
+          { "nuFilial": 103, "nuFilialPai": 1, "coFilial": "UDSUL", "sgFilial": "UDSUL", "dhExclusao": null }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/contrato/tipos-contrato": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuContratoTipo": 1, "noContratoTipo": "Serviço contínuo" },
+          { "nuContratoTipo": 2, "noContratoTipo": "Aquisição" },
+          { "nuContratoTipo": 3, "noContratoTipo": "Ata de registro de preços" }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/contrato/tipos-vigencia": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuVigenciaTipo": 23, "noVigenciaTipo": "Vigência inicial" },
+          { "nuVigenciaTipo": 24, "noVigenciaTipo": "Prorrogação" },
+          { "nuVigenciaTipo": 40, "noVigenciaTipo": "Supressão" }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/rubrica/ativas": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuRubrica": 1, "coRubrica": "001-01", "nuRubricaTipo": 1, "deRubrica": "Serviços de tecnologia", "dhExclusao": null },
+          { "nuRubrica": 2, "coRubrica": "001-02", "nuRubricaTipo": 1, "deRubrica": "Licenciamento de software", "dhExclusao": null },
+          { "nuRubrica": 3, "coRubrica": "002-01", "nuRubricaTipo": 2, "deRubrica": "Equipamentos", "dhExclusao": null }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/rubrica/servicos": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuServicoTipo": 1, "noServicoTipo": "Serviço mensal" },
+          { "nuServicoTipo": 2, "noServicoTipo": "Serviço sob demanda" }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/contrato/sistemas": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuSistema": 1, "noSistema": "SICLG" },
+          { "nuSistema": 2, "noSistema": "SILIC" }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/pagamento/tipos": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuPagamentoTipo": 1, "noPagamentoTipo": "Mensal" },
+          { "nuPagamentoTipo": 2, "noPagamentoTipo": "Eventual" }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/pagamento/orcamentos": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          { "nuOrcamento": 2026, "nuAnoOrcamento": 2026 },
+          { "nuOrcamento": 2025, "nuAnoOrcamento": 2025 }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/contrato/{nuContrato}/vigencias": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nuVigencia": 438,
+            "nuVigenciaTipo": 23,
+            "dtInicio": "2026-01-01T00:00:00",
+            "dtTermino": "2026-12-31T00:00:00",
+            "gcptb007VigenciaTipo": { "nuVigenciaTipo": 23, "noVigenciaTipo": "Vigência inicial" }
+          }
+        ],
+        "errors": []
+      }
+    },
+    "/v1/rubrica/vigencia/": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": [
+          {
+            "nuVigenciaRubrica": 1,
+            "nuVigencia": 438,
+            "nuRubrica": 1,
+            "nuServicoTipo": 1,
+            "noServicoTipo": "Serviço mensal",
+            "gcptb003Rubrica": { "nuRubrica": 1, "coRubrica": "001-01", "deRubrica": "Serviços de tecnologia" }
+          }
+        ],
+        "errors": []
+      }
+    },
     "/api/v1/PlanejamentoOrcamentario/filter-paginado?pageNumber=1&pageSize=10&nuPlanejamento=11&tipoPlanejamento=0%20-%20Programa%C3%A7%C3%A3o": {
       "status": 200,
       "body": {
@@ -42,12 +167,12 @@
             2029
           ],
           "listaUnidadeDemandante": [
-            "GESTI",
-            "GECPA",
-            "GETEL",
-            "GEMSE",
-            "GESQI",
-            "GEAUS"
+            "UDCEN",
+            "UDPLA",
+            "UDSUL",
+            "UDOES",
+            "UDLST",
+            "UDNOR"
           ],
           "listaContrato": [
             "04466/2025",
@@ -87,7 +212,7 @@
               "coContrato": "04466/2025",
               "nuContrato": 4,
               "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
-              "sgFilial": "GEAUS",
+              "sgFilial": "UDNOR",
               "dtInicioContrato": "2026-01-01T00:00:00",
               "dtTerminoContrato": "2026-12-31T00:00:00",
               "icAtivo": false
@@ -96,7 +221,7 @@
               "coContrato": "07500/2024",
               "nuContrato": 4544,
               "noEmpresa": "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.",
-              "sgFilial": "GETEL",
+              "sgFilial": "UDSUL",
               "dtInicioContrato": "2025-04-01T00:00:00",
               "dtTerminoContrato": "2027-03-31T00:00:00",
               "icAtivo": false
@@ -105,7 +230,7 @@
               "coContrato": "12870/2024",
               "nuContrato": 4630,
               "noEmpresa": "TOTVS S.A.",
-              "sgFilial": "GESTI",
+              "sgFilial": "UDCEN",
               "dtInicioContrato": "2025-02-15T00:00:00",
               "dtTerminoContrato": "2026-12-31T00:00:00",
               "icAtivo": false
@@ -114,7 +239,7 @@
               "coContrato": "07231/2024",
               "nuContrato": 3539,
               "noEmpresa": "IBM Brasil Indústria, Máquinas e Serviços Ltda.",
-              "sgFilial": "GEINF",
+              "sgFilial": "UDMET",
               "dtInicioContrato": "2024-10-01T00:00:00",
               "dtTerminoContrato": "2026-09-30T00:00:00",
               "icAtivo": false
@@ -123,7 +248,7 @@
               "coContrato": "04962/2024",
               "nuContrato": 3102,
               "noEmpresa": "Accenture do Brasil Ltda.",
-              "sgFilial": "GEMSE",
+              "sgFilial": "UDOES",
               "dtInicioContrato": "2024-08-20T00:00:00",
               "dtTerminoContrato": "2026-08-19T00:00:00",
               "icAtivo": false
@@ -132,7 +257,7 @@
               "coContrato": "05730/2024",
               "nuContrato": 2908,
               "noEmpresa": "Capgemini Brasil S.A.",
-              "sgFilial": "GEMSE",
+              "sgFilial": "UDOES",
               "dtInicioContrato": "2024-06-01T00:00:00",
               "dtTerminoContrato": "2026-05-31T00:00:00",
               "icAtivo": false
@@ -141,7 +266,7 @@
               "coContrato": "04012/2025",
               "nuContrato": 8124,
               "noEmpresa": "Claro S.A.",
-              "sgFilial": "GETEL",
+              "sgFilial": "UDSUL",
               "dtInicioContrato": "2025-05-01T00:00:00",
               "dtTerminoContrato": "2027-04-30T00:00:00",
               "icAtivo": true
@@ -150,7 +275,7 @@
               "coContrato": "01975/2024",
               "nuContrato": 1768,
               "noEmpresa": "Stefanini IT Solutions e Services S.A.",
-              "sgFilial": "GESTI",
+              "sgFilial": "UDCEN",
               "dtInicioContrato": "2024-03-01T00:00:00",
               "dtTerminoContrato": "2026-02-28T00:00:00",
               "icAtivo": true
@@ -159,7 +284,7 @@
               "coContrato": "09454/2023",
               "nuContrato": 1702,
               "noEmpresa": "Oi S.A. - Em Recuperação Judicial",
-              "sgFilial": "GETEL",
+              "sgFilial": "UDSUL",
               "dtInicioContrato": "2023-11-01T00:00:00",
               "dtTerminoContrato": "2025-10-31T00:00:00",
               "icAtivo": false
@@ -168,7 +293,7 @@
               "coContrato": "06016/2024",
               "nuContrato": 1797,
               "noEmpresa": "Tivit Terceirização de Processos, Serviços e Tecnologia S.A.",
-              "sgFilial": "GEAUS",
+              "sgFilial": "UDNOR",
               "dtInicioContrato": "2024-07-15T00:00:00",
               "dtTerminoContrato": "2026-07-14T00:00:00",
               "icAtivo": true
@@ -258,7 +383,7 @@
           "coContrato": "C1001",
           "noEmpresa": "Fornecedor 1",
           "noContratoTipo": "Tipo A",
-          "sgFilial": "GESTI",
+          "sgFilial": "UDCEN",
           "icAtivo": true,
           "dtInicioContrato": "2026-01-01T00:00:00",
           "dtTerminoContrato": null,
@@ -399,7 +524,7 @@
           "iC_ARTIGO_81": false,
           "iC_ATIVO": true,
           "filial": "Gestao",
-          "sG_FILIAL": "GESTI",
+          "sG_FILIAL": "UDCEN",
           "dT_INICIO": "2026-01-01T00:00:00",
           "dT_TERMINO": null,
           "vR_GLOBAL_VIGENTE": 100000,
@@ -589,7 +714,7 @@
           "dashboardOrcamento": {
             "nuRelatorioOrcamento": 77,
             "nuFilial": 1879,
-            "sgFilial": "GERAL",
+            "sgFilial": "UDNAC",
             "nuFilialPai": 0,
             "sgFilialPai": null,
             "icUnidadePai": true,
@@ -938,7 +1063,7 @@
           {
             "nU_FILIAL": 1885,
             "nU_FILIAL_PAI": 0,
-            "sG_FILIAL": "VISEC",
+            "sG_FILIAL": "UDESP",
             "iC_UNIDADE_PAI": true,
             "qT_CONTRATO_ATIVO": 12,
             "qT_ACIMA_ESTIMADO": 2,
@@ -953,7 +1078,7 @@
           {
             "nU_FILIAL": 2001,
             "nU_FILIAL_PAI": 1885,
-            "sG_FILIAL": "GEAUS",
+            "sG_FILIAL": "UDNOR",
             "iC_UNIDADE_PAI": false,
             "qT_CONTRATO_ATIVO": 5,
             "qT_ACIMA_ESTIMADO": 1,
@@ -968,7 +1093,7 @@
           {
             "nU_FILIAL": 2002,
             "nU_FILIAL_PAI": 1885,
-            "sG_FILIAL": "GETEL",
+            "sG_FILIAL": "UDSUL",
             "iC_UNIDADE_PAI": false,
             "qT_CONTRATO_ATIVO": 7,
             "qT_ACIMA_ESTIMADO": 1,
@@ -1007,7 +1132,7 @@
           {
             "nU_FILIAL": 1885,
             "nU_FILIAL_PAI": 0,
-            "sG_FILIAL": "GERAL",
+            "sG_FILIAL": "UDNAC",
             "iC_UNIDADE_PAI": true,
             "vR_INVESTIMENTO_PLANEJADO": 2690589237.88,
             "vR_CUSTEIO_PLANEJADO": 3692636651.61,
@@ -1019,7 +1144,7 @@
           {
             "nU_FILIAL": 2001,
             "nU_FILIAL_PAI": 1885,
-            "sG_FILIAL": "GEAUS",
+            "sG_FILIAL": "UDNOR",
             "iC_UNIDADE_PAI": false,
             "vR_INVESTIMENTO_PLANEJADO": 3500000,
             "vR_CUSTEIO_PLANEJADO": 5100000,
@@ -1031,7 +1156,7 @@
           {
             "nU_FILIAL": 2002,
             "nU_FILIAL_PAI": 1885,
-            "sG_FILIAL": "GETEL",
+            "sG_FILIAL": "UDSUL",
             "iC_UNIDADE_PAI": false,
             "vR_INVESTIMENTO_PLANEJADO": 2800000,
             "vR_CUSTEIO_PLANEJADO": 4200000,
@@ -1053,7 +1178,7 @@
             "nU_CONTRATO": 4,
             "cO_CONTRATO": "04466/2025",
             "nO_EMPRESA": "SERPRO - Serviço Federal de Processamento de Dados",
-            "sG_FILIAL": "GEAUS",
+            "sG_FILIAL": "UDNOR",
             "icArtigo81": false,
             "dT_INICIO": "2026-01-01T00:00:00",
             "dT_TERMINO": "2026-12-31T00:00:00",
@@ -1085,7 +1210,7 @@
             "nU_CONTRATO": 4544,
             "cO_CONTRATO": "07500/2024",
             "nO_EMPRESA": "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.",
-            "sG_FILIAL": "GETEL",
+            "sG_FILIAL": "UDSUL",
             "icArtigo81": false,
             "dT_INICIO": "2025-04-01T00:00:00",
             "dT_TERMINO": "2027-03-31T00:00:00",
@@ -1128,35 +1253,35 @@
               "nuContrato": 4,
               "coContrato": "04466/2025",
               "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
-              "sgFilial": "GEAUS",
+              "sgFilial": "UDNOR",
               "dtInicioContrato": "2026-01-01T00:00:00"
             },
             {
               "nuContrato": 4544,
               "coContrato": "07500/2024",
               "noEmpresa": "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.",
-              "sgFilial": "GETEL",
+              "sgFilial": "UDSUL",
               "dtInicioContrato": "2025-04-01T00:00:00"
             },
             {
               "nuContrato": 4630,
               "coContrato": "12870/2024",
               "noEmpresa": "TOTVS S.A.",
-              "sgFilial": "GESTI",
+              "sgFilial": "UDCEN",
               "dtInicioContrato": "2025-02-15T00:00:00"
             },
             {
               "nuContrato": 3539,
               "coContrato": "07231/2024",
               "noEmpresa": "IBM Brasil Indústria, Máquinas e Serviços Ltda.",
-              "sgFilial": "GEINF",
+              "sgFilial": "UDMET",
               "dtInicioContrato": "2024-10-01T00:00:00"
             },
             {
               "nuContrato": 3102,
               "coContrato": "04962/2024",
               "noEmpresa": "Accenture do Brasil Ltda.",
-              "sgFilial": "GEMSE",
+              "sgFilial": "UDOES",
               "dtInicioContrato": "2024-08-20T00:00:00"
             }
           ]
@@ -1408,7 +1533,7 @@
               "nuContrato": 4,
               "coContrato": "04466/2025",
               "coFilial": "1885",
-              "sgFilial": "GEAUS",
+              "sgFilial": "UDNOR",
               "nuFilial": 2001,
               "noObjeto": "Prestacao de servicos de nuvem e sustentacao.",
               "nuStatusPlanejamento": 5,
@@ -1420,7 +1545,7 @@
               "dePlanejamentoTipo": "2 - Reprogramação",
               "nuSap": null,
               "deSap": null,
-              "deUnidadeDemandante": "GEAUS",
+              "deUnidadeDemandante": "UDNOR",
               "nuObjetivoPdtic": 10,
               "deObjetivoPdtic": "Cloud e Infraestrutura",
               "nuObjetivoPei": 20,
@@ -1439,7 +1564,7 @@
               "nuContrato": 4544,
               "coContrato": "07500/2024",
               "coFilial": "1885",
-              "sgFilial": "GETEL",
+              "sgFilial": "UDSUL",
               "nuFilial": 2002,
               "noObjeto": "Servicos de telecom e conectividade.",
               "nuStatusPlanejamento": 7,
@@ -1451,7 +1576,7 @@
               "dePlanejamentoTipo": "2 - Reprogramação",
               "nuSap": 123456,
               "deSap": "Lote SAP 2026/08",
-              "deUnidadeDemandante": "GETEL",
+              "deUnidadeDemandante": "UDSUL",
               "nuObjetivoPdtic": 11,
               "deObjetivoPdtic": "Conectividade",
               "nuObjetivoPei": 21,
@@ -1463,7 +1588,7 @@
               "dhCadastro": "2026-08-02T10:00:00"
             }
           ],
-          "listaUnidadeDemandante": ["GEAUS", "GETEL", "GESTI"],
+          "listaUnidadeDemandante": ["UDNOR", "UDSUL", "UDCEN"],
           "listaNuOrc": ["7001", "7002"],
           "listaContrato": ["04466/2025", "07500/2024"],
           "listaTipo": ["Nova Contratacao", "Alteracao Contratual"],
@@ -1487,7 +1612,7 @@
             "coContrato": "04466/2025",
             "nuFilial": 2001,
             "coFilial": "1885",
-            "sgFilial": "GEAUS",
+            "sgFilial": "UDNOR",
             "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
             "noObjeto": "Prestacao de servicos de nuvem e sustentacao.",
             "nuObjetivoPdtic": 10,
@@ -1509,8 +1634,8 @@
             { "id": 2, "descricao": "Inexigibilidade" }
           ],
           "listaUnidadesDemandantes": [
-            { "nuFilial": 2001, "nuFilialPai": 1885, "coFilial": "1885", "sgFilial": "GEAUS", "dhExclusao": null },
-            { "nuFilial": 2002, "nuFilialPai": 1885, "coFilial": "1885", "sgFilial": "GETEL", "dhExclusao": null }
+            { "nuFilial": 2001, "nuFilialPai": 1885, "coFilial": "1885", "sgFilial": "UDNOR", "dhExclusao": null },
+            { "nuFilial": 2002, "nuFilialPai": 1885, "coFilial": "1885", "sgFilial": "UDSUL", "dhExclusao": null }
           ],
           "listaDigital": [
             { "nuTipoDigital": 1, "noTipoDigital": "Nuvem" },
@@ -1547,7 +1672,7 @@
               "coContrato": "04466/2025",
               "coFilial": "1885",
               "nuFilial": 2001,
-              "sgFilial": "GEAUS",
+              "sgFilial": "UDNOR",
               "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
               "noObjeto": "Prestacao de servicos de nuvem e sustentacao.",
               "nuObjetivoPdtic": 10,
@@ -1578,7 +1703,7 @@
           "coExercicio": 2026,
           "nuFilial": 2001,
           "coFilial": "1885",
-          "deUnidadeDemandante": "GEAUS",
+          "deUnidadeDemandante": "UDNOR",
           "nuStatusPlanejamentoItem": 5,
           "noStatus": "Criado",
           "nuTipoDemanda": 1,
@@ -1643,7 +1768,7 @@
               "descricaoRubrica": "339039 - Outros Servicos",
               "nuUsuarioAlteracao": 1,
               "noUsuarioAlteracao": "p723401",
-              "sgFilial": "GEAUS",
+              "sgFilial": "UDNOR",
               "deObservacao": "Ajuste de planejamento",
               "tpOperacao": "ALTERACAO",
               "listaDiffs": []

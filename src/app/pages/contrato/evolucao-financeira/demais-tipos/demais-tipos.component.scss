@@ -54,7 +54,7 @@
 }
 
 .green {
-  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  background: #005CA9;
   color: white;
   text-align: center;
   padding: 5px;
@@ -208,12 +208,12 @@ tr.template-body td a {
 }
 
 ::ng-deep .mat-tab-label-active {
-  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  background: #005CA9;
   color: #fff;
 }
 
 ::ng-deep .subtab {
-  background: linear-gradient(to left, #059266, #009a54) !important;
+  background: #005CA9 !important;
   color: #fff;
 }
 
@@ -223,7 +223,7 @@ tr.template-body td a {
 
 .spinner-button {
   border: 2px solid #f3f3f3;
-  border-top: 2px solid #009a53 ;
+  border-top: 2px solid #005CA9;
   border-radius: 50%;
   width: 16px;
   height: 16px;
@@ -231,6 +231,87 @@ tr.template-body td a {
   animation: spin 0.6s linear infinite;
   display: inline-block;
   vertical-align: middle;
+}
+
+@media (max-width: 767px) {
+  .cl-table-component,
+  .cl-grafico,
+  .card,
+  .card-body,
+  .divGrafico {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .card-header,
+  .card-body {
+    padding: 14px !important;
+  }
+
+  .card-header {
+    gap: 8px;
+  }
+
+  .table-header-title,
+  .card-title {
+    height: auto !important;
+    margin: 0 !important;
+    font-size: 15px !important;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .divGrafico {
+    display: block;
+    padding-top: 8px;
+    overflow-x: auto;
+  }
+
+  .card-body > .row {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .card-body [class*="col-md-"] {
+    padding: 3px 0;
+    text-align: left !important;
+    overflow-wrap: anywhere;
+  }
+
+  .card-body .text-right {
+    margin-top: 8px;
+    color: #64747a;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .evolucao-info,
+  .hr-container,
+  [class*="justify-content-end"] {
+    justify-content: flex-start !important;
+  }
+
+  :host ::ng-deep {
+    .p-datatable-wrapper {
+      width: 100%;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .p-datatable-table {
+      min-width: 680px;
+    }
+
+    .mat-mdc-tab-label-container {
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .mat-mdc-tab-list {
+      min-width: max-content;
+      transform: none !important;
+    }
+  }
 }
 
 @keyframes spin {
