@@ -83,8 +83,8 @@ export class SidenavService {
     }
 
     items.push(
-      { title: 'Comentários e sugestões', icon: 'chat',      externalUrl: 'mailto:sigvc@caixa.gov.br' },
-      { title: 'Manual do usuário',       icon: 'menu_book', externalUrl: '/assets/manual/manual-sigvc.pdf' },
+      { title: 'Comentários e sugestões', icon: 'chat',      externalUrl: 'mailto:Converge@caixa.gov.br' },
+      { title: 'Manual do usuário',       icon: 'menu_book', externalUrl: '/assets/manual/manual-Converge.pdf' },
     );
 
     return items;

@@ -60,6 +60,12 @@ input:focus, select:focus { border-color: #005ca9; outline: 2px solid rgba(0, 92
 .upload-field input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .result-panel { min-height: 220px; padding: 20px; border: 1px solid #dce7ea; border-radius: 6px; background: #f7fafa; }
 .result-panel h3 { color: #002a4d; }
+.result-panel > small { display: block; margin-top: 16px; color: #64747a; }
+.extracted-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 0; }
+.extracted-fields div { display: flex; flex-direction: column; gap: 2px; padding: 10px; border: 1px solid #dce7ea; border-radius: 5px; background: #fff; }
+.extracted-fields span { color: #64747a; font-size: 11px; }
+.extracted-fields strong { color: #002a4d; font-size: 13px; }
+.positive-result { color: #127527; }
 .source { display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; padding: 10px 0; border-bottom: 1px solid #dce7ea; }
 .source small { grid-column: 1 / -1; color: #64747a; }
 
@@ -71,7 +77,7 @@ input:focus, select:focus { border-color: #005ca9; outline: 2px solid rgba(0, 92
   .page-heading h1 { font-size: 21px; }
   .toolbar, .contract-actions { flex-direction: column; }
   .search-field { max-width: none; }
-  .form-grid, .compliance-grid { grid-template-columns: 1fr; }
+  .form-grid, .compliance-grid, .extracted-fields { grid-template-columns: 1fr; }
   .record-card { grid-template-columns: minmax(0, 1fr) auto; }
   .record-code { grid-column: 1; }
   .record-main { grid-column: 1; }

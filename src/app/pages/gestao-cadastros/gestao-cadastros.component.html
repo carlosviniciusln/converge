@@ -107,8 +107,13 @@
       <span class="status" [class.inactive]="resultado.status !== 'aprovado'">{{ resultado.status }}</span>
       <h3>{{ resultado.arquivo }}</h3>
       <p>Confiança: {{ resultado.confianca * 100 | number:'1.0-1' }}%</p>
-      <h4>Inconsistências</h4>
-      <ul><li *ngFor="let item of resultado.inconsistencias">{{ item }}</li></ul>
+      <div class="extracted-fields">
+        <div *ngFor="let campo of resultado.campos | keyvalue"><span>{{ campo.key }}</span><strong>{{ campo.value }}</strong></div>
+      </div>
+      <h4>{{ resultado.inconsistencias.length ? 'Inconsistências' : 'Resultado da análise' }}</h4>
+      <ul *ngIf="resultado.inconsistencias.length; else noIssues"><li *ngFor="let item of resultado.inconsistencias">{{ item }}</li></ul>
+      <ng-template #noIssues><p class="positive-result"><i class="fas fa-check-circle"></i> Nenhuma divergência relevante identificada.</p></ng-template>
+      <small>Analisado em {{ resultado.analisadoEm | date:'dd/MM/yyyy HH:mm' }}</small>
     </div>
     <ng-template #documentEmpty><div class="result-panel empty-state"><i class="fas fa-file-circle-check"></i><strong>Aguardando documento</strong><span>O resultado e as evidências aparecerão aqui.</span></div></ng-template>
   </section>
@@ -124,7 +129,10 @@
     <div class="result-panel" *ngIf="consultaFornecedor as consulta; else regularidadeEmpty">
       <span class="status" [class.inactive]="consulta.situacao !== 'regular'">{{ consulta.situacao }}</span>
       <h3>{{ consulta.razaoSocial }}</h3>
+      <p>CNPJ {{ consulta.cnpj }}</p>
       <div class="source" *ngFor="let fonte of consulta.fontes"><strong>{{ fonte.nome }}</strong><span>{{ fonte.situacao }}</span><small>{{ fonte.protocolo }}</small></div>
+      <p class="positive-result" *ngIf="!consulta.apontamentos.length"><i class="fas fa-check-circle"></i> Nenhuma pendência encontrada nas fontes consultadas.</p>
+      <small>Consulta consolidada em {{ consulta.consultadoEm | date:'dd/MM/yyyy HH:mm' }}</small>
     </div>
     <ng-template #regularidadeEmpty><div class="result-panel empty-state"><i class="fas fa-shield-alt"></i><strong>Nenhuma consulta realizada</strong><span>Informe um CNPJ para consultar as fontes habilitadas.</span></div></ng-template>
   </section>
