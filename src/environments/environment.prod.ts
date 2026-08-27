@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  useLocalManagementData: false,
   //end_point: 'http://api.sigvc.hmp.caixa/api',
   //end_point: 'http://api.sigvc.caixa/api',
   //end_point: 'https://localhost:5001/api',

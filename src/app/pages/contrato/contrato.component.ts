@@ -16,6 +16,7 @@ import * as fileSaver from 'file-saver';
 import { TableLazyLoadEvent } from 'primeng/table';
 import { ActivatedRoute } from '@angular/router';
 import { PagamentoCadastroComponent } from './pagamento-cadastro/pagamento-cadastro.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-contrato',
@@ -67,7 +68,8 @@ export class ContratoComponent implements OnInit {
     private apiService: ApiService,
     private modalService: NgbModal,
     private token: TokenStorageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {
     this.obterPermissoes();
     this.currentUser = this.token.getUser();
@@ -97,6 +99,19 @@ export class ContratoComponent implements OnInit {
     });
 
     modalRef.componentInstance.nuContrato = contrato.nuContrato;
+  }
+
+  async excluirContrato(contrato: Gcpvw045ListarContratosDTO, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (!window.confirm(`Deseja excluir o contrato ${contrato.coContrato}?`)) return;
+
+    try {
+      await this.apiService.delete<void>(`${Endpoints.URL_CONTRATOS}/${contrato.nuContrato}`);
+      this.toastr.success('Contrato excluído com sucesso.', 'Sucesso');
+      await this.obterContratos();
+    } catch {
+      this.toastr.error('Não foi possível excluir o contrato.', 'Erro');
+    }
   }
 
   navegarInfoContrato(coContrato: string,nuContrato: number){

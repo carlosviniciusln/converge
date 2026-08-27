@@ -36,6 +36,7 @@ import { ContratoComponent } from '../pages/contrato/contrato.component';
 import { DotacaoComponent } from '../pages/dotacao/dotacao.component';
 import { PlanejamentoV2Component } from '../pages/planejamento-v2/planejamento-v2.component';
 import { PlanejamentoGeralV2Component } from '../pages/planejamento-v2/planejamento-geral-v2/planejamento-geral-v2.component';
+import { GestaoCadastrosComponent } from '../pages/gestao-cadastros/gestao-cadastros.component';
 
 
 
@@ -70,6 +71,7 @@ export const PagesRoutes: Routes = [
   { path: 'planejamento-orcamentario-detalhe-novo', component: PlanejamentoGeralV2Component },
   //{ path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
   { path: 'usuarios', component: UsuarioComponent },
+  { path: 'cadastros', component: GestaoCadastrosComponent },
   { path: 'empenho', component: EmpenhoComponent },
   { path: 'mod-develop', component: DevelopComponent },
   { path: 'orcamento/limites', component: LimitesComponent },

@@ -123,7 +123,7 @@
                                 Valor Pago
                             </div>
                         </th>
-                        <th *ngIf="isCadastroPagamento" class="text-center">Ação</th>
+                        <th *ngIf="isCadastroPagamento || (permissions?.Excluir ?? false)" class="text-center">Ação</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-contrato>
@@ -171,6 +171,12 @@
                                 (click)="selecionarContratoParaPagamento(contrato, $event)">
                                 <i class="tim-icons icon-simple-add" aria-hidden="true"></i>
                                 Cadastrar pagamento
+                            </button>
+                        </td>
+                        <td *ngIf="!isCadastroPagamento && (permissions?.Excluir ?? false)" class="text-center">
+                            <button type="button" class="btn-sm btn-danger"
+                                (click)="excluirContrato(contrato, $event)" aria-label="Excluir contrato">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
                             </button>
                         </td>
                     </tr>
