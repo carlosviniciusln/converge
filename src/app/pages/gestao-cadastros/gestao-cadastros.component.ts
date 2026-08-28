@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {
   CadastroRegistro,
@@ -7,6 +8,7 @@ import {
   ConsultaFornecedor,
   DepartamentoCadastro,
   FornecedorCadastro,
+  RepresentanteCadastro,
   UsuarioCadastro,
   ValidacaoDocumento,
 } from '../../models/gestao-cadastros';
@@ -37,10 +39,11 @@ export class GestaoCadastrosComponent implements OnInit {
   consultandoFornecedor = false;
 
   readonly abas: Array<{ id: Aba; titulo: string; icone: string }> = [
-    { id: 'usuarios', titulo: 'Usuários', icone: 'fa-user' },
-    { id: 'fornecedores', titulo: 'Fornecedores', icone: 'fa-building' },
-    { id: 'contratos', titulo: 'Contratos', icone: 'fa-file-contract' },
+    { id: 'usuarios', titulo: 'Funcionários', icone: 'fa-user' },
     { id: 'departamentos', titulo: 'Departamentos', icone: 'fa-sitemap' },
+    { id: 'fornecedores', titulo: 'Fornecedores', icone: 'fa-building' },
+    { id: 'representantes', titulo: 'Representantes', icone: 'fa-address-card' },
+    { id: 'contratos', titulo: 'Contratos', icone: 'fa-file-contract' },
     { id: 'documentos', titulo: 'Validação documental', icone: 'fa-file-circle-check' },
     { id: 'regularidade', titulo: 'Regularidade', icone: 'fa-shield-alt' },
   ];
@@ -50,17 +53,25 @@ export class GestaoCadastrosComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service: GestaoCadastrosService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute
   ) {
     this.formulario = this.criarFormulario('usuarios');
   }
 
   ngOnInit(): void {
-    this.carregarRegistros();
+    this.route.queryParamMap.subscribe(params => {
+      const aba = params.get('aba') as Aba;
+      const abaExiste = this.abas.some(item => item.id === aba);
+      this.selecionarAba(abaExiste ? aba : 'usuarios');
+
+      const tipoDocumento = params.get('tipoDocumento');
+      if (tipoDocumento) this.tipoDocumento = tipoDocumento;
+    });
   }
 
   get abaCadastro(): CadastroTipo | null {
-    return ['usuarios', 'fornecedores', 'departamentos'].includes(this.abaAtiva)
+    return ['usuarios', 'fornecedores', 'departamentos', 'representantes'].includes(this.abaAtiva)
       ? this.abaAtiva as CadastroTipo
       : null;
   }
@@ -181,18 +192,21 @@ export class GestaoCadastrosComponent implements OnInit {
   identificar(registro: CadastroRegistro): string {
     if (this.abaAtiva === 'usuarios') return (registro as UsuarioCadastro).nome;
     if (this.abaAtiva === 'fornecedores') return (registro as FornecedorCadastro).razaoSocial;
+    if (this.abaAtiva === 'representantes') return (registro as RepresentanteCadastro).nome;
     return (registro as DepartamentoCadastro).nome;
   }
 
   codigo(registro: CadastroRegistro): string {
     if (this.abaAtiva === 'usuarios') return (registro as UsuarioCadastro).matricula;
     if (this.abaAtiva === 'fornecedores') return (registro as FornecedorCadastro).cnpj;
+    if (this.abaAtiva === 'representantes') return (registro as RepresentanteCadastro).cpf;
     return (registro as DepartamentoCadastro).sigla;
   }
 
   detalhe(registro: CadastroRegistro): string {
     if (this.abaAtiva === 'usuarios') return (registro as UsuarioCadastro).perfil;
     if (this.abaAtiva === 'fornecedores') return (registro as FornecedorCadastro).email;
+    if (this.abaAtiva === 'representantes') return (registro as RepresentanteCadastro).empresa;
     return (registro as DepartamentoCadastro).responsavel;
   }
 
@@ -217,6 +231,17 @@ export class GestaoCadastrosComponent implements OnInit {
         nomeFantasia: [fornecedor?.nomeFantasia || ''],
         email: [fornecedor?.email || '', Validators.email],
         telefone: [fornecedor?.telefone || ''],
+      });
+    }
+    if (tipo === 'representantes') {
+      const representante = registro as RepresentanteCadastro;
+      return this.fb.group({
+        ...base,
+        cpf: [representante?.cpf || '', [Validators.required, Validators.pattern(/^\D*(\d\D*){11}$/)]],
+        nome: [representante?.nome || '', Validators.required],
+        empresa: [representante?.empresa || '', Validators.required],
+        email: [representante?.email || '', [Validators.required, Validators.email]],
+        telefone: [representante?.telefone || ''],
       });
     }
     const departamento = registro as DepartamentoCadastro;

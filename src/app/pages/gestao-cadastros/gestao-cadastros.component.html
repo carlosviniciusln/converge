@@ -56,6 +56,14 @@
         <label>E-mail<input type="email" formControlName="email" /></label>
       </div>
 
+      <div class="form-grid" *ngIf="abaAtiva === 'representantes'">
+        <label>CPF<input formControlName="cpf" placeholder="000.000.000-00" /></label>
+        <label>Nome<input formControlName="nome" /></label>
+        <label>Empresa<input formControlName="empresa" /></label>
+        <label>E-mail<input type="email" formControlName="email" /></label>
+        <label>Telefone<input formControlName="telefone" /></label>
+      </div>
+
       <label class="toggle-field"><input type="checkbox" formControlName="ativo" /> Cadastro ativo</label>
       <div class="form-actions">
         <button type="button" class="secondary-action" (click)="cancelarEdicao()">Cancelar</button>

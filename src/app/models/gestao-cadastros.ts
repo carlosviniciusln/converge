@@ -1,4 +1,4 @@
-export type CadastroTipo = 'usuarios' | 'fornecedores' | 'departamentos';
+export type CadastroTipo = 'usuarios' | 'fornecedores' | 'departamentos' | 'representantes';
 
 export interface CadastroBase {
   id: number;
@@ -27,7 +27,15 @@ export interface DepartamentoCadastro extends CadastroBase {
   email: string;
 }
 
-export type CadastroRegistro = UsuarioCadastro | FornecedorCadastro | DepartamentoCadastro;
+export interface RepresentanteCadastro extends CadastroBase {
+  cpf: string;
+  nome: string;
+  empresa: string;
+  email: string;
+  telefone: string;
+}
+
+export type CadastroRegistro = UsuarioCadastro | FornecedorCadastro | DepartamentoCadastro | RepresentanteCadastro;
 
 export interface ValidacaoDocumento {
   arquivo: string;

@@ -22,29 +22,33 @@ export class SidenavService {
       items.push({ title: 'Início', icon: 'home', url: '/dashboard' });
     }
 
+    const operacionalChildren: DscMenu[] = [];
     if (this.canView(ModuleEnum.Contratos)) {
-      items.push({
-        title: 'Execução',
-        icon: 'description',
+      operacionalChildren.push({
+        title: 'Contratos',
         children: [
-          { title: 'Contratos',                url: '/contrato' },
+          { title: 'Consultar',                url: '/contrato' },
           { title: 'Atas de Registro',         url: '/contrato/atas' },
           { title: 'Pagamentos Art.81',        url: '/contrato/artigos' },
           { title: 'Conciliação de Registros', url: '/contrato/conciliacao' },
         ]
       });
     }
-
-    if (this.canCreate(ModuleEnum.Contratos)) {
-      items.push({
-        title: 'Cadastros',
-        icon: 'add_box',
-        children: [
-          { title: 'Contrato',  url: '/contrato/create' },
-          { title: 'Pagamento', url: '/contrato?modo=cadastro-pagamento' },
-          { title: 'Ateste',    url: '/ateste' },
-        ]
-      });
+    if (this.canView(ModuleEnum.Contratos) || this.canCreate(ModuleEnum.Contratos)) {
+      const faturamentoChildren: DscMenu[] = [
+        { title: 'Ateste', url: '/ateste' },
+        { title: 'Validação da NF', url: '/cadastros?aba=documentos&tipoDocumento=nota-fiscal' },
+      ];
+      if (this.canCreate(ModuleEnum.Contratos)) {
+        faturamentoChildren.unshift({ title: 'Pagamento', url: '/contrato?modo=cadastro-pagamento' });
+      }
+      operacionalChildren.push(
+        { title: 'Faturamento', children: faturamentoChildren },
+        { title: 'Penalidades', url: '/ateste' },
+      );
+    }
+    if (operacionalChildren.length > 0) {
+      items.push({ title: 'Operacional', icon: 'settings', children: operacionalChildren });
     }
 
     const orcamentoChildren: DscMenu[] = [];
@@ -66,6 +70,25 @@ export class SidenavService {
       items.push({ title: 'Orçamento', icon: 'savings', children: orcamentoChildren });
     }
 
+    const cadastroChildren: DscMenu[] = [];
+    if (this.canView(ModuleEnum.Usuarios)) {
+      cadastroChildren.push(
+        { title: 'Funcionários',    url: '/cadastros?aba=usuarios' },
+        { title: 'Departamentos',   url: '/cadastros?aba=departamentos' },
+        { title: 'Fornecedores',    url: '/cadastros?aba=fornecedores' },
+        { title: 'Representantes',  url: '/cadastros?aba=representantes' },
+        { title: 'Documentos',      url: '/cadastros?aba=documentos' },
+      );
+    }
+    if (this.canView(ModuleEnum.Contratos)) {
+      cadastroChildren.splice(Math.min(4, cadastroChildren.length), 0,
+        { title: 'Contratos', url: '/cadastros?aba=contratos' }
+      );
+    }
+    if (cadastroChildren.length > 0) {
+      items.push({ title: 'Cadastros', icon: 'add_box', children: cadastroChildren });
+    }
+
     if (this.canView(ModuleEnum.Relatorios)) {
       items.push({
         title: 'Relatórios',
@@ -76,10 +99,6 @@ export class SidenavService {
           { title: 'Relatório de Contratos',  url: '/relatorio-contrato' },
         ]
       });
-    }
-
-    if (this.canView(ModuleEnum.Usuarios)) {
-      items.push({ title: 'Usuários', icon: 'person', url: '/usuarios' });
     }
 
     items.push(
