@@ -44,7 +44,24 @@
 }
 
 :host .sidebar-wrapper .menu-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
     cursor: pointer;
+
+    > p {
+        position: relative;
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0;
+        padding-right: 24px;
+    }
+
+    .caret {
+        top: 50%;
+        right: 4px;
+        margin-top: -2px;
+    }
 }
 
 :host .sidebar-wrapper .tim-icons {

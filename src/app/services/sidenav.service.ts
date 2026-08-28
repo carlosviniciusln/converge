@@ -29,8 +29,8 @@ export class SidenavService {
         children: [
           { title: 'Consultar',                url: '/contrato' },
           { title: 'Atas de Registro',         url: '/contrato/atas' },
-          { title: 'Pagamentos Art.81',        url: '/contrato/artigos' },
-          { title: 'Conciliação de Registros', url: '/contrato/conciliacao' },
+          // { title: 'Pagamentos Art.81',        url: '/contrato/artigos' },
+          // { title: 'Conciliação de Registros', url: '/contrato/conciliacao' },
         ]
       });
     }
@@ -55,15 +55,15 @@ export class SidenavService {
     if (this.canView(ModuleEnum.Planejamento)) {
       orcamentoChildren.push(
         { title: 'Planejamento',           url: '/novo-planejamento' },
-        { title: 'Valores Executados',     url: '/valores-executados' },
-        { title: 'Extração de Pagamentos', url: '/export-data-pagamento' },
-        { title: 'Planejamento Legado',    url: '/planejamento' },
+        // { title: 'Valores Executados',     url: '/valores-executados' },
+        // { title: 'Extração de Pagamentos', url: '/export-data-pagamento' },
+        // { title: 'Planejamento Legado',    url: '/planejamento' },
       );
     }
     if (this.canView(ModuleEnum.Limites)) {
       orcamentoChildren.push(
         { title: 'Limites',        url: '/orcamento/limites' },
-        { title: 'Limites Legado', url: '/planejamento/limites' },
+        // { title: 'Limites Legado', url: '/planejamento/limites' },
       );
     }
     if (orcamentoChildren.length > 0) {
