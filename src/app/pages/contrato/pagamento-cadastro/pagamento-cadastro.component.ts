@@ -242,7 +242,7 @@ export class PagamentoCadastroComponent implements OnInit {
             this.form.get('dePeriodo').enable();
             this.form.get('coNumeroAteste').enable();
         } else{
-          //cenario 1: o fiscal cegti deve poder alterar somente a competencia.
+          //cenario 1: o fiscal Converge deve poder alterar somente a competencia.
           Object.keys(this.form.controls).forEach((controlName) => {
             if (controlName !== 'dePeriodo') {
               this.form.get(controlName).disable();
