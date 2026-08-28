@@ -5,26 +5,26 @@
 
     <div class="login-brand">
       <div class="login-brand__logo">
-        <mat-icon class="login-brand__icon">description</mat-icon>
+        <i class="pi pi-file login-brand__icon" aria-hidden="true"></i>
       </div>
       <h1 class="login-brand__system">CONVERGE</h1>
       <p class="login-brand__subtitle">Sistema de Gestão de Contratos</p>
 
       <ul class="login-features">
         <li class="login-features__item">
-          <mat-icon>verified</mat-icon>
+          <i class="pi pi-check-circle" aria-hidden="true"></i>
           <span>Gestão de vigências e rubricas</span>
         </li>
         <li class="login-features__item">
-          <mat-icon>trending_up</mat-icon>
+          <i class="pi pi-chart-line" aria-hidden="true"></i>
           <span>Evolução financeira de contratos</span>
         </li>
         <li class="login-features__item">
-          <mat-icon>receipt_long</mat-icon>
+          <i class="pi pi-wallet" aria-hidden="true"></i>
           <span>Controle de pagamentos e atestes</span>
         </li>
         <li class="login-features__item">
-          <mat-icon>bar_chart</mat-icon>
+          <i class="pi pi-chart-bar" aria-hidden="true"></i>
           <span>Dashboard de execução orçamentária</span>
         </li>
       </ul>
@@ -44,7 +44,7 @@
       <!-- card header -->
       <div class="login-card__header">
         <div class="login-avatar">
-          <mat-icon>lock_person</mat-icon>
+          <i class="pi pi-lock" aria-hidden="true"></i>
         </div>
         <h2>Acesso ao Sistema</h2>
         <p>Informe suas credenciais para continuar</p>
@@ -57,7 +57,7 @@
         <div class="form-field">
           <label for="login-matricula">Usuário</label>
           <div class="input-box" [class.input-box--error]="submitted && f['matricula'].invalid">
-            <mat-icon class="input-box__icon">person</mat-icon>
+            <i class="pi pi-user input-box__icon" aria-hidden="true"></i>
             <input
               id="login-matricula"
               type="text"
@@ -74,7 +74,7 @@
         <div class="form-field">
           <label for="login-senha">Senha</label>
           <div class="input-box" [class.input-box--error]="submitted && f['senha'].invalid">
-            <mat-icon class="input-box__icon">lock</mat-icon>
+            <i class="pi pi-lock input-box__icon" aria-hidden="true"></i>
             <input
               id="login-senha"
               [type]="showPassword ? 'text' : 'password'"
@@ -87,7 +87,7 @@
               (click)="showPassword = !showPassword"
               tabindex="-1"
               [attr.aria-label]="showPassword ? 'Ocultar senha' : 'Mostrar senha'">
-              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <i class="pi" [ngClass]="showPassword ? 'pi-eye-slash' : 'pi-eye'" aria-hidden="true"></i>
             </button>
           </div>
           <span *ngIf="submitted && f['senha'].invalid" class="field-error">
@@ -97,7 +97,7 @@
 
         <!-- Error message -->
         <div *ngIf="isLoginFailed" class="login-error" role="alert">
-          <mat-icon>error_outline</mat-icon>
+          <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
           {{ errorMessage }}
         </div>
 
@@ -108,7 +108,7 @@
           class="btn-login"
           [disabled]="loading">
           <ng-container *ngIf="!loading">
-            <mat-icon>login</mat-icon>
+            <i class="pi pi-sign-in" aria-hidden="true"></i>
             Entrar
           </ng-container>
           <ng-container *ngIf="loading">

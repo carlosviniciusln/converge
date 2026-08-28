@@ -125,7 +125,7 @@ $icon-muted:     #9EB2B8;
     opacity:     .85;
     color:       $white;
 
-    mat-icon {
+    .pi {
       font-size:   20px !important;
       width:       20px !important;
       height:      20px !important;
@@ -199,7 +199,7 @@ $icon-muted:     #9EB2B8;
   justify-content: center;
   margin:          0 auto;
 
-  mat-icon {
+  .pi {
     font-size: 28px !important;
     width:     28px !important;
     height:    28px !important;
@@ -281,7 +281,7 @@ $icon-muted:     #9EB2B8;
 
     &:hover { color: $primary; }
 
-    mat-icon {
+    .pi {
       font-size: 18px !important;
       width:     18px !important;
       height:    18px !important;
@@ -306,7 +306,7 @@ $icon-muted:     #9EB2B8;
   color:         $error-dark;
   font-size:     13px;
 
-  mat-icon {
+  .pi {
     font-size:   18px !important;
     width:       18px !important;
     height:      18px !important;
@@ -344,7 +344,7 @@ $icon-muted:     #9EB2B8;
     cursor:  not-allowed;
   }
 
-  mat-icon {
+  .pi {
     font-size: 20px !important;
     width:     20px !important;
     height:    20px !important;

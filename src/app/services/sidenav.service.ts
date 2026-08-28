@@ -19,7 +19,7 @@ export class SidenavService {
     const items: DscMenu[] = [];
 
     if (this.canView(ModuleEnum.Dashboard)) {
-      items.push({ title: 'Início', icon: 'home', url: '/dashboard' });
+      items.push({ title: 'Início', icon: 'icon-bank', url: '/dashboard' });
     }
 
     const operacionalChildren: DscMenu[] = [];
@@ -48,7 +48,7 @@ export class SidenavService {
       );
     }
     if (operacionalChildren.length > 0) {
-      items.push({ title: 'Operacional', icon: 'settings', children: operacionalChildren });
+      items.push({ title: 'Operacional', icon: 'icon-settings', children: operacionalChildren });
     }
 
     const orcamentoChildren: DscMenu[] = [];
@@ -67,7 +67,7 @@ export class SidenavService {
       );
     }
     if (orcamentoChildren.length > 0) {
-      items.push({ title: 'Orçamento', icon: 'savings', children: orcamentoChildren });
+      items.push({ title: 'Orçamento', icon: 'icon-coins', children: orcamentoChildren });
     }
 
     const cadastroChildren: DscMenu[] = [];
@@ -86,13 +86,13 @@ export class SidenavService {
       );
     }
     if (cadastroChildren.length > 0) {
-      items.push({ title: 'Cadastros', icon: 'add_box', children: cadastroChildren });
+      items.push({ title: 'Cadastros', icon: 'icon-simple-add', children: cadastroChildren });
     }
 
     if (this.canView(ModuleEnum.Relatorios)) {
       items.push({
         title: 'Relatórios',
-        icon: 'settings_suggest',
+        icon: 'icon-puzzle-10',
         children: [
           { title: 'Relatório de Pagamentos', url: '/pagamento' },
           { title: 'Relatório de Consumo',    url: '/consumo' },
@@ -102,8 +102,8 @@ export class SidenavService {
     }
 
     items.push(
-      { title: 'Comentários e sugestões', icon: 'chat',      externalUrl: 'mailto:Converge@caixa.gov.br' },
-      { title: 'Manual do usuário',       icon: 'menu_book', externalUrl: '/assets/manual/manual-Converge.pdf' },
+      { title: 'Comentários e sugestões', icon: 'icon-chat-33',       externalUrl: 'mailto:Converge@caixa.gov.br' },
+      { title: 'Manual do usuário',       icon: 'icon-book-bookmark', externalUrl: '/assets/manual/manual-Converge.pdf' },
     );
 
     return items;

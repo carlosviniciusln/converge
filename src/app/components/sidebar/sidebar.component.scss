@@ -47,8 +47,12 @@
     cursor: pointer;
 }
 
-:host .sidebar-wrapper .material-icons {
+:host .sidebar-wrapper .tim-icons {
+    flex: 0 0 34px;
+    width: 34px;
+    margin-right: 8px;
     font-size: 20px;
+    text-align: center;
 }
 
 .mobile-menu-header {

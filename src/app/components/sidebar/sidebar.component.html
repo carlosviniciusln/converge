@@ -23,7 +23,7 @@
   <ng-template #menuNode let-menuItem let-level="level">
     <li routerLinkActive="active" class="nav-item" [class.nested-item]="level > 0">
       <a *ngIf="menuItem.children?.length" class="nav-link menu-toggle" (click)="toggleMenu(menuItem)">
-        <i *ngIf="level === 0 && menuItem.icon" class="material-icons" aria-hidden="true">{{ menuItem.icon }}</i>
+        <i *ngIf="level === 0 && menuItem.icon" class="tim-icons {{ menuItem.icon }}" aria-hidden="true"></i>
         <p>{{ menuItem.title }}<b class="caret"></b></p>
       </a>
 
@@ -36,12 +36,12 @@
       </div>
 
       <a *ngIf="!menuItem.children?.length && menuItem.url" class="nav-link" [attr.href]="'#' + menuItem.url" (click)="closeMobileMenu()">
-        <i *ngIf="level === 0 && menuItem.icon" class="material-icons" aria-hidden="true">{{ menuItem.icon }}</i>
+        <i *ngIf="level === 0 && menuItem.icon" class="tim-icons {{ menuItem.icon }}" aria-hidden="true"></i>
         <p>{{ menuItem.title }}</p>
       </a>
 
       <a *ngIf="!menuItem.children?.length && menuItem.externalUrl" class="nav-link" [attr.href]="menuItem.externalUrl" (click)="closeMobileMenu()">
-        <i *ngIf="level === 0 && menuItem.icon" class="material-icons" aria-hidden="true">{{ menuItem.icon }}</i>
+        <i *ngIf="level === 0 && menuItem.icon" class="tim-icons {{ menuItem.icon }}" aria-hidden="true"></i>
         <p>{{ menuItem.title }}</p>
       </a>
     </li>
