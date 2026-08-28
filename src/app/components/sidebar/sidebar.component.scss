@@ -1,5 +1,5 @@
-:host .sidebar-wrapper > .nav > .nav-item > .collapse,
-:host .sidebar-wrapper > .nav > .nav-item > .collapsing {
+:host .sidebar-wrapper .nav-item > .collapse,
+:host .sidebar-wrapper .nav-item > .collapsing {
     padding-left: 16px;
 
     > .nav {
@@ -28,6 +28,27 @@
             }
         }
     }
+}
+
+:host .sidebar-wrapper .nested-item > .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 20px;
+    text-transform: none;
+}
+
+:host .sidebar-wrapper .menu-toggle {
+    cursor: pointer;
+}
+
+:host .sidebar-wrapper .material-icons {
+    font-size: 20px;
 }
 
 .mobile-menu-header {

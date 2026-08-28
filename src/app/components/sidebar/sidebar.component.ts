@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DscMenu } from 'sidsc-components/dsc-sidenav';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { ContratoApiResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { ApiService } from 'src/app/shared/services/api.service';
@@ -42,7 +43,8 @@ export const ROUTES: RouteInfo[] = [
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
-  menuItems: any[] = [];
+  menuItems: DscMenu[] = [];
+  expandedMenus = new Set<DscMenu>();
 
   currentProfile: PerfisEnum;
 
@@ -86,7 +88,21 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.menuItems = ROUTES.filter((menuItem) => menuItem);
+    this.menuItems = this.sidenav.menuItems;
+  }
+
+  toggleMenu(menuItem: DscMenu): void {
+    this.expandedMenus.has(menuItem)
+      ? this.expandedMenus.delete(menuItem)
+      : this.expandedMenus.add(menuItem);
+  }
+
+  isMenuExpanded(menuItem: DscMenu): boolean {
+    return this.expandedMenus.has(menuItem);
+  }
+
+  closeMobileMenu(): void {
+    if (this.isMobileMenu()) this.sidenav.close();
   }
 
 async getContratos(filtro: any): Promise<ApiResponse<ContratoApiResponse>>{
