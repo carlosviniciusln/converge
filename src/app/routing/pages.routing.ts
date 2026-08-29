@@ -37,6 +37,7 @@ import { DotacaoComponent } from '../pages/dotacao/dotacao.component';
 import { PlanejamentoV2Component } from '../pages/planejamento-v2/planejamento-v2.component';
 import { PlanejamentoGeralV2Component } from '../pages/planejamento-v2/planejamento-geral-v2/planejamento-geral-v2.component';
 import { GestaoCadastrosComponent } from '../pages/gestao-cadastros/gestao-cadastros.component';
+import { NovoPlanejamentoComponent } from '../pages/planejamento/novo-planejamento/novo-planejamento.component';
 
 
 
@@ -54,6 +55,7 @@ export const PagesRoutes: Routes = [
   { path: 'contrato/evolucao-financeira-aquisicao/:id', component: EvolucaoFinanceiraAquisicaoComponent },
   { path: 'contrato/conciliacao', component: ContratoPendenteComponent },
   { path: 'contrato/artigos', component: ArtigoPagamentoComponent },
+  { path: 'novo-planejamento', component: NovoPlanejamentoComponent },
   { path: 'planejamento', component: PlanejamentoComponent },
   { path: 'planejamento/create', component: PlanejamentoCadastroComponent },
   { path: 'planejamento/limites', component: LimitesRubricasComponent },

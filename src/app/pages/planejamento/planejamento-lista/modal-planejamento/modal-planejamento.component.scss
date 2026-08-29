@@ -75,7 +75,7 @@
   font-size: 0.9rem;
   padding-top: 8px;
   padding-bottom: 8px;
-  background: #009a53;
+  background: #005CA9;
   color: white;
   text-align: center;
   font-family: "Poppins", sans-serif;
@@ -84,7 +84,7 @@ b{
   font-size: 0.7rem;
 }
 .bordered th:hover {
-  background: #009a53 !important;
+  background: #005CA9 !important;
   opacity: 0.8;
   color: white;
 }
@@ -95,14 +95,14 @@ b{
   font-size: 0.9rem;
   padding-top: 8px;
   padding-bottom: 8px;
-  background: #009a53 !important;
+  background: #005CA9 !important;
   color: white !important;
   text-align: center;
   font-family: "Poppins", sans-serif;
 }
 
 ::ng-deep .bordered-orange th:hover {
-  background: #009a53 !important;
+  background: #005CA9 !important;
   opacity: 0.8;
   color: white !important;
 }
@@ -129,7 +129,7 @@ b{
 }
 
 .example {
-  background: #009a53 !important;
+  background: #005CA9 !important;
   opacity: 0.8;
   color: white !important;
 }
@@ -161,7 +161,7 @@ tr.template-body td a:hover {
 }
 
 .orange-style {
-  background: #009a53 !important;
+  background: #005CA9 !important;
   opacity: 0.8;
   color: white !important;
 
@@ -225,7 +225,7 @@ h3.card-title.text-center {
 }
 
 ::ng-deep .mat-tab-label-active {
-  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  background: #005CA9;
   color: #fff;
 }
 

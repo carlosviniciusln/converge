@@ -75,15 +75,15 @@ input:focus, select:focus { border-color: #005ca9; outline: 2px solid rgba(0, 92
 .ai-mark { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: #005ca9; color: #fff; box-shadow: 0 0 0 6px rgba(0, 92, 169, .08); }
 .ai-mark i { animation: ai-breathe 1.8s ease-in-out infinite; }
 .ai-progress { height: 4px; margin: 18px 0 20px; overflow: hidden; border-radius: 2px; background: #d8e7ec; }
-.ai-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #005ca9, #17a5a3); transition: width .7s ease; }
+.ai-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #005ca9, #2d8ad8); transition: width .7s ease; }
 .ai-messages { display: flex; flex-direction: column; gap: 10px; }
 .ai-messages p { display: flex; align-items: flex-start; gap: 9px; min-height: 20px; margin: 0; color: #52646d; font-size: 13px; animation: message-in .35s ease both; }
-.ai-messages p i { margin-top: 3px; color: #17845a; font-size: 11px; }
+.ai-messages p i { margin-top: 3px; color: #005ca9; font-size: 11px; }
 .typing-message { color: #002a4d !important; font-weight: 600; }
-.ai-pulse { flex: 0 0 auto; width: 8px; height: 8px; margin: 5px 3px 0; border-radius: 50%; background: #17a5a3; animation: ai-breathe 1.2s ease-in-out infinite; }
+.ai-pulse { flex: 0 0 auto; width: 8px; height: 8px; margin: 5px 3px 0; border-radius: 50%; background: #2d8ad8; animation: ai-breathe 1.2s ease-in-out infinite; }
 .typing-cursor { width: 2px; height: 15px; margin-left: -5px; background: #005ca9; animation: cursor-blink .8s steps(1) infinite; }
-.managerial-summary { display: flex; gap: 12px; margin: 16px 0; padding: 14px; border-left: 3px solid #17a5a3; border-radius: 0 5px 5px 0; background: #eaf6f3; color: #234c49; }
-.managerial-summary > i { margin-top: 3px; color: #17845a; }
+.managerial-summary { display: flex; gap: 12px; margin: 16px 0; padding: 14px; border-left: 3px solid #2d8ad8; border-radius: 0 5px 5px 0; background: #e5f1fc; color: #002a4d; }
+.managerial-summary > i { margin-top: 3px; color: #005ca9; }
 .managerial-summary strong { display: block; margin-bottom: 3px; font-size: 12px; text-transform: uppercase; }
 .managerial-summary p { margin: 0; line-height: 1.45; }
 .source { display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; padding: 10px 0; border-bottom: 1px solid #dce7ea; }

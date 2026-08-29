@@ -54,7 +54,7 @@ export class SidenavService {
     const orcamentoChildren: DscMenu[] = [];
     if (this.canView(ModuleEnum.Planejamento)) {
       orcamentoChildren.push(
-        { title: 'Planejamento',           url: '/novo-planejamento' },
+        { title: 'Planejamento',           url: '/planejamento-orcamentario-novo' },
         // { title: 'Valores Executados',     url: '/valores-executados' },
         // { title: 'Extração de Pagamentos', url: '/export-data-pagamento' },
         // { title: 'Planejamento Legado',    url: '/planejamento' },

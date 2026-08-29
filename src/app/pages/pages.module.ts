@@ -98,6 +98,7 @@ import { ModalPlanejamentoV2Component } from './planejamento-v2/modal-planejamen
 import { PlanejamentoGeralV2Component } from './planejamento-v2/planejamento-geral-v2/planejamento-geral-v2.component';
 import { PlanejamentoCadastroV2Component } from './planejamento-v2/planejamento-cadastro-v2/planejamento-cadastro-v2.component';
 import { GestaoCadastrosComponent } from './gestao-cadastros/gestao-cadastros.component';
+import { NovoPlanejamentoComponent } from './planejamento/novo-planejamento/novo-planejamento.component';
 
 
 
@@ -201,7 +202,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     PlanejamentoV2Component,
     ModalPlanejamentoV2Component,
     PlanejamentoGeralV2Component,
-    PlanejamentoCadastroV2Component
+    PlanejamentoCadastroV2Component,
+    NovoPlanejamentoComponent
     ,GestaoCadastrosComponent
   ],
   providers: [

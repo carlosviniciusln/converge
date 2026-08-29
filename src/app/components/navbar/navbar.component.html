@@ -2,7 +2,7 @@
      para permitir o uso de logo customizada (assets/img/logo.png) -->
 <header id="app-header" class="custom-header">
   <div class="custom-header__row">
-    <button id="btn-sandwich" class="custom-header__toggle" type="button" aria-label="Abrir menu de navegação" (click)="toggleMenu()">
+    <button id="btn-sandwich" class="custom-header__toggle" type="button" aria-label="Abrir menu de navegação" [attr.aria-expanded]="sidenav.opened$ | async" aria-controls="app-sidebar" (click)="toggleMenu()">
       <i class="fas fa-bars" aria-hidden="true"></i>
     </button>
 

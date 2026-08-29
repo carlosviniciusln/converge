@@ -1,5 +1,5 @@
 <div class="wrapper" [class.nav-open]="sidenav.opened$ | async">
-    <div class="sidebar">
+  <div class="sidebar" [class.sidebar-open]="sidenav.opened$ | async">
       <app-sidebar></app-sidebar>
     </div>
     <button

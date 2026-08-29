@@ -103,7 +103,7 @@ font-size: 14px;
   &.active .page-link {
     z-index: 1;
     color: $pagination-active-color;
-    background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);//$pagination-active-bg;
+    background: #005CA9;
     border-color: $pagination-active-border-color;
   }
 

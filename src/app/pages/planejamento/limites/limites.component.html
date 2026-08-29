@@ -62,19 +62,19 @@
   <!-- HEADER NÍVEL 0 -->
   <ng-template pTemplate="header">
     <tr>
-      <th class="col-toggle" style="background-color:#499c70; color: white;"></th>
-      <th class="l0-exercicio text-center" style="font-size:14px; background-color:#499c70; color:white;">Exercício</th>
-      <th class="l0-tipo" style="font-size:14px; background-color:#499c70; color:white;">Tipo</th>
-      <th class="l0-limite text-right" style="font-size:14px; background-color:#499c70; color:white;">Limite</th>
-      <th class="l0-solicitado text-right" style="font-size:14px; background-color:#499c70; color:white;">Solicitado</th>
-      <th class="l0-diferenca text-right" pSortableColumn="vrDiferenca" style="font-size:14px; background-color:#499c70; color:white;">Diferença</th>
-      <th class="l0-acoes text-right" style="font-size:14px; background-color:#499c70; color:white;"></th>
+      <th class="col-toggle" style="background-color:#005CA9; color:white;"></th>
+      <th class="l0-exercicio text-center" style="font-size:14px; background-color:#005CA9; color:white;">Exercício</th>
+      <th class="l0-tipo" style="font-size:14px; background-color:#005CA9; color:white;">Tipo</th>
+      <th class="l0-limite text-right" style="font-size:14px; background-color:#005CA9; color:white;">Limite</th>
+      <th class="l0-solicitado text-right" style="font-size:14px; background-color:#005CA9; color:white;">Solicitado</th>
+      <th class="l0-diferenca text-right" pSortableColumn="vrDiferenca" style="font-size:14px; background-color:#005CA9; color:white;">Diferença</th>
+      <th class="l0-acoes text-right" style="font-size:14px; background-color:#005CA9; color:white;"></th>
     </tr>
   </ng-template>
 
   <!-- BODY NÍVEL 0 -->
   <ng-template pTemplate="body" let-visaoum let-expanded="expanded">
-    <tr style="background-color:#499c70;">
+    <tr style="background-color:#005CA9;">
       <td class="col-toggle">
         <button
           style="color:black; background-color:white;"
@@ -104,7 +104,7 @@
 
 
        <ng-template pTemplate="rowexpansion" let-registro>
-    <tr *ngIf="registro.primeiroNivel" style="background-color:#6eb47d;">
+    <tr *ngIf="registro.primeiroNivel" style="background-color:#2D8AD8;">
 
       <td colspan="7">
         <div class="p-p-3 nested-wrapper">
@@ -119,17 +119,17 @@
             <!-- HEADER NÍVEL 1 -->
             <ng-template pTemplate="header">
               <tr>
-                <th class="col-toggle" style="background-color:#6eb47d;"></th>
-                <th class="l1-descricao" style="background-color:#6eb47d; color:white;">Descrição</th>
-                <th class="l1-limite text-right" style="background-color:#6eb47d; color:white;">Limite</th>
-                <th class="l1-solicitado text-right" style="background-color:#6eb47d; color:white;">Solicitado</th>
-                <th class="l1-diferenca text-right" pSortableColumn="vrDiferenca" style="background-color:#6eb47d; color:white;">Diferença</th>
+                <th class="col-toggle" style="background-color:#2D8AD8;"></th>
+                <th class="l1-descricao" style="background-color:#2D8AD8; color:white;">Descrição</th>
+                <th class="l1-limite text-right" style="background-color:#2D8AD8; color:white;">Limite</th>
+                <th class="l1-solicitado text-right" style="background-color:#2D8AD8; color:white;">Solicitado</th>
+                <th class="l1-diferenca text-right" pSortableColumn="vrDiferenca" style="background-color:#2D8AD8; color:white;">Diferença</th>
               </tr>
             </ng-template>
 
             <!-- BODY NÍVEL 1 -->
             <ng-template pTemplate="body" let-tipo let-expanded="expanded">
-              <tr style="background-color:#6eb47d;">
+              <tr style="background-color:#2D8AD8;">
                 <td class="col-toggle">
                   <button
                     style="color:black; background-color:white;"
@@ -153,7 +153,7 @@
             </ng-template>
                   <!-- NÍVEL 1: EXPANSÃO PARA NÍVEL 2 -->
                  <ng-template pTemplate="rowexpansion" let-tipo>
-              <tr style="background-color:#6eb47d;">
+              <tr style="background-color:#2D8AD8;">
 
                 <td colspan="5">
                   <div class="p-p-3 nested-wrapper">
@@ -168,19 +168,19 @@
                       <!-- HEADER NÍVEL 2 -->
                       <ng-template pTemplate="header">
                         <tr>
-                          <th class="col-toggle" style="background-color:#9dcc9b;"></th>
-                          <th class="l2-rubrica"   style="background-color:#9dcc9b; color:black;">Rubrica</th>
-                          <th class="l2-descricao" style="background-color:#9dcc9b; color:black;">Descrição</th>
-                          <th class="l2-limite text-right"     style="background-color:#9dcc9b; color:black;">Limite</th>
-                          <th class="l2-solicitado text-right"  style="background-color:#9dcc9b; color:black;">Solicitado</th>
-                          <th class="l2-diferenca text-right"   pSortableColumn="vrDiferenca" style="background-color:#9dcc9b; color:black;">Diferença</th>
+                          <th class="col-toggle" style="background-color:#A0D2FC;"></th>
+                          <th class="l2-rubrica" style="background-color:#A0D2FC; color:#002A4D;">Rubrica</th>
+                          <th class="l2-descricao" style="background-color:#A0D2FC; color:#002A4D;">Descrição</th>
+                          <th class="l2-limite text-right" style="background-color:#A0D2FC; color:#002A4D;">Limite</th>
+                          <th class="l2-solicitado text-right" style="background-color:#A0D2FC; color:#002A4D;">Solicitado</th>
+                          <th class="l2-diferenca text-right" pSortableColumn="vrDiferenca" style="background-color:#A0D2FC; color:#002A4D;">Diferença</th>
                         </tr>
                       </ng-template>
 
                       <!-- BODY NÍVEL 2 -->
                       <ng-template pTemplate="body" let-contr let-expanded="expanded">
                         <tr>
-                          <td class="col-toggle" style="background-color:#9dcc9b;">
+                          <td class="col-toggle" style="background-color:#A0D2FC;">
                             <button
                               style="color:black; background-color:white;"
                               type="button" pButton
@@ -190,11 +190,11 @@
                               <span [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></span>
                             </button>
                           </td>
-                          <td class="l2-rubrica"   style="background-color:#9dcc9b; color:black;">{{contr.coRubrica}}</td>
-                          <td class="l2-descricao" style="background-color:#9dcc9b; color:black;">{{contr.deRubrica}}</td>
-                          <td class="l2-limite text-right"     style="background-color:#9dcc9b; color:black;">{{contr.vrLimite | currency:'BRL'}}</td>
-                          <td class="l2-solicitado text-right"  style="background-color:#9dcc9b; color:black;">{{contr.vrPlanejamento | currency:'BRL'}}</td>
-                          <td class="l2-diferenca text-right"   style="background-color:#9dcc9b; color:black;">
+                          <td class="l2-rubrica" style="background-color:#A0D2FC; color:#002A4D;">{{contr.coRubrica}}</td>
+                          <td class="l2-descricao" style="background-color:#A0D2FC; color:#002A4D;">{{contr.deRubrica}}</td>
+                          <td class="l2-limite text-right" style="background-color:#A0D2FC; color:#002A4D;">{{contr.vrLimite | currency:'BRL'}}</td>
+                          <td class="l2-solicitado text-right" style="background-color:#A0D2FC; color:#002A4D;">{{contr.vrPlanejamento | currency:'BRL'}}</td>
+                          <td class="l2-diferenca text-right" style="background-color:#A0D2FC; color:#002A4D;">
                             <span class="diff diff--right">
                               <span class="diff__val">{{ formatBRLDiffNoBreak(contr.vrLimite - contr.vrPlanejamento) }}</span>
                               <span *ngIf="contr.vrDiferenca !== 0" class="diff__alert">!</span>
@@ -205,7 +205,7 @@
 
                             <!-- NÍVEL 2: EXPANSÃO PARA NÍVEL 3 -->
                            <ng-template pTemplate="rowexpansion" let-contr>
-                        <tr style="background-color:#6eb47d;">
+                        <tr style="background-color:#2D8AD8;">
 
                           <td colspan="6">
                             <div class="p-p-3 nested-wrapper">
@@ -213,10 +213,10 @@
                                 <!-- HEADER NÍVEL 3 -->
                                 <ng-template pTemplate="header">
                                   <tr>
-                                    <th class="l3-ud"        style="background-color:#b4dec9; color:black;">UD</th>
-                                    <th class="l3-limite text-right"     style="background-color:#b4dec9; color:black;">Limite</th>
-                                    <th class="l3-solicitado text-right"  style="background-color:#b4dec9; color:black;">Solicitado</th>
-                                    <th class="l3-diferenca text-right"   pSortableColumn="vrDiferenca" style="background-color:#b4dec9; color:black;">Diferença</th>
+                                    <th class="l3-ud" style="background-color:#E5F1FC; color:#002A4D;">UD</th>
+                                    <th class="l3-limite text-right" style="background-color:#E5F1FC; color:#002A4D;">Limite</th>
+                                    <th class="l3-solicitado text-right" style="background-color:#E5F1FC; color:#002A4D;">Solicitado</th>
+                                    <th class="l3-diferenca text-right" pSortableColumn="vrDiferenca" style="background-color:#E5F1FC; color:#002A4D;">Diferença</th>
                                   </tr>
                                 </ng-template>
 
@@ -226,10 +226,10 @@
                                     (click)="openModalPlanejamento('alteracao', ud, registro)"
                                     style="text-decoration: underline; cursor: pointer;"
                                   >
-                                    <td class="l3-ud"        style="background-color:#b4dec9; color:black;">{{ud.sgFilial}}</td>
-                                    <td class="l3-limite text-right"     style="background-color:#b4dec9; color:black;">{{ud.vrLimite | currency:'BRL'}}</td>
-                                    <td class="l3-solicitado text-right"  style="background-color:#b4dec9; color:black;">{{ud.vrPlanejamento | currency:'BRL'}}</td>
-                                    <td class="l3-diferenca text-right"   style="background-color:#b4dec9; color:black;">
+                                    <td class="l3-ud" style="background-color:#E5F1FC; color:#002A4D;">{{ud.sgFilial}}</td>
+                                    <td class="l3-limite text-right" style="background-color:#E5F1FC; color:#002A4D;">{{ud.vrLimite | currency:'BRL'}}</td>
+                                    <td class="l3-solicitado text-right" style="background-color:#E5F1FC; color:#002A4D;">{{ud.vrPlanejamento | currency:'BRL'}}</td>
+                                    <td class="l3-diferenca text-right" style="background-color:#E5F1FC; color:#002A4D;">
                                       <span class="diff diff--right">
                                         <span class="diff__val">{{ formatBRLDiffNoBreak(ud.vrLimite - ud.vrPlanejamento) }}</span>
                                         <span *ngIf="ud.vrDiferenca !== 0" class="diff__alert">!</span>
