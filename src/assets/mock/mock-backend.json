@@ -244,6 +244,86 @@
         "errors": []
       }
     },
+    "/v1/contrato/contratos-filiais": {
+      "status": 200,
+      "body": {
+        "succeeded": true,
+        "data": {
+          "totalRecords": 3,
+          "contratos": [
+            {
+              "nuContrato": "4",
+              "coContrato": "04466/2025",
+              "nuFilial": "101",
+              "sgFilial": "UDNOR",
+              "noEmpresa": "SERPRO - Serviço Federal de Processamento de Dados",
+              "noObjeto": "Serviços de tecnologia e nuvem",
+              "nuVigencia": "438",
+              "nuRubrica": "1",
+              "coRubrica": "001-01",
+              "inicioVigencia": "2026-01-01T00:00:00",
+              "fimVigencia": "2026-12-31T00:00:00",
+              "totalContrato": 2487500,
+              "vrExecutado": 612430.5,
+              "vrSaldo": 1875069.5,
+              "icVigenciaAtual": 1,
+              "dtUltimoPagamento": "2026-07-20T00:00:00",
+              "deUltimoPagamento": "07/2026",
+              "dtProximaCompetencia": "2026-08-01T00:00:00",
+              "dtIniPeriodoCompetencia": "2026-08-01T00:00:00",
+              "dtFimPeriodoCompetencia": "2026-08-31T00:00:00"
+            },
+            {
+              "nuContrato": "4544",
+              "coContrato": "07500/2024",
+              "nuFilial": "103",
+              "sgFilial": "UDSUL",
+              "noEmpresa": "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.",
+              "noObjeto": "Serviços de telecomunicações",
+              "nuVigencia": "512",
+              "nuRubrica": "2",
+              "coRubrica": "001-02",
+              "inicioVigencia": "2025-04-01T00:00:00",
+              "fimVigencia": "2027-03-31T00:00:00",
+              "totalContrato": 3680000,
+              "vrExecutado": 1548200,
+              "vrSaldo": 2131800,
+              "icVigenciaAtual": 1,
+              "dtUltimoPagamento": "2026-07-15T00:00:00",
+              "deUltimoPagamento": "07/2026",
+              "dtProximaCompetencia": "2026-08-01T00:00:00",
+              "dtIniPeriodoCompetencia": "2026-08-01T00:00:00",
+              "dtFimPeriodoCompetencia": "2026-08-31T00:00:00"
+            },
+            {
+              "nuContrato": "4630",
+              "coContrato": "12870/2024",
+              "nuFilial": "102",
+              "sgFilial": "UDCEN",
+              "noEmpresa": "TOTVS S.A.",
+              "noObjeto": "Licenciamento e suporte de software",
+              "nuVigencia": "529",
+              "nuRubrica": "1",
+              "coRubrica": "001-01",
+              "inicioVigencia": "2025-02-15T00:00:00",
+              "fimVigencia": "2026-12-31T00:00:00",
+              "totalContrato": 1195000,
+              "vrExecutado": 732450,
+              "vrSaldo": 462550,
+              "icVigenciaAtual": 1,
+              "dtUltimoPagamento": "2026-06-18T00:00:00",
+              "deUltimoPagamento": "06/2026",
+              "dtProximaCompetencia": "2026-07-01T00:00:00",
+              "dtIniPeriodoCompetencia": "2026-07-01T00:00:00",
+              "dtFimPeriodoCompetencia": "2026-07-31T00:00:00"
+            }
+          ],
+          "listaFornecedor": ["SERPRO - Serviço Federal de Processamento de Dados", "EMBRATEL - Empresa Brasileira de Telecomunicações S.A.", "TOTVS S.A."],
+          "listaContratos": ["04466/2025", "07500/2024", "12870/2024"]
+        },
+        "errors": []
+      }
+    },
     "/api/v1/contrato/listar-contratos": {
       "status": 200,
       "body": {

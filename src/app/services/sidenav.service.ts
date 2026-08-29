@@ -44,7 +44,7 @@ export class SidenavService {
       }
       operacionalChildren.push(
         { title: 'Faturamento', children: faturamentoChildren },
-        { title: 'Penalidades', url: '/ateste' },
+        { title: 'Penalidades', url: '/penalidades' },
       );
     }
     if (operacionalChildren.length > 0) {

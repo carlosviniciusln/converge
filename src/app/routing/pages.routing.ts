@@ -38,6 +38,7 @@ import { PlanejamentoV2Component } from '../pages/planejamento-v2/planejamento-v
 import { PlanejamentoGeralV2Component } from '../pages/planejamento-v2/planejamento-geral-v2/planejamento-geral-v2.component';
 import { GestaoCadastrosComponent } from '../pages/gestao-cadastros/gestao-cadastros.component';
 import { NovoPlanejamentoComponent } from '../pages/planejamento/novo-planejamento/novo-planejamento.component';
+import { PenalidadesComponent } from '../pages/penalidades/penalidades.component';
 
 
 
@@ -79,6 +80,7 @@ export const PagesRoutes: Routes = [
   { path: 'orcamento/limites', component: LimitesComponent },
   { path: 'ateste', component: AtesteComponent , canActivate: [AuthGuard]},
   { path: 'ateste/contrato/:id', component: DetalharAtesteComponent , canActivate: [AuthGuard]},
+  { path: 'penalidades', component: PenalidadesComponent, canActivate: [AuthGuard] },
   { path: 'relatorio-contrato', component: RelatorioContratoComponent },
   { path: 'dotacao', component: DotacaoComponent}
 ];

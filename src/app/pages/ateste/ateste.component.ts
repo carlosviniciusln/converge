@@ -24,9 +24,9 @@ export class AtesteComponent implements OnInit {
     /* VARIAVEIS E PROPRIEDADES  */
 
 
-    public listaGcpvw030Ateste : Gcpvw030DetalhamentoDeContratosResponse[];
-    public selectTiposContrato: Select2Data;
-    public selectTiposFornecedor: Select2Data;
+    public listaGcpvw030Ateste: Gcpvw030DetalhamentoDeContratosResponse[] = [];
+    public selectTiposContrato: Select2Data = [];
+    public selectTiposFornecedor: Select2Data = [];
     public sgFilial : string;
     public totalRecords: number;
 
@@ -81,14 +81,14 @@ export class AtesteComponent implements OnInit {
           this.selectTiposContrato = response.data.listaContratos.map(x => ({label: x, value: x}));
           this.selectTiposFornecedor = response.data.listaFornecedor.map(x => ({label: x, value: x}));
           this.totalRecords = response.data.totalRecords;
-          this.loading = false;
         }else{
           this.toastr.info('Usuário logado não possui contratos', 'Info');
         }
 
       } catch (error) {
         console.error(error, 'obter GCPVW0030');
-
+      } finally {
+        this.loading = false;
       }
     }
 
