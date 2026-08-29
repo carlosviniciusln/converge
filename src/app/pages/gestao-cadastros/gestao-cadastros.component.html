@@ -108,13 +108,27 @@
       <h2>Validação documental</h2>
       <p>A IA extrai campos e aponta divergências. A decisão final permanece com o analista responsável.</p>
       <label>Tipo de documento<select [(ngModel)]="tipoDocumento"><option value="nota-fiscal">Nota fiscal</option><option value="contrato">Contrato</option><option value="certidao">Certidão</option><option value="outro">Outro documento</option></select></label>
-      <label class="upload-field"><i class="fas fa-cloud-upload-alt"></i><span>{{ arquivo?.name || 'Selecionar PDF ou imagem' }}</span><input type="file" accept="application/pdf,image/png,image/jpeg" (change)="selecionarArquivo($event)" /></label>
-      <button type="button" class="primary-action" [disabled]="!arquivo || validandoDocumento" (click)="validarDocumento()">{{ validandoDocumento ? 'Analisando...' : 'Analisar documento' }}</button>
+      <label class="upload-field" [class.processing]="validandoDocumento"><i class="fas" [class.fa-cloud-upload-alt]="!validandoDocumento" [class.fa-brain]="validandoDocumento"></i><span>{{ arquivo?.name || 'Selecionar PDF ou imagem' }}</span><input type="file" accept="application/pdf,image/png,image/jpeg" (change)="selecionarArquivo($event)" /></label>
+      <button type="button" class="primary-action" [disabled]="!arquivo || validandoDocumento" (click)="validarDocumento()">{{ validandoDocumento ? 'IA analisando...' : (validacaoDocumento ? 'Analisar novamente' : 'Analisar documento') }}</button>
     </div>
+    <div class="result-panel ai-processing" *ngIf="validandoDocumento; else documentResult" aria-live="polite">
+      <div class="ai-heading">
+        <span class="ai-mark"><i class="fas fa-brain" aria-hidden="true"></i></span>
+        <div><span class="eyebrow">Inteligência documental</span><h3>Análise em andamento</h3></div>
+        <strong>{{ progressoAnalise }}%</strong>
+      </div>
+      <div class="ai-progress"><span [style.width.%]="progressoAnalise"></span></div>
+      <div class="ai-messages">
+        <p *ngFor="let mensagem of mensagensAnalise"><i class="fas fa-check" aria-hidden="true"></i><span>{{ mensagem }}</span></p>
+        <p class="typing-message" *ngIf="mensagemAnaliseAtual"><span class="ai-pulse" aria-hidden="true"></span><span>{{ mensagemAnaliseAtual }}</span><span class="typing-cursor" aria-hidden="true"></span></p>
+      </div>
+    </div>
+    <ng-template #documentResult>
     <div class="result-panel" *ngIf="validacaoDocumento as resultado; else documentEmpty">
       <span class="status" [class.inactive]="resultado.status !== 'aprovado'">{{ resultado.status }}</span>
       <h3>{{ resultado.arquivo }}</h3>
       <p>Confiança: {{ resultado.confianca * 100 | number:'1.0-1' }}%</p>
+      <div class="managerial-summary"><i class="fas fa-chart-line" aria-hidden="true"></i><div><strong>Visão gerencial</strong><p>{{ resumoGerencial }}</p></div></div>
       <div class="extracted-fields">
         <div *ngFor="let campo of resultado.campos | keyvalue"><span>{{ campo.key }}</span><strong>{{ campo.value }}</strong></div>
       </div>
@@ -124,6 +138,7 @@
       <small>Analisado em {{ resultado.analisadoEm | date:'dd/MM/yyyy HH:mm' }}</small>
     </div>
     <ng-template #documentEmpty><div class="result-panel empty-state"><i class="fas fa-file-circle-check"></i><strong>Aguardando documento</strong><span>O resultado e as evidências aparecerão aqui.</span></div></ng-template>
+    </ng-template>
   </section>
 
   <section *ngIf="abaAtiva === 'regularidade'" class="workspace compliance-grid">

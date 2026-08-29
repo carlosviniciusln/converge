@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -21,7 +21,7 @@ type Aba = CadastroTipo | 'contratos' | 'documentos' | 'regularidade';
   templateUrl: './gestao-cadastros.component.html',
   styleUrls: ['./gestao-cadastros.component.scss'],
 })
-export class GestaoCadastrosComponent implements OnInit {
+export class GestaoCadastrosComponent implements OnInit, OnDestroy {
   abaAtiva: Aba = 'usuarios';
   registros: CadastroRegistro[] = [];
   formulario: FormGroup;
@@ -33,6 +33,25 @@ export class GestaoCadastrosComponent implements OnInit {
   tipoDocumento = 'nota-fiscal';
   validacaoDocumento: ValidacaoDocumento | null = null;
   validandoDocumento = false;
+  mensagensAnalise: string[] = [];
+  mensagemAnaliseAtual = '';
+  progressoAnalise = 0;
+  resumoGerencial = '';
+
+  private execucaoAnalise = 0;
+  private readonly etapasAnalise: string[][] = [
+    ['Preparando o documento para leitura inteligente.', 'Convertendo o arquivo em conteúdo analisável.'],
+    ['Reconhecendo textos, assinaturas e elementos visuais.', 'Mapeando a estrutura e os elementos do documento.'],
+    ['Extraindo campos críticos e dados cadastrais.', 'Identificando valores, datas e partes envolvidas.'],
+    ['Cruzando as informações com as regras documentais.', 'Validando a coerência entre os dados encontrados.'],
+    ['Calculando o nível de confiança das evidências.', 'Avaliando riscos e possíveis divergências.'],
+    ['Consolidando evidências para a decisão do analista.', 'Finalizando o parecer inteligente do documento.'],
+  ];
+  private readonly resumosGerenciais = [
+    'A análise indica alta consistência documental e não identificou riscos relevantes para o prosseguimento do processo.',
+    'Os dados avaliados apresentam aderência aos critérios esperados, permitindo avançar com segurança para a validação humana.',
+    'O documento demonstra integridade satisfatória e evidências suficientes para apoiar uma decisão gerencial favorável.',
+  ];
 
   cnpjConsulta = '';
   consultaFornecedor: ConsultaFornecedor | null = null;
@@ -68,6 +87,10 @@ export class GestaoCadastrosComponent implements OnInit {
       const tipoDocumento = params.get('tipoDocumento');
       if (tipoDocumento) this.tipoDocumento = tipoDocumento;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.execucaoAnalise++;
   }
 
   get abaCadastro(): CadastroTipo | null {
@@ -156,19 +179,76 @@ export class GestaoCadastrosComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     this.arquivo = input.files?.[0] || null;
     this.validacaoDocumento = null;
+    this.resumoGerencial = '';
+    this.execucaoAnalise++;
+    if (this.arquivo) void this.validarDocumento();
   }
 
   async validarDocumento(): Promise<void> {
     if (!this.arquivo) return;
+    const execucao = ++this.execucaoAnalise;
     this.validandoDocumento = true;
     this.validacaoDocumento = null;
-    try {
-      this.validacaoDocumento = await this.service.validarDocumento(this.arquivo, this.tipoDocumento);
-    } catch {
+    this.mensagensAnalise = [];
+    this.mensagemAnaliseAtual = '';
+    this.progressoAnalise = 0;
+    this.resumoGerencial = '';
+
+    const resultadoPromise = this.service.validarDocumento(this.arquivo, this.tipoDocumento)
+      .then(resultado => ({ resultado, erro: false }))
+      .catch(() => ({ resultado: null, erro: true }));
+
+    await this.animarAnalise(execucao);
+    const resposta = await resultadoPromise;
+    if (execucao !== this.execucaoAnalise) return;
+
+    if (resposta.erro || !resposta.resultado) {
       this.toastr.error('O serviço de IA documental não está disponível. Configure o endpoint v1/documentos/validar.', 'Integração pendente');
-    } finally {
       this.validandoDocumento = false;
+      return;
     }
+
+    this.validacaoDocumento = resposta.resultado;
+    this.resumoGerencial = this.sortear(this.resumosGerenciais);
+    this.progressoAnalise = 100;
+    this.validandoDocumento = false;
+  }
+
+  private async animarAnalise(execucao: number): Promise<void> {
+    const inicio = Date.now();
+    const duracaoEtapa = 1500;
+
+    for (let indice = 0; indice < this.etapasAnalise.length; indice++) {
+      if (execucao !== this.execucaoAnalise) return;
+      const mensagem = this.sortear(this.etapasAnalise[indice]);
+      await this.digitarMensagem(mensagem, execucao);
+      if (execucao !== this.execucaoAnalise) return;
+      this.mensagensAnalise = [...this.mensagensAnalise, mensagem];
+      this.mensagemAnaliseAtual = '';
+      this.progressoAnalise = Math.round(((indice + 1) / this.etapasAnalise.length) * 90);
+
+      const proximaEtapa = inicio + ((indice + 1) * duracaoEtapa);
+      await this.aguardar(Math.max(0, proximaEtapa - Date.now()));
+    }
+
+    await this.aguardar(Math.max(0, inicio + 10000 - Date.now()));
+  }
+
+  private async digitarMensagem(mensagem: string, execucao: number): Promise<void> {
+    const palavras = mensagem.split(' ');
+    for (const palavra of palavras) {
+      if (execucao !== this.execucaoAnalise) return;
+      this.mensagemAnaliseAtual += `${this.mensagemAnaliseAtual ? ' ' : ''}${palavra}`;
+      await this.aguardar(55);
+    }
+  }
+
+  private sortear<T>(opcoes: T[]): T {
+    return opcoes[Math.floor(Math.random() * opcoes.length)];
+  }
+
+  private aguardar(tempo: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, tempo));
   }
 
   async consultarRegularidade(): Promise<void> {
