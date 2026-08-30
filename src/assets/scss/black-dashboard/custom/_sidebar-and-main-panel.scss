@@ -555,7 +555,8 @@
       }
     }
 
-    .sidebar:hover {
+    .sidebar:hover,
+    .sidebar.sidebar-hovered {
       width: 260px;
       overflow-y: auto;
 
