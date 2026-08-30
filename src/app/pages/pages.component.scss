@@ -17,15 +17,19 @@
     bottom: 0;
     left: 0;
     z-index: 1040;
-    width: min(82vw, 288px);
+    width: 82vw;
+    max-width: 288px;
     height: 100vh;
     height: 100dvh;
     visibility: hidden;
     pointer-events: none;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     -webkit-transform: translate3d(-100%, 0, 0);
     transform: translate3d(-100%, 0, 0);
+    -webkit-transition: -webkit-transform 0.3s ease, visibility 0s linear 0.3s;
     transition: transform 0.3s ease, visibility 0s linear 0.3s;
     will-change: transform;
   }
@@ -35,12 +39,17 @@
     pointer-events: auto;
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
+    -webkit-transition: -webkit-transform 0.3s ease;
     transition: transform 0.3s ease;
   }
 
   .sidebar-backdrop {
     display: block;
     position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     inset: 0;
     z-index: 1039;
     width: 100%;

@@ -657,8 +657,10 @@
     position: fixed;
     display: block;
     top: 0;
+    height: 100vh;
     height: 100dvh;
-    width: min(82vw, 288px);
+    width: 82vw;
+    max-width: 288px;
     right: auto;
     left: 0;
     margin: 0;
