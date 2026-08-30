@@ -29,7 +29,7 @@
     <mat-tab-group (selectedIndexChange)="exibeDetalhes($event)">
       <mat-tab *ngFor="let tab of tabs" label="{{ tab }}">
         <div *ngIf="tab == 'Execução Contratual'" class="general-layout">
-          <div class="value-box truncated-text" pTooltip="Contratos com status 'EM VIGOR' no SICLG." tooltipPosition="top" placeholder="Top">
+          <div class="value-box truncated-text" pTooltip="Contratos com status 'EM VIGOR'." tooltipPosition="top" placeholder="Top">
             <h4>Contratos Vigentes - Quantidade</h4>
             <p>{{ this.numerosRapidosExecContratual?.qT_CONTRATO_VIGENTE }}</p>
           </div>
