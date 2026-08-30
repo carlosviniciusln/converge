@@ -1,11 +1,5 @@
 <div class="wrapper" [class.nav-open]="sidenav.opened$ | async">
-  <div
-    id="app-sidebar"
-    class="sidebar"
-    [class.sidebar-open]="sidenav.opened$ | async"
-    [class.sidebar-hovered]="sidebarHovered"
-    (mouseenter)="sidebarHovered = true"
-    (mouseleave)="sidebarHovered = false">
+  <div id="app-sidebar" class="sidebar" [class.sidebar-open]="sidenav.opened$ | async">
       <app-sidebar></app-sidebar>
     </div>
     <button

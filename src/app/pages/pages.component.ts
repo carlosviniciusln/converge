@@ -8,7 +8,6 @@ import { SidenavService } from '../services/sidenav.service';
 })
 export class PagesComponent implements OnInit {
   public sidebarColor: string = "red";
-  public sidebarHovered = false;
 
   constructor(public sidenav: SidenavService) {}
   changeSidebarColor(color: string){
