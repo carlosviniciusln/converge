@@ -77,7 +77,7 @@ export class SidenavService {
         { title: 'Departamentos',   url: '/cadastros?aba=departamentos' },
         { title: 'Fornecedores',    url: '/cadastros?aba=fornecedores' },
         { title: 'Representantes',  url: '/cadastros?aba=representantes' },
-        { title: 'Documentos',      url: '/cadastros?aba=documentos' },
+        { title: 'Documentos',      url: '/cadastros?aba=biblioteca' },
       );
     }
     if (this.canView(ModuleEnum.Contratos)) {

@@ -22,9 +22,14 @@ $shadow: 0 2px 8px rgba(0,0,0,.10);
 
 // ─── Layout ───────────────────────────────────────────────────────
 .painel-contrato {
-  padding: 16px 20px 32px;
+  padding: 16px 24px 32px 90px;
   max-width: 1400px;
   margin: 0 auto;
+
+  @media (max-width: 991px) {
+    padding: 16px;
+    max-width: none;
+  }
 }
 
 .painel-header {
