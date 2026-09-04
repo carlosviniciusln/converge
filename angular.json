@@ -50,6 +50,7 @@
               "src/assets/scss/black-dashboard.scss",
               "src/assets/css/nucleo-icons.css",
               "src/assets/css/primeicons.css",
+              "node_modules/material-icons/iconfont/material-icons.css",
               "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "sidsc-stubs/styles/main.scss"

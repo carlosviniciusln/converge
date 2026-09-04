@@ -141,6 +141,98 @@
     </ng-template>
   </section>
 
+  <section *ngIf="abaAtiva === 'biblioteca'" class="workspace">
+    <div class="toolbar">
+      <label class="search-field">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <input type="search" [(ngModel)]="pesquisaBiblioteca" placeholder="Pesquisar documentos da biblioteca" />
+      </label>
+      <button type="button" class="primary-action" (click)="novoItemBiblioteca()">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+        Novo documento
+      </button>
+    </div>
+
+    <form *ngIf="editandoBiblioteca" class="editor" [formGroup]="formularioBiblioteca" (ngSubmit)="salvarItemBiblioteca()">
+      <div class="editor-heading">
+        <h2>{{ formularioBiblioteca.value.id ? 'Editar documento' : 'Novo documento' }}</h2>
+        <button type="button" class="icon-button" aria-label="Fechar formulário" (click)="cancelarEdicaoBiblioteca()">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="form-grid">
+        <label>Nome do documento<input formControlName="nome" placeholder="Ex.: Certidão Negativa de Débitos" /></label>
+        <label>Categoria<input formControlName="categoria" placeholder="Ex.: Fiscal, Trabalhista, Técnico" /></label>
+      </div>
+      <label class="toggle-field"><input type="checkbox" formControlName="obrigatorioPadrao" /> Obrigatório por padrão ao associar a um contrato</label>
+      <label class="toggle-field"><input type="checkbox" formControlName="ativo" /> Documento ativo na biblioteca</label>
+      <div class="form-actions">
+        <button type="button" class="secondary-action" (click)="cancelarEdicaoBiblioteca()">Cancelar</button>
+        <button type="submit" class="primary-action" [disabled]="carregandoBiblioteca">Salvar</button>
+      </div>
+    </form>
+
+    <div class="records" [class.loading]="carregandoBiblioteca">
+      <article *ngFor="let item of itensBibliotecaFiltrados" class="record-card">
+        <div class="record-code">{{ item.categoria }}</div>
+        <div class="record-main">
+          <strong>{{ item.nome }}</strong>
+          <span>{{ item.obrigatorioPadrao ? 'Obrigatório por padrão' : 'Opcional por padrão' }}</span>
+        </div>
+        <span class="status" [class.inactive]="!item.ativo">{{ item.ativo ? 'Ativo' : 'Inativo' }}</span>
+        <div class="record-actions">
+          <button type="button" class="icon-button" aria-label="Editar documento" (click)="editarItemBiblioteca(item)"><i class="fas fa-pen"></i></button>
+          <button type="button" class="icon-button danger" aria-label="Excluir documento" (click)="excluirItemBiblioteca(item)"><i class="fas fa-trash"></i></button>
+        </div>
+      </article>
+      <div *ngIf="!carregandoBiblioteca && !itensBibliotecaFiltrados.length" class="empty-state">
+        <i class="fas fa-book" aria-hidden="true"></i>
+        <strong>Nenhum documento cadastrado</strong>
+        <span>Use “Novo documento” para incluir o primeiro item da biblioteca.</span>
+      </div>
+    </div>
+
+    <hr class="sep-biblioteca" />
+
+    <div class="associacao-contrato">
+      <h2>Associar documentos a um contrato</h2>
+      <p>Cada contrato pode exigir um rol específico de documentos. Selecione os itens da biblioteca que se aplicam a este contrato.</p>
+      <div class="toolbar">
+        <label class="search-field">
+          <i class="fas fa-file-contract" aria-hidden="true"></i>
+          <input type="text" [(ngModel)]="coContratoAssociar" placeholder="Número do contrato (ex.: 81000/2026-0001)" />
+        </label>
+        <button type="button" class="secondary-action" [disabled]="carregandoAssociacao" (click)="buscarAssociacoesContrato()">
+          {{ carregandoAssociacao ? 'Buscando...' : 'Buscar contrato' }}
+        </button>
+      </div>
+
+      <div class="records" *ngIf="itensAssociacao.length">
+        <article *ngFor="let associacao of itensAssociacao" class="record-card associacao-card">
+          <label class="toggle-field associacao-check">
+            <input type="checkbox" [(ngModel)]="associacao.selecionado" [ngModelOptions]="{standalone: true}" />
+          </label>
+          <div class="record-main">
+            <strong>{{ associacao.item.nome }}</strong>
+            <span>{{ associacao.item.categoria }}</span>
+          </div>
+          <select [(ngModel)]="associacao.status" [ngModelOptions]="{standalone: true}" [disabled]="!associacao.selecionado">
+            <option *ngFor="let opcao of statusDocumentoOpcoes" [value]="opcao.value">{{ opcao.label }}</option>
+          </select>
+        </article>
+      </div>
+      <div *ngIf="!carregandoAssociacao && !itensAssociacao.length" class="empty-state">
+        <i class="fas fa-file-circle-question" aria-hidden="true"></i>
+        <strong>Nenhum contrato selecionado</strong>
+        <span>Informe um número de contrato e clique em “Buscar contrato”.</span>
+      </div>
+
+      <div class="form-actions" *ngIf="itensAssociacao.length">
+        <button type="button" class="primary-action" [disabled]="carregandoAssociacao" (click)="salvarAssociacoesContrato()">Salvar associações</button>
+      </div>
+    </div>
+  </section>
+
   <section *ngIf="abaAtiva === 'regularidade'" class="workspace compliance-grid">
     <div class="compliance-form">
       <span class="eyebrow">Bases oficiais</span>

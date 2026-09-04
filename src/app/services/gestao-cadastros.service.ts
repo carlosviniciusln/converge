@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../shared/services/api.service';
 import { environment } from '../../environments/environment';
 import {
+  BibliotecaDocumentoItem,
   CadastroRegistro,
   CadastroTipo,
   ConsultaFornecedor,
+  DocumentoContratoVinculo,
   ValidacaoDocumento,
 } from '../models/gestao-cadastros';
 
@@ -91,6 +93,62 @@ export class GestaoCadastrosService {
     return this.api.get<ConsultaFornecedor>(`v1/fornecedores/${apenasNumeros}/regularidade`);
   }
 
+  async listarBiblioteca(): Promise<BibliotecaDocumentoItem[]> {
+    if (environment.useLocalManagementData) {
+      return this.readLocal<BibliotecaDocumentoItem>('biblioteca-documentos');
+    }
+    return this.api.get<BibliotecaDocumentoItem[]>(`${this.baseUrl}/biblioteca-documentos`);
+  }
+
+  async salvarItemBiblioteca(item: BibliotecaDocumentoItem): Promise<BibliotecaDocumentoItem> {
+    const salvo: BibliotecaDocumentoItem = { ...item, atualizadoEm: new Date().toISOString() };
+
+    if (environment.useLocalManagementData) {
+      const itens = this.readLocal<BibliotecaDocumentoItem>('biblioteca-documentos');
+      salvo.id = salvo.id || Date.now();
+      const index = itens.findIndex(atual => atual.id === salvo.id);
+      index >= 0 ? itens.splice(index, 1, salvo) : itens.push(salvo);
+      this.writeLocal('biblioteca-documentos', itens);
+      return salvo;
+    }
+
+    return salvo.id
+      ? this.api.put<BibliotecaDocumentoItem>(`${this.baseUrl}/biblioteca-documentos/${salvo.id}`, salvo)
+      : this.api.post<BibliotecaDocumentoItem>(`${this.baseUrl}/biblioteca-documentos`, salvo);
+  }
+
+  async excluirItemBiblioteca(id: number): Promise<void> {
+    if (environment.useLocalManagementData) {
+      const itens = this.readLocal<BibliotecaDocumentoItem>('biblioteca-documentos').filter(item => item.id !== id);
+      this.writeLocal('biblioteca-documentos', itens);
+      return;
+    }
+    await this.api.delete<void>(`${this.baseUrl}/biblioteca-documentos/${id}`);
+  }
+
+  async listarVinculosContrato(coContrato: string): Promise<DocumentoContratoVinculo[]> {
+    if (environment.useLocalManagementData) {
+      return this.readLocal<DocumentoContratoVinculo>('documentos-contrato')
+        .filter(vinculo => vinculo.coContrato === coContrato);
+    }
+    return this.api.get<DocumentoContratoVinculo[]>(`${this.baseUrl}/documentos-contrato/${coContrato}`);
+  }
+
+  async salvarVinculosContrato(coContrato: string, vinculos: DocumentoContratoVinculo[]): Promise<void> {
+    if (environment.useLocalManagementData) {
+      const demaisContratos = this.readLocal<DocumentoContratoVinculo>('documentos-contrato')
+        .filter(vinculo => vinculo.coContrato !== coContrato);
+      const salvos = vinculos.map(vinculo => ({
+        ...vinculo,
+        id: vinculo.id || Date.now() + Math.floor(Math.random() * 1000),
+        atualizadoEm: new Date().toISOString(),
+      }));
+      this.writeLocal('documentos-contrato', [...demaisContratos, ...salvos]);
+      return;
+    }
+    await this.api.put<void>(`${this.baseUrl}/documentos-contrato/${coContrato}`, vinculos);
+  }
+
   private camposExtraidos(tipoDocumento: string): Record<string, string> {
     if (tipoDocumento === 'contrato') {
       return {
@@ -123,16 +181,16 @@ export class GestaoCadastrosService {
     return new Promise(resolve => setTimeout(resolve, 800));
   }
 
-  private readLocal<T extends CadastroRegistro>(tipo: CadastroTipo): T[] {
-    const value = localStorage.getItem(this.storageKey(tipo));
+  private readLocal<T>(chave: CadastroTipo | string): T[] {
+    const value = localStorage.getItem(this.storageKey(chave));
     return value ? JSON.parse(value) : [];
   }
 
-  private writeLocal(tipo: CadastroTipo, registros: CadastroRegistro[]): void {
-    localStorage.setItem(this.storageKey(tipo), JSON.stringify(registros));
+  private writeLocal(chave: CadastroTipo | string, registros: unknown[]): void {
+    localStorage.setItem(this.storageKey(chave), JSON.stringify(registros));
   }
 
-  private storageKey(tipo: CadastroTipo): string {
-    return `converge-cadastros-${tipo}`;
+  private storageKey(chave: CadastroTipo | string): string {
+    return `converge-cadastros-${chave}`;
   }
 }

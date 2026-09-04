@@ -114,6 +114,73 @@
   flex: 1 1 auto;
 }
 
+// ── Busca do header ───────────────────────────────────────────
+.custom-header__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 260px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease, width 0.2s ease;
+
+  &:focus-within {
+    width: 300px;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.custom-header__search-icon {
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 13px;
+  opacity: .85;
+}
+
+.custom-header__search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 13px;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .custom-header__search {
+    width: 160px;
+
+    &:focus-within {
+      width: 200px;
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  .custom-header__search {
+    width: 120px;
+
+    &:focus-within {
+      width: 170px;
+    }
+  }
+}
+
+
 // ── Grupo direito (usuário + botões) ─────────────────────────
 .custom-header__right {
   display: flex;

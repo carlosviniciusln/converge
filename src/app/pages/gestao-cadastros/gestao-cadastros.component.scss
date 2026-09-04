@@ -51,6 +51,13 @@ input:focus, select:focus { border-color: #005ca9; outline: 2px solid rgba(0, 92
 .contract-entry p { color: #64747a; }
 .contract-actions { display: flex; gap: 8px; }
 
+.sep-biblioteca { margin: 24px 0; border: 0; border-top: 1px solid #d0e0e3; }
+.associacao-contrato h2 { margin: 0 0 4px; color: #002a4d; font-size: 18px; }
+.associacao-contrato > p { margin: 0 0 16px; color: #64747a; }
+.associacao-card { grid-template-columns: 42px minmax(0, 1fr) 160px; }
+.associacao-check { margin: 0; justify-content: center; }
+.associacao-check input { width: 20px; min-height: 20px; }
+
 .compliance-grid { display: grid; grid-template-columns: minmax(280px, 420px) minmax(0, 1fr); gap: 24px; }
 .compliance-form h2 { margin: 4px 0; color: #002a4d; }
 .compliance-form p { margin: 0 0 18px; color: #64747a; }

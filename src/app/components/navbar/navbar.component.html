@@ -15,6 +15,18 @@
     <span class="custom-header__title"> - Plataforma de Gestão de Contratos</span>
     <div class="custom-header__spacer"></div>
 
+    <form class="custom-header__search" role="search" (ngSubmit)="pesquisar()">
+      <i class="fas fa-search custom-header__search-icon" aria-hidden="true"></i>
+      <input
+        type="text"
+        name="headerSearch"
+        class="custom-header__search-input"
+        placeholder="Pesquisar contrato, unidade ou gerencial..."
+        aria-label="Pesquisar contrato, unidade demandante ou visão gerencial"
+        [(ngModel)]="searchTerm"
+      />
+    </form>
+
     <div class="custom-header__right">
       <div *ngIf="isLoggedIn && currentUser" class="custom-header__user">
         <div class="custom-header__greeting">

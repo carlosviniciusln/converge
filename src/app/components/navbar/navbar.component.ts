@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   currentUser: any;
   isLoggedIn = false;
   ultimaAtualizacao = '';
+  searchTerm = '';
 
   private routerSub!: Subscription;
   private infSub!: Subscription;
@@ -50,6 +51,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   toggleMenu(): void {
     this.sidenav.toggle();
+  }
+
+  // Direciona a busca do header conforme o que foi digitado: contrato (número), unidade (texto) ou gerencial (palavra-chave)
+  pesquisar(): void {
+    const termo = this.searchTerm.trim();
+    if (!termo) return;
+
+    const normalizado = termo
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
+    if (normalizado.includes('gerenc')) {
+      this.router.navigate(['/busca-gerencial'], { queryParams: { q: termo } });
+    } else if (/\d/.test(termo)) {
+      this.router.navigate(['/busca-contrato'], { queryParams: { contrato: termo } });
+    } else {
+      this.router.navigate(['/busca-ud'], { queryParams: { ud: termo } });
+    }
+
+    this.searchTerm = '';
   }
 
   openModalLogin(): void {

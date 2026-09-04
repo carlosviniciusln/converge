@@ -100,6 +100,9 @@ import { PlanejamentoCadastroV2Component } from './planejamento-v2/planejamento-
 import { GestaoCadastrosComponent } from './gestao-cadastros/gestao-cadastros.component';
 import { NovoPlanejamentoComponent } from './planejamento/novo-planejamento/novo-planejamento.component';
 import { PenalidadesComponent } from './penalidades/penalidades.component';
+import { BuscaContratoComponent } from './dashboard/busca-contrato/busca-contrato.component';
+import { BuscaUdComponent } from './dashboard/busca-ud/busca-ud.component';
+import { BuscaGerencialComponent } from './dashboard/busca-gerencial/busca-gerencial.component';
 
 
 
@@ -207,6 +210,9 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     NovoPlanejamentoComponent,
     PenalidadesComponent
     ,GestaoCadastrosComponent
+    ,BuscaContratoComponent
+    ,BuscaUdComponent
+    ,BuscaGerencialComponent
   ],
   providers: [
     ConfirmationService,

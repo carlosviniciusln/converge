@@ -39,6 +39,9 @@ import { PlanejamentoGeralV2Component } from '../pages/planejamento-v2/planejame
 import { GestaoCadastrosComponent } from '../pages/gestao-cadastros/gestao-cadastros.component';
 import { NovoPlanejamentoComponent } from '../pages/planejamento/novo-planejamento/novo-planejamento.component';
 import { PenalidadesComponent } from '../pages/penalidades/penalidades.component';
+import { BuscaContratoComponent } from '../pages/dashboard/busca-contrato/busca-contrato.component';
+import { BuscaUdComponent } from '../pages/dashboard/busca-ud/busca-ud.component';
+import { BuscaGerencialComponent } from '../pages/dashboard/busca-gerencial/busca-gerencial.component';
 
 
 
@@ -51,6 +54,10 @@ export const PagesRoutes: Routes = [
   { path: 'contrato/create', component: ContratoCadastroComponent },
   { path: 'retencao/create', component: RetencaoCadastroComponent },
   { path: 'contrato/detalhe/:voltar/:id', component: ContratoDetalheComponent },
+  { path: 'contrato/ficha/:id', component: BuscaContratoComponent },
+  { path: 'busca-contrato', component: BuscaContratoComponent },
+  { path: 'busca-ud', component: BuscaUdComponent },
+  { path: 'busca-gerencial', component: BuscaGerencialComponent },
   { path: 'contrato/evolucao-financeira/:id', component: EvolucaoFinanceiraComponent },
   { path: 'contrato/exec-orc-mensalizacao/:id', component: MensalizacaoComponent },
   { path: 'contrato/evolucao-financeira-aquisicao/:id', component: EvolucaoFinanceiraAquisicaoComponent },

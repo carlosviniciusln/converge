@@ -132,6 +132,12 @@ export class ContratoComponent implements OnInit {
     window.open(url, '_blank');
   }
 
+  abrirFicha(contrato: Gcpvw045ListarContratosDTO, event: Event): void {
+    event.stopPropagation();
+    const url = `/#/contrato/ficha/${contrato.nuContrato}?contrato=${encodeURIComponent(contrato.coContrato)}`;
+    window.open(url, '_blank');
+  }
+
 
    public async obterContratos(): Promise<void> {
 

@@ -59,3 +59,24 @@ export interface ConsultaFornecedor {
   }>;
   apontamentos: string[];
 }
+
+export interface BibliotecaDocumentoItem {
+  id: number;
+  nome: string;
+  categoria: string;
+  obrigatorioPadrao: boolean;
+  ativo: boolean;
+  atualizadoEm: string;
+}
+
+export type StatusDocumentoContrato = 'pendente' | 'enviado' | 'validado';
+
+export interface DocumentoContratoVinculo {
+  id: number;
+  coContrato: string;
+  idBibliotecaDocumento: number;
+  nomeDocumento: string;
+  obrigatorio: boolean;
+  status: StatusDocumentoContrato;
+  atualizadoEm: string;
+}

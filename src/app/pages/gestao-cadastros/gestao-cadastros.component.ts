@@ -3,18 +3,27 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {
+  BibliotecaDocumentoItem,
   CadastroRegistro,
   CadastroTipo,
   ConsultaFornecedor,
   DepartamentoCadastro,
+  DocumentoContratoVinculo,
   FornecedorCadastro,
   RepresentanteCadastro,
+  StatusDocumentoContrato,
   UsuarioCadastro,
   ValidacaoDocumento,
 } from '../../models/gestao-cadastros';
 import { GestaoCadastrosService } from '../../services/gestao-cadastros.service';
 
-type Aba = CadastroTipo | 'contratos' | 'documentos' | 'regularidade';
+type Aba = CadastroTipo | 'contratos' | 'documentos' | 'biblioteca' | 'regularidade';
+
+interface ItemAssociacao {
+  item: BibliotecaDocumentoItem;
+  selecionado: boolean;
+  status: StatusDocumentoContrato;
+}
 
 @Component({
   selector: 'app-gestao-cadastros',
@@ -57,6 +66,21 @@ export class GestaoCadastrosComponent implements OnInit, OnDestroy {
   consultaFornecedor: ConsultaFornecedor | null = null;
   consultandoFornecedor = false;
 
+  bibliotecaItens: BibliotecaDocumentoItem[] = [];
+  carregandoBiblioteca = false;
+  editandoBiblioteca = false;
+  formularioBiblioteca: FormGroup;
+  pesquisaBiblioteca = '';
+
+  coContratoAssociar = '';
+  carregandoAssociacao = false;
+  itensAssociacao: ItemAssociacao[] = [];
+  readonly statusDocumentoOpcoes: Array<{ value: StatusDocumentoContrato; label: string }> = [
+    { value: 'pendente', label: 'Pendente' },
+    { value: 'enviado', label: 'Enviado' },
+    { value: 'validado', label: 'Validado' },
+  ];
+
   readonly abas: Array<{ id: Aba; titulo: string; icone: string }> = [
     { id: 'usuarios', titulo: 'Funcionários', icone: 'fa-user' },
     { id: 'departamentos', titulo: 'Departamentos', icone: 'fa-sitemap' },
@@ -64,6 +88,7 @@ export class GestaoCadastrosComponent implements OnInit, OnDestroy {
     { id: 'representantes', titulo: 'Representantes', icone: 'fa-address-card' },
     { id: 'contratos', titulo: 'Contratos', icone: 'fa-file-contract' },
     { id: 'documentos', titulo: 'Validação documental', icone: 'fa-file-circle-check' },
+    { id: 'biblioteca', titulo: 'Biblioteca de Documentos', icone: 'fa-book' },
     { id: 'regularidade', titulo: 'Regularidade', icone: 'fa-shield-alt' },
   ];
 
@@ -76,6 +101,7 @@ export class GestaoCadastrosComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) {
     this.formulario = this.criarFormulario('usuarios');
+    this.formularioBiblioteca = this.criarFormularioBiblioteca();
   }
 
   ngOnInit(): void {
@@ -105,11 +131,18 @@ export class GestaoCadastrosComponent implements OnInit, OnDestroy {
     return this.registros.filter(registro => JSON.stringify(registro).toLocaleLowerCase('pt-BR').includes(termo));
   }
 
+  get itensBibliotecaFiltrados(): BibliotecaDocumentoItem[] {
+    const termo = this.pesquisaBiblioteca.trim().toLocaleLowerCase('pt-BR');
+    if (!termo) return this.bibliotecaItens;
+    return this.bibliotecaItens.filter(item => JSON.stringify(item).toLocaleLowerCase('pt-BR').includes(termo));
+  }
+
   selecionarAba(aba: Aba): void {
     this.abaAtiva = aba;
     this.pesquisa = '';
     this.cancelarEdicao();
     if (this.abaCadastro) this.carregarRegistros();
+    if (aba === 'biblioteca') this.carregarBiblioteca();
   }
 
   async carregarRegistros(): Promise<void> {
@@ -173,6 +206,115 @@ export class GestaoCadastrosComponent implements OnInit, OnDestroy {
     this.editando = false;
     const tipo = this.abaCadastro || 'usuarios';
     this.formulario = this.criarFormulario(tipo);
+  }
+
+  async carregarBiblioteca(): Promise<void> {
+    this.carregandoBiblioteca = true;
+    try {
+      this.bibliotecaItens = await this.service.listarBiblioteca();
+    } catch {
+      this.toastr.error('Não foi possível carregar a biblioteca de documentos.', 'Erro');
+    } finally {
+      this.carregandoBiblioteca = false;
+    }
+  }
+
+  novoItemBiblioteca(): void {
+    this.formularioBiblioteca = this.criarFormularioBiblioteca();
+    this.editandoBiblioteca = true;
+  }
+
+  editarItemBiblioteca(item: BibliotecaDocumentoItem): void {
+    this.formularioBiblioteca = this.criarFormularioBiblioteca(item);
+    this.editandoBiblioteca = true;
+  }
+
+  async salvarItemBiblioteca(): Promise<void> {
+    this.formularioBiblioteca.markAllAsTouched();
+    if (this.formularioBiblioteca.invalid) return;
+
+    this.carregandoBiblioteca = true;
+    try {
+      await this.service.salvarItemBiblioteca(this.formularioBiblioteca.getRawValue());
+      this.toastr.success('Documento salvo na biblioteca.', 'Sucesso');
+      this.cancelarEdicaoBiblioteca();
+      await this.carregarBiblioteca();
+    } catch {
+      this.toastr.error('Não foi possível salvar o documento na biblioteca.', 'Erro');
+      this.carregandoBiblioteca = false;
+    }
+  }
+
+  async excluirItemBiblioteca(item: BibliotecaDocumentoItem): Promise<void> {
+    if (!window.confirm(`Deseja excluir "${item.nome}" da biblioteca?`)) return;
+    try {
+      await this.service.excluirItemBiblioteca(item.id);
+      this.toastr.success('Documento removido da biblioteca.', 'Sucesso');
+      await this.carregarBiblioteca();
+    } catch {
+      this.toastr.error('Não foi possível excluir o documento.', 'Erro');
+    }
+  }
+
+  cancelarEdicaoBiblioteca(): void {
+    this.editandoBiblioteca = false;
+    this.formularioBiblioteca = this.criarFormularioBiblioteca();
+  }
+
+  async buscarAssociacoesContrato(): Promise<void> {
+    const coContrato = this.coContratoAssociar.trim();
+    if (!coContrato) {
+      this.toastr.warning('Informe o número do contrato para associar documentos.', 'Contrato obrigatório');
+      return;
+    }
+
+    this.carregandoAssociacao = true;
+    try {
+      if (!this.bibliotecaItens.length) this.bibliotecaItens = await this.service.listarBiblioteca();
+      const vinculos = await this.service.listarVinculosContrato(coContrato);
+
+      this.itensAssociacao = this.bibliotecaItens
+        .filter(item => item.ativo)
+        .map(item => {
+          const vinculo = vinculos.find(v => v.idBibliotecaDocumento === item.id);
+          return {
+            item,
+            selecionado: !!vinculo,
+            status: vinculo?.status || 'pendente',
+          };
+        });
+    } catch {
+      this.toastr.error('Não foi possível carregar os documentos associados a este contrato.', 'Erro');
+    } finally {
+      this.carregandoAssociacao = false;
+    }
+  }
+
+  async salvarAssociacoesContrato(): Promise<void> {
+    const coContrato = this.coContratoAssociar.trim();
+    if (!coContrato) return;
+
+    const vinculos: DocumentoContratoVinculo[] = this.itensAssociacao
+      .filter(associacao => associacao.selecionado)
+      .map(associacao => ({
+        id: 0,
+        coContrato,
+        idBibliotecaDocumento: associacao.item.id,
+        nomeDocumento: associacao.item.nome,
+        obrigatorio: associacao.item.obrigatorioPadrao,
+        status: associacao.status,
+        atualizadoEm: '',
+      }));
+
+    this.carregandoAssociacao = true;
+    try {
+      await this.service.salvarVinculosContrato(coContrato, vinculos);
+      this.toastr.success(`Documentos associados ao contrato ${coContrato}.`, 'Sucesso');
+    } catch {
+      this.toastr.error('Não foi possível salvar a associação de documentos.', 'Erro');
+    } finally {
+      this.carregandoAssociacao = false;
+    }
   }
 
   selecionarArquivo(event: Event): void {
@@ -288,6 +430,16 @@ export class GestaoCadastrosComponent implements OnInit, OnDestroy {
     if (this.abaAtiva === 'fornecedores') return (registro as FornecedorCadastro).email;
     if (this.abaAtiva === 'representantes') return (registro as RepresentanteCadastro).empresa;
     return (registro as DepartamentoCadastro).responsavel;
+  }
+
+  private criarFormularioBiblioteca(item?: BibliotecaDocumentoItem): FormGroup {
+    return this.fb.group({
+      id: [item?.id || 0],
+      nome: [item?.nome || '', Validators.required],
+      categoria: [item?.categoria || '', Validators.required],
+      obrigatorioPadrao: [item?.obrigatorioPadrao ?? true],
+      ativo: [item?.ativo ?? true],
+    });
   }
 
   private criarFormulario(tipo: CadastroTipo, registro?: CadastroRegistro): FormGroup {
