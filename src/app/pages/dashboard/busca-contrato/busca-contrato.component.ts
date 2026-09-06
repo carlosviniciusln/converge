@@ -1,5 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as html2pdf from 'html2pdf.js';
+
+export interface DiagnosticoContrato {
+  severidade: 'positivo' | 'atencao' | 'critico';
+  usoTexto: string;
+  projecaoTexto: string;
+  pagamentosTexto: string;
+  recomendacao: string;
+}
 
 @Component({
   selector: 'app-busca-contrato',
@@ -8,7 +17,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class BuscaContratoComponent implements OnInit {
   contrato: string = '';
+  nuContrato: string = '';
   vigenciaSelecionada: string = '9567';
+  gerandoPdf: boolean = false;
+  diagnostico!: DiagnosticoContrato;
+
 
   // Dados simulados (serão substituídos por API)
   infoGeral = {
@@ -87,9 +100,11 @@ export class BuscaContratoComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
+    this.nuContrato = this.route.snapshot.paramMap.get('id') || '';
     this.route.queryParams.subscribe(params => {
       this.contrato = params['contrato'] || '';
     });
+    this.diagnostico = this.montarDiagnostico();
   }
 
   voltar(): void {
@@ -99,5 +114,88 @@ export class BuscaContratoComponent implements OnInit {
   trocarVigencia(id: string): void {
     this.vigenciaSelecionada = id;
     // TODO: recarregar dados da vigência via API
+    this.diagnostico = this.montarDiagnostico();
+  }
+
+  // Consolida os indicadores das demais seções em um único parecer (topico "Diagnóstico" do prontuário)
+  private montarDiagnostico(): DiagnosticoContrato {
+    const usoAbaixoOuDentro = this.resumoVigencia.alertaOk;
+    const temRetencaoEmAberto = this.atestes.comRetencao > 0;
+    const temPenalidadeEmTratamento = this.penalidades.emTratamento > 0;
+
+    const usoTexto = usoAbaixoOuDentro
+      ? `Consumo dentro do esperado (${this.resumoVigencia.execPct} da vigência executados).`
+      : `Consumo ACIMA da média estimada (${this.resumoVigencia.execPct} da vigência executados). Risco de esgotamento antecipado do saldo.`;
+
+    const pagamentosTexto = temRetencaoEmAberto
+      ? `Há competência com retenção vinculada em aberto: ${this.atestes.alertaTexto}`
+      : 'Nenhum pagamento com pendência de retenção identificado nas últimas competências.';
+
+    let severidade: DiagnosticoContrato['severidade'] = 'positivo';
+    if (!usoAbaixoOuDentro || temRetencaoEmAberto) severidade = 'atencao';
+    if (!usoAbaixoOuDentro && temRetencaoEmAberto) severidade = 'critico';
+
+    const recomendacao = severidade === 'positivo'
+      ? 'Contrato saudável. Manter acompanhamento mensal padrão.'
+      : severidade === 'atencao'
+        ? 'Recomenda-se atenção do fiscal do contrato nos próximos ciclos de pagamento e retenção.'
+        : 'Recomenda-se ação imediata do gestor: revisar saldo remanescente e regularizar as pendências de retenção.';
+
+    return {
+      severidade,
+      usoTexto,
+      projecaoTexto: this.resumoVigencia.projecao.replace(/<\/?strong>/g, ''),
+      pagamentosTexto,
+      recomendacao,
+    };
+  }
+
+  async exportarFicha(): Promise<void> {
+    const elemento = document.getElementById('fichaContratoConteudo');
+    if (!elemento || this.gerandoPdf) return;
+
+    this.gerandoPdf = true;
+
+    // Empilha todos os blocos (2 colunas viram 1) e adiciona cabeçalho com logo só durante a captura
+    const gridsAlterados = Array.from(
+      elemento.querySelectorAll<HTMLElement>('.painel-body, .diagnostico-grid')
+    );
+    const gridsOriginais = gridsAlterados.map(grid => grid.style.gridTemplateColumns);
+    gridsAlterados.forEach(grid => (grid.style.gridTemplateColumns = '1fr'));
+
+    const larguraOriginal = elemento.style.width;
+    elemento.style.width = '900px';
+
+    const cabecalho = document.createElement('div');
+    cabecalho.innerHTML = `
+      <div style="display:flex;align-items:center;gap:14px;padding-bottom:14px;margin-bottom:16px;border-bottom:2px solid #005ca9;">
+        <img src="assets/images/logo.png" style="height:42px;" />
+        <div>
+          <div style="font-size:18px;font-weight:700;color:#002a4d;">Ficha do Contrato ${this.contrato || this.nuContrato || ''}</div>
+          <div style="font-size:11px;color:#64747a;">CONVERGE - Plataforma de Gestão de Contratos &middot; Gerado em ${new Date().toLocaleString('pt-BR')}</div>
+        </div>
+      </div>`;
+    elemento.insertBefore(cabecalho, elemento.firstChild);
+
+    // Dá tempo do navegador aplicar o novo layout antes de capturar
+    await new Promise(resolve => setTimeout(resolve, 150));
+
+    const opcoes = {
+      margin: [8, 8, 8, 8],
+      filename: `ficha-contrato-${this.contrato || this.nuContrato || 'documento'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css'] },
+    };
+
+    try {
+      await html2pdf().from(elemento).set(opcoes).save();
+    } finally {
+      cabecalho.remove();
+      elemento.style.width = larguraOriginal;
+      gridsAlterados.forEach((grid, i) => (grid.style.gridTemplateColumns = gridsOriginais[i]));
+      this.gerandoPdf = false;
+    }
   }
 }

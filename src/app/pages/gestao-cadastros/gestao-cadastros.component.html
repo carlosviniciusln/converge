@@ -1,0 +1,254 @@
+<main class="management-page">
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">Administração</span>
+      <h1>Cadastros e compliance</h1>
+      <p>Gestão centralizada de dados mestres, documentos e regularidade de fornecedores.</p>
+    </div>
+  </header>
+
+  <nav class="section-tabs" aria-label="Seções da central">
+    <button *ngFor="let aba of abas" type="button" [class.active]="abaAtiva === aba.id" (click)="selecionarAba(aba.id)">
+      <i class="fas {{ aba.icone }}" aria-hidden="true"></i>
+      <span>{{ aba.titulo }}</span>
+    </button>
+  </nav>
+
+  <section *ngIf="abaCadastro" class="workspace">
+    <div class="toolbar">
+      <label class="search-field">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <input type="search" [(ngModel)]="pesquisa" placeholder="Pesquisar cadastros" />
+      </label>
+      <button type="button" class="primary-action" (click)="novo()">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+        Novo cadastro
+      </button>
+    </div>
+
+    <form *ngIf="editando" class="editor" [formGroup]="formulario" (ngSubmit)="salvar()">
+      <div class="editor-heading">
+        <h2>{{ formulario.value.id ? 'Editar cadastro' : 'Novo cadastro' }}</h2>
+        <button type="button" class="icon-button" aria-label="Fechar formulário" (click)="cancelarEdicao()">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="form-grid" *ngIf="abaAtiva === 'usuarios'">
+        <label>Matrícula<input formControlName="matricula" /></label>
+        <label>Nome<input formControlName="nome" /></label>
+        <label>E-mail<input type="email" formControlName="email" /></label>
+        <label>Perfil<select formControlName="perfil"><option value="">Selecione</option><option *ngFor="let perfil of perfis" [value]="perfil">{{ perfil }}</option></select></label>
+      </div>
+
+      <div class="form-grid" *ngIf="abaAtiva === 'fornecedores'">
+        <label>CNPJ<input formControlName="cnpj" placeholder="00.000.000/0000-00" /></label>
+        <label>Razão social<input formControlName="razaoSocial" /></label>
+        <label>Nome fantasia<input formControlName="nomeFantasia" /></label>
+        <label>E-mail<input type="email" formControlName="email" /></label>
+        <label>Telefone<input formControlName="telefone" /></label>
+      </div>
+
+      <div class="form-grid" *ngIf="abaAtiva === 'departamentos'">
+        <label>Sigla<input formControlName="sigla" /></label>
+        <label>Nome<input formControlName="nome" /></label>
+        <label>Responsável<input formControlName="responsavel" /></label>
+        <label>E-mail<input type="email" formControlName="email" /></label>
+      </div>
+
+      <div class="form-grid" *ngIf="abaAtiva === 'representantes'">
+        <label>CPF<input formControlName="cpf" placeholder="000.000.000-00" /></label>
+        <label>Nome<input formControlName="nome" /></label>
+        <label>Empresa<input formControlName="empresa" /></label>
+        <label>E-mail<input type="email" formControlName="email" /></label>
+        <label>Telefone<input formControlName="telefone" /></label>
+      </div>
+
+      <label class="toggle-field"><input type="checkbox" formControlName="ativo" /> Cadastro ativo</label>
+      <div class="form-actions">
+        <button type="button" class="secondary-action" (click)="cancelarEdicao()">Cancelar</button>
+        <button type="submit" class="primary-action" [disabled]="carregando">Salvar</button>
+      </div>
+    </form>
+
+    <div class="records" [class.loading]="carregando">
+      <article *ngFor="let registro of registrosFiltrados" class="record-card">
+        <div class="record-code">{{ codigo(registro) }}</div>
+        <div class="record-main">
+          <strong>{{ identificar(registro) }}</strong>
+          <span>{{ detalhe(registro) }}</span>
+        </div>
+        <span class="status" [class.inactive]="!registro.ativo">{{ registro.ativo ? 'Ativo' : 'Inativo' }}</span>
+        <div class="record-actions">
+          <button type="button" class="icon-button" aria-label="Editar cadastro" (click)="editar(registro)"><i class="fas fa-pen"></i></button>
+          <button type="button" class="icon-button danger" aria-label="Excluir cadastro" (click)="excluir(registro)"><i class="fas fa-trash"></i></button>
+        </div>
+      </article>
+      <div *ngIf="!carregando && !registrosFiltrados.length" class="empty-state">
+        <i class="fas fa-inbox" aria-hidden="true"></i>
+        <strong>Nenhum cadastro encontrado</strong>
+        <span>Use “Novo cadastro” para incluir o primeiro registro.</span>
+      </div>
+    </div>
+  </section>
+
+  <section *ngIf="abaAtiva === 'contratos'" class="workspace contract-entry">
+    <i class="fas fa-file-contract" aria-hidden="true"></i>
+    <h2>Cadastro de contratos</h2>
+    <p>O fluxo especializado existente mantém vigências, rubricas, responsáveis e contatos.</p>
+    <div class="contract-actions">
+      <a class="secondary-action" routerLink="/contrato">Consultar contratos</a>
+      <a class="primary-action" routerLink="/contrato/create">Novo contrato</a>
+    </div>
+  </section>
+
+  <section *ngIf="abaAtiva === 'documentos'" class="workspace compliance-grid">
+    <div class="compliance-form">
+      <span class="eyebrow">Análise assistida</span>
+      <h2>Validação documental</h2>
+      <p>A IA extrai campos e aponta divergências. A decisão final permanece com o analista responsável.</p>
+      <label>Tipo de documento<select [(ngModel)]="tipoDocumento"><option value="nota-fiscal">Nota fiscal</option><option value="contrato">Contrato</option><option value="certidao">Certidão</option><option value="outro">Outro documento</option></select></label>
+      <label class="upload-field" [class.processing]="validandoDocumento"><i class="fas" [class.fa-cloud-upload-alt]="!validandoDocumento" [class.fa-brain]="validandoDocumento"></i><span>{{ arquivo?.name || 'Selecionar PDF ou imagem' }}</span><input type="file" accept="application/pdf,image/png,image/jpeg" (change)="selecionarArquivo($event)" /></label>
+      <button type="button" class="primary-action" [disabled]="!arquivo || validandoDocumento" (click)="validarDocumento()">{{ validandoDocumento ? 'IA analisando...' : (validacaoDocumento ? 'Analisar novamente' : 'Analisar documento') }}</button>
+    </div>
+    <div class="result-panel ai-processing" *ngIf="validandoDocumento; else documentResult" aria-live="polite">
+      <div class="ai-heading">
+        <span class="ai-mark"><i class="fas fa-brain" aria-hidden="true"></i></span>
+        <div><span class="eyebrow">Inteligência documental</span><h3>Análise em andamento</h3></div>
+        <strong>{{ progressoAnalise }}%</strong>
+      </div>
+      <div class="ai-progress"><span [style.width.%]="progressoAnalise"></span></div>
+      <div class="ai-messages">
+        <p *ngFor="let mensagem of mensagensAnalise"><i class="fas fa-check" aria-hidden="true"></i><span>{{ mensagem }}</span></p>
+        <p class="typing-message" *ngIf="mensagemAnaliseAtual"><span class="ai-pulse" aria-hidden="true"></span><span>{{ mensagemAnaliseAtual }}</span><span class="typing-cursor" aria-hidden="true"></span></p>
+      </div>
+    </div>
+    <ng-template #documentResult>
+    <div class="result-panel" *ngIf="validacaoDocumento as resultado; else documentEmpty">
+      <span class="status" [class.inactive]="resultado.status !== 'aprovado'">{{ resultado.status }}</span>
+      <h3>{{ resultado.arquivo }}</h3>
+      <p>Confiança: {{ resultado.confianca * 100 | number:'1.0-1' }}%</p>
+      <div class="managerial-summary"><i class="fas fa-chart-line" aria-hidden="true"></i><div><strong>Visão gerencial</strong><p>{{ resumoGerencial }}</p></div></div>
+      <div class="extracted-fields">
+        <div *ngFor="let campo of resultado.campos | keyvalue"><span>{{ campo.key }}</span><strong>{{ campo.value }}</strong></div>
+      </div>
+      <h4>{{ resultado.inconsistencias.length ? 'Inconsistências' : 'Resultado da análise' }}</h4>
+      <ul *ngIf="resultado.inconsistencias.length; else noIssues"><li *ngFor="let item of resultado.inconsistencias">{{ item }}</li></ul>
+      <ng-template #noIssues><p class="positive-result"><i class="fas fa-check-circle"></i> Nenhuma divergência relevante identificada.</p></ng-template>
+      <small>Analisado em {{ resultado.analisadoEm | date:'dd/MM/yyyy HH:mm' }}</small>
+    </div>
+    <ng-template #documentEmpty><div class="result-panel empty-state"><i class="fas fa-file-circle-check"></i><strong>Aguardando documento</strong><span>O resultado e as evidências aparecerão aqui.</span></div></ng-template>
+    </ng-template>
+  </section>
+
+  <section *ngIf="abaAtiva === 'biblioteca'" class="workspace">
+    <div class="toolbar">
+      <label class="search-field">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <input type="search" [(ngModel)]="pesquisaBiblioteca" placeholder="Pesquisar documentos da biblioteca" />
+      </label>
+      <button type="button" class="primary-action" (click)="novoItemBiblioteca()">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+        Novo documento
+      </button>
+    </div>
+
+    <form *ngIf="editandoBiblioteca" class="editor" [formGroup]="formularioBiblioteca" (ngSubmit)="salvarItemBiblioteca()">
+      <div class="editor-heading">
+        <h2>{{ formularioBiblioteca.value.id ? 'Editar documento' : 'Novo documento' }}</h2>
+        <button type="button" class="icon-button" aria-label="Fechar formulário" (click)="cancelarEdicaoBiblioteca()">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="form-grid">
+        <label>Nome do documento<input formControlName="nome" placeholder="Ex.: Certidão Negativa de Débitos" /></label>
+        <label>Categoria<input formControlName="categoria" placeholder="Ex.: Fiscal, Trabalhista, Técnico" /></label>
+      </div>
+      <label class="toggle-field"><input type="checkbox" formControlName="obrigatorioPadrao" /> Obrigatório por padrão ao associar a um contrato</label>
+      <label class="toggle-field"><input type="checkbox" formControlName="ativo" /> Documento ativo na biblioteca</label>
+      <div class="form-actions">
+        <button type="button" class="secondary-action" (click)="cancelarEdicaoBiblioteca()">Cancelar</button>
+        <button type="submit" class="primary-action" [disabled]="carregandoBiblioteca">Salvar</button>
+      </div>
+    </form>
+
+    <div class="records" [class.loading]="carregandoBiblioteca">
+      <article *ngFor="let item of itensBibliotecaFiltrados" class="record-card">
+        <div class="record-code">{{ item.categoria }}</div>
+        <div class="record-main">
+          <strong>{{ item.nome }}</strong>
+          <span>{{ item.obrigatorioPadrao ? 'Obrigatório por padrão' : 'Opcional por padrão' }}</span>
+        </div>
+        <span class="status" [class.inactive]="!item.ativo">{{ item.ativo ? 'Ativo' : 'Inativo' }}</span>
+        <div class="record-actions">
+          <button type="button" class="icon-button" aria-label="Editar documento" (click)="editarItemBiblioteca(item)"><i class="fas fa-pen"></i></button>
+          <button type="button" class="icon-button danger" aria-label="Excluir documento" (click)="excluirItemBiblioteca(item)"><i class="fas fa-trash"></i></button>
+        </div>
+      </article>
+      <div *ngIf="!carregandoBiblioteca && !itensBibliotecaFiltrados.length" class="empty-state">
+        <i class="fas fa-book" aria-hidden="true"></i>
+        <strong>Nenhum documento cadastrado</strong>
+        <span>Use “Novo documento” para incluir o primeiro item da biblioteca.</span>
+      </div>
+    </div>
+
+    <hr class="sep-biblioteca" />
+
+    <div class="associacao-contrato">
+      <h2>Associar documentos a um contrato</h2>
+      <p>Cada contrato pode exigir um rol específico de documentos. Selecione os itens da biblioteca que se aplicam a este contrato.</p>
+      <div class="toolbar">
+        <label class="search-field">
+          <i class="fas fa-file-contract" aria-hidden="true"></i>
+          <input type="text" [(ngModel)]="coContratoAssociar" placeholder="Número do contrato (ex.: 81000/2026-0001)" />
+        </label>
+        <button type="button" class="secondary-action" [disabled]="carregandoAssociacao" (click)="buscarAssociacoesContrato()">
+          {{ carregandoAssociacao ? 'Buscando...' : 'Buscar contrato' }}
+        </button>
+      </div>
+
+      <div class="records" *ngIf="itensAssociacao.length">
+        <article *ngFor="let associacao of itensAssociacao" class="record-card associacao-card">
+          <label class="toggle-field associacao-check">
+            <input type="checkbox" [(ngModel)]="associacao.selecionado" [ngModelOptions]="{standalone: true}" />
+          </label>
+          <div class="record-main">
+            <strong>{{ associacao.item.nome }}</strong>
+            <span>{{ associacao.item.categoria }}</span>
+          </div>
+          <select [(ngModel)]="associacao.status" [ngModelOptions]="{standalone: true}" [disabled]="!associacao.selecionado">
+            <option *ngFor="let opcao of statusDocumentoOpcoes" [value]="opcao.value">{{ opcao.label }}</option>
+          </select>
+        </article>
+      </div>
+      <div *ngIf="!carregandoAssociacao && !itensAssociacao.length" class="empty-state">
+        <i class="fas fa-file-circle-question" aria-hidden="true"></i>
+        <strong>Nenhum contrato selecionado</strong>
+        <span>Informe um número de contrato e clique em “Buscar contrato”.</span>
+      </div>
+
+      <div class="form-actions" *ngIf="itensAssociacao.length">
+        <button type="button" class="primary-action" [disabled]="carregandoAssociacao" (click)="salvarAssociacoesContrato()">Salvar associações</button>
+      </div>
+    </div>
+  </section>
+
+  <section *ngIf="abaAtiva === 'regularidade'" class="workspace compliance-grid">
+    <div class="compliance-form">
+      <span class="eyebrow">Bases oficiais</span>
+      <h2>Regularidade do fornecedor</h2>
+      <p>Consulta consolidada via gateway corporativo autorizado, com protocolo e data de cada fonte.</p>
+      <label>CNPJ<input [(ngModel)]="cnpjConsulta" placeholder="00.000.000/0000-00" /></label>
+      <button type="button" class="primary-action" [disabled]="consultandoFornecedor" (click)="consultarRegularidade()">{{ consultandoFornecedor ? 'Consultando...' : 'Consultar bases' }}</button>
+    </div>
+    <div class="result-panel" *ngIf="consultaFornecedor as consulta; else regularidadeEmpty">
+      <span class="status" [class.inactive]="consulta.situacao !== 'regular'">{{ consulta.situacao }}</span>
+      <h3>{{ consulta.razaoSocial }}</h3>
+      <p>CNPJ {{ consulta.cnpj }}</p>
+      <div class="source" *ngFor="let fonte of consulta.fontes"><strong>{{ fonte.nome }}</strong><span>{{ fonte.situacao }}</span><small>{{ fonte.protocolo }}</small></div>
+      <p class="positive-result" *ngIf="!consulta.apontamentos.length"><i class="fas fa-check-circle"></i> Nenhuma pendência encontrada nas fontes consultadas.</p>
+      <small>Consulta consolidada em {{ consulta.consultadoEm | date:'dd/MM/yyyy HH:mm' }}</small>
+    </div>
+    <ng-template #regularidadeEmpty><div class="result-panel empty-state"><i class="fas fa-shield-alt"></i><strong>Nenhuma consulta realizada</strong><span>Informe um CNPJ para consultar as fontes habilitadas.</span></div></ng-template>
+  </section>
+</main>

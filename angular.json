@@ -24,16 +24,7 @@
               "rxjs-compat",
               "html2pdf.js",
               "raf",
-              "core-js",
-              "rgbcolor",
-              "base64-js",
-              "js-sha256",
-              "lodash",
-              "sweetalert2",
-              "sweetalert2/dist/sweetalert2.js",
-              "html2canvas",
-              "highcharts",
-              "file-saver"
+              "core-js"
             ],
             "outputPath": "dist",
             "index": "src/index.html",
@@ -52,7 +43,6 @@
               }
             ],
             "styles": [
-              "sidsc-stubs/styles/main.scss",
               "src/styles.scss",
               "src/assets/css/primeng-theme.css",
               "node_modules/primeng/resources/primeng.min.css",
@@ -60,15 +50,11 @@
               "src/assets/scss/black-dashboard.scss",
               "src/assets/css/nucleo-icons.css",
               "src/assets/css/primeicons.css",
+              "node_modules/material-icons/iconfont/material-icons.css",
               "node_modules/sweetalert2/src/sweetalert2.scss",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "sidsc-stubs/styles/main.scss"
             ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/app/styles"
-              ]
-            },
             "scripts": []
           },
           "configurations": {
@@ -106,9 +92,6 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "front-gc-painel-gerencial:build:development"
-          },
           "configurations": {
             "production": {
               "browserTarget": "front-gc-painel-gerencial:build:production"
@@ -122,7 +105,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "front-gc-painel-gerencial:build:production"
+            "browserTarget": "front-gc-painel-gerencial:build"
           }
         },
         "test": {

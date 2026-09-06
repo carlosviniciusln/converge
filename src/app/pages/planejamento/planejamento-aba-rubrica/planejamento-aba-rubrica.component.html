@@ -5,9 +5,9 @@
                 <ng-template pTemplate="caption">
                     <div class="table-header">
                         <div class="row">
-                            <div class="col-md-7 table-header-title">Exercício {{anoExercio}} - <span style="color:green">{{tipoExercicio}}</span></div>
-                            <div class="col-md-1 pl-1 pr-1 text-right" style="display: flex; justify-content: flex-end; align-items: center;">
-                                <dsc-button variant="secondary-outlined" icon="cloud_download" iconButton (click)="exportExcel(nuPlanejamento)" *ngIf="permissions?.Exportar ?? false"></dsc-button>
+                            <div class="col-md-7 table-header-title">Exercício {{anoExercio}} - <span style="color:#005CA9">{{tipoExercicio}}</span></div>
+                            <div class="col-md-1 pl-1 pr-1 text-right">
+                                <button type="button" class="btn-sm btn-secondary" (click)="exportExcel(nuPlanejamento)" *ngIf="permissions?.Exportar ?? false"><i class="tim-icons icon-cloud-download-93"></i></button>
                             </div>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" #myInput (input)="filterItem(myInput.value)" id="pPesquisar" placeholder="Digite para pesquisar" />

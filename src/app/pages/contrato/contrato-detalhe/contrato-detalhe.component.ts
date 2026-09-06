@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiResponse } from 'src/app/models/generics/api-response';
-import { ContratoResponse, RetencaoResponse, Retencao, Gcptb002ContratoTipo, ContratoResponseV2 } from 'src/app/models/generics/contrato-response';
+import { ContratoResponse, RetencaoResponse, Retencao, Gcptb002ContratoTipo, ContratoResponseV2, Gcptb011Pagamento } from 'src/app/models/generics/contrato-response';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { EvolucaoFinanceira } from 'src/app/models/generics/evolucao-financeira';
 import {
@@ -67,6 +67,7 @@ export class ContratoDetalheComponent implements OnInit {
   expandedRowKeys: { [key: string]: boolean } = {};
 
   tituloPagamentos: string = '';
+  notaFiscalSelecionada: Gcptb011Pagamento;
 
   currentProfile: PerfisEnum;
 	permissaoEditar: boolean = false;
@@ -86,7 +87,6 @@ export class ContratoDetalheComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private apiService: ApiService,
     private modalService: NgbModal,
     private location: Location,
@@ -132,50 +132,38 @@ export class ContratoDetalheComponent implements OnInit {
   }
 
   calculateSumByRubrica(): void {
-    const pagamentos = this.Contrato?.gcptb011Pagamentos || [];
-    this.sumByRubrica = pagamentos.reduce<{ [key: string]: number }>((acc, pagamento) => {
-      try {
-        const rubricaCode = pagamento?.gcptb017VigenciaRubrica?.gcptb003Rubrica?.coRubrica || 'UNKNOWN';
-        const valor = pagamento?.vrExecutado || 0;
-        if (acc[rubricaCode]) {
-          acc[rubricaCode] += valor;
-        } else {
-          acc[rubricaCode] = valor;
-        }
-      } catch (e) {
-        // ignore malformed pagamento entries
+    this.sumByRubrica = this.Contrato.gcptb011Pagamentos.reduce<{ [key: string]: number }>((acc, pagamento) => {
+      const rubricaCode = pagamento.gcptb017VigenciaRubrica.gcptb003Rubrica.coRubrica;
+      if (acc[rubricaCode]) {
+        acc[rubricaCode] += pagamento.vrExecutado;
+      } else {
+        acc[rubricaCode] = pagamento.vrExecutado;
       }
       return acc;
     }, {});
   }
 
   calculateSumByTipoRetencao(): void {
-    const retencoes = this.retencoes || [];
-    this.sumByTipoRetencao = retencoes.reduce<{ [key: string]: number }>((acc, retencao) => {
-      try {
-        const retencaoCode = retencao?.dE_TIPO_PENALIDADE || 'UNKNOWN';
-        const valor = retencao?.vR_PENALIDADE || 0;
-        if (acc[retencaoCode]) {
-          acc[retencaoCode] += valor;
-        } else {
-          acc[retencaoCode] = valor;
-        }
-      } catch (e) {}
+    this.sumByTipoRetencao = this.retencoes.reduce<{ [key: string]: number }>((acc, retencao) => {
+      const retencaoCode = retencao.dE_TIPO_PENALIDADE;
+      if (acc[retencaoCode]) {
+        acc[retencaoCode] += retencao.vR_PENALIDADE;
+      } else {
+        acc[retencaoCode] = retencao.vR_PENALIDADE;
+      }
       return acc;
     }, {});
   }
 
   calculateTotalPayment(): void {
-    const pagamentos = this.Contrato?.gcptb011Pagamentos || [];
-    this.totalPayment = pagamentos.reduce((acc, pagamento) => {
-      return acc + (pagamento?.vrExecutado || 0);
+    this.totalPayment = this.Contrato.gcptb011Pagamentos.reduce((acc, pagamento) => {
+      return acc + pagamento.vrExecutado;
     }, 0);
   }
 
   calculateTotalRetencao(): void {
-    const retencoes = this.retencoes || [];
-    this.totalRetencao = retencoes.reduce((acc, pagamento) => {
-      return acc + (pagamento?.vR_PENALIDADE || 0);
+    this.totalRetencao = this.retencoes.reduce((acc, pagamento) => {
+      return acc + pagamento.vR_PENALIDADE;
     }, 0);
   }
 
@@ -194,6 +182,7 @@ export class ContratoDetalheComponent implements OnInit {
       this.obterValorVigencias();
       this.validarRotaAtas();
       this.setTituloPagamentos();
+      this.notaFiscalSelecionada = this.pagamentosComNotaFiscal[0];
       this.loading = false;
     } catch (error) {
       console.error(error, 'obterContrato');
@@ -234,6 +223,18 @@ export class ContratoDetalheComponent implements OnInit {
 
   hasEntries(obj: any): boolean {
     return obj && Object.keys(obj).length > 0;
+  }
+
+  get pagamentosComNotaFiscal(): Gcptb011Pagamento[] {
+    return this.Contrato?.gcptb011Pagamentos?.filter(pagamento => pagamento.dtNotaFiscal) ?? [];
+  }
+
+  selecionarNotaFiscal(pagamento: Gcptb011Pagamento): void {
+    this.notaFiscalSelecionada = pagamento;
+  }
+
+  identificadorNotaFiscal(pagamento: Gcptb011Pagamento): string {
+    return `SIM-${pagamento.nuPagamento}`;
   }
 
   public async obterRubricaDescriptions(): Promise<void> {
@@ -437,17 +438,8 @@ export class ContratoDetalheComponent implements OnInit {
   linkContrato(){
     const partesContrato = this.Contrato.coContrato.split('/');
     const contratoFormatado = this.Contrato.coContrato.replace('/','_');
-    var linkMontado = 'https://caixa.sharepoint.com/:f:/r/sites/Arquivos7550/Documentos%20Compartilhados/TIPO_2_DIGITAL/' + partesContrato[1] + '/' + contratoFormatado;
-    console.log(linkMontado);
-    window.open(linkMontado ,'_blank');
-  }
 
-  linkEvolucaoFinanceira() {
-    this.router.navigate(['/contrato/evolucao-financeira', this.nuContrato]);
-  }
-
-  linkMensalizacao() {
-    this.router.navigate(['/contrato/exec-orc-mensalizacao', this.nuContrato]);
+    window.open('https://caixa.sharepoint.com/:f:/r/sites/Arquivos7550/Documentos%20Compartilhados/TIPO_2_DIGITAL/' + partesContrato[1] + '/' + contratoFormatado ,'_blank');
   }
 
   somaVigencias(vigencias: any[]): number{
@@ -559,22 +551,17 @@ export class ContratoDetalheComponent implements OnInit {
     }
   }
 
-  validaContratoArtigo81(codContrato?: string): boolean{
-    // Defensive: codContrato can be undefined when data loads asynchronously
-    if (!codContrato) return false;
-    try {
-      return String(codContrato).startsWith('81000');
-    } catch (e) {
-      return false;
+  validaContratoArtigo81(codContrato: string): boolean{
+    if(codContrato.startsWith('81000')){
+      return true
     }
+    return false
   }
 
   setTituloPagamentos(){
-    const coContrato = this.ContratoV2?.cO_CONTRATO || '';
-    if (this.validaContratoArtigo81(coContrato)) {
-      this.tituloPagamentos = `Pagamentos Art. 81 - ${coContrato.replace('81000/', '')} - PAGAMENTOS POR RUBRICA`;
-    } else {
-      this.tituloPagamentos = `CONTRATO ${coContrato}  - RESUMO DOS PAGAMENTOS\n                    POR RUBRICA`;
-    }
+    this.tituloPagamentos =  this.validaContratoArtigo81(this.ContratoV2.cO_CONTRATO) ?
+    `Pagamentos Art. 81 - ${this.ContratoV2.cO_CONTRATO.replace('81000/', '')} - PAGAMENTOS POR RUBRICA` :
+    `CONTRATO ${this.ContratoV2.cO_CONTRATO}  - RESUMO DOS PAGAMENTOS
+                    POR RUBRICA`
   }
 }

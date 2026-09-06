@@ -9,6 +9,7 @@
   <!-- CABEÇALHO DO PAINEL -->
   <div class="painel-header">
     <div class="painel-header-left">
+      <h1 class="painel-titulo">Ficha do Contrato</h1>
     </div>
     <div class="painel-header-right">
       <div class="vigencia-selector">
@@ -17,8 +18,14 @@
           <option *ngFor="let vig of vigencias" [value]="vig.id">{{ vig.label }}</option>
         </select>
       </div>
+      <button type="button" class="btn-exportar-ficha" [disabled]="gerandoPdf" (click)="exportarFicha()">
+        <i class="fas fa-file-pdf"></i>
+        {{ gerandoPdf ? 'Gerando PDF...' : 'Exportar ficha completa' }}
+      </button>
     </div>
   </div>
+
+  <div id="fichaContratoConteudo">
 
   <!-- CORPO: GRID 2 COLUNAS -->
   <div class="painel-body">
@@ -29,7 +36,7 @@
       <!-- INFORMAÇÕES GERAIS -->
       <div class="card">
         <div class="card-header">
-          <span class="material-icons card-header-icon">description</span>
+          <span class="fas fa-file-alt card-header-icon"></span>
           Informações Gerais
         </div>
         <div class="card-body">
@@ -85,7 +92,7 @@
       <!-- RESUMO DA VIGÊNCIA -->
       <div class="card">
         <div class="card-header">
-          <span class="material-icons card-header-icon">event_note</span>
+          <span class="fas fa-calendar-alt card-header-icon"></span>
           Resumo da Vigência
         </div>
         <div class="card-body card-body--flush">
@@ -151,7 +158,7 @@
       <!-- RESUMO DOS PAGAMENTOS -->
       <div class="card">
         <div class="card-header">
-          <span class="material-icons card-header-icon">payments</span>
+          <span class="fas fa-money-bill-wave card-header-icon"></span>
           Resumo dos Pagamentos
         </div>
         <div class="card-body card-body--flush">
@@ -188,7 +195,7 @@
       <!-- PENALIDADES -->
       <div class="card">
         <div class="card-header">
-          <span class="material-icons card-header-icon">warning</span>
+          <span class="fas fa-exclamation-triangle card-header-icon"></span>
           Penalidades
         </div>
         <div class="card-body">
@@ -226,7 +233,7 @@
       <!-- ATESTES -->
       <div class="card">
         <div class="card-header">
-          <span class="material-icons card-header-icon">check_circle</span>
+          <span class="fas fa-check-circle card-header-icon"></span>
           Atestes
         </div>
         <div class="card-body">
@@ -253,7 +260,7 @@
       <!-- ORDENS DE SERVIÇO -->
       <div class="card">
         <div class="card-header">
-          <span class="material-icons card-header-icon">assignment</span>
+          <span class="fas fa-clipboard-list card-header-icon"></span>
           Ordens de Serviço
         </div>
         <div class="card-body">
@@ -281,34 +288,34 @@
       <!-- WORKFLOW: PIPELINE -->
       <div class="card">
         <div class="card-header">
-          <span class="material-icons card-header-icon">account_tree</span>
+          <span class="fas fa-sitemap card-header-icon"></span>
           Fluxo do Contrato — OS → Ateste → Pgto → Retenção
         </div>
         <div class="card-body">
           <div class="pipeline">
             <div class="pipeline-step">
-              <span class="material-icons pipeline-icon text-blue">assignment</span>
+              <span class="fas fa-clipboard-list pipeline-icon text-blue"></span>
               <span class="pipeline-label">OS</span>
               <span class="pipeline-count text-blue">{{ workflow.os }}</span>
               <span class="pipeline-sub">Assinada</span>
             </div>
-            <span class="pipeline-arrow material-icons">chevron_right</span>
+            <span class="pipeline-arrow fas fa-chevron-right"></span>
             <div class="pipeline-step">
-              <span class="material-icons pipeline-icon text-info">check_circle</span>
+              <span class="fas fa-check-circle pipeline-icon text-info"></span>
               <span class="pipeline-label">Atestes</span>
               <span class="pipeline-count text-info">{{ workflow.atestes }}</span>
               <span class="pipeline-sub">{{ workflow.atestesSub }}</span>
             </div>
-            <span class="pipeline-arrow material-icons">chevron_right</span>
+            <span class="pipeline-arrow fas fa-chevron-right"></span>
             <div class="pipeline-step">
-              <span class="material-icons pipeline-icon text-green">payments</span>
+              <span class="fas fa-money-bill-wave pipeline-icon text-green"></span>
               <span class="pipeline-label">Pagamentos</span>
               <span class="pipeline-count text-green">{{ workflow.pgto }}</span>
               <span class="pipeline-sub">{{ workflow.pgtoSub }}</span>
             </div>
-            <span class="pipeline-arrow material-icons">chevron_right</span>
+            <span class="pipeline-arrow fas fa-chevron-right"></span>
             <div class="pipeline-step">
-              <span class="material-icons pipeline-icon text-red">warning</span>
+              <span class="fas fa-exclamation-triangle pipeline-icon text-red"></span>
               <span class="pipeline-label text-red">Retenções</span>
               <span class="pipeline-count text-red">{{ workflow.retencoes }}</span>
               <span class="pipeline-sub">{{ workflow.retencoesSub }}</span>
@@ -320,5 +327,44 @@
     </div><!-- /col-right -->
 
   </div><!-- /painel-body -->
+
+  <!-- DIAGNÓSTICO: tópico final do prontuário -->
+  <div class="card diagnostico-card" [class.diagnostico--atencao]="diagnostico.severidade === 'atencao'" [class.diagnostico--critico]="diagnostico.severidade === 'critico'">
+    <div class="card-header">
+      <span class="fas fa-chart-line card-header-icon"></span>
+      Diagnóstico do Contrato
+    </div>
+    <div class="card-body">
+      <dsc-alert
+        [variant]="diagnostico.severidade === 'positivo' ? 'success' : (diagnostico.severidade === 'atencao' ? 'warning' : 'danger')"
+        [message]="diagnostico.recomendacao">
+      </dsc-alert>
+      <div class="diagnostico-grid">
+        <div class="diagnostico-item">
+          <span class="fas fa-arrow-trend-up"></span>
+          <div>
+            <label class="field-label">Uso do Contrato</label>
+            <p>{{ diagnostico.usoTexto }}</p>
+          </div>
+        </div>
+        <div class="diagnostico-item">
+          <span class="fas fa-calendar-times"></span>
+          <div>
+            <label class="field-label">Projeção de Esgotamento</label>
+            <p [innerHTML]="diagnostico.projecaoTexto"></p>
+          </div>
+        </div>
+        <div class="diagnostico-item">
+          <span class="fas fa-money-bill-wave"></span>
+          <div>
+            <label class="field-label">Pagamentos e Retenções</label>
+            <p>{{ diagnostico.pagamentosTexto }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /fichaContratoConteudo -->
 
 </div>

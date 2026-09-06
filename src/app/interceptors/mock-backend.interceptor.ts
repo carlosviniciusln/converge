@@ -24,7 +24,12 @@ export class MockBackendInterceptor implements HttpInterceptor {
         // prefer the longest matching key (most specific) to avoid generic keys shadowing specific endpoints
         const possibleMatches = keys.filter(k => {
           const nk = normalize(k);
-          return normUrl.startsWith(nk);
+          if (nk.includes('?')) {
+            return normUrl.startsWith(nk);
+          }
+
+          const requestPath = normUrl.split('?')[0];
+          return nk.endsWith('/') ? requestPath.startsWith(nk) : requestPath === nk;
         });
         let match: string | undefined = undefined;
         if (possibleMatches.length === 1) {
@@ -36,6 +41,9 @@ export class MockBackendInterceptor implements HttpInterceptor {
             const curLen = normalize(cur).length;
             return curLen > bestLen ? cur : best;
           });
+        }
+        if (!match && /^\/v1\/contrato\/\d+\/vigencias(?:\?.*)?$/.test(normUrl)) {
+          match = keys.find(k => normalize(k) === '/v1/contrato/{nuContrato}/vigencias');
         }
         // fallback: if request is /v1/contrato/<digits> but no exact key found,
         // map it to the generic '/v1/contrato/' or '/api/v1/contrato/' mock entry

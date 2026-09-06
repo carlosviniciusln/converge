@@ -1,3 +1,107 @@
-#relatorios{
-    padding-left: 50px;
+:host .sidebar-wrapper .nav-item > .collapse,
+:host .sidebar-wrapper .nav-item > .collapsing {
+    padding-left: 16px;
+
+    > .nav {
+        margin: 4px 0 8px;
+        padding-left: 8px;
+        border-left: 1px solid rgba(255, 255, 255, 0.24);
+
+        > .nav-item > .nav-link {
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+            margin: 0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 20px;
+            text-transform: none;
+
+            > i:empty {
+                display: none;
+            }
+
+            > p {
+                line-height: 20px;
+            }
+        }
+    }
+}
+
+:host .sidebar-wrapper .nested-item > .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 20px;
+    text-transform: none;
+}
+
+:host .sidebar-wrapper .menu-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    > p {
+        position: relative;
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0;
+        padding-right: 24px;
+    }
+
+    .caret {
+        top: 50%;
+        right: 4px;
+        margin-top: -2px;
+    }
+}
+
+:host .sidebar-wrapper .tim-icons {
+    flex: 0 0 34px;
+    width: 34px;
+    margin-right: 8px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.mobile-menu-header {
+    display: none;
+}
+
+@media (max-width: 991px) {
+    .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 48px;
+        margin: -4px 0 10px;
+        padding: 0 8px 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 0;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 18px;
+        }
+    }
 }

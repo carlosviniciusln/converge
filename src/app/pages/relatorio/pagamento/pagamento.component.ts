@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ApiResponse, ApiResponsePaginado } from 'src/app/models/generics/api-response';
 import { Gcptb001ContratoResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { Filial } from 'src/app/models/generics/filial';
@@ -13,11 +15,18 @@ import {
   TokenStorageService,
 } from 'src/app/shared/services/token-storage.service';
 import { RelatorioPagamentoResponse } from 'src/app/models/generics/relatorio-pagamento-response';
+import { TableModule } from 'primeng/table';
+import { DropdownModule } from 'primeng/dropdown';
+import { PaginatorModule } from 'primeng/paginator';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-pagamento',
   templateUrl: './pagamento.component.html',
   styleUrls: ['./pagamento.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, TableModule, DropdownModule, PaginatorModule, ButtonModule, RippleModule],
 })
 export class PagamentoComponent implements OnInit {
   permissions: ActionPolicies;
@@ -112,8 +121,9 @@ export class PagamentoComponent implements OnInit {
   }
 
   loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
+
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.pageSize) + 1;
+    const pageSize = event.rows || this.filtroRegistros.pageSize;
 
     if (page !== this.filtroRegistros.pageNumber || pageSize !== this.filtroRegistros.pageSize) {
       this.filtroRegistros.pageNumber = page;
@@ -153,7 +163,7 @@ export class PagamentoComponent implements OnInit {
       );
 
       this.selectAnos =  response.data.listaTodosOsAnos.map(
-        (m) => ({ value: m, label: String(m) } as Select2Option)
+        (m) => ({ value: m, label: m } as Select2Option)
       );
 
 

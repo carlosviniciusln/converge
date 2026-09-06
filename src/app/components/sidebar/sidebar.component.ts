@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DscMenu } from 'sidsc-components/dsc-sidenav';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { ContratoApiResponse } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import { ApiService } from 'src/app/shared/services/api.service';
@@ -9,6 +10,7 @@ import {
   TokenStorageService,
 } from 'src/app/shared/services/token-storage.service';
 import { Endpoints } from 'src/app/models/enums/endpoints';
+import { SidenavService } from 'src/app/services/sidenav.service';
 
 declare interface RouteInfo {
   path: string;
@@ -41,7 +43,8 @@ export const ROUTES: RouteInfo[] = [
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
-  menuItems: any[] = [];
+  menuItems: DscMenu[] = [];
+  expandedMenus = new Set<DscMenu>();
 
   currentProfile: PerfisEnum;
 
@@ -57,6 +60,7 @@ export class SidebarComponent implements OnInit {
   isRelatoriosCollapsed: boolean = false;
   isOrcamentoCollapsed: boolean = false;
   isContratoCollapsed: boolean = false;
+  isCadastroCollapsed: boolean = false;
   isDotacaoCollapsed: boolean = false;
   isContratoCollapsedArt81: boolean = false;
   isPerfilOrcamento = false;
@@ -75,12 +79,30 @@ export class SidebarComponent implements OnInit {
     NoTipoArp: null
   };
 
-  constructor(private apiService: ApiService,public token: TokenStorageService) {
+  constructor(
+    private apiService: ApiService,
+    public token: TokenStorageService,
+    public sidenav: SidenavService
+  ) {
     this.concedeAccess();
   }
 
   ngOnInit() {
-    this.menuItems = ROUTES.filter((menuItem) => menuItem);
+    this.menuItems = this.sidenav.menuItems;
+  }
+
+  toggleMenu(menuItem: DscMenu): void {
+    this.expandedMenus.has(menuItem)
+      ? this.expandedMenus.delete(menuItem)
+      : this.expandedMenus.add(menuItem);
+  }
+
+  isMenuExpanded(menuItem: DscMenu): boolean {
+    return this.expandedMenus.has(menuItem);
+  }
+
+  closeMobileMenu(): void {
+    if (this.isMobileMenu()) this.sidenav.close();
   }
 
 async getContratos(filtro: any): Promise<ApiResponse<ContratoApiResponse>>{
@@ -104,7 +126,7 @@ async getContratos(filtro: any): Promise<ApiResponse<ContratoApiResponse>>{
 
     if(this.currentProfile === 'Administrador'
       || this.currentProfile === 'Pagadoria'
-      || this.currentProfile === 'Torres GEGAT'
+      || this.currentProfile === 'Finanças e Orçamento'
       || this.currentProfile === 'Gestor Operacional'
       || this.currentProfile === PerfisEnum.Orcamento
     ){

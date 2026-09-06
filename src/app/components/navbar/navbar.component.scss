@@ -43,10 +43,8 @@
   cursor: pointer;
   flex-shrink: 0;
 
-  mat-icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
+  i {
+    font-size: 22px;
     color: #fff;
   }
 
@@ -56,6 +54,12 @@
   &:focus-visible {
     outline: 2px solid #fff;
     border-radius: 4px;
+  }
+}
+
+@media (min-width: 992px) {
+  .custom-header__toggle {
+    display: none;
   }
 }
 
@@ -110,12 +114,111 @@
   flex: 1 1 auto;
 }
 
+// ── Busca do header ───────────────────────────────────────────
+.custom-header__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 260px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease, width 0.2s ease;
+
+  &:focus-within {
+    width: 300px;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.custom-header__search-icon {
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 13px;
+  opacity: .85;
+}
+
+.custom-header__search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 13px;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .custom-header__search {
+    width: 160px;
+
+    &:focus-within {
+      width: 200px;
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  .custom-header__search {
+    width: 120px;
+
+    &:focus-within {
+      width: 170px;
+    }
+  }
+}
+
+
 // ── Grupo direito (usuário + botões) ─────────────────────────
 .custom-header__right {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+.custom-header__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+
+  i {
+    font-size: 18px;
+    line-height: 18px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.55);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
 }
 
 // ── Usuário ───────────────────────────────────────────────────
@@ -184,5 +287,92 @@
 dsc-sidenav {
   .mat-drawer-container {
     z-index: 900;
+  }
+}
+
+@media (max-width: 767px) {
+  .custom-header__row {
+    height: 56px;
+    gap: 6px;
+    padding: 4px 8px;
+  }
+
+  .custom-header__toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .custom-header__logo {
+    height: 32px;
+    max-width: 76px;
+  }
+
+  .custom-header__separator,
+  .custom-header__title,
+  .custom-header__greeting-label,
+  .custom-header__workunit {
+    display: none;
+  }
+
+  .custom-header__acronym {
+    font-size: 13px;
+  }
+
+  .custom-header__right {
+    gap: 4px;
+  }
+
+  .custom-header__username {
+    display: block;
+    max-width: 92px;
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+  }
+
+  .custom-header__action {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 6px;
+
+    span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  }
+
+  .custom-header__classification {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  .custom-header__classification-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .custom-header__classification-info {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .custom-header__user {
+    display: none;
+  }
+
+  .custom-header__classification-label {
+    display: none;
   }
 }

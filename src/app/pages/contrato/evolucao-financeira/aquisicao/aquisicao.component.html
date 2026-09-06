@@ -16,15 +16,17 @@
         >
           <i class="tim-icons icon-minimal-left"></i> Voltar
         </button>
-        <dsc-button
-          variant="secondary-outlined"
-          label="PDF"
-          icon="cloud_download"
-          class="no-print"
+        <button
+          type="button"
+          class="btn-sm btn-secondary no-print"
           data-html2canvas-ignore="true"
           (click)="downloadPDF()"
           *ngIf="indexOfelement == 0  && (permissions?.Exportar ?? false)"
-        ></dsc-button>
+          mat-raised-button
+          matTooltip="Clique para gerar o PDF"
+        >
+          <i class="tim-icons icon-cloud-download-93"></i> PDF
+        </button>
       </div>
       <!-- <div class="col-md-3 red" id="divRed" *ngIf="item.detalhe.vrMediaEfetivaUltimos03Meses > item.detalhe.vrMediaMensalEstimada">
             Consumo ACIMA da média estimada <i class="tim-icons icon-minimal-up"></i>
@@ -35,11 +37,12 @@
     </div>
     <div class="row cl-grafico">
       <div class="col-md-12">
-        <mat-card appearance="outlined">
-          <mat-card-header>
-            <mat-card-title class="text-center">{{ item.grafico.titulo }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title text-center">{{ item.grafico.titulo }}</h3>
+          </div>
+          <div class="card-body">
+            <div class="row" id="divGrafico">
               <div class="col-md-8">
                 <app-grafico-aquisicao
                   [titulo]="item.grafico.titulo"
@@ -56,14 +59,15 @@
                 >
                 </app-grafico-geral>
               </div>
-            </mat-card-content>
-          </mat-card>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row cl-header">
       <div class="col-md-12">
-        <mat-card appearance="outlined">
-          <mat-card-content>
+        <div class="card">
+          <div class="card-body">
             <div class="row">
               <div class="col-md-2 text-right">Início Vigência:</div>
               <div class="col-md-2">
@@ -110,8 +114,8 @@
                 <b>{{ item.detalhe.qtTotalPendente }}</b>
               </div>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row cl-body">

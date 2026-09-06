@@ -15,7 +15,11 @@
   </button>
 </div>
 
-<ng-template #historicoContentTpl>
+<div>
+   <p-card>
+
+      <!-- <mat-divider></mat-divider> -->
+
         <div class="historico-container">
 
           <div>
@@ -56,8 +60,7 @@
 
 
             <ng-template pTemplate="content" let-event>
-              <div class="card-outlined-event">
-                <div class="card-outlined-event-header">{{ event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO' }}</div>
+              <p-card [header]="event.tpOperacao === 'INCLUSAO' ? 'INCLUSÃO' : event.tpOperacao === 'ALTERACAO' ? 'ALTERAÇÃO' : 'EXCLUSÃO'">
                 <div class="card-content">
 
                   <strong *ngIf="event.deObservacao">{{ event.deObservacao }}</strong>
@@ -79,22 +82,18 @@
                     </button>
                   </div>
                 </div>
-              </div>
+              </p-card>
             </ng-template>
           </p-timeline>
 
 
 
-          <dsc-paginator
-            [length]="ListaLimitePlanejamentoHistorico.length"
-            [pageSize]="10"
-            [pageIndex]="0">
-          </dsc-paginator>
+          <p-paginator
+            [rows]="10"
+            [totalRecords]="ListaLimitePlanejamentoHistorico.length ? 1 : 1"
+          ></p-paginator>
         </div>
-</ng-template>
-
-<div>
-   <dsc-card [data]="{appearance: 'outlined', content: {template: historicoContentTpl}}"></dsc-card>
+      </p-card>
 
 
 

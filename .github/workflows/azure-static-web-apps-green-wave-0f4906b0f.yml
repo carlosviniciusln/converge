@@ -3,11 +3,11 @@ name: Azure Static Web Apps CI/CD
 on:
   push:
     branches:
-      - main
+      - prototipo
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - main
+      - prototipo
 
 jobs:
   build_and_deploy_job:
@@ -54,3 +54,4 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GREEN_WAVE_0F4906B0F }}
           action: "close"
+          app_location: "/"

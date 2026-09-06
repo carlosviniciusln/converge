@@ -1,34 +1,38 @@
 <div class="content" id="pdfTable" #pdfTable>
-  <dsc-breadcrumb [urls]="[{label: 'Contratos', url: '/contrato'}, {label: 'Evolução Financeira'}]" style="margin-bottom: 24px;" data-html2canvas-ignore="true"></dsc-breadcrumb>
   <div *ngFor="let item of listaEvolucaoFinanceira; let indexOfelement = index">
     <div class="row mr-1 cl-consumo">
       <div class="col-md-9">
-        <dsc-button
-          variant="secondary"
-          label="Voltar"
-          icon="arrow_back"
+        <button
+          type="button"
+          class="btn-sm btn-secondary no-print"
           data-html2canvas-ignore="true"
           (click)="goBackToPrevPage()"
           *ngIf="indexOfelement == 0"
+          mat-raised-button
           matTooltip="Clique para voltar"
-        ></dsc-button>
-        <dsc-button
-          variant="secondary-outlined"
-          label="Excel"
-          icon="cloud_download"
+        >
+          <i class="tim-icons icon-minimal-left"></i> Voltar
+        </button>
+        <button
+          type="button"
+          class="btn-sm btn-secondary"
           data-html2canvas-ignore="true"
           (click)="downloadExcel()"
           *ngIf="indexOfelement == 0 && (permissions?.Exportar ?? false)"
-        ></dsc-button>
-        <dsc-button
-          variant="secondary-outlined"
-          label="PDF"
-          icon="cloud_download"
+        >
+          <i class="tim-icons icon-cloud-download-93"></i> Excel
+        </button>
+        <button
+          type="button"
+          class="btn-sm btn-secondary no-print"
           data-html2canvas-ignore="true"
           (click)="downloadPDF()"
           *ngIf="indexOfelement == 0 && (permissions?.Exportar ?? false)"
+          mat-raised-button
           matTooltip="Clique para gerar o PDF"
-        ></dsc-button>
+        >
+          <i class="tim-icons icon-cloud-download-93"></i> PDF
+        </button>
       </div>
       <!-- <div class="col-md-3 red" id="divRed" *ngIf="item.detalhe.vrMediaEfetivaUltimos03Meses > item.detalhe.vrMediaMensalEstimada">
             Consumo ACIMA da média estimada <i class="tim-icons icon-minimal-up"></i>
@@ -39,11 +43,11 @@
     </div>
     <div class="row cl-grafico">
       <div class="col-md-12">
-        <mat-card appearance="outlined">
-          <mat-card-header>
+        <div class="card">
+          <div class="card-header">
             <h3 class="card-title text-center">{{ item.grafico.titulo }}</h3>
-          </mat-card-header>
-          <mat-card-content>
+          </div>
+          <div class="card-body">
             <div class="row">
               <div class="col-md-8" id="divGrafico">
                 <app-grafico-aquisicao
@@ -62,14 +66,14 @@
                 </app-grafico-aquisicao-geral>
               </div>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12">
-        <mat-card appearance="outlined">
-          <mat-card-content>
+        <div class="card">
+          <div class="card-body">
             <div class="row">
               <div class="col-md-2 text-right">Início Vigência:</div>
               <div class="col-md-3">
@@ -116,8 +120,8 @@
                 <b>{{ item.detalhe.qtTotalPendente }}</b>
               </div>
             </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">

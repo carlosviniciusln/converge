@@ -1,29 +1,33 @@
 <div class="content">
-  <dsc-breadcrumb [urls]="[{label: 'Planejamento', url: '/planejamento'}, {label: 'Orçamentário', url: '/novo-planejamento'}, {label: 'Detalhe'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
+  <div>
+    <button type="button" class="btn-sm btn-secondary no-print"
+        routerLink="/planejamento-orcamentario" mat-raised-button> Voltar
+      </button>
+    <p class="card-title date-info">
+      <b>Atualizado em: {{ultimaAtualizacaoOrcamento}}</b>
+    </p>
+  </div>
 
+  <div class="card">
 
-    <mat-tab-group #planejamentoGeralCardTpl>
+    <mat-tab-group>
 
-       <mat-tab label="Contrato">
+      <mat-tab label="Contrato">
         <!-- <div style="display: flex;
             flex-direction: row-reverse;
             justify-content: space-between;">
            <button
             style="margin-right: 10px;"
             type="button" class="btn-sm btn-add btn-save-status"
-            routerLink="/novo-planejamento">
+            routerLink="/planejamento-orcamentario">
             <i class="pi pi-arrow-left"></i>
             Voltar
           </button>
 
-        <p class="c-p">Planejamento Orçamentário - Exercício <span
-            style="color: black; font-weight: 700;">{{anoExercicio}}</span> - {{ordemTipoExercicio}} - <span
-            style="color: green;">{{statusExercio}}</span></p>
+        <p class="c-p">Planejamento Orçamentário - Exercício <span style="color: black; font-weight: 700;">{{anoExercicio}}</span> - {{ordemTipoExercicio}} - <span style="color: #005CA9">{{statusExercio}}</span></p>
         </div> -->
 
-           <p class="c-p">Planejamento Orçamentário - Exercício <span
-            style="color: black; font-weight: 700;">{{anoExercicio}}</span> - {{ordemTipoExercicio}} - <span
-            style="color: green;">{{statusExercio}}</span></p>
+           <p class="c-p">Planejamento Orçamentário - Exercício <span style="color: black; font-weight: 700;">{{anoExercicio}}</span> - {{ordemTipoExercicio}} - <span style="color: #005CA9">{{statusExercio}}</span></p>
 
         <div class="" style="margin: 14px">
           <table border="1" width="100%" style="text-align: center; border-color: rgb(231, 231, 231);">
@@ -74,7 +78,10 @@
         <div class="row">
           <div class="col-12">
             <p-table id="table-contrato" #dt [value]="planejamentos" dataKey="id" styleClass="p-datatable-customers"
-            [rowHover]="true" [loading]="loading" [filterDelay]="0">
+            [totalRecords]="quantidadeTotal" [lazy]="true"
+            [rowHover]="true" [showCurrentPageReport]="true" [loading]="loading" [filterDelay]="0" (onLazyLoad)="loadPage($event)"
+            [paginator]="true" [rows]="filtroRegistros.pageSize" [rowsPerPageOptions]="[10, 20, 50, quantidadeTotal]"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros">
               <ng-template pTemplate="caption">
                 <div class="c-menu">
 
@@ -82,7 +89,6 @@
                   <div class="pl-1 pr-1">
 
                     <p-button
-                      id="btn-acoes"
                       label="Ações"
                       icon="pi pi-list"
                       class="acoes-btn"
@@ -114,28 +120,24 @@
                             placeholder="Exercício"></p-dropdown>
                         </div> -->
                   <div class="pl-1 pr-1">
-                    <dsc-select [options]="selectNuOrcs" [(ngModel)]="selectedNuOrc"
-                      [showFilter]="true"
-                      (ngModelChange)="updateRelatorio({ value: $event }, 2)"
-                      placeholder="NUORC"></dsc-select>
+                    <p-dropdown [options]="selectNuOrcs" [(ngModel)]="selectedNuOrc" [filter]="true" optionLabel="label"
+                      optionValue="value" (onChange)="updateRelatorio($event, 2)" [showClear]="true"
+                      placeholder="NUORC"></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
-                    <dsc-select [options]="selectFiliais" [(ngModel)]="selectedFilial"
-                      [showFilter]="true"
-                      (ngModelChange)="updateRelatorio({ value: $event }, 3)"
-                      placeholder="UD"></dsc-select>
+                    <p-dropdown [options]="selectFiliais" [(ngModel)]="selectedFilial" [filter]="true"
+                      optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 3)" [showClear]="true"
+                      placeholder="UD"></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
-                    <dsc-select [options]="selectContratos" [(ngModel)]="selectedContrato"
-                      [showFilter]="true"
-                      (ngModelChange)="updateRelatorio({ value: $event }, 4)"
-                      placeholder="Contrato"></dsc-select>
+                    <p-dropdown [options]="selectContratos" [(ngModel)]="selectedContrato" [filter]="true"
+                      optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 4)" [showClear]="true"
+                      placeholder="Contrato"></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
-                    <dsc-select [options]="selectTiposDemanda" [(ngModel)]="selectedTipoDemanda"
-                      [showFilter]="true"
-                      (ngModelChange)="updateRelatorio({ value: $event }, 5)"
-                      placeholder="Tipo"></dsc-select>
+                    <p-dropdown [options]="selectTiposDemanda" [(ngModel)]="selectedTipoDemanda" [filter]="true"
+                      optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 5)" [showClear]="true"
+                      placeholder="Tipo"></p-dropdown>
                   </div>
                   <!-- <div class="pl-1 pr-1">
                     <p-dropdown [options]="selectOpcoesIsDigital" [(ngModel)]="selectedOpcaoIsDigital" [filter]="true"
@@ -143,20 +145,20 @@
                       placeholder="Digital"></p-dropdown>
                   </div> -->
                   <div class="pl-1 pr-1">
-                    <dsc-select [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
-                      [showFilter]="true"
-                      (ngModelChange)="updateRelatorio({ value: $event }, 7)"
-                      placeholder="Status"></dsc-select>
+                    <p-dropdown [options]="selectStatusPlanejamento" [(ngModel)]="selectedStatusPlanejamento"
+                      [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 7)"
+                      [showClear]="true" placeholder="Status"></p-dropdown>
                   </div>
                   <div class="pl-1 pr-1">
-                    <dsc-select [options]="selectObjeto" [(ngModel)]="selectedObjeto"
-                      [showFilter]="true"
-                      (ngModelChange)="updateRelatorio({ value: $event }, 8)"
-                      placeholder="Objeto"></dsc-select>
+                    <p-dropdown class="objet-dropdown" [options]="selectObjeto" [(ngModel)]="selectedObjeto"
+                      [filter]="true" optionLabel="label" optionValue="value" (onChange)="updateRelatorio($event, 8)"
+                      [showClear]="true" placeholder="Objeto"></p-dropdown>
                   </div>
                    <div class="pl-1 pr-1 me-3" *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && isPerfilPrivilegiado">
-                    <dsc-button variant="primary" label="Salvar status" (click)="onSalvarMudancasStatus()"
-                      title="Salvar alterações de status"></dsc-button>
+                    <button type="button" class="btn-sm btn-add btn-save-status" (click)="onSalvarMudancasStatus()"
+                      title="Salvar alterações de status">
+                      Salvar status
+                    </button>
                   </div>
 
                   <!--
@@ -201,7 +203,8 @@
                     <!-- Exibe checkbox + dropdown SOMENTE quando houver opções -->
                     <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && isPerfilPrivilegiado">
                       <div class="c-dropdown-status">
-                        <dsc-checkbox [(ngModel)]="selecionarTodos" (change)="selecionarTodosItens()" variant="accent" label="Todos"></dsc-checkbox>
+                        <p-checkbox [(ngModel)]="selecionarTodos" (onChange)="selecionarTodosItens()" [binary]="true">
+                        </p-checkbox>
                         <p-dropdown  [showClear]="true" [options]="selectStatusPlanejamentoCompleto" [(ngModel)]="statusSelecionados[0]"
                           placeholder="Status"  optionLabel="label"
                           optionValue="value">
@@ -259,8 +262,9 @@
                     (keydown.space)="$event.stopPropagation()">
                     <div class="cef-status-em-lote" >
                       <ng-container *ngIf="selectStatusPlanejamentoCompleto?.length > 0 && (perfilOrcamento || perfilAdm || (perfilOperacional && planejamento.cO_FILIAL == perfilUnidade) || (perfilTorre && planejamento.cO_FILIAL == perfilUnidade))">
-                        <dsc-checkbox [(ngModel)]="planejamento.sT_SELECIONADO" variant="accent" *ngIf="isPerfilPrivilegiado"
-                         (click)="$event.stopPropagation()"></dsc-checkbox>
+                        <p-checkbox [(ngModel)]="planejamento.sT_SELECIONADO" [binary]="true" *ngIf="isPerfilPrivilegiado"
+                         (click)="$event.stopPropagation()">
+                        </p-checkbox>
                       </ng-container>
                         <label>{{ planejamento.nO_STATUS }}</label>
                     </div>
@@ -285,14 +289,6 @@
                 </tr>
               </ng-template>
             </p-table>
-            <dsc-paginator
-              *ngIf="quantidadeTotal > 0"
-              [length]="quantidadeTotal"
-              [pageSize]="filtroRegistros.pageSize"
-              [pageIndex]="filtroRegistros.pageNumber - 1"
-              [pageSizeOptions]="[10, 20, 50]"
-              (page)="loadPage($event)">
-            </dsc-paginator>
 
           </div>
         </div>
@@ -304,6 +300,5 @@
       </mat-tab>
 
     </mat-tab-group>
-
-  <!-- <dsc-card [data]="{appearance: 'outlined', content: {template: planejamentoGeralCardTpl}}"></dsc-card> -->
+  </div>
 </div>

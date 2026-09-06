@@ -41,6 +41,8 @@ export enum Endpoints {
   URL_ORCAMENTO_EDITA = 'v1/PlanejamentoOrcamentario/editar-planejamento-item',
 
   URL_PLANEJAMENTO_ORCAMENTO = 'v1/PlanejamentoOrcamentario',
+  URL_EXERCICIO_RESUMO = 'v1/Exercicio/resumo-planejamento',
+  URL_EXERCICIO_NOVO = 'v1/Exercicio/novo-exercicio',
 
   URL_MENSALIZACAO = 'v1/mensalizacao',
 
@@ -56,11 +58,7 @@ export enum Endpoints {
   URL_PLANEJAMENTO_ORCAMENTARIO_MES = 'v1/PlanejamentoOrcamentario/contrato-mes',
   URL_PLANEJAMENTO_ORCAMENTARIO_FILTER_PAGINADO = 'v1/PlanejamentoOrcamentario/filter-paginado',
   URL_PLANEJAMENTO_ORCAMENTARIO_DASHBOARD = 'v1/PlanejamentoOrcamentario/dashboard',
-  URL_PLANEJAMENTO_ORCAMENTARIO_RELATORIO_RUBRICAS = 'v1/PlanejamentoOrcamentario/obter-relatorio-rubricas-excel',
   URL_PLANEJAMENTO_ORCAMENTARIO_RELATORIO_LIMITES = 'v1/PlanejamentoOrcamentario/obter-relatorio-limites',
-  URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS = 'v1/PlanejamentoOrcamentario/alterar-status-planejamento-item',
-
-  URL_EXERCICIO_RESUMO = 'v1/Exercicio/resumo-planejamento',
-  URL_EXERCICIO_NOVO   = 'v1/Exercicio/novo-exercicio',
-  URL_EXERCICIO_PLANEJAMENTO = 'v1/Exercicio/planejamento'
+  URL_PLANEJAMENTO_ORCAMENTARIO_RELATORIO_RUBRICAS = 'v1/PlanejamentoOrcamentario/obter-relatorio-rubricas-excel',
+  URL_PLANEJAMENTO_ORCAMENTARIO_ALTERAR_STATUS = 'v1/PlanejamentoOrcamentario/alterar-status-planejamento-item'
 }

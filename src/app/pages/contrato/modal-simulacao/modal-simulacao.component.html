@@ -32,8 +32,12 @@
     </form>
 
     <div class="modal-footer">
-        <dsc-button *ngIf="this.permissions?.Alterar == true" variant="primary" label="Gerar Relatório" (click)="onSubmit()"></dsc-button>
-        <dsc-button variant="secondary-outlined" label="Exportar" icon="cloud_download" (click)="exportExcel()" *ngIf="showData"></dsc-button>
+        <button *ngIf="this.permissions?.Alterar == true" class="btn-sm btn-default" type="submit" (click)="onSubmit()">
+            Gerar Relatório
+        </button>
+        <button type="button" class="btn-sm btn-secondary" (click)="exportExcel()" *ngIf="showData">
+            <i class="tim-icons icon-cloud-download-93"></i> Exportar
+        </button>
     </div>
     <div *ngIf="showData && listaSimulacao.length > 0; else elseBlock">
         <div class="col-md-12">

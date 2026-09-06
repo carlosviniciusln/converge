@@ -1,0 +1,117 @@
+@mixin style-form-field($field-size, $icon-size, $padding-left-right, $font) {
+  .mdc-text-field {
+    height: var(#{$field-size});
+
+    .mat-mdc-form-field-infix {
+      height: var(#{$field-size});
+
+      .mat-mdc-input-element {
+        font: var(#{$font});
+        font-feature-settings: "ss01";
+        height: var(#{$field-size});
+        padding: 0 var(#{$padding-left-right}) !important;
+      }
+
+      .mat-mdc-select {
+        display: flex;
+        height: var(#{$field-size});
+
+        .mat-mdc-select-value {
+          padding: 0 var(#{$padding-left-right}) !important;
+          .mat-mdc-select-value-text, .mat-mdc-select-placeholder {
+            font: var(#{$font});
+            font-feature-settings: "ss01";
+            color: var(--dsc-color-content-neutral-5);
+          }
+        }
+      }
+    }
+
+    .mat-mdc-form-field-icon-suffix,
+    .mat-mdc-form-field-icon-prefix {
+      .mat-icon, .mat-datepicker-toggle-default-icon {
+        font-size: var(#{$icon-size}) !important;
+        height: var(#{$icon-size}) !important;
+        width: var(#{$icon-size}) !important;
+      }
+
+      .mdc-icon-button {
+        height: var(#{$field-size});
+        width: var(#{$field-size});
+
+        .mat-mdc-button-touch-target {
+          height: var(#{$field-size});
+          width: var(#{$field-size});
+        }
+
+        .mat-icon {
+          font-size: var(#{$icon-size});
+          height: var(#{$icon-size});
+          width: var(#{$icon-size});
+        }
+      }
+    }
+  }
+}
+
+@mixin style-textarea-form-field($field-size, $font) {
+  .mdc-text-field {
+    min-height: $field-size;
+
+    .mat-mdc-form-field-infix {
+      min-height: $field-size;
+      padding: var(--dsc-spacing-micro) var(--dsc-spacing-micro) !important;
+
+      .mat-mdc-input-element {
+        min-height: $field-size;
+        font: var(#{$font});
+        font-feature-settings: "ss01";
+      }
+    }
+  }
+}
+
+@mixin style-input-file-form-field($field-size, $font) {
+  .mdc-text-field {
+    height: $field-size;
+
+    .mat-mdc-form-field-infix {
+      display: flex;
+      height: $field-size;
+      padding: 0 0 0 var(--dsc-spacing-nano) !important;
+      gap: var(--dsc-spacing-nano);
+
+      .mat-mdc-input-element {
+        font: var(#{$font});
+        font-feature-settings: "ss01";
+      }
+
+      .mat-mdc-form-field-input-control {
+        height: $field-size;
+      }
+
+      .mat-mdc-form-field-button-control {
+        height: $field-size;
+        padding: 2px 2px 2px 0;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+@mixin style-select-option($font, $checkbox-size) {
+  .mat-mdc-optgroup {
+    &-label {
+      font: var(#{$font});
+      font-weight: var(--dsc-font-weight-600);
+      font-size: var(--dsc-font-size-micro);
+      font-feature-settings: "ss01";
+    }
+  }
+
+  .mat-mdc-option {
+    min-height: 48px !important;
+    font: var(#{$font});
+    font-feature-settings: "ss01";
+  }
+}

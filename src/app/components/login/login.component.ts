@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { Login } from 'src/app/models/generics/login';
 import { ApiService } from 'src/app/shared/services/api.service';
@@ -23,8 +23,10 @@ export class LoginComponent implements OnInit {
 
   submitted = false;
 
+  checked1: boolean = false;
+
   constructor(
-    public dialogRef: MatDialogRef<LoginComponent>,
+    public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private tokenStorage: TokenStorageService) {
@@ -35,6 +37,7 @@ export class LoginComponent implements OnInit {
     }
 
   ngOnInit(): void {
+
     this.form = this.formBuilder.group({
       matricula: ['', [Validators.required]],
       senha: ['', [Validators.required]],
@@ -45,24 +48,28 @@ export class LoginComponent implements OnInit {
     return this.form.controls;
   }
 
-  public async onSubmit(): Promise<void> {
-    try {
+  public async onSubmit() :  Promise<void>{
+    try{
       this.submitted = true;
       if (this.form.invalid) {
         return;
       }
-      const response = await this.apiService.post<ApiResponse<Login>>(`${Endpoints.URL_LOGIN}`, this.form.value);
+      const response = await this.apiService.post<ApiResponse<Login>>(`${Endpoints.URL_LOGIN}`,this.form.value);
       this.tokenStorage.saveToken(response.data.accessToken);
       this.tokenStorage.saveUser(response.data);
       this.isLoginFailed = false;
       this.isLoggedIn = true;
       this.roles = this.tokenStorage.getUser().roles;
-      this.dialogRef.close();
-      window.location.reload();
+      this.reloadPage();
+
     } catch (error) {
-      this.isLoginFailed = true;
-      this.errorMessage = 'Matrícula ou senha inválidos.';
+      console.error(error,"aquirsd");
+    //this.loading = true;
     }
+  }
+
+  reloadPage(): void {
+    window.location.reload();
   }
 
   onReset(): void {

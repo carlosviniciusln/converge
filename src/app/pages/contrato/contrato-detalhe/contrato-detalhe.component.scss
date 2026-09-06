@@ -1,4 +1,4 @@
-﻿.col-pagamentos {
+.col-pagamentos {
     //width: 105px;
     min-width: 110px;
 }
@@ -77,7 +77,7 @@
 .resumo-valores {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: end;
 }
 
 .vigencia-atual {
@@ -147,4 +147,106 @@
     padding-left: 15px;
     padding-right: 15px;
     align-items: flex-end;
+}
+
+@media (max-width: 767px) {
+    .contract-page-actions {
+        flex-wrap: wrap;
+        margin: 0 0 12px;
+    }
+
+    .contract-page-actions > div:first-child {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+    .contract-page-actions__items,
+    .edit-contrato {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 8px;
+        align-items: center;
+        padding: 0 !important;
+    }
+
+    .edit-contrato {
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    .contract-page-actions > .col-md-12 {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .contract-page-actions button {
+        min-height: 40px;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .card-header,
+    .card-body {
+        padding: 14px !important;
+    }
+
+    .card-title,
+    .table-header-title {
+        height: auto !important;
+        font-size: 15px !important;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .card-body .row {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .card-body [class*="col-"] {
+        padding: 3px 0;
+        text-align: left !important;
+        overflow-wrap: anywhere;
+    }
+
+    .card-body .text-right {
+        margin-top: 8px;
+        color: #64747a;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .custom-hr-large {
+        width: 100%;
+    }
+
+    :host ::ng-deep {
+        .mat-mdc-tab-header {
+            max-width: 100%;
+        }
+
+        .mat-mdc-tab-label-container {
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .mat-mdc-tab-list {
+            min-width: max-content;
+            transform: none !important;
+        }
+
+        .p-datatable-wrapper {
+            width: 100%;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .p-datatable-table {
+            min-width: 660px;
+        }
+    }
 }

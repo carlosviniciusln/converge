@@ -1,0 +1,25 @@
+@use 'sass:list';
+@use './token-util' as *;
+@use '../typography/typography-utils.import' as *;
+@use '../variables/icon-sizes.import' as *;
+@use '../variables/font-sizes.import' as *;
+@use '../variables/font-weights.import' as *;
+@use '../variables/font-line-heights.import' as *;
+@use '../variables/typography.import' as *;
+
+@mixin _generate-typography-tokens() {
+  @each $typography, $typography-values in $typographies {
+    @each $key, $values in $typography-values {
+      --dsc-typography-#{$typography}-#{$key}: #{font-shorthand(var(list.nth($values, 1)), var(list.nth($values, 2)), var(list.nth($values, 3)), var(list.nth($values, 4)))};
+    }
+  }
+}
+
+@mixin get-typography-tokens() {
+  --dsc-font-family-1: "Caixa STD";
+  @include generate-tokens-to-element('icon', 'size', $icon-sizes, 'rem');
+  @include generate-tokens-to-element('font', 'size', $font-sizes, 'rem');
+  @include generate-tokens-to-element('font', 'weight', $font-weights);
+  @include generate-tokens-to-element('font', 'line-height', $font-line-heights);
+  @include _generate-typography-tokens();
+}

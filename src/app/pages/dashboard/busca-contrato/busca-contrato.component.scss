@@ -1,1 +1,46 @@
-@import '_painel-contrato';
+@import '../../../styles/painel-contrato';
+
+.btn-exportar-ficha {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #005ca9;
+  border-radius: 6px;
+  background: #005ca9;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+
+  .fa-file-pdf { font-size: 16px; }
+  &:disabled { opacity: .6; cursor: not-allowed; }
+}
+
+.diagnostico-card {
+  margin-top: 12px;
+  border-left: 4px solid #127527;
+
+  &.diagnostico--atencao { border-left-color: #ca9804; }
+  &.diagnostico--critico { border-left-color: #b22c2c; }
+}
+
+.diagnostico-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.diagnostico-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  i, .fas { color: #005ca9; font-size: 20px; }
+  p { margin: 2px 0 0; color: #22292e; font-size: 13px; line-height: 1.4; }
+}

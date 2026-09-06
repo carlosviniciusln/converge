@@ -1,0 +1,11 @@
+@use 'sass:map';
+@use '../variables/opacity.import' as *;
+@use './token-util' as *;
+
+@mixin _generate-opacity-tokens() {
+  @include generate-tokens-to-property('opacity', $opacities);
+}
+
+@mixin get-opacity-tokens() {
+  @include _generate-opacity-tokens();
+}

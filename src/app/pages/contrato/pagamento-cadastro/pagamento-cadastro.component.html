@@ -2,21 +2,21 @@
   <h4 class="modal-title" id="modal-basic-title">
     <b>{{ titulo }}</b><br /><small>{{ subTitulo }}</small>
   </h4>
-  <button type="button" class="close" aria-label="Fechar" (click)="activeModal.dismiss('Cross click')">
-    <span aria-hidden="true">&times;</span>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">×</span>
   </button>
 </div>
 <div class="modal-body">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="row">
       <div class="col-md-3 pr-0">
-        <label for="dePeriodo">Competência:</label>
+        <label for="dePeriodo: ">Competência:</label>
         <input formControlName="dePeriodo" id="dePeriodo" type="text" class="form-control"
           [ngClass]="{ 'is-invalid': submitted && f.dePeriodo.invalid }" mask="00/0000" [dropSpecialCharacters]="false"
           placeholder="Ex. 00/0000" />
       </div>
       <div class="col-md-3 pr-0">
-        <label for="nuOrcamento">Ano Orçamentário:</label>
+        <label for="nuFilial">Ano Orçamentário:</label>
         <select class="form-control" id="nuOrcamento" formControlName="nuOrcamento"
           [ngClass]="{ 'is-invalid': submitted && f.nuOrcamento.invalid }">
           <option value="" selected>
@@ -28,7 +28,7 @@
         </select>
       </div>
       <div class="col-md-6 pr-0">
-        <label for="nuVigencia">Vigência:</label>
+        <label for="nuFilial">Vigência:</label>
         <select (change)="obterRubricas()" class="form-control" id="nuVigencia"
           formControlName="nuVigencia" [ngClass]="{ 'is-invalid': submitted && f.nuVigencia.invalid }">
           <option value="" selected>Selecione a vigência</option>
@@ -41,7 +41,7 @@
       </div>
 
       <div class="col-md-3 pr-0">
-        <label for="nuVigenciaRubrica">Rubrica:</label>
+        <label for="nuFilial">Rubrica:</label>
         <select class="form-control" id="nuVigenciaRubrica" formControlName="nuVigenciaRubrica"
           [ngClass]="{ 'is-invalid': submitted && f.nuVigenciaRubrica.invalid }">
           <option value="" selected>Selecione a rubrica</option>
@@ -70,7 +70,7 @@
       </div>
 
       <div class="col-md-3 pr-0">
-        <label for="dtPagamentoEfetivo">Data efetivo pag.:</label>
+        <label for="dtPagamentoEfetivo">Data efetivo pag.</label>
         <input formControlName="dtPagamentoEfetivo" id="dtPagamentoEfetivo" type="date" class="form-control"
           [ngClass]="{
             'is-invalid': submitted && f.dtPagamentoEfetivo.invalid
@@ -78,17 +78,23 @@
       </div>
 
       <div class="col-md-3 pr-0">
-        <label for="nuSap">Nº Pedido SAP:</label>
+        <label for="vrRetencao">N° Pedido SAP:</label>
         <input formControlName="nuSap" [ngClass]="{ 'is-invalid': submitted && f.nuSap.invalid }" id="nuSap"
           type="text" class="form-control" mask="9999999999" [dropSpecialCharacters]="true" />
       </div>
 
     </div>
+    <br />
+
   </form>
 </div>
 <div class="modal-footer">
-  <dsc-button variant="primary" label="Salvar" (click)="onSubmit()"
-    *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false"></dsc-button>
-  <dsc-button variant="danger" label="Excluir" (click)="excluirPagamento(this.nuPagamento)"
-    *ngIf="this.nuPagamento && (permissions?.Excluir ?? false)"></dsc-button>
+  <button class="btn-sm btn-default" type="submit" (click)="onSubmit()"
+    *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false">
+    Salvar
+  </button>
+  <button type="button" class="btn-sm btn-danger" *ngIf="this.nuPagamento && (permissions?.Excluir ?? false)"
+    (click)="excluirPagamento(this.nuPagamento)">
+    Excluir
+  </button>
 </div>

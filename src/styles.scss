@@ -1,10 +1,6 @@
 @use "sass:meta";
 @use '@angular/material' as mat;
 
-/* Material Icons — fontes locais (funciona sem internet) */
-@import 'material-icons/iconfont/material-icons.css';
-@import 'material-icons/iconfont/outlined.css';
-
 /* Base global (estrutura) */
 @include meta.load-css("primeng/resources/primeng.css");
 // @include meta.load-css("primeicons/primeicons.css");
@@ -63,112 +59,19 @@ button{
 
 .sidebar .sidebar-wrapper,.off-canvas-sidebar .sidebar-wrapper {
     width: 100%;
-    min-height: 100%;
-    max-height: calc(100vh - 705px);
+  height: 100%;
+  min-height: 0;
+  max-height: none;
     z-index: 4;
     position: relative;
-    overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
 
-/* Padronização global de tabelas e filtros SIGVC */
-@import 'assets/scss/sigvc-tables';
-
-/* Loading overlay — dsc-progress-spinner */
-.dsc-spinner-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-/* Garante que mat-sidenav-content expanda junto com a cadeia flex */
-mat-sidenav-content {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 !important;
-  min-height: unset !important;
-}
-
-/* Global styles for planejamento history dropdown overlay */
-.mat-menu-panel.hist-menu-panel {
-  /* ensure the overlay has enough room; adjust if needed */
-  min-width: 520px !important;
-  max-width: 920px !important;
-  padding: 8px 0 !important;
-}
-
-.mat-menu-panel.hist-menu-panel .hist-item-top {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  gap: 12px !important;
-  width: 100% !important;
-  white-space: nowrap !important;
-}
-
-.mat-menu-panel.hist-menu-panel .hist-item-left {
-  /* let the left part truncate if long */
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  display: inline-block !important;
-  max-width: calc(100% - 120px) !important; /* reserve space for the status */
-}
-
-.mat-menu-panel.hist-menu-panel .hist-item-right {
-  flex: 0 0 auto !important;
-  margin-left: 8px !important;
-  font-weight: 700 !important;
-  white-space: nowrap !important;
-}
-
-/* Override DSC header/footer brand SVGs and use the project's logo.png
-   located at /assets/images/logo.png for both header and footer.
-
-   This hides the internal SVGs rendered by sidsc-components and
-   applies the replacement image as a background on the anchor.
-   It's scoped to the specific DSC classes to minimize side-effects.
-*/
-
-/* Stronger, more specific selector for header trademark inside the DSC header */
-dsc-header .mat-toolbar__first-row__trademark,
-.mat-toolbar__first-row__trademark {
-  display: inline-block !important;
-  width: 70px !important; /* approx width of brandFullImg in the library */
-  height: 16px !important;
-  /* try both absolute and relative asset paths as a fallback */
-  background-image: url('/assets/img/logo.png') !important;
-  background-image: url('assets/img/logo.png') !important;
-  background-repeat: no-repeat !important;
-  background-position: left center !important;
-  background-size: contain !important;
-  line-height: 0 !important; /* avoid inline text spacing */
-  vertical-align: middle !important;
-}
-.dsc-header .mat-toolbar__first-row__trademark svg,
-.mat-toolbar__first-row__trademark svg {
-  display: none !important;
-}
-
-.dsc-footer .footer__logo a,
-.footer__logo a {
-  display: inline-block !important;
-  width: 106px !important; /* approx width of footer brandFullImg */
-  height: 24px !important;
-  background-image: url('/assets/img/logo.png') !important;
-  background-image: url('assets/img/logo.png') !important;
-  background-repeat: no-repeat !important;
-  background-position: left center !important;
-  background-size: contain !important;
-  line-height: 0 !important;
-}
-.dsc-footer .footer__logo a svg,
-.footer__logo a svg {
-  display: none !important;
+@media (max-width: 991px) {
+  .main-panel .content {
+    width: 100%;
+    padding: 16px !important;
+    box-sizing: border-box;
+  }
 }

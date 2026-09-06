@@ -1,0 +1,44 @@
+$quark: (
+  'px': 12px,
+  'rem': .75rem
+);
+
+$nano: (
+  'px': 16px,
+  'rem': 1rem
+);
+
+$small: (
+  'px': 20px,
+  'rem': 1.25rem
+);
+
+$medium: (
+  'px': 24px,
+  'rem': 1.5rem
+);
+
+$large: (
+  'px': 32px,
+  'rem': 2rem
+);
+
+$big: (
+  'px': 40px,
+  'rem': 2.5rem
+);
+
+$huge: (
+  'px': 48px,
+  'rem': 3rem
+);
+
+$icon-sizes: (
+  'quark': $quark,
+  'nano': $nano,
+  'small': $small,
+  'medium': $medium,
+  'large': $large,
+  'big': $big,
+  'huge': $huge
+);

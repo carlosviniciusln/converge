@@ -1,0 +1,38 @@
+import { EventEmitter, OnChanges, OnInit } from '@angular/core';
+import { BooleanInput } from '@angular/cdk/coercion';
+import * as i0 from "@angular/core";
+export type DscAlertVariant = 'success' | 'danger' | 'warning' | 'info';
+export declare class DscAlertComponent implements OnInit, OnChanges {
+    title?: string;
+    get message(): string;
+    set message(valor: string);
+    _message: string;
+    get list(): string[];
+    set list(values: string[]);
+    _list: string[];
+    get showIcon(): boolean;
+    set showIcon(value: BooleanInput);
+    private _showIcon;
+    get dismissible(): boolean;
+    set dismissible(value: BooleanInput);
+    private _dismissible;
+    get variant(): DscAlertVariant;
+    set variant(variant: DscAlertVariant);
+    headingLevelTitle?: string;
+    _variant: DscAlertVariant;
+    linkFunction: EventEmitter<void>;
+    display: string;
+    ngOnInit(): void;
+    ngOnChanges(): void;
+    get matIconName(): string;
+    set matIconName(value: string);
+    _matIconName: string;
+    classes: string;
+    get ariaLabel(): string;
+    handleClick(event: Event): void;
+    private getHeadingTag;
+    private validateMessage;
+    getTitleHtml(): string;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DscAlertComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<DscAlertComponent, "dsc-alert", never, { "title": { "alias": "title"; "required": false; }; "message": { "alias": "message"; "required": false; }; "list": { "alias": "list"; "required": false; }; "showIcon": { "alias": "showIcon"; "required": false; }; "dismissible": { "alias": "dismissible"; "required": false; }; "variant": { "alias": "variant"; "required": false; }; "headingLevelTitle": { "alias": "headingLevelTitle"; "required": false; }; }, { "linkFunction": "linkFunction"; }, never, never, true, never>;
+}

@@ -1,0 +1,36 @@
+@use '../variables/state-layer-background.import' as *;
+@use '../variables/state-layer-content.import' as *;
+@use '../variables/state-layer-border.import' as *;
+@use '../variables/state-layer-opacity.import' as *;
+@use './token-util' as *;
+
+@mixin _generate-state-layer-background-tokens() {
+  @each $key, $values in $state-layers-background {
+    @include generate-tokens-state-to-element-with-var('color', 'state', 'bg', $values)
+  }
+}
+
+@mixin _generate-state-layer-content-tokens() {
+  @each $key, $values in $state-layers-content {
+    @include generate-tokens-state-to-element-with-var('color', 'state', 'content', $values)
+  }
+}
+
+@mixin _generate-state-layer-border-tokens() {
+  @each $key, $values in $state-layers-border {
+    @include generate-tokens-state-to-element-with-var('color', 'state', 'border', $values)
+  }
+}
+
+@mixin _generate-state-layer-opacity-tokens() {
+  @each $key, $values in $state-layers-opacity {
+    @include generate-tokens-state('opacity', 'state', $values)
+  }
+}
+
+@mixin get-state-layer-tokens() {
+  @include _generate-state-layer-background-tokens();
+  @include _generate-state-layer-content-tokens();
+  @include _generate-state-layer-border-tokens();
+  @include _generate-state-layer-opacity-tokens();
+}

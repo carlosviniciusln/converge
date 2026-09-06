@@ -6,7 +6,9 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PerfisEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
+import { LoginComponent } from 'src/app/components/login/login.component';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
@@ -14,6 +16,7 @@ export class AuthGuard implements CanActivate {
     private auth: TokenStorageService,
     private router: Router,
     private toastr: ToastrService,
+     private modalService: NgbModal,
   ) {}
 
  permissao = true;
@@ -25,9 +28,12 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean {
 
-    if (!this.auth.isAuthenticated()) {
-      this.router.navigate(['/login']);
-      return false;
+    // antes de tudo verifico o perfil do usuário, se não tiver ninguém logado eu abro a tela de login, depois que logar eu verifico no return do 'logar' se ele é do perfil técnico, se for true, se não return com uma mensagem não tem permissão para acessar essa pagina com mensagem e redirecionamento para dasboard com a mensagem não tem permissão!
+
+    // !
+    if(!this.auth.isAuthenticated()){
+       this.modalService.open(LoginComponent, {ariaLabelledBy: 'modal-basic-title', size: 'sm', windowClass: 'custom-class'});
+       return false;
     }
     // pegar o perfil e verificar se ele tem o perfil técnico, se tiver liberar, se não bloqueia, manda mensagem e redireciona para o dashbord
     const perfil = this.auth.getUserProfile();

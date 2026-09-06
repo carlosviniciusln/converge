@@ -96,24 +96,18 @@ export class UsuarioComponent implements OnInit {
     this.obterUsuariosAutorizados();
   }
 
-  loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.pageSize;
-    if (page !== this.previousPage || pageSize !== this.filtroRegistros.pageSize) {
+  loadPage(page: number) {
+    if (page !== this.previousPage) {
       this.previousPage = page;
       this.filtroRegistros.pageNumber = page;
-      this.filtroRegistros.pageSize = pageSize;
       this.obterUsuarios();
     }
   }
 
-  loadPageAutorizados(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistrosAutorizados.pageSize;
-    if (page !== this.previousPageAutorizados || pageSize !== this.filtroRegistrosAutorizados.pageSize) {
+  loadPageAutorizados(page: number) {
+    if (page !== this.previousPageAutorizados) {
       this.previousPageAutorizados = page;
       this.filtroRegistrosAutorizados.pageNumber = page;
-      this.filtroRegistrosAutorizados.pageSize = pageSize;
       this.obterUsuariosAutorizados();
     }
   }

@@ -55,7 +55,7 @@ export class DotacaoService {
           },
         ],
         justificativa: 'Solicitar suplementação orçamentária',
-        setor: 'CEGTI',
+        setor: 'Converge',
         vrTotalPedido: 17000,
       },
 
@@ -136,7 +136,7 @@ export class DotacaoService {
           },
         ],
         justificativa: 'Solicitar crédito adicional',
-        setor: 'CEGTI',
+        setor: 'Converge',
         vrTotalPedido: 25000,
       },
 

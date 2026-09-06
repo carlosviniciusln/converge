@@ -1,0 +1,32 @@
+$hover: (
+  'hover-1': --dsc-opacity-8
+);
+
+$active: (
+  'active-1': --dsc-opacity-16
+);
+
+$focus: (
+  'focus-1': --dsc-opacity-24
+);
+
+$selected: (
+  'selected-1': --dsc-opacity-16
+);
+
+$dragged: (
+  'dragged-1': --dsc-opacity-16
+);
+
+$disabled: (
+  'disabled-1': --dsc-opacity-64
+);
+
+$state-layers-opacity: (
+  'hover': $hover,
+  'active': $active,
+  'focus': $focus,
+  'selected': $selected,
+  'dragged': $dragged,
+  'disabled': $disabled
+);

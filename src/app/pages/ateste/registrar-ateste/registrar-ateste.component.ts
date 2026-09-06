@@ -8,7 +8,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { DscSnackbarService } from 'sidsc-components/dsc-snackbar';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { ApiResponse } from 'src/app/models/generics/api-response';
@@ -28,7 +27,6 @@ export class RegistrarAtesteComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
-    private snackbar: DscSnackbarService,
     private apiService: ApiService
   ) {}
 
@@ -152,7 +150,7 @@ export class RegistrarAtesteComponent implements OnInit {
     if (file) {
       this.selectFile = file;
       this.form.get('arquivoAnexado')?.setValue(file);
-      this.snackbar.add({ data: { message: 'Anexo salvo com sucesso.', variant: 'success' }, duration: 3000 });
+      this.toastr.success('Anexo salvo com sucesso.', 'Sucesso');
     }
   }
 
@@ -191,7 +189,7 @@ export class RegistrarAtesteComponent implements OnInit {
 
           if (control?.invalid) {
             if (control.errors?.required) {
-              this.snackbar.add({ data: { message: `O campo item(s) de faturamento é obrigatório`, variant: 'danger' }, duration: 4000 });
+              this.toastr.error(`O campo item(s) de faturamento é obrigatório`, 'Error');
             }
           }
         });
@@ -201,11 +199,11 @@ export class RegistrarAtesteComponent implements OnInit {
         const control = this.form.get(campo);
         if (control?.invalid) {
           if (control.errors?.required) {
-            this.snackbar.add({ data: { message: `O campo ${campo} é obrigatório`, variant: 'danger' }, duration: 4000 });
+            this.toastr.error(`O campo ${campo} é obrigatório`, 'Error');
           }
 
           if (control.errors?.pattern) {
-            this.snackbar.add({ data: { message: `O campo ${campo} está fora do padrão`, variant: 'warning' }, duration: 4000 });
+            this.toastr.error(`O campo ${campo} está fora do padrão`, 'Error');
           }
 
           // if (control.errors?.email) {
@@ -263,11 +261,11 @@ export class RegistrarAtesteComponent implements OnInit {
   public async Cadastrar(formValue: FormData): Promise<void> {
     try {
       await this.apiService.postFormData<any>(Endpoints.URL_ATESTE, formValue);
-      this.snackbar.add({ data: { message: 'Ateste salvo com sucesso', variant: 'success' }, duration: 4000 });
+      this.toastr.success('Ateste salvo com sucesso', 'Sucesso');
       this.activeModal.dismiss();
     } catch (error) {
       console.error('Erro ao salvar ateste:', error);
-      this.snackbar.add({ data: { message: 'Erro ao salvar ateste', variant: 'danger' }, duration: 4000 });
+      this.toastr.error('Erro ao salvar ateste', 'Erro');
     }
   }
 

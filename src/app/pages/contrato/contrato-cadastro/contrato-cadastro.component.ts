@@ -126,8 +126,6 @@ export class ContratoCadastroComponent implements OnInit {
     this.obterServicos();
 
     this.formulario();
-    this.obterContatos();
-    this.obterProtocoloVigencia();
     this.contatosForm();
     this.adicionarVigencia(false);
 
@@ -139,6 +137,8 @@ export class ContratoCadastroComponent implements OnInit {
     this.subscribeToDtInicioChanges(0);
 
     if (this.nuContrato) {
+      this.obterContatos();
+      this.obterProtocoloVigencia();
       this.obterVigencias();
       this.obterContratoV2();
       this.obterDatasContrato();
@@ -152,7 +152,7 @@ export class ContratoCadastroComponent implements OnInit {
     this.currentProfile = this.token.getUserPerfil();
     this.permissions = this.token.getActionPolicies(ModuleEnum.Contratos);
 
-    if(this.currentProfile === 'Administrador' || this.currentProfile === 'Torres GEGAT' || this.currentProfile === PerfisEnum.Pagadoria){
+    if(this.currentProfile === 'Administrador' || this.currentProfile === 'Finanças e Orçamento' || this.currentProfile === PerfisEnum.Pagadoria){
       this.isPerfilPrivilegiado = true;
     }
   }

@@ -68,14 +68,14 @@
     <div class="modal-footer">
         <div class="d-flex w-100">
 
-                    <div *ngIf="labelButtonsLeft && isPerfilPrivilegiado && (ultimoPlanejamento?.cO_EXERCICIO >= anoAtual) && (ultimoPlanejamento?.statuS_PLANEJAMENTO === 'Criado')">
+          <div *ngIf="labelButtonsLeft && isPerfilPrivilegiado && (ultimoPlanejamento.cO_EXERCICIO >= anoAtual)">
             <button class="btn btn-sm btn-default padding-buttons"
                     (click)="mensagemBotaoClick(labelButtonsLeft)">
               {{ labelButtonsLeft.label }}
             </button>
           </div>
 
-                    <div *ngIf="labelButtonsRight && isPerfilPrivilegiado && (ultimoPlanejamento?.cO_EXERCICIO >= anoAtual) && (ultimoPlanejamento?.statuS_PLANEJAMENTO === 'Criado')">
+          <div *ngIf="labelButtonsRight && isPerfilPrivilegiado && (ultimoPlanejamento.cO_EXERCICIO >= anoAtual)">
             <button class="btn btn-sm btn-default padding-buttons"
                     (click)="mensagemBotaoClick(labelButtonsRight)">
               {{ labelButtonsRight.label }}

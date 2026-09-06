@@ -6,6 +6,7 @@ import { Gcptb062DotacaoDTO } from 'src/app/models/DTOs/Gcptb062Dotacao';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { DotacaoModelResponse } from 'src/app/models/response/DotacaoModelResponse';
+import { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   encapsulation: ViewEncapsulation.None,
@@ -77,9 +78,9 @@ export class DotacaoComponent implements OnInit {
      }));
   }
 
-  loadPage(event: any) {
-      const page = (event.pageIndex ?? 0) + 1;
-      const pageSize = event.pageSize ?? this.filtroRegistros.tamanhoPagina;
+  loadPage(event: TableLazyLoadEvent) {
+      const page = (event.first || 0) / (event.rows || this.filtroRegistros.tamanhoPagina) + 1;
+      const pageSize = event.rows || this.filtroRegistros.tamanhoPagina;
 
       if (page !== this.filtroRegistros.paginaAtual || pageSize !== this.filtroRegistros.tamanhoPagina) {
         this.filtroRegistros.paginaAtual = page;

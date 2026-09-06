@@ -1,0 +1,13 @@
+$disabled: (
+  'disabled-2': --dsc-color-grayscale-90,
+  'disabled-1': --dsc-color-grayscale-70
+);
+
+$readonly: (
+  'readonly-1': --dsc-color-grayscale-90
+);
+
+$state-layers-content: (
+  'disabled': $disabled,
+  'readonly': $readonly
+);

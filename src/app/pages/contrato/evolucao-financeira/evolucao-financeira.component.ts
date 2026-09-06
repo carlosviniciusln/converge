@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';import { ApiResponse } from 'src/app/models/generics/api-response';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApiResponse } from 'src/app/models/generics/api-response';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { Endpoints } from 'src/app/models/enums/endpoints';
 import { DatePipe, Location } from '@angular/common';
@@ -37,7 +38,6 @@ export class EvolucaoFinanceiraComponent implements OnInit, AfterViewInit {
   isDerivadoAta: boolean = false;
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private apiService: ApiService,
     private location: Location,
     public token: TokenStorageService,
@@ -57,15 +57,8 @@ export class EvolucaoFinanceiraComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.nuContrato = this.route.snapshot.paramMap.get('id');
-    // Ensure we load vigencias first, then contrato details so child components have the data they need
-    (async () => {
-      try {
-        await this.obterVigenciasContrato(this.nuContrato);
-        await this.detalhesContrato(this.nuContrato);
-      } catch (err) {
-        console.error('Error initializing contract page', err);
-      }
-    })();
+    this.obterVigenciasContrato(this.nuContrato);
+    this.detalhesContrato(this.nuContrato);
   }
 
   rubricaSelecionada(rubrica: string) {
@@ -103,19 +96,14 @@ export class EvolucaoFinanceiraComponent implements OnInit, AfterViewInit {
   }
 
   public async detalhesContrato(nuContrato: string) {
-    try {
-      if (!nuContrato) return;
-      const response = await this.apiService.get<ApiResponse<ContratoResponse>>(
-        `${Endpoints.URL_CONTRATOS}/${nuContrato}`
-      );
+    const response = await this.apiService.get<ApiResponse<ContratoResponse>>(
+      `${Endpoints.URL_CONTRATOS}/${nuContrato}`
+    );
 
-      this.contrato = response?.data || response;
-      this.noEmpresa = this.contrato?.noEmpresa || '';
-      this.rubricaSelecionada('0');
-      this.validarRotaAtas();
-    } catch (error) {
-      console.error('Error fetching contrato details', error);
-    }
+    this.contrato = response.data
+    this.noEmpresa = this.contrato.noEmpresa;
+    this.rubricaSelecionada('0');
+    this.validarRotaAtas();
   }
 
   onTabChange(event) {
@@ -123,18 +111,9 @@ export class EvolucaoFinanceiraComponent implements OnInit, AfterViewInit {
   }
 
   linkContrato() {
-    if (!this.contrato || !this.contrato.coContrato) return;
     const partesContrato = this.contrato.coContrato.split('/');
     const contratoFormatado = this.contrato.coContrato.replace('/', '_');
     window.open('https://caixa.sharepoint.com/:f:/r/sites/Arquivos7550/Documentos%20Compartilhados/TIPO_2_DIGITAL/' + partesContrato[1] + '/' + contratoFormatado, '_blank');
-  }
-
-  linkDetalhar() {
-    this.router.navigate(['/contrato/detalhe/v', this.nuContrato]);
-  }
-
-  linkMensalizacao() {
-    this.router.navigate(['/contrato/exec-orc-mensalizacao', this.nuContrato]);
   }
 
   montaTituloVigenciaAtual(): string {

@@ -17,8 +17,8 @@
           <option value="">Selecione</option>
           <option *ngFor="let vig of vigencias" [value]="vig.id">{{ vig.label }}</option>
         </select>
-        <!-- Diretoria selector only for VITEC visão -->
-        <div *ngIf="vigenciaSelecionada === 'vitec'" style="display:inline-block; margin-left:12px;">
+        <!-- Diretoria selector only for PRESIDENCIA visão -->
+        <div *ngIf="vigenciaSelecionada === 'presidencia'" style="display:inline-block; margin-left:12px;">
           <label class="vigencia-label">Diretoria:</label>
           <select class="vigencia-select" [(ngModel)]="diretoriaSelecionada" (ngModelChange)="onDiretoriaChange($event)">
             <option *ngFor="let d of diretorias" [value]="d.id">{{ d.label }}</option>
@@ -59,13 +59,13 @@
         </div>
         <div class="card-body">
           <div class="charts-row" style="display:flex; gap:16px; align-items:flex-start;">
-            <!-- When VITEC is selected, show one full-width chart inside Orçamento -->
-            <ng-container *ngIf="vigenciaSelecionada === 'vitec'; else nonVitecCharts">
+            <!-- When PRESIDENCIA is selected, show one full-width chart inside Orçamento -->
+            <ng-container *ngIf="vigenciaSelecionada === 'presidencia'; else nonPresidenciaCharts">
               <div style="flex: 1 1 100%;">
                 <canvas #orcBarChart class="orc-bar-canvas" style="width:100%; display:block;"></canvas>
               </div>
             </ng-container>
-            <ng-template #nonVitecCharts>
+            <ng-template #nonPresidenciaCharts>
               <div style="flex: 1 1 100%; display:flex; flex-direction:column; gap:8px;">
                 <!-- Monthly competence chart: Jan-Dec with CAPEX/OPEX planned & executed -->
                 <div style="margin-top:6px;">

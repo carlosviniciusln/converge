@@ -3,7 +3,10 @@
   color: #6c757d;
     align-items: center;
     justify-content: center;
-    font-family: "CAIXAStd", sans-serif;
+    font-family: "Poppins", sans-serif;
+    font-weight: normal;
+    font-size: 14px;
+  @include list-unstyled();
   @include border-radius();
 }
 
@@ -23,7 +26,10 @@
   background-color: transparent;
     border: 0 none;
     color: #6c757d;
-    font-family: "CAIXAStd", sans-serif;
+    font-family: "Poppins", sans-serif;
+    font-weight: normal;
+    font-size: 14px;
+    min-width: 2.357rem;
     height: 2.357rem;
     margin: 0.143rem;
     padding: 0 0.5rem;
@@ -97,7 +103,7 @@ font-size: 14px;
   &.active .page-link {
     z-index: 1;
     color: $pagination-active-color;
-    background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);//$pagination-active-bg;
+    background: #005CA9;
     border-color: $pagination-active-border-color;
   }
 

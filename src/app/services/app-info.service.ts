@@ -21,7 +21,7 @@ export class AppInfoService {
       const response = await this.apiService.get<ApiResponse<string>>(
         `${Endpoints.URL_DASHBOARD}/dt-ultima-atualizacao`
       );
-      this._ultimaAtualizacao$.next(response.data ?? '');
+      this._ultimaAtualizacao$.next(response.data ?? new Date().toLocaleString());
       this._loaded = true;
     } catch {
       // silencia erro — o header fica sem a data se a API falhar

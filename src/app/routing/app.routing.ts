@@ -4,20 +4,24 @@ import { BrowserModule } from "@angular/platform-browser";
 import { Routes, RouterModule } from "@angular/router";
 import { PagesComponent } from "../pages/pages.component";
 import { LoginPageComponent } from "../pages/login/login-page.component";
+import { AuthGuard } from "../core/guards/auth.guard";
+import { LoginGuard } from "../core/guards/login.guard";
 
 const routes: Routes = [
   {
     path: "login",
-    component: LoginPageComponent
+    component: LoginPageComponent,
+    canActivate: [LoginGuard]
   },
   {
     path: "",
-    redirectTo: "dashboard",
+    redirectTo: "login",
     pathMatch: "full"
   },
   {
     path: "",
     component: PagesComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: "",
@@ -27,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: "**",
-    redirectTo: "dashboard"
+    redirectTo: "login"
   }
 ];
 

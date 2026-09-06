@@ -1,0 +1,14 @@
+@use 'sass:meta';
+@use 'sass:list';
+
+@function font-shorthand($font-size, $font-weight, $line-height, $font-family) {
+    @return $font-weight #{$font-size}#{'/'}#{$line-height} #{_define-font-family($font-family)}#{';'};
+}
+
+@function _define-font-family($font-family: null) {
+  @if $font-family == null {
+    @return 'Roboto, "Helvetica Neue", sans-serif';
+  }
+
+  @return #{$font-family}#{', Roboto, "Helvetica Neue", sans-serif'};
+}

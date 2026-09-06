@@ -13,7 +13,10 @@ import {
   TokenStorageService,
 } from 'src/app/shared/services/token-storage.service';
 import * as fileSaver from 'file-saver';
+import { TableLazyLoadEvent } from 'primeng/table';
 import { ActivatedRoute } from '@angular/router';
+import { PagamentoCadastroComponent } from './pagamento-cadastro/pagamento-cadastro.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-contrato',
@@ -46,7 +49,8 @@ export class ContratoComponent implements OnInit {
   selectedTipoStatus: string = null;
 
   isRotaAtas: boolean = false;
-  tituloPage: string = '';
+  isCadastroPagamento: boolean = false;
+  tituloPage: string = 'Lista de Contratos';
   rota: string = '';
   filtroRegistros: any = {
     paginaAtual: 1,
@@ -64,7 +68,8 @@ export class ContratoComponent implements OnInit {
     private apiService: ApiService,
     private modalService: NgbModal,
     private token: TokenStorageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {
     this.obterPermissoes();
     this.currentUser = this.token.getUser();
@@ -75,16 +80,41 @@ export class ContratoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isCadastroPagamento = this.route.snapshot.queryParamMap.get('modo') === 'cadastro-pagamento';
+    if (this.isCadastroPagamento) {
+      this.tituloPage = 'Cadastrar pagamento';
+    }
     this.validarRotaAtas();
     this.obterContratos();
   }
 
-  navegarInfoContrato(coContrato: string,nuContrato: number){
-    if(!coContrato){
-      // missing contract code: fallback to details route
-      this.navegarParaDetalhes(nuContrato);
-      return;
+  selecionarContratoParaPagamento(contrato: Gcpvw045ListarContratosDTO, event: Event): void {
+    event.stopPropagation();
+
+    const modalRef = this.modalService.open(PagamentoCadastroComponent, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: false,
+    });
+
+    modalRef.componentInstance.nuContrato = contrato.nuContrato;
+  }
+
+  async excluirContrato(contrato: Gcpvw045ListarContratosDTO, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (!window.confirm(`Deseja excluir o contrato ${contrato.coContrato}?`)) return;
+
+    try {
+      await this.apiService.delete<void>(`${Endpoints.URL_CONTRATOS}/${contrato.nuContrato}`);
+      this.toastr.success('Contrato excluído com sucesso.', 'Sucesso');
+      await this.obterContratos();
+    } catch {
+      this.toastr.error('Não foi possível excluir o contrato.', 'Erro');
     }
+  }
+
+  navegarInfoContrato(coContrato: string,nuContrato: number){
     if(coContrato.startsWith('81000') || this.isRotaAtas){
       this.navegarParaDetalhes(nuContrato)
     }else{
@@ -102,8 +132,14 @@ export class ContratoComponent implements OnInit {
     window.open(url, '_blank');
   }
 
+  abrirFicha(contrato: Gcpvw045ListarContratosDTO, event: Event): void {
+    event.stopPropagation();
+    const url = `/#/contrato/ficha/${contrato.nuContrato}?contrato=${encodeURIComponent(contrato.coContrato)}`;
+    window.open(url, '_blank');
+  }
 
-  public async obterContratos(): Promise<void> {
+
+   public async obterContratos(): Promise<void> {
 
     this.loading = true;
     try {
@@ -114,39 +150,23 @@ export class ContratoComponent implements OnInit {
       const response = await this.apiService.get<ApiResponse<Gcpvw045ListarContratosResponse>>
         (`${Endpoints.URL_CONTRATOS}/listar-contratos`, filtrosLimpos);
 
-      // The backend may return either { data: { contratos: [...] } } or { data: [...] }
-      const rawData: any = response?.data;
-      let payload: any = {};
+      const data = response?.data;
+      const contratos = data?.contratos ?? [];
+      const listaContrato = data?.listaContrato ?? [];
+      const listaFornecedor = data?.listaFornecedor ?? [];
+      const listaTipo = data?.listaTipo ?? [];
+      const listaGestor = data?.listaGestor ?? [];
+      const listaStatus = data?.listaStatus ?? [];
 
-      if (Array.isArray(rawData)) {
-        // older mock format returned an array directly
-        payload.contratos = rawData;
-        payload.totalRecords = rawData.length;
-      } else if (rawData && typeof rawData === 'object') {
-        payload = rawData;
-      } else {
-        payload = {};
-      }
-
-      this.contratos = payload.contratos || [];
-
-      // Populate selects defensively: accept either explicit lists or derive them from contratos
-      // derive list of contract codes: prefer explicit listaContrato, otherwise derive from contratos array
-      const deriveContratoList = (payload.listaContrato && payload.listaContrato.length)
-        ? payload.listaContrato
-        : (this.contratos || []).map(c => (c as any).coContrato || (c as any).co_contrato || (c as any).coContrato).filter(Boolean);
-      const deriveFornecedorList = (payload.listaFornecedor && payload.listaFornecedor.length) ? payload.listaFornecedor : [];
-      const deriveTipoList = (payload.listaTipo && payload.listaTipo.length) ? payload.listaTipo : [];
-      const deriveGestorList = (payload.listaGestor && payload.listaGestor.length) ? payload.listaGestor : [];
-      const deriveStatusList = (payload.listaStatus && payload.listaStatus.length) ? payload.listaStatus : [];
-
-      this.selectTiposContrato = (deriveContratoList || []).map(c => ({ label: String(c), value: c }));
-      this.selectTiposFornecedor = (deriveFornecedorList || []).map(f => ({ label: String(f), value: f }));
-      this.selectTiposTpContrato = (deriveTipoList || []).map(t => ({ label: String(t), value: t }));
-      this.selectTiposGestor = (deriveGestorList || []).map(g => ({ label: String(g), value: g }));
-      this.selectTiposStatus = (deriveStatusList || []).slice().sort((a, b) => Number(b) - Number(a)).map(s => ({ label: s ? 'Ativo' : 'Encerrado', value: s }));
-
-      this.quantidadeTotal = payload.totalRecords || this.contratos.length || 0;
+      this.contratos = contratos;
+      this.selectTiposContrato = listaContrato.map(c => ({ label: c, value: c }));
+      this.selectTiposFornecedor = listaFornecedor.map(f => ({ label: f, value: f }));
+      this.selectTiposTpContrato = listaTipo.map(t => ({ label: t, value: t }));
+      this.selectTiposGestor = listaGestor.map(g => ({ label: g, value: g }));
+      this.selectTiposStatus = listaStatus
+        .sort((a, b) => Number(b) - Number(a))
+        .map(s => ({ label: s ? 'Ativo' : 'Encerrado', value: s }));
+      this.quantidadeTotal = data?.totalRecords ?? 0;
       this.loading = false;
     } catch (error) {
       this.loading = false;
@@ -188,9 +208,9 @@ export class ContratoComponent implements OnInit {
     this.loading = false;
   }
 
-  loadPage(event: any) {
-    const page = (event.pageIndex ?? 0) + 1;
-    const pageSize = event.pageSize ?? this.filtroRegistros.tamanhoPagina;
+  loadPage(event: TableLazyLoadEvent) {
+    const page = (event.first || 0) / (event.rows || this.filtroRegistros.tamanhoPagina) + 1;
+    const pageSize = event.rows || this.filtroRegistros.tamanhoPagina;
 
     if (page !== this.filtroRegistros.paginaAtual || pageSize !== this.filtroRegistros.tamanhoPagina) {
       this.filtroRegistros.paginaAtual = page;
@@ -232,7 +252,7 @@ export class ContratoComponent implements OnInit {
     this.rota = rota;
     this.isRotaAtas = (rota && rota == 'atas') ? true : false;
     if (this.isRotaAtas) {
-      this.tituloPage = ''
+      this.tituloPage = 'Lista de Atas'
     }
   }
 

@@ -1,0 +1,221 @@
+{
+  "name": "sidsc-components",
+  "version": "16.2.5",
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@angular/common": "^16.2.12",
+    "@angular/core": "^16.2.12",
+    "@angular/forms": "^16.2.12",
+    "@angular/material": "^16.2.12",
+    "@angular/material-date-fns-adapter": "^16.2.13",
+    "ng2-currency-mask": "^13.0.3",
+    "ngx-mask": "^16.4.2",
+    "inputmask": "^5.0.9-beta.62"
+  },
+  "sideEffects": false,
+  "schematics": "./schematics/collection.json",
+  "ng-add": {
+    "save": "true"
+  },
+  "module": "fesm2022/sidsc-components.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2022": "./esm2022/sidsc-components.mjs",
+      "esm": "./esm2022/sidsc-components.mjs",
+      "default": "./fesm2022/sidsc-components.mjs"
+    },
+    "./core": {
+      "types": "./core/index.d.ts",
+      "esm2022": "./esm2022/core/sidsc-components-core.mjs",
+      "esm": "./esm2022/core/sidsc-components-core.mjs",
+      "default": "./fesm2022/sidsc-components-core.mjs"
+    },
+    "./dsc-badge": {
+      "types": "./dsc-badge/index.d.ts",
+      "esm2022": "./esm2022/dsc-badge/sidsc-components-dsc-badge.mjs",
+      "esm": "./esm2022/dsc-badge/sidsc-components-dsc-badge.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-badge.mjs"
+    },
+    "./dsc-breadcrumb": {
+      "types": "./dsc-breadcrumb/index.d.ts",
+      "esm2022": "./esm2022/dsc-breadcrumb/sidsc-components-dsc-breadcrumb.mjs",
+      "esm": "./esm2022/dsc-breadcrumb/sidsc-components-dsc-breadcrumb.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-breadcrumb.mjs"
+    },
+    "./dsc-alert": {
+      "types": "./dsc-alert/index.d.ts",
+      "esm2022": "./esm2022/dsc-alert/sidsc-components-dsc-alert.mjs",
+      "esm": "./esm2022/dsc-alert/sidsc-components-dsc-alert.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-alert.mjs"
+    },
+    "./dsc-button": {
+      "types": "./dsc-button/index.d.ts",
+      "esm2022": "./esm2022/dsc-button/sidsc-components-dsc-button.mjs",
+      "esm": "./esm2022/dsc-button/sidsc-components-dsc-button.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-button.mjs"
+    },
+    "./dsc-button-header": {
+      "types": "./dsc-button-header/index.d.ts",
+      "esm2022": "./esm2022/dsc-button-header/sidsc-components-dsc-button-header.mjs",
+      "esm": "./esm2022/dsc-button-header/sidsc-components-dsc-button-header.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-button-header.mjs"
+    },
+    "./dsc-accordion": {
+      "types": "./dsc-accordion/index.d.ts",
+      "esm2022": "./esm2022/dsc-accordion/sidsc-components-dsc-accordion.mjs",
+      "esm": "./esm2022/dsc-accordion/sidsc-components-dsc-accordion.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-accordion.mjs"
+    },
+    "./dsc-card": {
+      "types": "./dsc-card/index.d.ts",
+      "esm2022": "./esm2022/dsc-card/sidsc-components-dsc-card.mjs",
+      "esm": "./esm2022/dsc-card/sidsc-components-dsc-card.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-card.mjs"
+    },
+    "./dsc-checkbox": {
+      "types": "./dsc-checkbox/index.d.ts",
+      "esm2022": "./esm2022/dsc-checkbox/sidsc-components-dsc-checkbox.mjs",
+      "esm": "./esm2022/dsc-checkbox/sidsc-components-dsc-checkbox.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-checkbox.mjs"
+    },
+    "./dsc-chips": {
+      "types": "./dsc-chips/index.d.ts",
+      "esm2022": "./esm2022/dsc-chips/sidsc-components-dsc-chips.mjs",
+      "esm": "./esm2022/dsc-chips/sidsc-components-dsc-chips.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-chips.mjs"
+    },
+    "./dsc-datepicker": {
+      "types": "./dsc-datepicker/index.d.ts",
+      "esm2022": "./esm2022/dsc-datepicker/sidsc-components-dsc-datepicker.mjs",
+      "esm": "./esm2022/dsc-datepicker/sidsc-components-dsc-datepicker.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-datepicker.mjs"
+    },
+    "./dsc-dialog": {
+      "types": "./dsc-dialog/index.d.ts",
+      "esm2022": "./esm2022/dsc-dialog/sidsc-components-dsc-dialog.mjs",
+      "esm": "./esm2022/dsc-dialog/sidsc-components-dsc-dialog.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-dialog.mjs"
+    },
+    "./dsc-footer": {
+      "types": "./dsc-footer/index.d.ts",
+      "esm2022": "./esm2022/dsc-footer/sidsc-components-dsc-footer.mjs",
+      "esm": "./esm2022/dsc-footer/sidsc-components-dsc-footer.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-footer.mjs"
+    },
+    "./dsc-header": {
+      "types": "./dsc-header/index.d.ts",
+      "esm2022": "./esm2022/dsc-header/sidsc-components-dsc-header.mjs",
+      "esm": "./esm2022/dsc-header/sidsc-components-dsc-header.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-header.mjs"
+    },
+    "./dsc-input": {
+      "types": "./dsc-input/index.d.ts",
+      "esm2022": "./esm2022/dsc-input/sidsc-components-dsc-input.mjs",
+      "esm": "./esm2022/dsc-input/sidsc-components-dsc-input.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-input.mjs"
+    },
+    "./dsc-input-currency": {
+      "types": "./dsc-input-currency/index.d.ts",
+      "esm2022": "./esm2022/dsc-input-currency/sidsc-components-dsc-input-currency.mjs",
+      "esm": "./esm2022/dsc-input-currency/sidsc-components-dsc-input-currency.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-input-currency.mjs"
+    },
+    "./dsc-input-file": {
+      "types": "./dsc-input-file/index.d.ts",
+      "esm2022": "./esm2022/dsc-input-file/sidsc-components-dsc-input-file.mjs",
+      "esm": "./esm2022/dsc-input-file/sidsc-components-dsc-input-file.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-input-file.mjs"
+    },
+    "./dsc-paginator": {
+      "types": "./dsc-paginator/index.d.ts",
+      "esm2022": "./esm2022/dsc-paginator/sidsc-components-dsc-paginator.mjs",
+      "esm": "./esm2022/dsc-paginator/sidsc-components-dsc-paginator.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-paginator.mjs"
+    },
+    "./dsc-progress-bar": {
+      "types": "./dsc-progress-bar/index.d.ts",
+      "esm2022": "./esm2022/dsc-progress-bar/sidsc-components-dsc-progress-bar.mjs",
+      "esm": "./esm2022/dsc-progress-bar/sidsc-components-dsc-progress-bar.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-progress-bar.mjs"
+    },
+    "./dsc-progress-spinner": {
+      "types": "./dsc-progress-spinner/index.d.ts",
+      "esm2022": "./esm2022/dsc-progress-spinner/sidsc-components-dsc-progress-spinner.mjs",
+      "esm": "./esm2022/dsc-progress-spinner/sidsc-components-dsc-progress-spinner.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-progress-spinner.mjs"
+    },
+    "./dsc-radio-button": {
+      "types": "./dsc-radio-button/index.d.ts",
+      "esm2022": "./esm2022/dsc-radio-button/sidsc-components-dsc-radio-button.mjs",
+      "esm": "./esm2022/dsc-radio-button/sidsc-components-dsc-radio-button.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-radio-button.mjs"
+    },
+    "./dsc-select": {
+      "types": "./dsc-select/index.d.ts",
+      "esm2022": "./esm2022/dsc-select/sidsc-components-dsc-select.mjs",
+      "esm": "./esm2022/dsc-select/sidsc-components-dsc-select.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-select.mjs"
+    },
+    "./dsc-snackbar": {
+      "types": "./dsc-snackbar/index.d.ts",
+      "esm2022": "./esm2022/dsc-snackbar/sidsc-components-dsc-snackbar.mjs",
+      "esm": "./esm2022/dsc-snackbar/sidsc-components-dsc-snackbar.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-snackbar.mjs"
+    },
+    "./dsc-sidenav": {
+      "types": "./dsc-sidenav/index.d.ts",
+      "esm2022": "./esm2022/dsc-sidenav/sidsc-components-dsc-sidenav.mjs",
+      "esm": "./esm2022/dsc-sidenav/sidsc-components-dsc-sidenav.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-sidenav.mjs"
+    },
+    "./dsc-stepper": {
+      "types": "./dsc-stepper/index.d.ts",
+      "esm2022": "./esm2022/dsc-stepper/sidsc-components-dsc-stepper.mjs",
+      "esm": "./esm2022/dsc-stepper/sidsc-components-dsc-stepper.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-stepper.mjs"
+    },
+    "./dsc-switch": {
+      "types": "./dsc-switch/index.d.ts",
+      "esm2022": "./esm2022/dsc-switch/sidsc-components-dsc-switch.mjs",
+      "esm": "./esm2022/dsc-switch/sidsc-components-dsc-switch.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-switch.mjs"
+    },
+    "./dsc-tags": {
+      "types": "./dsc-tags/index.d.ts",
+      "esm2022": "./esm2022/dsc-tags/sidsc-components-dsc-tags.mjs",
+      "esm": "./esm2022/dsc-tags/sidsc-components-dsc-tags.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-tags.mjs"
+    },
+    "./dsc-table": {
+      "types": "./dsc-table/index.d.ts",
+      "esm2022": "./esm2022/dsc-table/sidsc-components-dsc-table.mjs",
+      "esm": "./esm2022/dsc-table/sidsc-components-dsc-table.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-table.mjs"
+    },
+    "./dsc-tab-group": {
+      "types": "./dsc-tab-group/index.d.ts",
+      "esm2022": "./esm2022/dsc-tab-group/sidsc-components-dsc-tab-group.mjs",
+      "esm": "./esm2022/dsc-tab-group/sidsc-components-dsc-tab-group.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-tab-group.mjs"
+    },
+    "./dsc-textarea": {
+      "types": "./dsc-textarea/index.d.ts",
+      "esm2022": "./esm2022/dsc-textarea/sidsc-components-dsc-textarea.mjs",
+      "esm": "./esm2022/dsc-textarea/sidsc-components-dsc-textarea.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-textarea.mjs"
+    },
+    "./dsc-tooltip": {
+      "types": "./dsc-tooltip/index.d.ts",
+      "esm2022": "./esm2022/dsc-tooltip/sidsc-components-dsc-tooltip.mjs",
+      "esm": "./esm2022/dsc-tooltip/sidsc-components-dsc-tooltip.mjs",
+      "default": "./fesm2022/sidsc-components-dsc-tooltip.mjs"
+    }
+  }
+}

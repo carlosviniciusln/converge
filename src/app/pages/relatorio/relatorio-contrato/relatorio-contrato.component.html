@@ -1,6 +1,5 @@
 
 <div class="content">
-  <dsc-breadcrumb [urls]="[{label: 'Relatórios'}, {label: 'Contratos'}]" style="margin-bottom: 24px;"></dsc-breadcrumb>
   <div class="row">
     <div class="col-12">
       <p-table
@@ -24,68 +23,100 @@
             <div class="table-header">
             <div class="row header-flex">
                 <div class="table-header-title title">
-                
+                {{ tituloPage }}
                 </div>
                 <div class="header-actions">
-                <dsc-button
-                    variant="secondary-outlined"
-                    icon="cloud_download"
-                    iconButton
+                <button
+                    type="button"
+                    class="btn-sm btn-secondary"
                     (click)="exportExcel()"
-                    *ngIf="permissions?.Exportar ?? false"></dsc-button>
+                    *ngIf="permissions?.Exportar ?? false">
+                    <i class="tim-icons icon-cloud-download-93"></i>
+                    </button>
                 </div>
                 <div class="pl-1 pr-1 filtro">
-                <dsc-select
+                <p-dropdown
                     [options]="selectTiposContrato"
                     [(ngModel)]="selectedTipoContrato"
-                    [showFilter]="true"
-                    (ngModelChange)="updateRelatorio({ value: $event }, 1)"
-                    placeholder="Contrato">
-                </dsc-select>
+                    [filter]="true"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="updateRelatorio($event, 1)"
+                    [showClear]="true"
+                    placeholder="Contrato"
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
+                    appendTo="body">
+                </p-dropdown>
                 </div>
 
                 <div class="pl-1 pr-1 filtro">
-                <dsc-select
+                <p-dropdown
                     [options]="selectTiposFornecedor"
                     [(ngModel)]="selectedTipoFornecedor"
-                    [showFilter]="true"
-                    (ngModelChange)="updateRelatorio({ value: $event }, 2)"
-                    placeholder="Fornecedor">
-                </dsc-select>
+                    [filter]="true"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="updateRelatorio($event, 2)"
+                    [showClear]="true"
+                    placeholder="Fornecedor"
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
+                    appendTo="body">
+                </p-dropdown>
                 </div>
 
                 <div class="pl-1 pr-1 filtro">
-                <dsc-select
+                <p-dropdown
                     [options]="selectTiposTpContrato"
                     [(ngModel)]="selectedTipoTpContrato"
-                    [showFilter]="true"
-                    (ngModelChange)="updateRelatorio({ value: $event }, 3)"
-                    placeholder="Tipo de Contrato">
-                </dsc-select>
+                    [filter]="true"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="updateRelatorio($event, 3)"
+                    [showClear]="true"
+                    placeholder="Tipo Objeto"
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
+                    appendTo="body">
+                </p-dropdown>
                 </div>
 
                 <div class="pl-1 pr-1 filtro">
-                <dsc-select
+                <p-dropdown
                     [options]="selectTiposGestor"
                     [(ngModel)]="selectedTipoGestor"
-                    [showFilter]="true"
-                    (ngModelChange)="updateRelatorio({ value: $event }, 4)"
-                    placeholder="Unidade Demandante">
-                </dsc-select>
+                    [filter]="true"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="updateRelatorio($event, 4)"
+                    [showClear]="true"
+                    placeholder="Unidade Demandante"
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
+                    appendTo="body">
+                </p-dropdown>
                 </div>
 
                 <div class="pl-1 pr-1 filtro">
-                  <dsc-select
+                  <p-dropdown
                     [options]="selectTiposStatus"
                     [(ngModel)]="selectedTipoStatus"
-                    [showFilter]="true"
-                    (ngModelChange)="updateRelatorio({ value: $event }, 5)"
-                    placeholder="Status">
-                  </dsc-select>
+                    [filter]="true"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="updateRelatorio($event, 5)"
+                    [showClear]="true"
+                    placeholder="Status"
+                    [style]="{ width: '160px' }"
+                    [panelStyle]="{ width: '160px' }"
+                    appendTo="body">
+                  </p-dropdown>
               </div>
 
               <div>
-                <dsc-button variant="secondary-outlined" label="Limpar filtros" (click)="limparFiltros()"></dsc-button>
+                <button pButton type="button" label="Limpar filtros" class="btn btn-sm btn-default afastamento"
+                (click)="limparFiltros()"></button>
               </div>
             </div>
           </div>

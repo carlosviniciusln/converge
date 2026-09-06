@@ -1,0 +1,106 @@
+<main class="penalties-page">
+  <header class="page-heading">
+    <div><span class="eyebrow">Gestão operacional</span><h1>Penalidades contratuais</h1><p>Acompanhamento de ocorrências, prazos de defesa e sanções aplicadas.</p></div>
+    <button type="button" class="primary-action" (click)="abrirNovaPenalidade(novaPenalidadeModal)"><i class="fas fa-plus" aria-hidden="true"></i>Nova penalidade</button>
+  </header>
+
+  <section class="summary" aria-label="Resumo das penalidades">
+    <div><span>Total registrado</span><strong>{{ penalidades.length }}</strong></div>
+    <div><span>Em tratamento</span><strong>{{ emTratamento }}</strong></div>
+    <div><span>Multas</span><strong>{{ totalMultas }}</strong></div>
+    <div><span>Valor das multas</span><strong>{{ valorAplicado | currency:'BRL' }}</strong></div>
+  </section>
+
+  <section class="workspace">
+    <div class="filters">
+      <label class="search-field"><span>Pesquisar</span><div><i class="fas fa-search" aria-hidden="true"></i><input type="search" [(ngModel)]="pesquisa" placeholder="Contrato, fornecedor ou protocolo" /></div></label>
+      <label><span>Tipo</span><select [(ngModel)]="tipo"><option value="">Todos</option><option>Multa</option><option>Advertência</option><option>Suspensão</option></select></label>
+      <label><span>Status</span><select [(ngModel)]="status"><option value="">Todos</option><option>Em apuração</option><option>Defesa apresentada</option><option>Aplicada</option><option>Encerrada</option></select></label>
+      <button type="button" class="secondary-action" (click)="limparFiltros()"><i class="fas fa-eraser" aria-hidden="true"></i>Limpar</button>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Protocolo</th><th>Contrato / Fornecedor</th><th>Tipo</th><th>Motivo</th><th>Valor</th><th>Prazo</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let item of registrosFiltrados">
+            <td><strong>{{ item.protocolo }}</strong></td>
+            <td><strong>{{ item.contrato }}</strong><span>{{ item.fornecedor }}</span></td>
+            <td>{{ item.tipo }}</td><td>{{ item.motivo }}</td>
+            <td>{{ item.valor ? (item.valor | currency:'BRL') : '-' }}</td><td>{{ item.prazo }}</td>
+            <td><span class="status" [ngClass]="classeStatus(item.status)">{{ item.status }}</span></td>
+          </tr>
+          <tr *ngIf="!registrosFiltrados.length"><td colspan="7" class="empty">Nenhuma penalidade encontrada para os filtros informados.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <footer class="table-footer">{{ registrosFiltrados.length }} de {{ penalidades.length }} registros</footer>
+  </section>
+</main>
+
+<ng-template #novaPenalidadeModal let-modal>
+  <div class="modal-header penalty-modal-header">
+    <div>
+      <span class="modal-eyebrow">Cadastro ilustrativo</span>
+      <h2 class="modal-title" id="nova-penalidade-titulo">Nova penalidade</h2>
+    </div>
+    <button type="button" class="close" aria-label="Fechar" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <form #penalidadeForm="ngForm" (ngSubmit)="salvarPenalidade()">
+    <div class="modal-body penalty-form">
+      <label>
+        <span>Contrato *</span>
+        <select name="contrato" [(ngModel)]="novaPenalidade.contrato" required>
+          <option value="" disabled>Selecione</option>
+          <option value="04466/2025">04466/2025</option>
+          <option value="07500/2024">07500/2024</option>
+          <option value="12870/2024">12870/2024</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Fornecedor *</span>
+        <input name="fornecedor" type="text" [(ngModel)]="novaPenalidade.fornecedor" placeholder="Razão social" required />
+      </label>
+
+      <label>
+        <span>Tipo de penalidade *</span>
+        <select name="tipo" [(ngModel)]="novaPenalidade.tipo" required>
+          <option value="Advertência">Advertência</option>
+          <option value="Multa">Multa</option>
+          <option value="Suspensão">Suspensão</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Prazo para defesa *</span>
+        <input name="prazo" type="date" [(ngModel)]="novaPenalidade.prazo" required />
+      </label>
+
+      <label class="full-width">
+        <span>Motivo *</span>
+        <input name="motivo" type="text" [(ngModel)]="novaPenalidade.motivo" placeholder="Descreva resumidamente a ocorrência" required />
+      </label>
+
+      <label *ngIf="novaPenalidade.tipo === 'Multa'">
+        <span>Valor da multa *</span>
+        <input name="valor" type="number" min="0.01" step="0.01" [(ngModel)]="novaPenalidade.valor" placeholder="0,00" required />
+      </label>
+
+      <label class="full-width">
+        <span>Observações</span>
+        <textarea name="observacoes" rows="3" [(ngModel)]="novaPenalidade.observacoes" placeholder="Informações complementares"></textarea>
+      </label>
+    </div>
+
+    <div class="modal-footer penalty-modal-footer">
+      <button type="button" class="secondary-action" (click)="modal.dismiss()">Cancelar</button>
+      <button type="submit" class="primary-action" [disabled]="penalidadeForm.invalid">
+        <i class="fas fa-check" aria-hidden="true"></i>Cadastrar penalidade
+      </button>
+    </div>
+  </form>
+</ng-template>

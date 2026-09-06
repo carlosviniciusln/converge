@@ -54,7 +54,7 @@
 }
 
 .green {
-  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  background: #005CA9;
   color: white;
   text-align: center;
   padding: 5px;
@@ -208,7 +208,7 @@ tr.template-body td a {
 }
 
 ::ng-deep .mat-tab-label-active {
-  background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+  background: #005CA9;
   color: #fff;
 }
 
@@ -223,7 +223,7 @@ tr.template-body td a {
 
 .spinner-button {
   border: 2px solid #f3f3f3;
-  border-top: 2px solid #009a53 ;
+  border-top: 2px solid #005CA9;
   border-radius: 50%;
   width: 16px;
   height: 16px;

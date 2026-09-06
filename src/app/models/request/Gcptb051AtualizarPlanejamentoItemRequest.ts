@@ -13,9 +13,15 @@ export interface Gcptb051AtualizarPlanejamentoItemRequest {
     NuObjetivoPEI?: string;
     DeJustificativa?: string;
     DeObservacao?: string;
+    NuModalidade?: number;
+    VrGlobal?: number;
+    DePrazoVigencia?: number;
+    DtPrevisaoSiclg?: string;
+    IcPlanoAquisicao?: boolean;
     NuOrc?: number;
     NuSap?: number;
     DeSap?: string;
+    nuTipoDigital?: number;
     previsaoDesembolso?: Gcptb063CriarPrevisaoDesembolsoRequest[];
     previsaoDesembolsoExclusao?: {
         NuPlanejamentoItem: number;

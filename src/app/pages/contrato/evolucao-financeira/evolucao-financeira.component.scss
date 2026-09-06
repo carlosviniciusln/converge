@@ -46,7 +46,7 @@
   }
 
   .green{
-    background: linear-gradient(0deg, #137d9a 0%, #009a53 100%);
+    background: #005CA9;
     color: white;
     text-align: center;
     padding: 5px;
@@ -58,17 +58,8 @@
     margin-bottom: 5px;
   }
 
-  #area-pdf {
-    overflow-x: hidden;
-  }
-
   :host ::ng-deep .mat-tab-body-content {
     overflow: hidden !important;
-}
-
-:host {
-  display: block;
-  overflow-x: hidden;
 }
 
 h3.card-title.text-center b {
@@ -107,4 +98,67 @@ h3.card-title.text-center b {
 .title-ata{
   margin-left: 12px;
   font-weight: bold;
+}
+
+@media (max-width: 767px) {
+  .content {
+    min-width: 0;
+  }
+
+  .content > .row:first-child {
+    display: none;
+  }
+
+  .evolution-actions {
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin: 0 0 12px !important;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .evolution-actions__items {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 8px;
+    padding: 0;
+  }
+
+  .evolution-actions button {
+    min-height: 40px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .section-select {
+    flex: 0 0 220px;
+    padding: 0;
+  }
+
+  .floating-text,
+  .floating-rubrica {
+    position: static;
+    transform: none;
+    white-space: normal;
+  }
+
+  :host ::ng-deep {
+    .mat-mdc-tab-header {
+      max-width: 100%;
+    }
+
+    .mat-mdc-tab-label-container {
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .mat-mdc-tab-list {
+      min-width: max-content;
+      transform: none !important;
+    }
+
+    .mat-mdc-tab-body-content {
+      overflow: visible !important;
+    }
+  }
 }

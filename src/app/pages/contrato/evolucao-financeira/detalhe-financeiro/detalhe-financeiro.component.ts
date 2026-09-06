@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -7,12 +8,18 @@ import { Endpoints } from 'src/app/models/enums/endpoints';
 import { ApiResponse } from 'src/app/models/generics/api-response';
 import { EvolucaoFinanceira } from 'src/app/models/generics/evolucao-financeira';
 import { Gcptb002ContratoTipo } from 'src/app/models/generics/Gcptb001ContratoResponse';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+import { TableModule } from 'primeng/table';
+import { GraficoComponent } from '../demais-tipos/grafico/grafico.component';
 
 
 @Component({
   selector: 'app-detalhe-financeiro',
   templateUrl: './detalhe-financeiro.component.html',
-  styleUrls: ['./detalhe-financeiro.component.scss']
+  styleUrls: ['./detalhe-financeiro.component.scss'],
+  standalone: true,
+  imports: [CommonModule, TableModule, ButtonModule, RippleModule, GraficoComponent]
 })
 export class DetalheFinanceiroComponent implements OnInit {
 
@@ -59,20 +66,12 @@ listaResumoPagamentos: any[] = [];
         const response = await this.apiService.get<
           ApiResponse<Gcptb002ContratoTipo>
         >(`${Endpoints.URL_CONTRATOS}/vigencias-contrato?nuContrato=${nuContrato}`);
-        // support both shapes: (1) ApiResponse { succeeded, data: [...] } or (2) direct array
-        let resp: any = response && response.data !== undefined ? response.data : response;
-        if (resp && resp.succeeded && resp.data !== undefined) {
-          resp = resp.data;
-        }
-        if (!Array.isArray(resp)) {
-          console.warn('obterVigenciasContrato: unexpected response shape, normalizing to empty array', resp);
-          resp = [];
-        }
+        const resp: any = response.data;
         this.todasVigencias = resp;
         let vigenciaAtual = resp.find(item => item.iC_VIGENCIA_ATUAL == true && item.cO_RUBRICA == 'TOTAL');
         this.obterDadosGraficosVigencias(vigenciaAtual)
         this.obterDadosVigenciaAtual();
-        this.listaNova = vigenciaAtual ? this.todasVigencias.filter( f => f.nU_VIGENCIA === vigenciaAtual.nU_VIGENCIA) : [];
+        this.listaNova = this.todasVigencias.filter( f => f.nU_VIGENCIA === vigenciaAtual.nU_VIGENCIA);
 
         this.listaNova.forEach(element => {
           this.obterDadosGraficosVigencias(element).then(valor => {
@@ -189,12 +188,7 @@ listaResumoPagamentos: any[] = [];
         >(
           `${Endpoints.URL_CONTRATOS}/valores-vigencia-atual?nuContrato=${this.nuContrato}`
         );
-        let resp: any = response && response.data !== undefined ? response.data : response;
-        if (resp && resp.succeeded && resp.data !== undefined) resp = resp.data;
-        if (!Array.isArray(resp)) {
-          console.warn('obterDadosVigenciaAtual: unexpected response shape, normalizing to empty array', resp);
-          resp = [];
-        }
+        const resp: any[] = response.data;
 
         this.dadosVigenciaAtual = resp;
         const totalItem = resp.find(item => item.nO_RUBRICA === 'TOTAL');
@@ -282,10 +276,7 @@ listaResumoPagamentos: any[] = [];
       const response = await this.apiService.get<ApiResponse<EvolucaoFinanceira[]>>(
         `${Endpoints.URL_CONTRATOS}/detalhe-resumo-pagamento-evolucao-financeira?nuContrato=${nuContrato}&nuVigencia=${nuVigencia}&coRubrica=${coRubricaSelecionada}`
       );
-      let listaResumo: any = response && response.data !== undefined ? response.data : response;
-      if (listaResumo && listaResumo.succeeded && listaResumo.data !== undefined) listaResumo = listaResumo.data;
-      // ensure an array
-      if (!Array.isArray(listaResumo)) listaResumo = listaResumo ? [listaResumo] : [];
+      const listaResumo = response.data
 
       return listaResumo;
 

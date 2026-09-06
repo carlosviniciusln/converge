@@ -4,10 +4,8 @@
   }
 
   .content {
-    padding: 30px 30px 30px 30px;
+    padding: 78px 30px 30px 130px;
     min-height: calc(100vh - 70px);
-    display: flex;
-    flex-direction: column;
     //padding-left: -130px !important;
   }
 }
@@ -29,8 +27,7 @@
 }
 .sidebar, .off-canvas-sidebar{
   &, &[data="red"]{
-    //@include linear-gradient($danger-states, $danger);
-    @include linear-gradient(#137d9a, #009a53);
+    @include linear-gradient(#00437A, #005CA9);
   }
   &[data="primary"]{
     @include linear-gradient($primary-states, $primary);
@@ -44,5 +41,9 @@
   }
   .fixed-plugin .dropdown-toggle:after{
     display: none;
+  }
+
+  .sidebar-mini .main-panel .content, .sidebar-mini footer {
+    padding-left: -130px!important;
   }
 }

@@ -53,7 +53,7 @@ export class ConsumoArpComponent implements OnInit {
   selectedTipoStatus: string = null;
 
   isRotaAtas: boolean = false;
-  tituloPage: string = '';
+  tituloPage: string = 'Lista de Contratos ARPs';
   rota: string = '';
   filtroRegistros: any = {
     pageNumber: 1,
@@ -142,12 +142,12 @@ export class ConsumoArpComponent implements OnInit {
       const response = await this.apiService.get<ApiResponse<ContratoApiResponse>>
         (`${Endpoints.URL_CONTRATOS}/relatorio-consumo`, filtrosLimpos);
       this.contratosOrigem = response?.data?.contratos;
-      this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: String(c), value: c }));
-      this.selectTiposInstrumentos = response?.data?.listaInstrumentos.map(c => ({ label: String(c), value: c }));
-      this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: String(f), value: f }));
-      this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: String(t), value: t }));
-      this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: String(g), value: g }));
-      this.selectTiposStatus = response?.data?.listaStatus.map(s => ({ label: String(s), value: s }));
+      this.selectTiposContrato = response?.data?.listaContrato.map(c => ({ label: c, value: c }));
+      this.selectTiposInstrumentos = response?.data?.listaInstrumentos.map(c => ({ label: c, value: c }));
+      this.selectTiposFornecedor = response?.data?.listaFornecedor.map(f => ({ label: f, value: f }));
+      this.selectTiposTpContrato = response?.data?.listaTipo.map(t => ({ label: t, value: t }));
+      this.selectTiposGestor = response?.data?.listaGestor.map(g => ({ label: g, value: g }));
+      this.selectTiposStatus = response?.data?.listaStatus.map(s => ({ label: s, value: s }));
       this.quantidadeTotal = response.data.totalRecords;
       this.assignCopy();
       this.loading = false;

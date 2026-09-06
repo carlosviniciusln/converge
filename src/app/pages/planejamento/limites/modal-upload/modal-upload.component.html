@@ -43,6 +43,7 @@
           <div class="col-md-12 pr-0">
             <label>Anexar Arquivo:</label>
             <div class="col-md-8" style="margin-left: -14px;">
+              <p-toast></p-toast>
               <p-fileUpload
                 #fileUpload
                 mode="basic"
@@ -86,10 +87,14 @@
       <div class="col-md-12">
         <div class="row">
           <div class="col-md-8 pr-0 text-right">
-            <dsc-button variant="secondary-outlined" label="Exportar Planilha Padrão" icon="open_in_new" (click)="baixarModelo()"></dsc-button>
+            <button class="btn-sm" style="background: white; color: #005CA9; border: 1px solid #005CA9;" type="submit" (click)="baixarModelo()">
+              Exportar Planilha Padrão <i class="fa fa-external-link"></i>
+            </button>
           </div>
           <div class="col-md-4 pr-0 text-right">
-            <dsc-button variant="primary" label="Carregar" (click)="onSubmit()" [disabled]="isDisabled"></dsc-button>
+            <button class="btn-sm btn-default" type="submit" (click)="onSubmit()" [disabled]="isDisabled">
+              Carregar
+            </button>
           </div>
         </div>
       </div>

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { LoaderService } from './core/services/loader.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +7,4 @@ import { LoaderService } from './core/services/loader.service';
 })
 export class AppComponent {
   title = 'front-gc-painel-gerencial';
-  loading$ = this.loader.loading$;
-
-  constructor(public loader: LoaderService) {}
 }

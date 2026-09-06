@@ -1,0 +1,50 @@
+$highlight: (
+  'highlight-hover': --dsc-color-primary-90,
+  'highlight-active': --dsc-color-primary-90,
+  'highlight-focus': --dsc-color-primary-90,
+  'highlight-selected': --dsc-color-primary-90,
+  'highlight-dragged': --dsc-color-primary-90
+);
+
+$accent: (
+  'accent-hover': --dsc-color-secondary-90,
+  'accent-active': --dsc-color-secondary-90,
+  'accent-focus': --dsc-color-secondary-90
+);
+
+$danger: (
+  'danger-hover': --dsc-color-negative-90,
+  'danger-active': --dsc-color-negative-90,
+  'danger-focus': --dsc-color-negative-90
+);
+
+$neutral: (
+  'neutral-hover-on-light': --dsc-color-grayscale-110,
+  'neutral-hover-on-dark': --dsc-color-grayscale-white,
+  'neutral-active-on-light': --dsc-color-grayscale-110,
+  'neutral-active-on-dark': --dsc-color-grayscale-white,
+  'neutral-focus-on-light': --dsc-color-grayscale-110,
+  'neutral-focus-on-dark': --dsc-color-grayscale-white
+);
+
+$disabled: (
+  'disabled-5': --dsc-color-grayscale-70,
+  'disabled-4': --dsc-color-grayscale-50,
+  'disabled-3': --dsc-color-grayscale-30,
+  'disabled-2': --dsc-color-grayscale-10,
+  'disabled-1': --dsc-color-grayscale-white
+);
+
+$readonly: (
+  'readonly-2': --dsc-color-grayscale-70,
+  'readonly-1': --dsc-color-grayscale-10,
+);
+
+$state-layers-background: (
+  'highlight': $highlight,
+  'accent': $accent,
+  'danger': $danger,
+  'neutral': $neutral,
+  'disabled': $disabled,
+  'readonly': $readonly
+);

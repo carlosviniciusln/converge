@@ -1,4 +1,5 @@
 import { Component, Input, OnInit} from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ActionPolicies, ModuleEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
 
 @Component({
@@ -13,6 +14,7 @@ export class ArtigoPagamentoComponent implements OnInit {
   loading: boolean = true;
 
   constructor(
+    public spinner: NgxSpinnerService,
     public token: TokenStorageService,
   ) {
     this.obterPermissoes();

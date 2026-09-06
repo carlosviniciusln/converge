@@ -42,7 +42,7 @@ import {
 import { Gcpvw008Mensalizacao } from 'src/app/models/generics/Gcptb001ContratoResponse';
 import Swal from 'sweetalert2';
 import { IUser } from 'src/app/models/DTOs/IUser';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Gcptb060PlanejamentoItemHistoricoResponse } from 'src/app/models/response/Gcptb060PlanejamentoItemHistoricoResponse';
 
 @Component({
@@ -187,6 +187,7 @@ export class PlanejamentoCadastroLegadoComponent implements OnInit {
    */
 
   constructor(
+    private http: HttpClient,
     public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private apiService: ApiService,

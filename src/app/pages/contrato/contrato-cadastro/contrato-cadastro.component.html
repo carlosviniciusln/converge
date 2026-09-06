@@ -1,7 +1,7 @@
 
   <div class="modal-header">
-    <button type="button" class="close" aria-label="Fechar" (click)="activeModal.dismiss('Cross click'); ativaPreposto = false">
-      <span aria-hidden="true">&times;</span>
+    <button style="z-index: 10;" type="button"  class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')" (click)="ativaPreposto = false">
+      <span aria-hidden="true">×</span>
     </button>
   </div>
 
@@ -47,7 +47,7 @@
                   </select>
                 </div>
                 <div class="col-md-6 pr-0">
-                  <label for="nuContratoTipo">Contrato Tipo:</label>
+                  <label for="nuContratoTipo">Tipo Objeto:</label>
                   <select class="form-control" id="nuContratoTipo" formControlName="nuContratoTipo"
                     [ngClass]="{'is-invalid': submitted && f.nuContratoTipo.invalid}">
                     <option value="" disabled selected>Selecione o tipo do Contrato</option>
@@ -247,25 +247,28 @@
               </div>
 
               <div class="col-2 pr-0" style="margin-top: 2px;margin-left: 12px;">
-                <label for="coProtocoloVigencia">Protocolo <label  *ngIf="i > 0" >SICLG</label></label>
+                <label for="coProtocoloVigencia">Protocolo <label  *ngIf="i > 0" >Central de Contratos</label></label>
                 <p-dropdown
                   [options]="getListaProtocolos(i)"
                   optionLabel="cO_PROTOCOLO_VIGENCIA"
                   optionValue="cO_PROTOCOLO_VIGENCIA"
                   formControlName="coProtocoloVigencia"
-                  placeholder="Selecione o Protocolo SICLG"
+                  placeholder="Selecione o Protocolo Central de Contratos"
                   [filter]="true"
-                  [emptyMessage]="'Nenhum protocolo SICLG cadastrado.'"
+                  [emptyMessage]="'Nenhum protocolo Central de Contratos cadastrado.'"
                   [showClear]="true"
                 >
                 </p-dropdown>
               </div>
 
-              <div style="margin-left: 24px; display: flex; align-items: flex-end; gap: 4px; padding-bottom: 2px;">
-                <dsc-button *ngIf="i > 0" variant="danger-outlined" icon="delete" iconButton aria-label="Excluir vigência"
-                  (click)="excluirVigencia(i)"></dsc-button>
-                <dsc-button variant="secondary-outlined" icon="add" iconButton aria-label="Adicionar vigência"
-                  (click)="adicionarVigencia(false)"></dsc-button>
+              <div style="margin-left: 24px;">
+                <br />
+                <button *ngIf="i > 0" type="button" class="btn-sm btn-secondary" (click)="excluirVigencia(i)">
+                  <i class="tim-icons icon-trash-simple"></i>
+                </button>
+                <button type="button" class="btn-sm btn-secondary"  (click)="adicionarVigencia(false)">
+                  <i class="tim-icons icon-simple-add"></i>
+                </button>
               </div>
 
               </div>
@@ -279,8 +282,8 @@
                   let rubrica of vigencia.get('rubricas')['controls'];
                   let r = index
                 ">
-                  <div class="row" [formGroupName]="r" style="align-items: flex-end;">
-                    <div class="col-md-1 pr-0 text-right" style="display: flex; align-items: flex-end; padding-bottom: 2px;">
+                  <div class="row" [formGroupName]="r">
+                    <div class="col-md-1 pr-0 text-right">
                       <i class="fas fa-level-up fa-rotate-90 fa-xl"></i>
                     </div>
                     <div class="col-md-2 pr-0">
@@ -302,14 +305,16 @@
                         [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true"
                         (ngModelChange)="atualizarValor($event, i, r)" />
                     </div>
-                    <div class="col-md-1" style="display: flex; align-items: flex-end; padding-bottom: 2px;">
-                      <dsc-button *ngIf="r > 0" variant="danger-outlined" icon="delete" iconButton aria-label="Excluir rubrica"
-                        (click)="excluirRubrica(i, r)"></dsc-button>
+                    <div class="col-md-1">
+                      <button *ngIf="r > 0" type="button" class="btn-sm btn-secondary" (click)="excluirRubrica(i, r)">
+                        <i class="tim-icons icon-trash-simple"></i>
+                      </button>
                     </div>
 
-                    <div class="c-button-add" style="display: flex; align-items: flex-end; padding-bottom: 2px;">
-                      <dsc-button *ngIf="!(r > 0)" variant="secondary-outlined" icon="add" iconButton aria-label="Adicionar rubrica"
-                        (click)="adicionarRubrica(i)"></dsc-button>
+                    <div class="c-button-add">
+                      <button *ngIf="!(r > 0)" type="button" class="btn-sm btn-secondary" (click)="adicionarRubrica(i)">
+                        <i class="tim-icons icon-simple-add"></i>
+                      </button>
                     </div>
 
                   </div>
@@ -320,8 +325,10 @@
         </form>
       </div>
       <div class="modal-footer">
-        <dsc-button variant="primary" label="Salvar" (click)="onSubmit()"
-          *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false; false"></dsc-button>
+        <button class="btn-sm btn-default" type="submit" (click)="onSubmit()"
+          *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false; false">
+          Salvar
+        </button>
       </div>
     </mat-tab>
     <mat-tab label="Prepostos">
@@ -332,8 +339,9 @@
           </h4>
         </div>
         <div *ngIf="!ativaPreposto" class="col-md-5 text-right pb-1" >
-          <dsc-button variant="secondary-outlined" icon="add" iconButton aria-label="Adicionar contato"
-            (click)="adicionarContato()"></dsc-button>
+          <button type="button" class="btn-sm btn-secondary"  (click)="adicionarContato()" >
+            <i class="tim-icons icon-simple-add"></i>
+          </button>
          </div>
       </div>
       <form id="formContato" [formGroup]="contatoForm" (ngSubmit)="registrarContratos()">
@@ -431,8 +439,11 @@
                     />
                   </td>
                   <td *ngIf="!ativaPreposto">
-                    <dsc-button variant="danger-outlined" icon="delete" iconButton aria-label="Remover contato"
-                      (click)="removerContato(contatos, i)"></dsc-button>
+                    <i
+                      (click)="removerContato(contatos, i)"
+                      style="padding-left: 30px; cursor: pointer"
+                      class="pi pi-trash"
+                    ></i>
                   </td>
                 </tr>
               </ng-template>
@@ -446,7 +457,7 @@
         </div>
       </form>
       <div *ngIf="!ativaPreposto" class="modal-footer">
-        <dsc-button variant="primary" label="Salvar" (click)="registrarContratos()"></dsc-button>
+        <button class="btn-sm btn-default" type="submit" (click)="registrarContratos()">Salvar</button>
       </div>
     </mat-tab>
   </mat-tab-group>

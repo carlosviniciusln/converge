@@ -1,3 +1,4 @@
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -34,6 +35,7 @@ export class SinteticoComponent implements OnInit {
   };
 
   constructor(
+    private http: HttpClient,
     private apiService: ApiService,
     public token: TokenStorageService
   ) {

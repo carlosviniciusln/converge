@@ -43,7 +43,7 @@
           }" value="{{this.contrato.dT_LANCAMENTO | date: 'dd/MM/yyyy'}}" />
       </div>
       <div class="col-md-3 pr-0">
-        <label for="cO_MATRICULA">Código Matricula:</label>
+        <label for="cO_MATRICULA">Usuário:</label>
         <input readonly formControlName="cO_MATRICULA" id="cO_MATRICULA" type="text" class="form-control"
           [ngClass]="{ 'is-invalid': submitted && f.cO_MATRICULA?.invalid }" value="{{this.contrato.cO_MATRICULA}}" />
       </div>
@@ -68,8 +68,7 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn-sm btn-secondary no-print"
-    routerLink="/contrato/detalhe/v/{{this.contrato.nU_CONTRATO}}" mat-raised-button
-    (click)="activeModal.dismiss('Cross click')"> Detalhar Pagamentos
+   (click)="irParaDetalhes()" mat-raised-button> Detalhar Pagamentos
   </button>
   <button class="btn-sm btn-default" type="submit" (click)="onSubmit()"
     *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false">

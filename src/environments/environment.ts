@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
-  end_point: '__BACK_API_URL__',
+  useLocalManagementData: true,
+  end_point: '',
   KEYCLOAK_URL: 'https://iam.converge.com/',
   KEYCLOAK_REALM: 'internet',
   KEYCLOAK_CLIENT_ID: 'cli-web-cvg'
