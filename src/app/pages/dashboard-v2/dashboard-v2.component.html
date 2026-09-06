@@ -1,143 +1,227 @@
 <div class="content">
   <div class="dash-wrapper" *ngIf="!loading && dadosDashboardOrcamentoExecucaoContratual">
 
-    <!-- ── HEADER ─────────────────────────────────────────── -->
-    <div class="dash-header">
-      <div class="dash-header__search">
-        <label class="search-label">Pesquise aqui um contrato</label>
-        <div class="search-field">
-          <p-dropdown [options]="dadosDashboardOrcamentoExecucaoContratual.contratosDropdown" [filter]="true"
-            [(ngModel)]="selectedContrato" optionLabel="label" optionValue="value" noresultslabel="Nenhum contrato encontrado"
-            (onChange)="goToContratoFromDropdown($event)" [showClear]="true" placeholder="Contrato"></p-dropdown>
-          <i class="pi pi-spin pi-spinner search-spinner" *ngIf="loading"></i>
-        </div>
-      </div>
+    <!-- ── GRID PRINCIPAL ─────────────────────────────────── -->
+    <div class="dashboard-grid">
 
-      <div class="dash-timestamp" *ngIf="dadosDashboardOrcamentoExecucaoContratual?.dhUltimaAtualizacao">
-        Atualizado em: <strong>{{ dadosDashboardOrcamentoExecucaoContratual?.dhUltimaAtualizacao }}</strong>
-      </div>
-    </div>
+      <!-- ══ COLUNA PRINCIPAL ══ -->
+      <div class="main-col">
 
-    <!-- ── BODY ───────────────────────────────────────────── -->
-    <div class="dash-body">
-
-      <!-- ORÇAMENTO -->
-      <section class="dash-section">
-        <h2 class="section-title">Orçamento</h2>
-        <!-- CAPEX -->
-        <div class="kpi-group">
-          <div class="kpi-group-header kpi-group-header--capex">
-            <span class="kpi-group-badge">CAPEX | Investimento</span>
+        <!-- KPIs -->
+        <div class="kpi-row">
+          <div class="kpi-card-v2 kpi-card-v2--teal">
+            <div class="kpi-card-v2__icon"><i class="material-icons">description</i></div>
+            <div class="kpi-card-v2__body">
+              <span class="kpi-card-v2__label">Contratos Vigentes</span>
+              <span class="kpi-card-v2__value">{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtContratoVigente | number:'1.0-0' }}</span>
+              <span class="kpi-card-v2__badge kpi-card-v2__badge--neutral">{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtPagamentoAno | number:'1.0-0' }} pagamentos no ano</span>
+            </div>
           </div>
-          <div class="cards-grid" style="margin-top: 12px;">
-            <div class="kpi-card">
-              <span class="kpi-label">Dotação</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.vrInvestimentoPlanejado| currency:'BRL'
-                }}</span>
+
+          <div class="kpi-card-v2 kpi-card-v2--blue">
+            <div class="kpi-card-v2__icon"><i class="material-icons">account_balance_wallet</i></div>
+            <div class="kpi-card-v2__body">
+              <span class="kpi-card-v2__label">Orçamento Total (CAPEX+OPEX)</span>
+              <span class="kpi-card-v2__value">{{ totalOrcamentoPlanejado | currency:'BRL' }}</span>
+              <span class="kpi-card-v2__badge kpi-card-v2__badge--neutral">Exercício {{ anoExercicio }}</span>
             </div>
-            <div class="kpi-card">
-              <span class="kpi-label">Empenho</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento.vrInvestimentoExecutado| currency:'BRL'
-                }}</span>
+          </div>
+
+          <div class="kpi-card-v2 kpi-card-v2--orange">
+            <div class="kpi-card-v2__icon"><i class="material-icons">trending_up</i></div>
+            <div class="kpi-card-v2__body">
+              <span class="kpi-card-v2__label">Total Executado no Ano</span>
+              <span class="kpi-card-v2__value">{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrExecutadoAno | currency:'BRL' }}</span>
+              <span class="kpi-card-v2__badge kpi-card-v2__badge--up">▲ {{ percExecucaoGeral | number:'1.1-1' }}% do orçamento</span>
             </div>
-            <div class="kpi-card ">
-              <span class="kpi-label">% (Dotação × Empenho)</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.pcInvestimentoRealizado }}%</span>
+          </div>
+
+          <div class="kpi-card-v2 kpi-card-v2--purple">
+            <div class="kpi-card-v2__icon"><i class="material-icons">savings</i></div>
+            <div class="kpi-card-v2__body">
+              <span class="kpi-card-v2__label">Saldo Disponível</span>
+              <span class="kpi-card-v2__value">{{ saldoOrcamentarioDisponivel | currency:'BRL' }}</span>
+              <span class="kpi-card-v2__badge kpi-card-v2__badge--down">{{ percSaldoDisponivel | number:'1.1-1' }}% disponível</span>
             </div>
           </div>
         </div>
 
-        <!-- OPEX -->
-        <div class="kpi-group">
-          <div class="kpi-group-header kpi-group-header--opex">
-            <span class="kpi-group-badge">OPEX | Custeio</span>
-          </div>
-          <div class="cards-grid">
-            <div class="kpi-card kpi-card--pct">
-              <span class="kpi-label ">Dotação</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.vrCusteioPlanejado| currency:'BRL'
-                }}</span>
-            </div>
-            <div class="kpi-card kpi-card--pct">
-              <span class="kpi-label">Empenho</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.vrCusteioExecutado | currency:'BRL'
-                }}</span>
-            </div>
-            <div class="kpi-card kpi-card--pct">
-              <span class="kpi-label">% (Dotação × Empenho)</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.pcCusteioRealizado }}%</span>
-            </div>
-          </div>
-        </div>
-      </section>
+        <!-- ORÇAMENTO x PRÓXIMOS PAGAMENTOS -->
+        <div class="row-2col row-2col--wide-left">
 
-      <!-- EXECUÇÃO CONTRATUAL -->
-      <section class="dash-section" style="height: 100%;">
-        <h2 class="section-title">Execução Contratual</h2>
-        <div class="kpi-group">
-          <div class="kpi-group-header kpi-group-header--capex">
-            <span class="kpi-group-badge">Contratos Vigentes: <span style="font-size: 1.3rem;">
-                {{dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual.qtContratoVigente}}
-              </span></span>
-          </div>
-          <div class="cards-grid">
-            <!-- <div class="kpi-card">
-          <span class="kpi-label">Quantidade</span>
-          <span class="kpi-value">{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual.qtContratoVigente }}</span>
-        </div> -->
-            <div class="kpi-card">
-              <span class="kpi-label">Total Contratado</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrGlobalVigente | currency:'BRL'
-                }}</span>
+          <div class="panel-card panel-card--budget">
+            <div class="panel-card__header">
+              <h2>Planejado x Executado — CAPEX/OPEX</h2>
             </div>
-            <div class="kpi-card">
-              <span class="kpi-label">Total Executado</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrExecutadoVigente |
-                currency:'BRL' }}</span>
+            <div class="budget-stats">
+              <div class="budget-stat">
+                <span class="budget-stat__value">{{ totalOrcamentoPlanejado | currency:'BRL' }}</span>
+                <span class="budget-stat__label">Orçamento Total</span>
+              </div>
+              <div class="budget-stat">
+                <span class="budget-stat__value">{{ totalOrcamentoExecutado | currency:'BRL' }}</span>
+                <span class="budget-stat__label">Total Executado</span>
+              </div>
+              <div class="budget-stat">
+                <span class="budget-stat__value">{{ saldoOrcamentarioDisponivel | currency:'BRL' }}</span>
+                <span class="budget-stat__label">Saldo Disponível</span>
+              </div>
+              <div class="budget-stat">
+                <span class="budget-stat__value">{{ percExecucaoGeral | number:'1.1-1' }}%</span>
+                <span class="budget-stat__label">Execução Orçamentária</span>
+              </div>
             </div>
-            <div class="kpi-card">
-              <span class="kpi-label">Total Retido</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrRetidoVigente | currency:'BRL'
-                }}</span>
+            <div class="chart-holder">
+              <canvas #budgetChart></canvas>
             </div>
           </div>
-        </div>
-        <div class="kpi-group">
-          <div class="kpi-group-header kpi-group-header--capex">
-            <span class="kpi-group-badge">Em {{anoExercicio}}</span>
-          </div>
-          <div class="cards-grid">
-            <div class="kpi-card">
-              <span class="kpi-label">Pagamentos no Ano</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtPagamentoAno | number:'1.0-0'
-                }}</span>
-            </div>
-            <div class="kpi-card">
-              <span class="kpi-label">Total Pago no Ano</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrExecutadoAno | currency:'BRL'
-                }}</span>
-            </div>
-            <div class="kpi-card">
-              <span class="kpi-label">Total Retido no Ano</span>
-              <span class="kpi-value">{{
-                dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrRetencaoAno | currency:'BRL'
-                }}</span>
-            </div>
-          </div>
-        </div>
-      </section>
 
-    </div><!-- /.dash-body -->
+          <div class="panel-card panel-card--payments">
+            <div class="panel-card__header">
+              <h2>Próximos Pagamentos</h2>
+            </div>
+            <div class="mini-calendar">
+              <div class="mini-calendar__title">{{ nomeMesCalendario }}</div>
+              <div class="mini-calendar__weekdays">
+                <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+              </div>
+              <div class="mini-calendar__grid">
+                <span *ngFor="let d of diasCalendario" class="mini-calendar__day"
+                  [class.is-empty]="!d.dia" [class.is-today]="d.hoje" [class.has-payment]="d.temPagamento">{{ d.dia }}</span>
+              </div>
+            </div>
+            <div class="payments-list">
+              <div class="payments-list__item" *ngFor="let p of pagamentosPrevistos" [class.is-urgent]="p.urgente">
+                <div class="payments-list__date"><span>{{ p.dia }}</span><small>{{ p.mes }}</small></div>
+                <div class="payments-list__info">
+                  <strong>{{ p.descricao }}</strong>
+                  <span>Contrato {{ p.contrato }} · {{ p.fornecedor }}</span>
+                </div>
+                <div class="payments-list__value">{{ p.valor | currency:'BRL' }}</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DISTRIBUIÇÃO x CONTRATOS RECENTES -->
+        <div class="row-2col row-2col--wide-right">
+
+          <div class="panel-card panel-card--donut">
+            <div class="panel-card__header"><h2>Distribuição do Orçamento Executado</h2></div>
+            <div class="donut-holder">
+              <canvas #donutChart></canvas>
+              <div class="donut-holder__center">
+                <span>{{ percExecucaoGeral | number:'1.0-0' }}%</span>
+                <small>Executado</small>
+              </div>
+            </div>
+            <ul class="legend-list">
+              <li><span class="legend-dot legend-dot--capex"></span>CAPEX Executado <strong>{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.vrInvestimentoExecutado | currency:'BRL' }}</strong></li>
+              <li><span class="legend-dot legend-dot--opex"></span>OPEX Executado <strong>{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardOrcamento?.vrCusteioExecutado | currency:'BRL' }}</strong></li>
+              <li><span class="legend-dot legend-dot--saldo"></span>Saldo Disponível <strong>{{ saldoOrcamentarioDisponivel | currency:'BRL' }}</strong></li>
+            </ul>
+          </div>
+
+          <div class="panel-card panel-card--table">
+            <div class="panel-card__header">
+              <h2>Contratos Recentes</h2>
+              <a class="link-btn" routerLink="/contrato">Ver todos</a>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table" *ngIf="contratosOrigem?.length; else semContratos">
+                <thead>
+                  <tr>
+                    <th>Contrato</th>
+                    <th>Fornecedor</th>
+                    <th>Tipo</th>
+                    <th>Valor Global</th>
+                    <th>% Executado</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of contratosOrigem.slice(0,6)">
+                    <td>{{ c.coContrato }}</td>
+                    <td>{{ c.noEmpresa }}</td>
+                    <td>{{ c.noContratoTipo }}</td>
+                    <td>{{ c.vrGlobal | currency:'BRL' }}</td>
+                    <td>{{ c.percVrExecutado }}%</td>
+                    <td><span class="status-pill" [ngClass]="statusClasse(c.status)">{{ c.status }}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #semContratos>
+              <div class="empty-state">Nenhum contrato novo identificado no período.</div>
+            </ng-template>
+          </div>
+
+        </div>
+
+      </div><!-- /.main-col -->
+
+      <!-- ══ COLUNA LATERAL ══ -->
+      <div class="side-col">
+
+        <div class="panel-card panel-card--activity">
+          <div class="panel-card__header">
+            <h2>Atividades em Tempo Real</h2>
+            <span class="live-badge"><span class="live-dot"></span>ao vivo</span>
+          </div>
+          <div class="activity-feed">
+            <div class="activity-feed__track">
+              <div class="activity-item" *ngFor="let a of atividades" [ngClass]="'activity-item--' + a.cor">
+                <div class="activity-item__icon"><i class="material-icons">{{ a.icon }}</i></div>
+                <div class="activity-item__body">
+                  <strong>{{ a.titulo }}</strong>
+                  <span>{{ a.descricao }}</span>
+                  <small>{{ a.tempo }}</small>
+                </div>
+              </div>
+              <div class="activity-item" *ngFor="let a of atividades" [ngClass]="'activity-item--' + a.cor" aria-hidden="true">
+                <div class="activity-item__icon"><i class="material-icons">{{ a.icon }}</i></div>
+                <div class="activity-item__body">
+                  <strong>{{ a.titulo }}</strong>
+                  <span>{{ a.descricao }}</span>
+                  <small>{{ a.tempo }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card panel-card--top">
+          <div class="panel-card__header"><h2>Top 10 Rubricas por Execução</h2></div>
+          <ol class="top-list">
+            <li *ngFor="let r of topRubricas; let i = index">
+              <span class="top-list__rank">{{ i + 1 }}.</span>
+              <span class="top-list__name">{{ r.nome }}</span>
+              <span class="top-list__value">{{ r.valor | currency:'BRL':'symbol':'1.0-0' }}</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="panel-card panel-card--alerts">
+          <div class="alert-quote">
+            <div class="alert-quote__icon"><i class="material-icons">verified</i></div>
+            <p>"Renovação do Contrato Nº 1123/2025 processada sem inconsistências."</p>
+            <span>— Módulo de Conformidade</span>
+          </div>
+          <div class="alert-quote alert-quote--warning">
+            <div class="alert-quote__icon"><i class="material-icons">warning</i></div>
+            <p>"3 contratos com saldo orçamentário abaixo de 10% identificados esta semana."</p>
+            <span>— Módulo de Orçamento</span>
+          </div>
+        </div>
+
+      </div><!-- /.side-col -->
+
+    </div><!-- /.dashboard-grid -->
   </div><!-- /.dash-wrapper -->
+
+  <div class="dash-loading" *ngIf="loading">
+    <i class="pi pi-spin pi-spinner"></i>
+    <span>Carregando dados do painel...</span>
+  </div>
 </div><!-- /.content -->

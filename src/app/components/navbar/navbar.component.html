@@ -30,8 +30,8 @@
     <div class="custom-header__right">
       <div *ngIf="isLoggedIn && currentUser" class="custom-header__user">
         <div class="custom-header__greeting">
-          <span class="custom-header__greeting-label">Olá</span>
-          <span class="custom-header__username">{{ currentUser?.noUsuario }}</span>
+          <span class="custom-header__greeting-label">{{ saudacao }},</span>
+          <span class="custom-header__username">{{ currentUser?.noUsuario }}!</span>
         </div>
         <span class="custom-header__workunit">{{ currentUser?.noPerfil }}</span>
       </div>
@@ -51,6 +51,6 @@
   <div class="custom-header__classification">
     <span class="custom-header__classification-label">Conteúdo</span>
     <span class="custom-header__classification-title">OS DADOS PESSOAIS ESTÃO DE ACORDO COM AS NORMAS DA LGPD</span>
-    <span class="custom-header__classification-info">{{ ultimaAtualizacao }}</span>
+    <span class="custom-header__classification-info">Atualizado em: <strong>{{ dataHoraAtual }}</strong></span>
   </div>
 </header>

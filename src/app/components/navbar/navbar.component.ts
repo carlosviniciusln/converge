@@ -5,7 +5,6 @@ import { KeycloakService } from "keycloak-angular";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 import { SidenavService } from "src/app/services/sidenav.service";
-import { AppInfoService } from "src/app/services/app-info.service";
 import { MatDialog } from "@angular/material/dialog";
 import { LoginComponent } from "src/app/components/login/login.component";
 import { LoaderService } from "src/app/core/services/loader.service";
@@ -18,18 +17,17 @@ import { LoaderService } from "src/app/core/services/loader.service";
 export class NavbarComponent implements OnInit, OnDestroy {
   currentUser: any;
   isLoggedIn = false;
-  ultimaAtualizacao = '';
+  dataHoraAtual = '';
   searchTerm = '';
 
   private routerSub!: Subscription;
-  private infSub!: Subscription;
+  private relogioInterval?: ReturnType<typeof setInterval>;
 
   constructor(
     public router: Router,
     private token: TokenStorageService,
     private keycloak: KeycloakService,
     public sidenav: SidenavService,
-    public appInfo: AppInfoService,
     private dialog: MatDialog,
     private loader: LoaderService
   ) {
@@ -42,11 +40,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.sidenav.close());
 
-    this.infSub = this.appInfo.ultimaAtualizacao$.subscribe(value => {
-      this.ultimaAtualizacao = value ? `Atualizado em: ${value}` : '';
-    });
+    this.atualizarDataHora();
+    this.relogioInterval = setInterval(() => this.atualizarDataHora(), 60000);
+  }
 
-    this.appInfo.carregar();
+  get saudacao(): string {
+    const hora = new Date().getHours();
+    if (hora < 12) return 'Bom dia';
+    if (hora < 18) return 'Boa tarde';
+    return 'Boa noite';
+  }
+
+  private atualizarDataHora(): void {
+    const agora = new Date();
+    const dia = String(agora.getDate()).padStart(2, '0');
+    const mes = String(agora.getMonth() + 1).padStart(2, '0');
+    const hora = String(agora.getHours()).padStart(2, '0');
+    const minuto = String(agora.getMinutes()).padStart(2, '0');
+    this.dataHoraAtual = `${dia}/${mes}/${agora.getFullYear()} ${hora}:${minuto}`;
   }
 
   toggleMenu(): void {
@@ -105,6 +116,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routerSub?.unsubscribe();
-    this.infSub?.unsubscribe();
+    if (this.relogioInterval) {
+      clearInterval(this.relogioInterval);
+    }
   }
 }
