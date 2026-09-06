@@ -1,0 +1,96 @@
+// ─── Splashscreen mobile com a marca Converge ────────────────────────────────
+// Em telas de desktop a splash não é exibida: a rota redireciona direto.
+
+$primary:      #005CA9;
+$primary-dark: #002A4D;
+$accent:       #FF8C00;
+$white:        #ffffff;
+
+.splash {
+  position:        fixed;
+  inset:           0;
+  z-index:         9999;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             32px;
+  background:      linear-gradient(160deg, $primary-dark 0%, $primary 55%, #2D8AD8 100%);
+  color:           $white;
+  font-family:     'CAIXA Std', 'Segoe UI', sans-serif;
+  animation:       splash-fade-in 200ms ease-out;
+  padding:         24px;
+  padding-top:     max(24px, env(safe-area-inset-top));
+  padding-bottom:  max(24px, env(safe-area-inset-bottom));
+  text-align:      center;
+}
+
+.splash__brand {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            12px;
+  animation:      splash-brand-in 600ms cubic-bezier(0.2, 0.8, 0.3, 1.1);
+}
+
+.splash__logo {
+  width:           96px;
+  height:          96px;
+  object-fit:      contain;
+  padding:         16px;
+  background:      rgba($white, 0.96);
+  border-radius:   24px;
+  box-shadow:      0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.splash__title {
+  margin:         8px 0 0;
+  font-size:      2rem;
+  font-weight:    800;
+  letter-spacing: 6px;
+}
+
+.splash__subtitle {
+  margin:      0;
+  font-size:   0.9rem;
+  font-weight: 400;
+  opacity:     0.85;
+  letter-spacing: 1px;
+}
+
+// ─── Loader de 3 pontos ──────────────────────────────────────────────────────
+.splash__loader {
+  display: flex;
+  gap:     10px;
+
+  span {
+    width:         10px;
+    height:        10px;
+    border-radius: 50%;
+    background:    $accent;
+    animation:     splash-pulse 1s ease-in-out infinite;
+
+    &:nth-child(2) { animation-delay: 150ms; }
+    &:nth-child(3) { animation-delay: 300ms; }
+  }
+}
+
+@keyframes splash-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes splash-brand-in {
+  from { opacity: 0; transform: scale(0.85) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes splash-pulse {
+  0%, 100% { transform: scale(0.6); opacity: 0.4; }
+  50%      { transform: scale(1);   opacity: 1; }
+}
+
+// ─── Desktop: sem splash (redirecionamento imediato é feito na rota) ─────────
+@media (min-width: 768px) {
+  .splash { display: none; }
+}

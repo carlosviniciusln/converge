@@ -1,0 +1,19 @@
+{
+  "name": "Converge - Plataforma de Gestão Estratégica de Contratos",
+  "short_name": "Converge",
+  "description": "Gestão Estratégica de Contratos, Planejamento e Orçamento",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#005CA9",
+  "theme_color": "#005CA9",
+  "icons": [
+    {
+      "src": "assets/img/logo.png",
+      "sizes": "1087x1087",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

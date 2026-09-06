@@ -68,6 +68,7 @@ import { PagesComponent } from "./pages/pages.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { NavbarComponent } from "./components/navbar/navbar.component";
 import { DevelopComponent } from "./components/develop/develop.component";
+import { SplashComponent } from "./pages/splash/splash.component";
 import { KeycloakInitService } from "../keycloak.init";
 import { KeycloakService } from "keycloak-angular";
 import { CustomKeycloakInterceptor } from "./core/interceptors/keycloak.interceptor";
@@ -146,6 +147,7 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     SidebarComponent,
     NavbarComponent,
     DevelopComponent,
+    SplashComponent,
   ],
   providers: [
     AuthGuard,
