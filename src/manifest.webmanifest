@@ -10,10 +10,22 @@
   "theme_color": "#005CA9",
   "icons": [
     {
-      "src": "assets/img/logo.png",
-      "sizes": "1087x1087",
+      "src": "assets/img/logo-180.png",
+      "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "assets/img/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/logo-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
