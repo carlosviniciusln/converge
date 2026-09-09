@@ -13,8 +13,8 @@
             <div class="kpi-card-v2__icon"><i class="material-icons">description</i></div>
             <div class="kpi-card-v2__body">
               <span class="kpi-card-v2__label">Contratos Vigentes</span>
-              <span class="kpi-card-v2__value">{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtContratoVigente | number:'1.0-0' }}</span>
-              <span class="kpi-card-v2__badge kpi-card-v2__badge--neutral">{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtPagamentoAno | number:'1.0-0' }} pagamentos no ano</span>
+              <span class="kpi-card-v2__value" [appCountUp]="dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtContratoVigente"></span>
+              <span class="kpi-card-v2__badge kpi-card-v2__badge--neutral"><span [appCountUp]="dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtPagamentoAno"></span> pagamentos no ano</span>
             </div>
           </div>
 
@@ -22,7 +22,7 @@
             <div class="kpi-card-v2__icon"><i class="material-icons">account_balance_wallet</i></div>
             <div class="kpi-card-v2__body">
               <span class="kpi-card-v2__label">Orçamento Total (CAPEX+OPEX)</span>
-              <span class="kpi-card-v2__value">{{ totalOrcamentoPlanejado | currency:'BRL' }}</span>
+              <span class="kpi-card-v2__value" [appCountUp]="totalOrcamentoPlanejado" appCountUpFormat="currency"></span>
               <span class="kpi-card-v2__badge kpi-card-v2__badge--neutral">Exercício {{ anoExercicio }}</span>
             </div>
           </div>
@@ -31,8 +31,8 @@
             <div class="kpi-card-v2__icon"><i class="material-icons">trending_up</i></div>
             <div class="kpi-card-v2__body">
               <span class="kpi-card-v2__label">Total Executado no Ano</span>
-              <span class="kpi-card-v2__value">{{ dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrExecutadoAno | currency:'BRL' }}</span>
-              <span class="kpi-card-v2__badge kpi-card-v2__badge--up">▲ {{ percExecucaoGeral | number:'1.1-1' }}% do orçamento</span>
+              <span class="kpi-card-v2__value" [appCountUp]="dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrExecutadoAno" appCountUpFormat="currency"></span>
+              <span class="kpi-card-v2__badge kpi-card-v2__badge--up">▲ <span [appCountUp]="percExecucaoGeral" [appCountUpDecimals]="1"></span>% do orçamento</span>
             </div>
           </div>
 
@@ -40,8 +40,8 @@
             <div class="kpi-card-v2__icon"><i class="material-icons">savings</i></div>
             <div class="kpi-card-v2__body">
               <span class="kpi-card-v2__label">Saldo Disponível</span>
-              <span class="kpi-card-v2__value">{{ saldoOrcamentarioDisponivel | currency:'BRL' }}</span>
-              <span class="kpi-card-v2__badge kpi-card-v2__badge--down">{{ percSaldoDisponivel | number:'1.1-1' }}% disponível</span>
+              <span class="kpi-card-v2__value" [appCountUp]="saldoOrcamentarioDisponivel" appCountUpFormat="currency"></span>
+              <span class="kpi-card-v2__badge kpi-card-v2__badge--down"><span [appCountUp]="percSaldoDisponivel" [appCountUpDecimals]="1"></span>% disponível</span>
             </div>
           </div>
         </div>

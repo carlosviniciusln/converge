@@ -74,6 +74,8 @@ import { KeycloakService } from "keycloak-angular";
 import { CustomKeycloakInterceptor } from "./core/interceptors/keycloak.interceptor";
 import { DialogService } from "primeng/dynamicdialog";
 import { MockBackendInterceptor } from "./interceptors/mock-backend.interceptor";
+import { PullToRefreshComponent } from "./components/pull-to-refresh/pull-to-refresh.component";
+import { CountUpDirective } from "./shared/directives/count-up.directive";
 
 registerLocaleData(ptBr);
 
@@ -148,6 +150,8 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     NavbarComponent,
     DevelopComponent,
     SplashComponent,
+    PullToRefreshComponent,
+    CountUpDirective,
   ],
   providers: [
     AuthGuard,
