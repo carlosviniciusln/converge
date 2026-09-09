@@ -103,6 +103,7 @@ import { PenalidadesComponent } from './penalidades/penalidades.component';
 import { BuscaContratoComponent } from './dashboard/busca-contrato/busca-contrato.component';
 import { BuscaUdComponent } from './dashboard/busca-ud/busca-ud.component';
 import { BuscaGerencialComponent } from './dashboard/busca-gerencial/busca-gerencial.component';
+import { CountUpDirective } from '../shared/directives/count-up.directive';
 
 
 
@@ -162,6 +163,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   declarations: [
     DashboardComponent,
     DashboardV2Component,
+    CountUpDirective,
     ContratoComponent,
     ContratoVigenciaComponent,
     PlanejamentoComponent,

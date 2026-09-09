@@ -30,11 +30,6 @@ export class PullToRefreshComponent {
     return { transform: `translateY(${translate}px)` };
   }
 
-  get iconRotation(): { [key: string]: string } {
-    const deg = this.readyToRelease ? 180 : Math.min((this.pullDistance / PULL_THRESHOLD) * 180, 180);
-    return { transform: `rotate(${deg}deg)` };
-  }
-
   @HostListener('window:touchstart', ['$event'])
   onTouchStart(event: TouchEvent): void {
     if (this.refreshing || !this.isMobile() || !this.isAtTop()) { return; }
