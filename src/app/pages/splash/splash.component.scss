@@ -1,0 +1,123 @@
+// ─── Splashscreen mobile com a marca Converge ────────────────────────────────
+// Em telas de desktop a splash não é exibida: a rota redireciona direto.
+
+$primary:      #005CA9;
+$primary-dark: #002A4D;
+$primary-light:#2D8AD8;
+$accent:       #FF8C00;
+$white:        #ffffff;
+
+.splash {
+  position:        fixed;
+  inset:           0;
+  z-index:         9999;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             36px;
+  background:      linear-gradient(160deg, $primary-dark 0%, $primary 55%, $primary-light 100%);
+  color:           $white;
+  font-family:     'CAIXA Std', 'Segoe UI', sans-serif;
+  animation:       splash-fade-in 300ms ease-out;
+  padding:         24px;
+  padding-top:     max(24px, env(safe-area-inset-top));
+  padding-bottom:  max(24px, env(safe-area-inset-bottom));
+  text-align:      center;
+}
+
+.splash__brand {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            12px;
+  animation:      splash-brand-in 600ms cubic-bezier(0.2, 0.8, 0.3, 1.1);
+}
+
+.splash__logo-container {
+  width:           104px;
+  height:          104px;
+  border-radius:   26px;
+  overflow:        hidden;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  box-shadow:      0 16px 36px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba($white, 0.2);
+}
+
+.splash__logo {
+  width:           100%;
+  height:          100%;
+  object-fit:      contain;
+  display:         block;
+}
+
+.splash__title {
+  margin:         10px 0 0;
+  font-size:      2.2rem;
+  font-weight:    800;
+  letter-spacing: 6px;
+  color:          $white !important;
+  text-shadow:    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.splash__subtitle {
+  margin:         0;
+  font-size:      0.95rem;
+  font-weight:    400;
+  color:          rgba($white, 0.9) !important;
+  letter-spacing: 1px;
+}
+
+// ─── Loader Elegante ─────────────────────────────────────────────────────────
+.splash__loader {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            12px;
+}
+
+.splash__spinner {
+  width:         32px;
+  height:        32px;
+  border:        3px solid rgba($white, 0.25);
+  border-top:    3px solid $white;
+  border-right:  3px solid rgba($white, 0.8);
+  border-radius: 50%;
+  animation:     splash-spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  box-shadow:    0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.splash__loading-text {
+  font-size:      12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color:          rgba($white, 0.85);
+  font-weight:    500;
+  animation:      splash-pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes splash-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes splash-brand-in {
+  from { opacity: 0; transform: scale(0.88) translateY(18px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes splash-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes splash-pulse-text {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+// ─── Desktop: sem splash (redirecionamento imediato é feito na rota) ─────────
+@media (min-width: 768px) {
+  .splash { display: none; }
+}

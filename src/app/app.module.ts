@@ -68,11 +68,13 @@ import { PagesComponent } from "./pages/pages.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { NavbarComponent } from "./components/navbar/navbar.component";
 import { DevelopComponent } from "./components/develop/develop.component";
+import { SplashComponent } from "./pages/splash/splash.component";
 import { KeycloakInitService } from "../keycloak.init";
 import { KeycloakService } from "keycloak-angular";
 import { CustomKeycloakInterceptor } from "./core/interceptors/keycloak.interceptor";
 import { DialogService } from "primeng/dynamicdialog";
 import { MockBackendInterceptor } from "./interceptors/mock-backend.interceptor";
+import { PullToRefreshComponent } from "./components/pull-to-refresh/pull-to-refresh.component";
 
 registerLocaleData(ptBr);
 
@@ -146,6 +148,8 @@ export function initializeKeycloak(keycloakInit: KeycloakInitService){
     SidebarComponent,
     NavbarComponent,
     DevelopComponent,
+    SplashComponent,
+    PullToRefreshComponent,
   ],
   providers: [
     AuthGuard,
