@@ -2,14 +2,14 @@
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">
       <b>{{ titulo }}</b><br />
-      <small>{{ ativaPreposto || selectTab === 1 ? subTituloContatos : subTitulo }}</small>
+      <small>{{ subTitulo }}</small>
     </h4>
     <button
       style="z-index: 10;"
       type="button"
       class="close"
-      aria-label="Close"
-      (click)="ativaPreposto = false; activeModal.dismiss('Cross click')"
+      aria-label="Fechar"
+      (click)="fecharModal()"
     >
       <span aria-hidden="true">×</span>
     </button>
@@ -167,9 +167,9 @@
           <br />
           <div class="row">
             <div class="col-md-6">
-              <h4 class="modal-title" id="modal-basic-title">
+            <h5 class="modal-title">
                 <b>Aditivos e Vigências</b><br /><small>cadastro de aditivos e vigências do contrato</small>
-              </h4>
+            </h5>
             </div>
           </div>
           <br />
@@ -280,7 +280,7 @@
 
 
               <div class="col-md-12">
-                <div class="modal-title" id="modal-basic-title" style="display: flex; align-items: center; padding: 10px;">
+                <div class="modal-title" style="display: flex; align-items: center; padding: 10px;">
                   <h5><b>Rubricas e Valor Global</b></h5>
                 </div>
                 <div class="div-rubricas" formArrayName="rubricas" *ngFor="
@@ -338,7 +338,7 @@
     </mat-tab>
     <mat-tab label="Prepostos">
       <div class="menu-add">
-          <h4 class="modal-title tab-panel-title" id="modal-basic-title">
+          <h4 class="modal-title tab-panel-title">
             <small>{{ subTituloContatos }}</small>
           </h4>
         <div *ngIf="!ativaPreposto" class="col-md-5 text-right pb-1" >
