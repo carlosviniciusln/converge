@@ -1,0 +1,5 @@
+<div class="pull-to-refresh" [class.pull-to-refresh--active]="pulling || refreshing">
+  <div class="pull-to-refresh__indicator" [ngStyle]="indicatorStyle">
+    <span *ngIf="refreshing" class="pull-to-refresh__spinner" aria-hidden="true"></span>
+  </div>
+</div>
