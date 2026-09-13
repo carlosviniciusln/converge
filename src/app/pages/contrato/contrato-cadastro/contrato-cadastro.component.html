@@ -1,17 +1,22 @@
 
   <div class="modal-header">
-    <button style="z-index: 10;" type="button"  class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')" (click)="ativaPreposto = false">
+    <h4 class="modal-title" id="modal-basic-title">
+      <b>{{ titulo }}</b><br />
+      <small>{{ ativaPreposto || selectTab === 1 ? subTituloContatos : subTitulo }}</small>
+    </h4>
+    <button
+      style="z-index: 10;"
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="ativaPreposto = false; activeModal.dismiss('Cross click')"
+    >
       <span aria-hidden="true">×</span>
     </button>
   </div>
 
   <mat-tab-group (selectedTabChange)="onTabChange($event)">
     <mat-tab *ngIf="!ativaPreposto"  label="Edição" style="margin-left: 19px;">
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">
-          <small>{{ subTitulo }}</small>
-        </h4>
-      </div>
       <div class="modal-body">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="row">
@@ -333,11 +338,9 @@
     </mat-tab>
     <mat-tab label="Prepostos">
       <div class="menu-add">
-         <div class="modal-header" id="contatosRepresentates">
-          <h4 class="modal-title" id="modal-basic-title">
+          <h4 class="modal-title tab-panel-title" id="modal-basic-title">
             <small>{{ subTituloContatos }}</small>
           </h4>
-        </div>
         <div *ngIf="!ativaPreposto" class="col-md-5 text-right pb-1" >
           <button type="button" class="btn-sm btn-secondary"  (click)="adicionarContato()" >
             <i class="tim-icons icon-simple-add"></i>

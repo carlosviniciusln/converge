@@ -38,7 +38,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-right: 10px
+    margin: 16px 24px 0;
 }
 ::ng-deep .mat-tab-label {
   font-size: 1.1rem;
@@ -59,10 +59,6 @@
   }
 }
 
-.modal-header#contatosRepresentates{
-  padding: 24px 24px 24px 24px !important; 
-}
-
 :host ::ng-deep mat-tab-group > mat-tab-header{
   margin: 24px 24px 0px 24px;
 }
@@ -75,7 +71,11 @@
 }
 
 :host .modal-header{
-  padding: 5px 24px 0px 24px !important;
+  padding: 16px 24px !important;
+}
+
+.tab-panel-title {
+  margin: 0;
 }
 
 ::ng-deep .modal-dialog-custom-redirect-width .modal-dialog {
