@@ -795,6 +795,12 @@ export class ContratoCadastroComponent implements OnInit {
   onTabChange(event) {
     this.selectTab = event.index;
   }
+
+  fecharModal(): void {
+    this.ativaPreposto = false;
+    this.activeModal.dismiss('Cross click');
+  }
+
   // public async obterCaixas(): Promise<void> {
   //   try {
   //     const response = await this.apiService.get<ApiResponse<Usuario[]>>(
