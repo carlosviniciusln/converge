@@ -64,8 +64,8 @@ export class FaturamentoMotorComponent implements OnInit {
   retencaoTributariaReais = 0;
 
   readonly abas: Array<{ id: AbaMotor; titulo: string; icone: string }> = [
-    { id: 'cockpit', titulo: 'Competências', icone: 'fa-table-list' },
     { id: 'visao', titulo: 'Visão geral', icone: 'fa-chart-pie' },
+    { id: 'cockpit', titulo: 'Competências', icone: 'fa-table-list' },
     { id: 'itens', titulo: 'Itens e unidades', icone: 'fa-cubes' },
     { id: 'regras', titulo: 'Regras de faturamento', icone: 'fa-code-branch' },
     { id: 'sla', titulo: 'SLA e faixas', icone: 'fa-gauge-high' },
@@ -98,17 +98,6 @@ export class FaturamentoMotorComponent implements OnInit {
     await this.carregarContratos();
   }
 
-  get regrasAtivas(): number {
-    if (!this.contratoSelecionado) return 0;
-    return this.contratoSelecionado.regrasFaturamento.filter(item => item.ativa).length
-      + this.contratoSelecionado.indicadoresSla.filter(item => item.ativo).length
-      + this.contratoSelecionado.penalidades.filter(item => item.ativa).length;
-  }
-
-  get documentosBloqueadores(): number {
-    return this.contratoSelecionado?.documentosObrigatorios.filter(item => item.ativo && item.obrigatorioParaPagamento).length || 0;
-  }
-
   get competenciasFiltradas(): CompetenciaFaturamento[] {
     return this.competencias.filter(item => !this.filtroStatus || item.status === this.filtroStatus);
   }
@@ -139,6 +128,7 @@ export class FaturamentoMotorComponent implements OnInit {
     const contrato = await this.repository.obterContrato(Number(id));
     if (!contrato) return;
     this.contratoSelecionado = contrato;
+    this.abaAtiva = 'visao';
     this.cancelarEdicoes();
     await this.carregarOperacao();
   }
@@ -158,11 +148,13 @@ export class FaturamentoMotorComponent implements OnInit {
   }
 
   novoItem(): void {
+    this.editandoUnidadeId = undefined;
     this.editandoItemId = 0;
     this.itemForm = this.criarItemForm();
   }
 
   editarItem(item: ItemFaturavel): void {
+    this.editandoUnidadeId = undefined;
     this.editandoItemId = item.id;
     this.itemForm = this.criarItemForm(item);
   }
@@ -194,11 +186,13 @@ export class FaturamentoMotorComponent implements OnInit {
   }
 
   novaUnidade(): void {
+    this.editandoItemId = undefined;
     this.editandoUnidadeId = 0;
     this.unidadeForm = this.criarUnidadeForm();
   }
 
   editarUnidade(unidade: UnidadePrestacao): void {
+    this.editandoItemId = undefined;
     this.editandoUnidadeId = unidade.id;
     this.unidadeForm = this.criarUnidadeForm(unidade);
   }

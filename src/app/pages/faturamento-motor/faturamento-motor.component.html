@@ -53,9 +53,12 @@
     </section>
 
     <section *ngIf="abaAtiva === 'visao'" class="overview-grid">
-      <article class="summary-card"><i class="fas fa-cubes"></i><div><span>Itens faturáveis</span><strong>{{ contrato.itens.length }}</strong><small>{{ contrato.unidades.length }} unidades vinculáveis</small></div></article>
-      <article class="summary-card"><i class="fas fa-code-branch"></i><div><span>Regras ativas</span><strong>{{ regrasAtivas }}</strong><small>Faturamento, SLA e penalidades</small></div></article>
-      <article class="summary-card"><i class="fas fa-file-shield"></i><div><span>Documentos bloqueadores</span><strong>{{ documentosBloqueadores }}</strong><small>Sem desconto automático</small></div></article>
+      <article class="summary-card"><i class="fas fa-cubes"></i><div><span>Itens faturáveis</span><strong>{{ contrato.itens.length }}</strong><small>Itens exibidos na configuração</small></div></article>
+      <article class="summary-card"><i class="fas fa-location-dot"></i><div><span>Unidades de prestação</span><strong>{{ contrato.unidades.length }}</strong><small>Unidades exibidas na configuração</small></div></article>
+      <article class="summary-card"><i class="fas fa-code-branch"></i><div><span>Regras de faturamento</span><strong>{{ contrato.regrasFaturamento.length }}</strong><small>Regras exibidas na aba</small></div></article>
+      <article class="summary-card"><i class="fas fa-gauge-high"></i><div><span>Indicadores de SLA</span><strong>{{ contrato.indicadoresSla.length }}</strong><small>Indicadores exibidos na aba</small></div></article>
+      <article class="summary-card"><i class="fas fa-triangle-exclamation"></i><div><span>Penalidades</span><strong>{{ contrato.penalidades.length }}</strong><small>Penalidades exibidas na aba</small></div></article>
+      <article class="summary-card"><i class="fas fa-file-shield"></i><div><span>Documentos obrigatórios</span><strong>{{ contrato.documentosObrigatorios.length }}</strong><small>{{ contrato.documentosObrigatorios.length }} exibido(s) na aba</small></div></article>
       <article class="summary-card summary-card--value"><i class="fas fa-coins"></i><div><span>Valor global</span><strong>{{ contrato.valorGlobalCentavos / 100 | currency:'BRL' }}</strong><small>{{ contrato.periodicidade | titlecase }}</small></div></article>
 
       <div class="panel contract-profile">
@@ -74,8 +77,9 @@
       </div>
     </section>
 
-    <section *ngIf="abaAtiva === 'itens'" class="workspace-grid">
-      <div class="panel records-panel">
+    <section *ngIf="abaAtiva === 'itens'" class="workspace-grid items-workspace" [class.items-workspace--listing]="editandoItemId === undefined && editandoUnidadeId === undefined">
+      <div class="workspace-column">
+        <div class="panel records-panel">
         <div class="panel-title"><div><span class="step-number">1</span><h2>Itens faturáveis</h2></div><button class="btn-primary" type="button" (click)="novoItem()"><i class="fas fa-plus"></i> Novo item</button></div>
         <div class="record" *ngFor="let item of contrato.itens">
           <div class="record-main"><span class="type-icon"><i class="fas fa-cube"></i></span><div><strong>{{ item.codigo }} · {{ item.descricao }}</strong><span>{{ formatarEnum(item.tipo) }} · {{ item.quantidadeContratada }} {{ item.unidadeMedida }}</span></div></div>
@@ -83,31 +87,35 @@
           <div class="record-actions"><button title="Editar item" (click)="editarItem(item)"><i class="fas fa-pen"></i></button><button title="Excluir item" (click)="excluirItem(item)"><i class="fas fa-trash"></i></button></div>
         </div>
         <div class="empty" *ngIf="!contrato.itens.length">Nenhum item faturável configurado.</div>
-      </div>
-
-      <form class="panel editor-panel" *ngIf="editandoItemId !== undefined" [formGroup]="itemForm" (ngSubmit)="salvarItem()">
-        <div class="panel-title"><div><span class="step-number">2</span><h2>{{ editandoItemId ? 'Editar' : 'Novo' }} item</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoItemId = undefined"><i class="fas fa-xmark"></i></button></div>
-        <div class="form-grid">
-          <label>Código<input formControlName="codigo" /></label><label>Tipo<select formControlName="tipo"><option *ngFor="let tipo of tiposObjeto" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label>
-          <label class="wide">Descrição<input formControlName="descricao" /></label><label>Unidade de medida<input formControlName="unidadeMedida" /></label>
-          <label>Quantidade contratada<input type="number" min="0" formControlName="quantidadeContratada" /></label>
-          <label>Valor unitário (R$)<input type="number" min="0" step="0.01" formControlName="valorUnitario" /></label><label>Valor mensal (R$)<input type="number" min="0" step="0.01" formControlName="valorMensal" /></label>
-          <label>Unidade vinculada<select formControlName="unidadeId"><option value="">Sem vínculo</option><option *ngFor="let unidade of contrato.unidades" [value]="unidade.id">{{ unidade.codigo }}</option></select></label>
-          <label>Início da vigência<input type="date" formControlName="inicioVigencia" /></label><label>Fim da vigência<input type="date" formControlName="fimVigencia" /></label>
         </div>
-        <div class="check-row"><label><input type="checkbox" formControlName="permiteProRata" /> Permite pro rata</label><label><input type="checkbox" formControlName="permiteRetencao" /> Permite retenção</label></div>
-        <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoItemId = undefined">Cancelar</button><button class="btn-primary" type="submit"><i class="fas fa-check"></i> Salvar item</button></div>
-      </form>
 
-      <div class="panel records-panel">
+        <div class="panel records-panel">
         <div class="panel-title"><div><span class="step-number">3</span><h2>Unidades de prestação</h2></div><button class="btn-primary" type="button" (click)="novaUnidade()"><i class="fas fa-plus"></i> Nova unidade</button></div>
         <div class="record" *ngFor="let unidade of contrato.unidades"><div class="record-main"><span class="type-icon"><i class="fas fa-location-dot"></i></span><div><strong>{{ unidade.codigo }} · {{ unidade.descricao }}</strong><span>{{ formatarEnum(unidade.tipo) }}<ng-container *ngIf="unidade.municipio"> · {{ unidade.municipio }}/{{ unidade.uf }}</ng-container></span></div></div><div class="record-actions"><button title="Editar unidade" (click)="editarUnidade(unidade)"><i class="fas fa-pen"></i></button><button title="Excluir unidade" (click)="excluirUnidade(unidade)"><i class="fas fa-trash"></i></button></div></div>
+        </div>
       </div>
-      <form class="panel editor-panel" *ngIf="editandoUnidadeId !== undefined" [formGroup]="unidadeForm" (ngSubmit)="salvarUnidade()">
-        <div class="panel-title"><div><span class="step-number">4</span><h2>{{ editandoUnidadeId ? 'Editar' : 'Nova' }} unidade</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoUnidadeId = undefined"><i class="fas fa-xmark"></i></button></div>
-        <div class="form-grid"><label>Código<input formControlName="codigo" /></label><label>Tipo<select formControlName="tipo"><option *ngFor="let tipo of tiposObjeto" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label><label class="wide">Descrição<input formControlName="descricao" /></label><label>Município<input formControlName="municipio" /></label><label>UF<input maxlength="2" formControlName="uf" /></label></div>
-        <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoUnidadeId = undefined">Cancelar</button><button class="btn-primary" type="submit">Salvar unidade</button></div>
-      </form>
+
+      <div class="workspace-column editor-column" *ngIf="editandoItemId !== undefined || editandoUnidadeId !== undefined">
+        <form class="panel editor-panel" *ngIf="editandoItemId !== undefined" [formGroup]="itemForm" (ngSubmit)="salvarItem()">
+          <div class="panel-title"><div><span class="step-number">2</span><h2>{{ editandoItemId ? 'Editar' : 'Novo' }} item</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoItemId = undefined"><i class="fas fa-xmark"></i></button></div>
+          <div class="form-grid">
+            <label>Código<input formControlName="codigo" /></label><label>Tipo<select formControlName="tipo"><option *ngFor="let tipo of tiposObjeto" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label>
+            <label class="wide">Descrição<input formControlName="descricao" /></label><label>Unidade de medida<input formControlName="unidadeMedida" /></label>
+            <label>Quantidade contratada<input type="number" min="0" formControlName="quantidadeContratada" /></label>
+            <label>Valor unitário (R$)<input type="number" min="0" step="0.01" formControlName="valorUnitario" /></label><label>Valor mensal (R$)<input type="number" min="0" step="0.01" formControlName="valorMensal" /></label>
+            <label>Unidade vinculada<select formControlName="unidadeId"><option value="">Sem vínculo</option><option *ngFor="let unidade of contrato.unidades" [value]="unidade.id">{{ unidade.codigo }}</option></select></label>
+            <label>Início da vigência<input type="date" formControlName="inicioVigencia" /></label><label>Fim da vigência<input type="date" formControlName="fimVigencia" /></label>
+          </div>
+          <div class="check-row"><label><input type="checkbox" formControlName="permiteProRata" /> Permite pro rata</label><label><input type="checkbox" formControlName="permiteRetencao" /> Permite retenção</label></div>
+          <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoItemId = undefined">Cancelar</button><button class="btn-primary" type="submit"><i class="fas fa-check"></i> Salvar item</button></div>
+        </form>
+
+        <form class="panel editor-panel" *ngIf="editandoUnidadeId !== undefined" [formGroup]="unidadeForm" (ngSubmit)="salvarUnidade()">
+          <div class="panel-title"><div><span class="step-number">4</span><h2>{{ editandoUnidadeId ? 'Editar' : 'Nova' }} unidade</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoUnidadeId = undefined"><i class="fas fa-xmark"></i></button></div>
+          <div class="form-grid"><label>Código<input formControlName="codigo" /></label><label>Tipo<select formControlName="tipo"><option *ngFor="let tipo of tiposObjeto" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label><label class="wide">Descrição<input formControlName="descricao" /></label><label>Município<input formControlName="municipio" /></label><label>UF<input maxlength="2" formControlName="uf" /></label></div>
+          <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoUnidadeId = undefined">Cancelar</button><button class="btn-primary" type="submit">Salvar unidade</button></div>
+        </form>
+      </div>
     </section>
 
     <section *ngIf="abaAtiva === 'regras'" class="rules-layout">

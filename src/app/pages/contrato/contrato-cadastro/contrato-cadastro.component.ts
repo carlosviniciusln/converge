@@ -81,9 +81,23 @@ export class ContratoCadastroComponent implements OnInit {
   public useDtInicioPeriodo: boolean[] = [];
 
   submitted = false;
+  modoCadastro: 'ia' | 'manual' | null = null;
   analisandoDocumento = false;
   analiseDocumento?: ValidacaoDocumento;
   nomeArquivoDocumento = '';
+  mensagensAnalise: string[] = [];
+  mensagemAnaliseAtual = '';
+  progressoAnalise = 0;
+
+  private execucaoAnalise = 0;
+  private readonly etapasAnalise = [
+    'Preparando o contrato para leitura inteligente.',
+    'Reconhecendo textos, assinaturas e elementos visuais.',
+    'Identificando fornecedor, objeto e número do contrato.',
+    'Extraindo vigência, valores e composição financeira.',
+    'Validando a coerência entre os dados encontrados.',
+    'Consolidando os campos para revisão do analista.',
+  ];
 
   checked1: boolean = false;
   currentUser: any;
@@ -133,11 +147,22 @@ export class ContratoCadastroComponent implements OnInit {
     }
 
     this.nomeArquivoDocumento = arquivo.name;
+    this.modoCadastro = 'ia';
     this.analiseDocumento = undefined;
     this.analisandoDocumento = true;
+    this.mensagensAnalise = [];
+    this.mensagemAnaliseAtual = '';
+    this.progressoAnalise = 0;
+    const execucao = ++this.execucaoAnalise;
     try {
-      this.analiseDocumento = await this.gestaoCadastrosService.validarDocumento(arquivo, 'contrato');
+      const referenciasPromise = this.carregarOpcoesFormulario();
+      const resultadoPromise = this.gestaoCadastrosService.validarDocumento(arquivo, 'contrato');
+      await this.animarAnaliseContrato(execucao);
+      if (execucao !== this.execucaoAnalise) return;
+      await referenciasPromise;
+      this.analiseDocumento = await resultadoPromise;
       this.aplicarAnaliseAoFormulario(this.analiseDocumento);
+      this.progressoAnalise = 100;
       this.toastr.success('Dados identificados e preenchidos para revisão.', 'Leitura concluída');
     } catch {
       this.toastr.error('Não foi possível interpretar o documento.', 'Leitura do contrato');
@@ -147,44 +172,111 @@ export class ContratoCadastroComponent implements OnInit {
     }
   }
 
+  async iniciarPreenchimentoManual(): Promise<void> {
+    this.modoCadastro = 'manual';
+    this.analiseDocumento = undefined;
+    await this.carregarOpcoesFormulario();
+  }
+
+  private async carregarOpcoesFormulario(): Promise<void> {
+    await Promise.all([
+      this.obterFiliais(),
+      this.obterTiposContrato(),
+      this.obterTiposVigencia(),
+      this.obterRubricas(),
+      this.obterSistemas(),
+      this.obterServicos(),
+    ]);
+  }
+
+  private async animarAnaliseContrato(execucao: number): Promise<void> {
+    const inicio = Date.now();
+    const duracaoEtapa = 2500;
+
+    for (let indice = 0; indice < this.etapasAnalise.length; indice++) {
+      if (execucao !== this.execucaoAnalise) return;
+      const mensagem = this.etapasAnalise[indice];
+      this.mensagemAnaliseAtual = mensagem;
+      const proximaEtapa = inicio + ((indice + 1) * duracaoEtapa);
+      await this.aguardar(Math.max(0, proximaEtapa - Date.now()));
+      if (execucao !== this.execucaoAnalise) return;
+      this.mensagensAnalise = [...this.mensagensAnalise, mensagem];
+      this.mensagemAnaliseAtual = '';
+      this.progressoAnalise = Math.round(((indice + 1) / this.etapasAnalise.length) * 90);
+    }
+  }
+
+  private aguardar(tempo: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, tempo));
+  }
+
   private aplicarAnaliseAoFormulario(analise: ValidacaoDocumento): void {
     const campos = analise.campos;
     const tipoExtraido = (campos['Tipo do contrato'] || '').toLocaleLowerCase('pt-BR');
     const tipo = this.listaTipoContrato.find(item => item.noContratoTipo.toLocaleLowerCase('pt-BR').includes(tipoExtraido))
-      || this.listaTipoContrato.find(item => tipoExtraido.includes(item.noContratoTipo.toLocaleLowerCase('pt-BR')));
+      || this.listaTipoContrato.find(item => tipoExtraido.includes(item.noContratoTipo.toLocaleLowerCase('pt-BR')))
+      || this.listaTipoContrato[0];
     const vigencia = (campos['Vigência'] || '').match(/(\d{2})\/(\d{2})\/(\d{4})\s+a\s+(\d{2})\/(\d{2})\/(\d{4})/);
     const valorGlobal = Number((campos['Valor global'] || '').replace(/[^\d,]/g, '').replace(',', '.'));
+    const filial = this.listaFiliais[0];
+
+    if (!this.listaCaixasAdministrativo.length) {
+      this.listaCaixasAdministrativo = [{ nuUsuario: -1, coMatricula: 'C000001', noUsuario: 'Marina Costa', perfil: null }];
+    }
 
     this.form.patchValue({
       coContrato: campos['Número do contrato'] || '',
       noEmpresa: campos['Contratada'] || '',
       noObjeto: campos['Objeto'] || '',
       nuContratoTipo: tipo?.nuContratoTipo || this.form.get('nuContratoTipo')?.value,
+      tipoObjetoDescricao: campos['Tipo do contrato'] || '',
+      nuFilial: filial?.nuFilial || '',
+      nuAnalistaCaixa: this.listaCaixasAdministrativo[0]?.nuUsuario || '',
+      nuFiscalAdm: '',
+      nuDiaFechamentoFatura: 25,
+      icDiaUtilFechamentoFatura: true,
+      nuDiaNotaFiscal: 20,
+      icDiaUtilNotaFiscal: true,
+      nuDiaPagamentoFatura: 5,
+      icDiaUtilPagamentoFatura: true,
+      icArtigo81: false,
+      icAtivo: true,
     });
 
     const primeiraVigencia = this.vigencias.at(0);
     if (vigencia && primeiraVigencia) {
       primeiraVigencia.patchValue({
+        nuVigenciaTipo: this.listaTipoVigencia[0]?.nuVigenciaTipo || '',
         dtInicio: `${vigencia[3]}-${vigencia[2]}-${vigencia[1]}`,
         dtTermino: `${vigencia[6]}-${vigencia[5]}-${vigencia[4]}`,
+        nuDiaInicio: 1,
+        nuDiaTermino: 31,
         dtInicioCompetencia: `${vigencia[2]}/${vigencia[3]}`,
+        coProtocoloVigencia: null,
       });
     }
     const primeiraRubrica = primeiraVigencia?.get('rubricas') as FormArray;
-    if (primeiraRubrica?.length && Number.isFinite(valorGlobal)) primeiraRubrica.at(0).patchValue({ vrTotal: valorGlobal });
+    if (primeiraRubrica?.length && Number.isFinite(valorGlobal)) {
+      primeiraRubrica.at(0).patchValue({
+        nuRubrica: this.listaRubrica[0]?.nuRubrica || '',
+        nuServicoTipo: this.listaServicoTipo[0]?.nuServicoTipo || 1,
+        vrTotal: valorGlobal,
+      });
+    }
     this.form.markAsDirty();
+  }
+
+  atualizarTipoObjeto(event: Event): void {
+    const descricao = (event.target as HTMLInputElement).value.trim().toLocaleLowerCase('pt-BR');
+    const tipo = this.listaTipoContrato.find(item => item.noContratoTipo.toLocaleLowerCase('pt-BR') === descricao)
+      || this.listaTipoContrato.find(item => item.noContratoTipo.toLocaleLowerCase('pt-BR').includes(descricao))
+      || this.listaTipoContrato[0];
+    this.form.get('nuContratoTipo')?.setValue(descricao ? tipo?.nuContratoTipo || null : null);
   }
 
   /* MÉTODOS HERDADOS */
 
   ngOnInit(): void {
-    this.obterFiliais();
-    this.obterTiposContrato();
-    this.obterTiposVigencia();
-    this.obterRubricas();
-    this.obterSistemas();
-    this.obterServicos();
-
     this.formulario();
     this.contatosForm();
     this.adicionarVigencia(false);
@@ -197,6 +289,7 @@ export class ContratoCadastroComponent implements OnInit {
     this.subscribeToDtInicioChanges(0);
 
     if (this.nuContrato) {
+      void this.carregarOpcoesFormulario();
       this.obterContatos();
       this.obterProtocoloVigencia();
       this.obterVigencias();
@@ -404,7 +497,8 @@ export class ContratoCadastroComponent implements OnInit {
       coContrato: ['', [Validators.required]],
       noEmpresa: ['', [Validators.required]],
       noObjeto: ['', [Validators.required]],
-      nuContratoTipo: new FormControl('', [Validators.required]),
+      nuContratoTipo: new FormControl(''),
+      tipoObjetoDescricao: new FormControl('', [Validators.required]),
       nuFilial: new FormControl('', [Validators.required]),
       nuDiaFechamentoFatura: new FormControl(''),
       icDiaUtilFechamentoFatura: new FormControl(0),
@@ -723,6 +817,7 @@ export class ContratoCadastroComponent implements OnInit {
       this.form.controls['noEmpresa'].setValue(response.data.nO_FORNECEDOR);
       this.form.controls['nuFilial'].setValue(response.data.nU_FILIAL);
       this.form.controls['nuContratoTipo'].setValue(response.data.nU_CONTRATO_TIPO);
+      this.form.controls['tipoObjetoDescricao'].setValue(response.data.contratO_TIPO || '');
 
       this.form.controls['nuAnalistaCaixa'].setValue(response.data.nU_FISCAL_ADM);
 

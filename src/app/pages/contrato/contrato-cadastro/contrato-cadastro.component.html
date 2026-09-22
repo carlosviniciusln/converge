@@ -1,21 +1,30 @@
   <div class="contract-page-header">
     <div><span class="eyebrow">Gestão contratual</span><h1>{{ nuContrato ? 'Editar contrato' : 'Cadastrar contrato' }}</h1><p>Centralize dados, vigência, responsáveis e composição financeira.</p></div>
-    <button type="button" class="icon-close" title="Fechar cadastro" aria-label="Fechar cadastro" (click)="fecharModal()"><i class="fas fa-xmark"></i></button>
   </div>
 
-  <section class="ai-import" *ngIf="!nuContrato">
+  <section class="ai-import" [class.ai-import--initial]="!modoCadastro" *ngIf="!nuContrato">
     <div class="ai-import__copy"><span class="ai-icon"><i class="fas fa-wand-magic-sparkles"></i></span><div><strong>Cadastro assistido por IA</strong><p>Envie o contrato para identificar tipo, fornecedor, objeto, vigência e valor. Você revisa tudo antes de salvar.</p></div></div>
-    <label class="upload-action" [class.processing]="analisandoDocumento"><i class="fas" [ngClass]="analisandoDocumento ? 'fa-circle-notch fa-spin' : 'fa-cloud-arrow-up'"></i><span>{{ analisandoDocumento ? 'Interpretando contrato...' : 'Ler contrato com IA' }}</span><input type="file" accept=".pdf,.png,.jpg,.jpeg" [disabled]="analisandoDocumento" (change)="analisarContrato($event)" /></label>
-    <div class="ai-result" *ngIf="analiseDocumento"><span class="confidence">{{ analiseDocumento.confianca | percent:'1.0-0' }} de confiança</span><strong>{{ nomeArquivoDocumento }}</strong><span>{{ analiseDocumento.campos['Tipo do contrato'] }} identificado · campos preenchidos para revisão</span><div class="extracted-contract-fields"><div *ngFor="let campo of analiseDocumento.campos | keyvalue"><small>{{ campo.key }}</small><b>{{ campo.value }}</b></div></div></div>
+    <div class="entry-actions">
+      <button type="button" class="manual-action" [disabled]="analisandoDocumento" (click)="iniciarPreenchimentoManual()"><i class="fas fa-pen"></i><span>Preencher manualmente</span></button>
+      <label class="upload-action" [class.processing]="analisandoDocumento"><i class="fas" [ngClass]="analisandoDocumento ? 'fa-circle-notch fa-spin' : 'fa-cloud-arrow-up'"></i><span>{{ analisandoDocumento ? 'Interpretando contrato...' : 'Ler contrato com IA' }}</span><input type="file" accept=".pdf,.png,.jpg,.jpeg" [disabled]="analisandoDocumento" (change)="analisarContrato($event)" /></label>
+    </div>
+    <div class="result-panel ai-processing" *ngIf="analisandoDocumento" aria-live="polite">
+      <div class="ai-heading"><span class="ai-mark"><i class="fas fa-brain"></i></span><div><span class="eyebrow">Inteligência documental</span><h3>Análise em andamento</h3></div><strong>{{ progressoAnalise }}%</strong></div>
+      <div class="ai-progress"><span [style.width.%]="progressoAnalise"></span></div>
+      <div class="ai-messages">
+        <p *ngFor="let mensagem of mensagensAnalise"><i class="fas fa-check"></i><span>{{ mensagem }}</span></p>
+        <p class="typing-message" *ngIf="mensagemAnaliseAtual"><span class="ai-pulse"></span><span>{{ mensagemAnaliseAtual }}</span><span class="typing-cursor"></span></p>
+      </div>
+    </div>
+    <div class="ai-result" *ngIf="analiseDocumento && !analisandoDocumento"><span class="confidence">{{ analiseDocumento.confianca | percent:'1.0-0' }} de confiança</span><strong>{{ nomeArquivoDocumento }}</strong><span>{{ analiseDocumento.campos['Tipo do contrato'] }} identificado · 2 campos não localizados para revisão manual</span><div class="extracted-contract-fields"><div *ngFor="let campo of analiseDocumento.campos | keyvalue"><small>{{ campo.key }}</small><b>{{ campo.value }}</b></div></div></div>
   </section>
 
-  <mat-tab-group class="contract-tabs" (selectedTabChange)="onTabChange($event)">
-    <mat-tab *ngIf="!ativaPreposto"  label="Edição" style="margin-left: 19px;">
+  <main class="contract-form-shell" *ngIf="!ativaPreposto && (nuContrato || modoCadastro === 'manual' || analiseDocumento)">
       <div class="modal-body">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="section-heading"><span>1</span><div><h2>Identificação e responsáveis</h2><p>Dados centrais para gestão e fiscalização do contrato.</p></div></div>
           <div class="row identity-grid">
-            <div class="col-md-8">
+            <div class="identity-main">
               <div class="row">
                 <div class="col-md-6 pr-0">
                   <label for="coContrato">Contrato:</label>
@@ -48,13 +57,9 @@
                 </div>
                 <div class="col-md-6 pr-0">
                   <label for="nuContratoTipo">Tipo Objeto:</label>
-                  <select class="form-control" id="nuContratoTipo" formControlName="nuContratoTipo"
-                    [ngClass]="{'is-invalid': submitted && f.nuContratoTipo.invalid}">
-                    <option value="" disabled selected>Selecione o tipo do Contrato</option>
-                    <option *ngFor="let a of listaTipoContrato" [ngValue]="a.nuContratoTipo">
-                      {{ a.noContratoTipo }}
-                    </option>
-                  </select>
+                  <input class="form-control" id="nuContratoTipo" type="text" formControlName="tipoObjetoDescricao"
+                    placeholder="Digite o tipo do objeto" (input)="atualizarTipoObjeto($event)"
+                    [ngClass]="{'is-invalid': submitted && f.tipoObjetoDescricao.invalid}" />
                 </div>
                 <div class="col-md-6 pr-0">
                   <label for="nuAnalistaCaixa">Fiscal Administrativo:</label>
@@ -70,8 +75,8 @@
                   <label for="nuFiscalAdm">Fiscal Técnico:</label>
                   <select class="form-control" id="nuFiscalAdm" formControlName="nuFiscalAdm"
                     [ngClass]="{ 'is-invalid': submitted && f.nuFiscalAdm.invalid }">
-                    <option value="" disabled selected>
-                      Selecione o Analista
+                    <option value="" disabled>
+                      Não identificado no contrato
                     </option>
                     <option *ngFor="let a of listaGestores" [value]="a.nuUsuario">
                       {{ a.coMatricula }} - {{ a.noUsuario }}
@@ -86,50 +91,32 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="row">
-                <div class="col-md-12 min-height-59">
-                  <label for="coContrato">Artigo 81</label>
-                  <div class="row">
-                    <div class="col-md-10 pr-1"><b>Contrato paga/pagou em Art.81</b></div>
-                    <div class="col-md-2 pl-1 pr-1">
-                      <mat-slide-toggle formControlName="icArtigo81" id="icArtigo81"></mat-slide-toggle>
-                    </div>
-                  </div>
+            <div class="billing-settings">
+                <div class="billing-setting billing-setting--article">
+                  <div><span>Artigo 81</span><strong>Pagamento enquadrado no Art. 81</strong></div>
+                  <mat-slide-toggle formControlName="icArtigo81" id="icArtigo81" aria-label="Pagamento enquadrado no Artigo 81"></mat-slide-toggle>
                 </div>
-                <div class="col-md-12 min-height-59">
-                  <label for="coContrato">Fechamento da Fatura</label>
-                  <div class="row">
-                    <div class="col-md-2 pr-1"><b>Dia:</b></div>
-                    <div class="col-md-4 pl-1">
-                      <input readonly formControlName="nuDiaFechamentoFatura" id="nuDiaFechamentoFatura" placeholder="Dia"
-                        type="number" min="1" max="31" class="form-control" [ngClass]="{
-                        'is-invalid': submitted && f.nuDiaFechamentoFatura.invalid
-                      }" />
-                    </div>
-                    <div class="col-md-4 pl-1 pr-1"><b>Dia útil?</b></div>
-                    <div class="col-md-2 pl-1 pr-1">
-                      <mat-slide-toggle formControlName="icDiaUtilFechamentoFatura"
-                        id="icDiaUtilFechamentoFatura"></mat-slide-toggle>
-                    </div>
-                  </div>
+                <div class="billing-setting">
+                  <label for="nuDiaFechamentoFatura"><span>Fechamento da fatura</span><small>Dia do ciclo</small></label>
+                  <input formControlName="nuDiaFechamentoFatura" id="nuDiaFechamentoFatura" placeholder="Dia"
+                    type="number" min="1" max="31" class="form-control" [ngClass]="{
+                    'is-invalid': submitted && f.nuDiaFechamentoFatura.invalid
+                  }" />
+                  <label class="business-day" for="icDiaUtilFechamentoFatura"><span>Dia útil</span>
+                    <mat-slide-toggle formControlName="icDiaUtilFechamentoFatura"
+                      id="icDiaUtilFechamentoFatura"></mat-slide-toggle>
+                  </label>
                 </div>
-                <div class="col-md-12 min-height-59">
-                  <label for="coContrato">Pagamento da Fatura</label>
-                  <div class="row">
-                    <div class="col-md-2 pr-1"><b>Dia:</b></div>
-                    <div class="col-md-4 pl-1">
-                      <input formControlName="nuDiaPagamentoFatura" id="nuDiaPagamentoFatura" type="number" min="1" max="31"
-                        class="form-control" placeholder="Dia" [ngClass]="{
-                        'is-invalid': submitted && f.nuDiaPagamentoFatura.invalid
-                      }" />
-                    </div>
-                    <div class="col-md-4 pl-1 pr-1"><b>Dia útil?</b></div>
-                    <div class="col-md-2 pl-1 pr-1">
-                      <mat-slide-toggle formControlName="icDiaUtilPagamentoFatura"
-                        id="icDiaUtilPagamentoFatura"></mat-slide-toggle>
-                    </div>
-                  </div>
+                <div class="billing-setting">
+                  <label for="nuDiaPagamentoFatura"><span>Pagamento da fatura</span><small>Dia do ciclo</small></label>
+                  <input formControlName="nuDiaPagamentoFatura" id="nuDiaPagamentoFatura" type="number" min="1" max="31"
+                    class="form-control" placeholder="Dia" [ngClass]="{
+                    'is-invalid': submitted && f.nuDiaPagamentoFatura.invalid
+                  }" />
+                  <label class="business-day" for="icDiaUtilPagamentoFatura"><span>Dia útil</span>
+                    <mat-slide-toggle formControlName="icDiaUtilPagamentoFatura"
+                      id="icDiaUtilPagamentoFatura"></mat-slide-toggle>
+                  </label>
                 </div>
 
                 <div *ngIf="isDerivadoAta" class="col-md-12 min-height-59" style="margin-top: 20px;">
@@ -155,7 +142,6 @@
                     </div>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
 
@@ -167,8 +153,8 @@
           </div>
           <br />
           <div formArrayName="vigencias" *ngFor="let vigencia of vigencias.controls; let i = index">
-            <div class="row" [formGroupName]="i">
-              <div style="display: flex;">
+            <div class="vigencia-card" [formGroupName]="i">
+              <div class="vigencia-fields">
               <div class="col-2 pr-0 ">
                 <label for="coContrato">Tipo</label>
                 <select class="form-control" id="nuVigenciaTipo" formControlName="nuVigenciaTipo" [ngClass]="{
@@ -232,7 +218,7 @@
                 <p class="small-text">ciclo mensal</p>
               </div>
 
-              <div class="col-1 pr-0" style="position: relative; bottom: 25px;">
+              <div class="col-1 pr-0 competencia-field">
                 <div>
                   <label for="dtInicioCompetencia" style="min-inline-size: max-content;">
                   Primeira <br> Competência
@@ -241,17 +227,17 @@
                 <input formControlName="dtInicioCompetencia" id="dtInicioCompetencia" type="text" class="form-control"
                   [ngClass]="{
                     'is-invalid': (submitted && vigencia.get('dtInicioCompetencia')?.invalid)
-                  }" style="width: 80px;" mask="00/0000" placeholder="MM/YYYY" />
+                  }" mask="00/0000" placeholder="MM/YYYY" />
               </div>
 
-              <div class="col-2 pr-0" style="margin-top: 2px;margin-left: 12px;">
+              <div class="col-2 pr-0 protocolo-field">
                 <label for="coProtocoloVigencia">Protocolo <label  *ngIf="i > 0" >Central de Contratos</label></label>
                 <p-dropdown
                   [options]="getListaProtocolos(i)"
                   optionLabel="cO_PROTOCOLO_VIGENCIA"
                   optionValue="cO_PROTOCOLO_VIGENCIA"
                   formControlName="coProtocoloVigencia"
-                  placeholder="Selecione o Protocolo Central de Contratos"
+                  [placeholder]="analiseDocumento ? 'Não identificado no contrato' : 'Selecione o Protocolo Central de Contratos'"
                   [filter]="true"
                   [emptyMessage]="'Nenhum protocolo Central de Contratos cadastrado.'"
                   [showClear]="true"
@@ -259,8 +245,7 @@
                 </p-dropdown>
               </div>
 
-              <div style="margin-left: 24px;">
-                <br />
+              <div class="vigencia-actions">
                 <button *ngIf="i > 0" type="button" class="btn-sm btn-secondary" (click)="excluirVigencia(i)">
                   <i class="tim-icons icon-trash-simple"></i>
                 </button>
@@ -272,7 +257,7 @@
               </div>
 
 
-              <div class="col-md-12">
+              <div class="rubricas-section">
                 <div class="modal-title" style="display: flex; align-items: center; padding: 10px;">
                   <h5><b>Rubricas e Valor Global</b></h5>
                 </div>
@@ -280,7 +265,7 @@
                   let rubrica of rubricasDaVigencia(vigencia);
                   let r = index
                 ">
-                  <div class="row" [formGroupName]="r">
+                  <div class="rubrica-row" [formGroupName]="r">
                     <div class="col-md-1 pr-0 text-right">
                       <i class="fas fa-level-up fa-rotate-90 fa-xl"></i>
                     </div>
@@ -328,8 +313,8 @@
           <i class="fas fa-floppy-disk"></i> Salvar contrato
         </button>
       </div>
-    </mat-tab>
-    <mat-tab label="Prepostos">
+  </main>
+  <section class="contract-form-shell contacts-panel" *ngIf="ativaPreposto">
       <div class="menu-add">
           <h4 class="modal-title tab-panel-title">
             <small>{{ subTituloContatos }}</small>
@@ -455,5 +440,4 @@
       <div *ngIf="!ativaPreposto" class="modal-footer">
         <button class="btn-sm btn-default" type="submit" (click)="registrarContratos()">Salvar</button>
       </div>
-    </mat-tab>
-  </mat-tab-group>
+  </section>

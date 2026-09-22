@@ -32,6 +32,26 @@ describe('LocalFaturamentoMotorService', () => {
     expect(registros.some(item => item.descricao === 'Versão 1')).toBeTrue();
     expect(registros.some(item => item.descricao === 'Alterada fora do repositório')).toBeFalse();
   });
+
+  it('mantém números distintos e coerentes nos três contratos demonstrativos', async () => {
+    const contratos = await service.listarContratos();
+    const resumo = contratos.map(contrato => ({
+      numero: contrato.numero,
+      itens: contrato.itens.length,
+      unidades: contrato.unidades.length,
+      regras: contrato.regrasFaturamento.length,
+      sla: contrato.indicadoresSla.length,
+      penalidades: contrato.penalidades.length,
+      documentos: contrato.documentosObrigatorios.length,
+      valorGlobalCentavos: contrato.valorGlobalCentavos,
+    }));
+
+    expect(resumo).toEqual([
+      { numero: '9.266/2023', itens: 3, unidades: 1, regras: 4, sla: 0, penalidades: 1, documentos: 2, valorGlobalCentavos: 382500000 },
+      { numero: '11.659/2022', itens: 1, unidades: 2, regras: 2, sla: 2, penalidades: 1, documentos: 2, valorGlobalCentavos: 184300000 },
+      { numero: '01412/2025', itens: 1, unidades: 1, regras: 2, sla: 0, penalidades: 0, documentos: 3, valorGlobalCentavos: 172800000 },
+    ]);
+  });
 });
 
 function resultado(versao: number, valor: number): ResultadoCompetencia {
