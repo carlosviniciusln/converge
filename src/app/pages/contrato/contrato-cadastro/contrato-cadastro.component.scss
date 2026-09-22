@@ -10,6 +10,50 @@
   max-width: 15%;
 }
 
+:host { display: block; min-height: 100%; background: #f4f7f8; color: #24343b; font-family: 'Poppins', sans-serif; }
+.contract-page-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 28px 18px; border-bottom: 1px solid #d1dfe2; background: #fff; h1 { margin: 2px 0 3px; color: #002a4d; font-size: 1.45rem; font-weight: 800; } p { margin: 0; color: #64777a; font-size: .78rem; } }
+.eyebrow { color: #08796e; font-size: .64rem; font-weight: 800; text-transform: uppercase; }
+.icon-close { display: grid; place-items: center; flex: 0 0 38px; width: 38px; height: 38px; border: 1px solid #cbd8db; border-radius: 5px; background: #fff; color: #536b73; cursor: pointer; }
+.ai-import { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px 22px; margin: 18px 24px 0; padding: 17px 18px; border: 1px solid #b8d5e6; border-left: 4px solid #005ca9; border-radius: 7px; background: #f4f9fc; }
+.ai-import__copy { display: flex; align-items: center; gap: 13px; min-width: 0; strong { display: block; color: #00385d; font-size: .8rem; } p { margin: 3px 0 0; color: #60747b; font-size: .66rem; line-height: 1.45; } }
+.ai-icon { display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px; border-radius: 50%; background: #005ca9; color: #fff; box-shadow: 0 0 0 6px rgba(0,92,169,.08); }
+.upload-action { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; margin: 0 !important; padding: 0 16px; border: 1px solid #005ca9; border-radius: 5px; background: #005ca9; color: #fff; font-size: .69rem; font-weight: 700; cursor: pointer; white-space: nowrap; input { position: absolute; width: 1px; height: 1px; opacity: 0; } &.processing { opacity: .7; cursor: wait; } }
+.ai-result { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(140px, auto) minmax(0, 1fr); align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid #d2e4ee; color: #5e747b; font-size: .62rem; strong { overflow: hidden; color: #274c5a; text-overflow: ellipsis; white-space: nowrap; } }
+.extracted-contract-fields { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 4px; div { min-width: 0; padding: 8px 9px; border: 1px solid #d4e4eb; border-radius: 4px; background: #fff; } small, b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } small { color: #71848a; font-size: .54rem; text-transform: uppercase; } b { margin-top: 2px; color: #274c5a; font-size: .61rem; } }
+.confidence { display: inline-flex; width: fit-content; padding: 3px 8px; border-radius: 10px; background: #e2f3ea; color: #15713f; font-weight: 800; }
+.section-heading { display: flex; align-items: center; gap: 10px; margin: 2px 0 15px; > span { display: grid; place-items: center; flex: 0 0 25px; width: 25px; height: 25px; border-radius: 50%; background: #e3f2ef; color: #08796e; font-size: .68rem; font-weight: 800; } h2 { margin: 0; color: #00385d; font-size: .9rem; font-weight: 800; } p { margin: 1px 0 0; color: #71848a; font-size: .6rem; } }
+.primary-action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 17px; border: 1px solid #00695f; border-radius: 5px; background: #00695f; color: #fff; font-size: .7rem; font-weight: 700; cursor: pointer; }
+
+:host ::ng-deep .contract-tabs { margin: 0 24px 24px; .mat-tab-header { margin: 18px 0 0 !important; border: 1px solid #d1dfe2; border-radius: 7px 7px 0 0; background: #fff; } .mat-tab-label { min-width: 150px; height: 48px; color: #5a7077; font-size: .72rem; font-weight: 700; opacity: 1; } .mat-tab-label-active { background: #f2f8f7; color: #005ca9; } .mat-ink-bar { height: 3px; background: #00897b !important; } .mat-tab-body { border: 1px solid #d1dfe2; border-top: 0; border-radius: 0 0 7px 7px; background: #fff; } }
+:host ::ng-deep .contract-tabs .modal-body { padding: 20px 22px !important; }
+:host ::ng-deep .contract-tabs .modal-footer { padding: 15px 22px !important; border-top: 1px solid #e1e9eb; background: #f8fafb; }
+:host ::ng-deep .contract-tabs form > .row { margin-right: -7px; margin-left: -7px; }
+:host ::ng-deep .contract-tabs [class*='col-'] { padding-right: 7px; padding-left: 7px; }
+:host ::ng-deep .contract-tabs label { margin-bottom: 5px !important; color: #526970; font-size: .63rem; font-weight: 700; }
+:host ::ng-deep .contract-tabs .form-control { min-height: 38px; padding: 7px 9px; border: 1px solid #b9ccd0; border-radius: 4px; background-color: #fff; color: #263b43; font-size: .68rem; box-shadow: none; }
+:host ::ng-deep .contract-tabs textarea.form-control { min-height: 112px; resize: vertical; }
+:host ::ng-deep .contract-tabs .form-control:focus { border-color: #1976a8; box-shadow: 0 0 0 2px rgba(25,118,168,.1); }
+:host ::ng-deep .contract-tabs .form-control[readonly] { background: #f2f5f6; color: #62747a; }
+.identity-grid { padding-bottom: 18px; border-bottom: 1px solid #e4ecee; }
+
+@media (max-width: 900px) {
+  .ai-import { grid-template-columns: 1fr; }
+  .upload-action { justify-self: start; }
+  .ai-result { grid-template-columns: 1fr; }
+  .extracted-contract-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :host ::ng-deep .contract-tabs .identity-grid > .col-md-8, :host ::ng-deep .contract-tabs .identity-grid > .col-md-4 { flex: 0 0 100%; max-width: 100%; }
+}
+
+@media (max-width: 640px) {
+  .contract-page-header { align-items: flex-start; padding: 18px 16px; }
+  .contract-page-header h1 { font-size: 1.2rem; }
+  .ai-import, :host ::ng-deep .contract-tabs { margin-right: 12px; margin-left: 12px; }
+  .ai-import__copy { align-items: flex-start; }
+  .extracted-contract-fields { grid-template-columns: 1fr; }
+  :host ::ng-deep .contract-tabs .modal-body { padding: 16px 12px !important; }
+  :host ::ng-deep .contract-tabs .identity-grid .col-md-6, :host ::ng-deep .contract-tabs .identity-grid .col-md-12 { flex: 0 0 100%; max-width: 100%; padding-right: 7px !important; }
+}
+
 :host ::ng-deep p-dropdown > div {
   width: 150px;
   .p-dropdown-trigger {

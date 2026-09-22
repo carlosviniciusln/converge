@@ -152,8 +152,10 @@ export class GestaoCadastrosService {
   private camposExtraidos(tipoDocumento: string): Record<string, string> {
     if (tipoDocumento === 'contrato') {
       return {
-        'Número do contrato': 'CT-2026/0148',
+        'Número do contrato': '10148/2026',
         Contratada: 'Converge Serviços e Tecnologia Ltda.',
+        'Tipo do contrato': 'Serviços',
+        Objeto: 'Prestação continuada de serviços técnicos especializados, com suporte operacional e atendimento por demanda.',
         Vigência: '01/08/2026 a 31/07/2027',
         'Valor global': 'R$ 248.750,00',
       };

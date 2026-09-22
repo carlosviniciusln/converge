@@ -42,6 +42,9 @@ import { PenalidadesComponent } from '../pages/penalidades/penalidades.component
 import { BuscaContratoComponent } from '../pages/dashboard/busca-contrato/busca-contrato.component';
 import { BuscaUdComponent } from '../pages/dashboard/busca-ud/busca-ud.component';
 import { BuscaGerencialComponent } from '../pages/dashboard/busca-gerencial/busca-gerencial.component';
+import { GovernancaComponent } from '../pages/governanca/governanca.component';
+import { IntegracaoSiaficComponent } from '../pages/integracao-siafic/integracao-siafic.component';
+import { FaturamentoMotorComponent } from '../pages/faturamento-motor/faturamento-motor.component';
 
 
 
@@ -58,6 +61,10 @@ export const PagesRoutes: Routes = [
   { path: 'busca-contrato', component: BuscaContratoComponent },
   { path: 'busca-ud', component: BuscaUdComponent },
   { path: 'busca-gerencial', component: BuscaGerencialComponent },
+  { path: 'documentos', component: GovernancaComponent, data: { modo: 'documentos' } },
+  { path: 'auditoria', component: GovernancaComponent, data: { modo: 'auditoria' } },
+  { path: 'integracoes/siafic', component: IntegracaoSiaficComponent },
+  { path: 'faturamento/motor', component: FaturamentoMotorComponent },
   { path: 'contrato/evolucao-financeira/:id', component: EvolucaoFinanceiraComponent },
   { path: 'contrato/exec-orc-mensalizacao/:id', component: MensalizacaoComponent },
   { path: 'contrato/evolucao-financeira-aquisicao/:id', component: EvolucaoFinanceiraAquisicaoComponent },

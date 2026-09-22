@@ -1,0 +1,41 @@
+<main class="governance-page">
+  <dsc-breadcrumb [urls]="[{ label: modo === 'documentos' ? 'Documentos' : 'Trilha de Auditoria' }]"></dsc-breadcrumb>
+  <header class="page-heading">
+    <div><span>Governança e transparência</span><h1>{{ modo === 'documentos' ? 'Documentos contratuais' : 'Trilha de Auditoria' }}</h1><p>{{ modo === 'documentos' ? 'Controle de versões, classificação e vínculo com contratos.' : 'Rastreabilidade das operações relevantes realizadas na plataforma.' }}</p></div>
+    <div class="mode-switch"><a routerLink="/documentos" [class.active]="modo === 'documentos'"><i class="fas fa-folder-open"></i> Documentos</a><a routerLink="/auditoria" [class.active]="modo === 'auditoria'"><i class="fas fa-fingerprint"></i> Auditoria</a></div>
+  </header>
+  <div class="mock-notice" *ngIf="service.isMock"><i class="fas fa-circle-info"></i> Ambiente demonstrativo: metadados e arquivos são mantidos localmente. A abstração de storage está pronta para um provedor de nuvem.</div>
+
+  <ng-container *ngIf="modo === 'documentos'">
+    <section class="control-band">
+      <div class="field-control"><label>Contrato</label><select [(ngModel)]="contratoSelecionado"><option [ngValue]="0">Selecione</option><option *ngFor="let contrato of contratos" [ngValue]="contrato.id">{{ contrato.numero }} · {{ contrato.contratada }}</option></select></div>
+      <div class="field-control"><label>Categoria</label><select [(ngModel)]="categoriaSelecionada"><option *ngFor="let categoria of categorias" [ngValue]="categoria">{{ categoria }}</option></select></div>
+      <label class="file-picker"><input type="file" (change)="selecionarArquivo($event)" /><i class="fas fa-paperclip"></i><span>{{ arquivo?.name || 'Selecionar arquivo' }}</span></label>
+      <button type="button" class="primary-command" (click)="enviarDocumento()" [disabled]="enviando"><i class="fas fa-cloud-arrow-up"></i> {{ enviando ? 'Enviando...' : 'Adicionar documento' }}</button>
+    </section>
+    <section class="records-panel">
+      <div class="records-heading"><h2>Repositório documental</h2><span>{{ documentos.length }} arquivos</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Documento</th><th>Contrato</th><th>Categoria</th><th>Versão</th><th>Responsável</th><th>Atualização</th><th>Controle</th></tr></thead><tbody>
+        <tr *ngFor="let documento of documentos"><td><strong>{{ documento.nome }}</strong><small>{{ documento.tamanho }}</small></td><td><a [routerLink]="['/contrato/ficha', documento.contratoId]" [queryParams]="{ contrato: contratoNumero(documento.contratoId) }">{{ contratoNumero(documento.contratoId) }}</a></td><td>{{ documento.categoria }}</td><td><span class="version">v{{ documento.versao }}</span></td><td>{{ documento.responsavel }}</td><td>{{ documento.enviadoEm | date:'dd/MM/yyyy HH:mm' }}</td><td><span class="access-label" [class.restricted]="documento.confidencial"><i class="fas" [ngClass]="documento.confidencial ? 'fa-lock' : 'fa-eye'"></i> {{ documento.confidencial ? 'Restrito' : 'Público interno' }}</span></td></tr>
+      </tbody></table></div>
+    </section>
+  </ng-container>
+
+  <ng-container *ngIf="modo === 'auditoria'">
+    <section class="control-band filters">
+      <div class="field-control"><label>Data inicial</label><input type="date" [(ngModel)]="filtro.inicio" /></div><div class="field-control"><label>Data final</label><input type="date" [(ngModel)]="filtro.fim" /></div>
+      <div class="field-control"><label>Usuário</label><select [(ngModel)]="filtro.usuario"><option value="">Todos</option><option *ngFor="let usuario of usuarios">{{ usuario }}</option></select></div>
+      <div class="field-control"><label>Contrato</label><select [(ngModel)]="filtro.contrato"><option value="">Todos</option><option *ngFor="let contrato of contratos" [value]="contrato.numero">{{ contrato.numero }}</option></select></div>
+      <div class="field-control"><label>Ação</label><select [(ngModel)]="filtro.acao"><option value="">Todas</option><option *ngFor="let acao of acoes">{{ acao }}</option></select></div>
+      <div class="field-control"><label>Módulo</label><select [(ngModel)]="filtro.modulo"><option value="">Todos</option><option *ngFor="let modulo of modulos">{{ modulo }}</option></select></div>
+      <button type="button" class="primary-command" (click)="carregar()"><i class="fas fa-filter"></i> Filtrar</button><button type="button" class="secondary-command" (click)="limparFiltros()" title="Limpar filtros"><i class="fas fa-rotate-left"></i></button>
+    </section>
+    <section class="audit-list">
+      <article class="audit-entry" *ngFor="let registro of auditoria"><div class="audit-entry__icon"><i class="fas" [ngClass]="registro.modulo === 'Documentos' ? 'fa-file-shield' : (registro.modulo === 'SEI' ? 'fa-link' : 'fa-clock-rotate-left')"></i></div><div class="audit-entry__body">
+        <div class="audit-entry__meta"><strong>{{ registro.usuario }}</strong><span>{{ registro.acao }}</span><span>{{ registro.modulo }}</span><time>{{ registro.dataHora | date:'dd/MM/yyyy HH:mm:ss' }}</time></div><p>{{ registro.descricao }}.</p>
+        <div class="change-values" *ngIf="registro.valorAnterior || registro.valorNovo"><span *ngIf="registro.campo"><b>Campo:</b> {{ registro.campo }}</span><span *ngIf="registro.valorAnterior" class="old"><b>Anterior:</b> {{ registro.valorAnterior }}</span><span *ngIf="registro.valorNovo" class="new"><b>Novo:</b> {{ registro.valorNovo }}</span></div>
+        <a *ngIf="registro.contratoId" [routerLink]="['/contrato/ficha', registro.contratoId]" [queryParams]="{ contrato: registro.contratoNumero }"><i class="fas fa-arrow-up-right-from-square"></i> {{ registro.contratoNumero }}</a>
+      </div></article><div class="empty-result" *ngIf="!auditoria.length">Nenhum registro encontrado.</div>
+    </section>
+  </ng-container>
+</main>

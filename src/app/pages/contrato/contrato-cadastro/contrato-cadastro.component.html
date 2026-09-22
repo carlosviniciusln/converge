@@ -1,36 +1,31 @@
-
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">
-      <b>{{ titulo }}</b><br />
-      <small>{{ subTitulo }}</small>
-    </h4>
-    <button
-      style="z-index: 10;"
-      type="button"
-      class="close"
-      aria-label="Fechar"
-      (click)="fecharModal()"
-    >
-      <span aria-hidden="true">×</span>
-    </button>
+  <div class="contract-page-header">
+    <div><span class="eyebrow">Gestão contratual</span><h1>{{ nuContrato ? 'Editar contrato' : 'Cadastrar contrato' }}</h1><p>Centralize dados, vigência, responsáveis e composição financeira.</p></div>
+    <button type="button" class="icon-close" title="Fechar cadastro" aria-label="Fechar cadastro" (click)="fecharModal()"><i class="fas fa-xmark"></i></button>
   </div>
 
-  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <section class="ai-import" *ngIf="!nuContrato">
+    <div class="ai-import__copy"><span class="ai-icon"><i class="fas fa-wand-magic-sparkles"></i></span><div><strong>Cadastro assistido por IA</strong><p>Envie o contrato para identificar tipo, fornecedor, objeto, vigência e valor. Você revisa tudo antes de salvar.</p></div></div>
+    <label class="upload-action" [class.processing]="analisandoDocumento"><i class="fas" [ngClass]="analisandoDocumento ? 'fa-circle-notch fa-spin' : 'fa-cloud-arrow-up'"></i><span>{{ analisandoDocumento ? 'Interpretando contrato...' : 'Ler contrato com IA' }}</span><input type="file" accept=".pdf,.png,.jpg,.jpeg" [disabled]="analisandoDocumento" (change)="analisarContrato($event)" /></label>
+    <div class="ai-result" *ngIf="analiseDocumento"><span class="confidence">{{ analiseDocumento.confianca | percent:'1.0-0' }} de confiança</span><strong>{{ nomeArquivoDocumento }}</strong><span>{{ analiseDocumento.campos['Tipo do contrato'] }} identificado · campos preenchidos para revisão</span><div class="extracted-contract-fields"><div *ngFor="let campo of analiseDocumento.campos | keyvalue"><small>{{ campo.key }}</small><b>{{ campo.value }}</b></div></div></div>
+  </section>
+
+  <mat-tab-group class="contract-tabs" (selectedTabChange)="onTabChange($event)">
     <mat-tab *ngIf="!ativaPreposto"  label="Edição" style="margin-left: 19px;">
       <div class="modal-body">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
-          <div class="row">
+          <div class="section-heading"><span>1</span><div><h2>Identificação e responsáveis</h2><p>Dados centrais para gestão e fiscalização do contrato.</p></div></div>
+          <div class="row identity-grid">
             <div class="col-md-8">
               <div class="row">
                 <div class="col-md-6 pr-0">
                   <label for="coContrato">Contrato:</label>
-                  <input readonly formControlName="coContrato" id="coContrato" type="text" class="form-control"
+                  <input [readonly]="!!nuContrato" formControlName="coContrato" id="coContrato" type="text" class="form-control"
                     [ngClass]="{ 'is-invalid': submitted && f.coContrato.invalid }" mask="0000/0000||00000/0000"
                     placeholder="Ex. 99999/9999" [dropSpecialCharacters]="false" />
                 </div>
                 <div class="col-md-6 pr-0">
                   <label for="noEmpresa">Fornecedor:</label>
-                  <input readonly formControlName="noEmpresa" id="noEmpresa" placeholder="Digite o Fornecedor" type="text"
+                  <input [readonly]="!!nuContrato" formControlName="noEmpresa" id="noEmpresa" placeholder="Digite o Fornecedor" type="text"
                     class="form-control" [ngClass]="{ 'is-invalid': submitted && f.noEmpresa.invalid }" />
                 </div>
 
@@ -85,7 +80,7 @@
                 </div>
                 <div class="col-md-12 pr-0">
                   <label for="noObjeto">Objeto:</label>
-                  <textarea style="border: 1px solid rgba(29, 37, 59, 0.3);border-radius: 0.4285rem;" readonly
+                  <textarea [readonly]="!!nuContrato"
                     formControlName="noObjeto" placeholder="Digite o objeto do contrato" id="noObjeto" type="text"
                     class="form-control" rows="6" [ngClass]="{ 'is-invalid': submitted && f.noObjeto.invalid }"></textarea>
                 </div>
@@ -167,9 +162,7 @@
           <br />
           <div class="row">
             <div class="col-md-6">
-            <h5 class="modal-title">
-                <b>Aditivos e Vigências</b><br /><small>cadastro de aditivos e vigências do contrato</small>
-            </h5>
+            <div class="section-heading"><span>2</span><div><h2>Aditivos e vigências</h2><p>Períodos, competências e composição financeira.</p></div></div>
             </div>
           </div>
           <br />
@@ -179,7 +172,7 @@
               <div class="col-2 pr-0 ">
                 <label for="coContrato">Tipo</label>
                 <select class="form-control" id="nuVigenciaTipo" formControlName="nuVigenciaTipo" [ngClass]="{
-                  'is-invalid': submitted && vigencia.get('nuVigenciaTipo').invalid
+                  'is-invalid': submitted && vigencia.get('nuVigenciaTipo')?.invalid
                 }">
                   <option value="" disabled selected>
                     Selecione o tipo da vigência
@@ -192,12 +185,12 @@
               <div class="col-2 pr-0 ">
                 <label for="dtInicio">Data início</label>
                 <input formControlName="dtInicio" id="dtInicio" type="date" class="form-control" [ngClass]="{
-                    'is-invalid': (submitted && vigencia.get('dtInicio').invalid)
+                    'is-invalid': (submitted && vigencia.get('dtInicio')?.invalid)
                   }" />
-                <div *ngIf="vigencia.get('dtInicio').errors?.datasInvalidas && submitted" class="invalid-feedback">
+                <div *ngIf="vigencia.get('dtInicio')?.errors?.datasInvalidas && submitted" class="invalid-feedback">
                   Data de início não pode ser maior que data de fim.
                 </div>
-                <div *ngIf="vigencia.get('dtInicio').errors?.dataInvalidaProrrogacao && submitted" class="invalid-feedback">
+                <div *ngIf="vigencia.get('dtInicio')?.errors?.dataInvalidaProrrogacao && submitted" class="invalid-feedback">
                   Data de início deve ser maior que a data de fim da vigência anterior.
                 </div>
               </div>
@@ -206,12 +199,12 @@
                 <label for="dtTermino">Data Fim</label>
                 <div *ngIf="!useDtFimOptions[i]; else selectDtTermino">
                   <input formControlName="dtTermino" id="dtTermino" type="date" class="form-control" [ngClass]="{
-                    'is-invalid': (submitted && vigencia.get('dtTermino').invalid)
+                    'is-invalid': (submitted && vigencia.get('dtTermino')?.invalid)
                   }" />
                 </div>
                 <ng-template #selectDtTermino>
                   <select formControlName="dtTermino" id="dtTermino" class="form-control" [ngClass]="{
-                    'is-invalid': (submitted && vigencia.get('dtTermino').invalid)
+                    'is-invalid': (submitted && vigencia.get('dtTermino')?.invalid)
                   }">
                     <option value="" disabled selected>
                       Selecione a data fim
@@ -219,7 +212,7 @@
                     <option *ngFor="let date of dtFimOptions" [ngValue]="date">{{ date | date: 'dd/MM/yyyy' }}</option>
                   </select>
                 </ng-template>
-                <div *ngIf="vigencia.get('dtTermino').errors?.datasInvalidas && submitted" class="invalid-feedback">
+                <div *ngIf="vigencia.get('dtTermino')?.errors?.datasInvalidas && submitted" class="invalid-feedback">
                   Data de fim não pode ser menor que data de início.
                 </div>
               </div>
@@ -227,14 +220,14 @@
                 <label for="nuDiaInicio">Início</label>
                 <input formControlName="nuDiaInicio" id="nuDiaInicio" type="number" min="1" max="31" class="form-control"
                   placeholder="Dia" [ngClass]="{
-                  'is-invalid': submitted && vigencia.get('nuDiaInicio').invalid
+                  'is-invalid': submitted && vigencia.get('nuDiaInicio')?.invalid
                 }" />
               </div>
               <div class="col-1 pr-0">
                 <label for="nuDiaTermino">Fim</label>
                 <input formControlName="nuDiaTermino" id="nuDiaTermino" type="number" min="1" max="31" class="form-control"
                   placeholder="Dia" [ngClass]="{
-                  'is-invalid': submitted && vigencia.get('nuDiaTermino').invalid
+                  'is-invalid': submitted && vigencia.get('nuDiaTermino')?.invalid
                 }" />
                 <p class="small-text">ciclo mensal</p>
               </div>
@@ -247,7 +240,7 @@
                 </div>
                 <input formControlName="dtInicioCompetencia" id="dtInicioCompetencia" type="text" class="form-control"
                   [ngClass]="{
-                    'is-invalid': (submitted && vigencia.get('dtInicioCompetencia').invalid)
+                    'is-invalid': (submitted && vigencia.get('dtInicioCompetencia')?.invalid)
                   }" style="width: 80px;" mask="00/0000" placeholder="MM/YYYY" />
               </div>
 
@@ -284,7 +277,7 @@
                   <h5><b>Rubricas e Valor Global</b></h5>
                 </div>
                 <div class="div-rubricas" formArrayName="rubricas" *ngFor="
-                  let rubrica of vigencia.get('rubricas')['controls'];
+                  let rubrica of rubricasDaVigencia(vigencia);
                   let r = index
                 ">
                   <div class="row" [formGroupName]="r">
@@ -293,7 +286,7 @@
                     </div>
                     <div class="col-md-2 pr-0">
                       <select class="form-control" id="nuRubrica" formControlName="nuRubrica" [ngClass]="{
-                        'is-invalid': submitted && rubrica.get('nuRubrica').invalid
+                        'is-invalid': submitted && rubrica.get('nuRubrica')?.invalid
                       }">
                         <option value="" disabled selected>
                           Selecione a rubrica
@@ -305,7 +298,7 @@
                     </div>
                     <div class="col-md-2 pr-0">
                       <input formControlName="vrTotal" [ngClass]="{
-                        'is-invalid': submitted && rubrica.get('vrTotal').invalid
+                        'is-invalid': submitted && rubrica.get('vrTotal')?.invalid
                       }" id="vrTotal" type="text" class="form-control" mask="separator.2" [allowNegativeNumbers]="true"
                         [thousandSeparator]="'.'" [decimalMarker]="','" prefix="R$ " [dropSpecialCharacters]="true"
                         (ngModelChange)="atualizarValor($event, i, r)" />
@@ -330,9 +323,9 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn-sm btn-default" type="submit" (click)="onSubmit()"
+        <button class="primary-action" type="submit" (click)="onSubmit()"
           *ngIf="permissions?.Cadastrar ?? permissions?.Alterar ?? false; false">
-          Salvar
+          <i class="fas fa-floppy-disk"></i> Salvar contrato
         </button>
       </div>
     </mat-tab>

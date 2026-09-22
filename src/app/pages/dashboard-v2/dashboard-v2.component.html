@@ -1,4 +1,81 @@
 <div class="content">
+  <section class="governance-overview">
+    <header class="governance-heading">
+      <div>
+        <span class="governance-heading__eyebrow">Visão executiva</span>
+        <h1>Governança contratual</h1>
+        <p>Contratos, execução financeira, documentos e riscos sob acompanhamento.</p>
+      </div>
+      <span class="mock-badge" *ngIf="governanca.isMock"><i class="fas fa-flask"></i> Dados demonstrativos</span>
+    </header>
+
+    <div class="governance-kpis">
+      <ng-container *ngIf="!loading && dadosDashboardOrcamentoExecucaoContratual">
+        <div class="governance-kpi governance-kpi--teal">
+          <i class="fas fa-file-contract"></i>
+          <span>Contratos vigentes</span>
+          <strong [appCountUp]="dadosDashboardOrcamentoExecucaoContratual.dashboardExecucaoContratual?.qtContratoVigente"></strong>
+          <small><span [appCountUp]="dadosDashboardOrcamentoExecucaoContratual.dashboardExecucaoContratual?.qtPagamentoAno"></span> pagamentos no ano</small>
+        </div>
+        <div class="governance-kpi governance-kpi--blue">
+          <i class="fas fa-wallet"></i>
+          <span>Orçamento total (CAPEX+OPEX)</span>
+          <strong [appCountUp]="totalOrcamentoPlanejado" appCountUpFormat="currency"></strong>
+          <small>Exercício {{ anoExercicio }}</small>
+        </div>
+        <div class="governance-kpi governance-kpi--orange">
+          <i class="fas fa-chart-line"></i>
+          <span>Total executado no ano</span>
+          <strong [appCountUp]="dadosDashboardOrcamentoExecucaoContratual.dashboardExecucaoContratual?.vrExecutadoAno" appCountUpFormat="currency"></strong>
+          <small class="governance-kpi__positive">▲ <span [appCountUp]="percExecucaoGeral" [appCountUpDecimals]="1"></span>% do orçamento</small>
+        </div>
+        <div class="governance-kpi governance-kpi--purple">
+          <i class="fas fa-piggy-bank"></i>
+          <span>Saldo disponível</span>
+          <strong [appCountUp]="saldoOrcamentarioDisponivel" appCountUpFormat="currency"></strong>
+          <small class="governance-kpi__warning"><span [appCountUp]="percSaldoDisponivel" [appCountUpDecimals]="1"></span>% disponível</small>
+        </div>
+      </ng-container>
+      <div class="governance-kpi governance-kpi--warning">
+        <i class="fas fa-hourglass-half"></i>
+        <span>Vencem em 90 dias</span>
+        <strong>{{ resumoGovernanca.proximosVencimento }}</strong>
+      </div>
+      <div class="governance-kpi governance-kpi--danger">
+        <i class="fas fa-triangle-exclamation"></i>
+        <span>Com pendências</span>
+        <strong>{{ resumoGovernanca.comPendencias }}</strong>
+      </div>
+    </div>
+
+    <div class="governance-band">
+      <div class="governance-contracts">
+        <div class="governance-section-title">
+          <h2>Contratos prioritários</h2>
+          <a routerLink="/contrato">Consultar contratos</a>
+        </div>
+        <button class="priority-contract" type="button" *ngFor="let contrato of contratosGovernanca" [routerLink]="['/contrato/ficha', contrato.id]" [queryParams]="{ contrato: contrato.numero }">
+          <span class="priority-contract__number">{{ contrato.numero }}</span>
+          <span class="priority-contract__supplier">{{ contrato.contratada }}</span>
+          <span class="priority-contract__progress">
+            <span [style.width.%]="contrato.valorContratado ? (contrato.valorExecutado / contrato.valorContratado * 100) : 0"></span>
+          </span>
+          <span class="priority-contract__status">{{ contrato.status }}</span>
+        </button>
+      </div>
+      <div class="governance-movements">
+        <div class="governance-section-title">
+          <h2>Últimas movimentações</h2>
+          <a routerLink="/auditoria">Ver trilha</a>
+        </div>
+        <div class="movement" *ngFor="let registro of auditoriaRecente">
+          <i class="fas" [ngClass]="registro.modulo === 'Documentos' ? 'fa-file-arrow-up' : (registro.modulo === 'SEI' ? 'fa-link' : 'fa-pen-to-square')"></i>
+          <div><strong>{{ registro.usuario }}</strong><p>{{ registro.descricao }}</p><time>{{ registro.dataHora | date:'dd/MM/yyyy HH:mm' }}</time></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div class="dash-wrapper" *ngIf="!loading && dadosDashboardOrcamentoExecucaoContratual">
 
     <!-- ── GRID PRINCIPAL ─────────────────────────────────── -->
@@ -7,47 +84,8 @@
       <!-- ══ COLUNA PRINCIPAL ══ -->
       <div class="main-col">
 
-        <!-- KPIs -->
-        <div class="kpi-row">
-          <div class="kpi-card-v2 kpi-card-v2--teal">
-            <div class="kpi-card-v2__icon"><i class="material-icons">description</i></div>
-            <div class="kpi-card-v2__body">
-              <span class="kpi-card-v2__label">Contratos Vigentes</span>
-              <span class="kpi-card-v2__value" [appCountUp]="dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtContratoVigente"></span>
-              <span class="kpi-card-v2__badge kpi-card-v2__badge--neutral"><span [appCountUp]="dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.qtPagamentoAno"></span> pagamentos no ano</span>
-            </div>
-          </div>
-
-          <div class="kpi-card-v2 kpi-card-v2--blue">
-            <div class="kpi-card-v2__icon"><i class="material-icons">account_balance_wallet</i></div>
-            <div class="kpi-card-v2__body">
-              <span class="kpi-card-v2__label">Orçamento Total (CAPEX+OPEX)</span>
-              <span class="kpi-card-v2__value" [appCountUp]="totalOrcamentoPlanejado" appCountUpFormat="currency"></span>
-              <span class="kpi-card-v2__badge kpi-card-v2__badge--neutral">Exercício {{ anoExercicio }}</span>
-            </div>
-          </div>
-
-          <div class="kpi-card-v2 kpi-card-v2--orange">
-            <div class="kpi-card-v2__icon"><i class="material-icons">trending_up</i></div>
-            <div class="kpi-card-v2__body">
-              <span class="kpi-card-v2__label">Total Executado no Ano</span>
-              <span class="kpi-card-v2__value" [appCountUp]="dadosDashboardOrcamentoExecucaoContratual?.dashboardExecucaoContratual?.vrExecutadoAno" appCountUpFormat="currency"></span>
-              <span class="kpi-card-v2__badge kpi-card-v2__badge--up">▲ <span [appCountUp]="percExecucaoGeral" [appCountUpDecimals]="1"></span>% do orçamento</span>
-            </div>
-          </div>
-
-          <div class="kpi-card-v2 kpi-card-v2--purple">
-            <div class="kpi-card-v2__icon"><i class="material-icons">savings</i></div>
-            <div class="kpi-card-v2__body">
-              <span class="kpi-card-v2__label">Saldo Disponível</span>
-              <span class="kpi-card-v2__value" [appCountUp]="saldoOrcamentarioDisponivel" appCountUpFormat="currency"></span>
-              <span class="kpi-card-v2__badge kpi-card-v2__badge--down"><span [appCountUp]="percSaldoDisponivel" [appCountUpDecimals]="1"></span>% disponível</span>
-            </div>
-          </div>
-        </div>
-
         <!-- ORÇAMENTO x PRÓXIMOS PAGAMENTOS -->
-        <div class="row-2col row-2col--wide-left">
+        <div class="row-2col row-dashboard-overview">
 
           <div class="panel-card panel-card--budget">
             <div class="panel-card__header">
@@ -100,6 +138,17 @@
                 <div class="payments-list__value">{{ p.valor | currency:'BRL' }}</div>
               </div>
             </div>
+          </div>
+
+          <div class="panel-card panel-card--top">
+            <div class="panel-card__header"><h2>Top 10 Rubricas por Execução</h2></div>
+            <ol class="top-list">
+              <li *ngFor="let r of topRubricas; let i = index">
+                <span class="top-list__rank">{{ i + 1 }}.</span>
+                <span class="top-list__name">{{ r.nome }}</span>
+                <span class="top-list__value">{{ r.valor | currency:'BRL':'symbol':'1.0-0' }}</span>
+              </li>
+            </ol>
           </div>
 
         </div>
@@ -160,62 +209,6 @@
         </div>
 
       </div><!-- /.main-col -->
-
-      <!-- ══ COLUNA LATERAL ══ -->
-      <div class="side-col">
-
-        <div class="panel-card panel-card--activity">
-          <div class="panel-card__header">
-            <h2>Atividades em Tempo Real</h2>
-            <span class="live-badge"><span class="live-dot"></span>ao vivo</span>
-          </div>
-          <div class="activity-feed">
-            <div class="activity-feed__track">
-              <div class="activity-item" *ngFor="let a of atividades" [ngClass]="'activity-item--' + a.cor">
-                <div class="activity-item__icon"><i class="material-icons">{{ a.icon }}</i></div>
-                <div class="activity-item__body">
-                  <strong>{{ a.titulo }}</strong>
-                  <span>{{ a.descricao }}</span>
-                  <small>{{ a.tempo }}</small>
-                </div>
-              </div>
-              <div class="activity-item" *ngFor="let a of atividades" [ngClass]="'activity-item--' + a.cor" aria-hidden="true">
-                <div class="activity-item__icon"><i class="material-icons">{{ a.icon }}</i></div>
-                <div class="activity-item__body">
-                  <strong>{{ a.titulo }}</strong>
-                  <span>{{ a.descricao }}</span>
-                  <small>{{ a.tempo }}</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel-card panel-card--top">
-          <div class="panel-card__header"><h2>Top 10 Rubricas por Execução</h2></div>
-          <ol class="top-list">
-            <li *ngFor="let r of topRubricas; let i = index">
-              <span class="top-list__rank">{{ i + 1 }}.</span>
-              <span class="top-list__name">{{ r.nome }}</span>
-              <span class="top-list__value">{{ r.valor | currency:'BRL':'symbol':'1.0-0' }}</span>
-            </li>
-          </ol>
-        </div>
-
-        <div class="panel-card panel-card--alerts">
-          <div class="alert-quote">
-            <div class="alert-quote__icon"><i class="material-icons">verified</i></div>
-            <p>"Renovação do Contrato Nº 1123/2025 processada sem inconsistências."</p>
-            <span>— Módulo de Conformidade</span>
-          </div>
-          <div class="alert-quote alert-quote--warning">
-            <div class="alert-quote__icon"><i class="material-icons">warning</i></div>
-            <p>"3 contratos com saldo orçamentário abaixo de 10% identificados esta semana."</p>
-            <span>— Módulo de Orçamento</span>
-          </div>
-        </div>
-
-      </div><!-- /.side-col -->
 
     </div><!-- /.dashboard-grid -->
   </div><!-- /.dash-wrapper -->

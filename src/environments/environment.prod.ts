@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   useLocalManagementData: true,
+  useLocalBillingData: true,
   //end_point: 'http://api.Converge.hmp.caixa/api',
   //end_point: 'http://api.Converge.caixa/api',
   //end_point: 'https://localhost:5001/api',

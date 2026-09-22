@@ -1,0 +1,69 @@
+<main class="siafic-page">
+  <dsc-breadcrumb [urls]="[{ label: 'Governança', url: '/auditoria' }, { label: 'Integração SIAFIC' }]"></dsc-breadcrumb>
+
+  <header class="page-heading">
+    <div><span class="eyebrow">Integração orçamentária e financeira</span><h1>Converge + SIAFIC</h1><p>Conciliação do ciclo contratual com os registros oficiais do ente.</p></div>
+    <div class="connection-state"><i class="fas fa-flask"></i><div><strong>Adaptador demonstrativo</strong><span>Nenhuma conexão real configurada</span></div></div>
+  </header>
+
+  <section class="integration-toolbar">
+    <div class="field-control"><label>Contrato para demonstração</label><select [(ngModel)]="contratoSelecionado" (change)="carregarPainel()"><option *ngFor="let contrato of contratos" [ngValue]="contrato.id">{{ contrato.numero }} · {{ contrato.contratada }}</option></select></div>
+    <div class="destination"><span>Sistema de destino</span><strong>{{ painel?.sistemaDestino || 'Carregando...' }}</strong></div>
+    <div class="last-sync"><span>Última sincronização</span><strong>{{ painel?.ultimaSincronizacao | date:'dd/MM/yyyy HH:mm:ss' }}</strong></div>
+    <button type="button" class="sync-button" (click)="sincronizar()" [disabled]="sincronizando || carregando"><i class="fas" [ngClass]="sincronizando ? 'fa-spinner fa-spin' : 'fa-rotate'"></i>{{ sincronizando ? 'Sincronizando...' : 'Sincronizar agora' }}</button>
+  </section>
+
+  <div class="loading-state" *ngIf="carregando"><i class="fas fa-spinner fa-spin"></i> Consultando adaptador demonstrativo...</div>
+
+  <ng-container *ngIf="painel as dados">
+    <section class="explanation-band"><i class="fas fa-circle-info"></i><p><strong>Como funciona:</strong> a Converge organiza o contrato e suas evidências; o adaptador consulta os registros oficiais no SIAFIC; a conciliação aponta diferenças sem criar contabilidade paralela.</p></section>
+
+    <section class="flow-section">
+      <div class="section-title"><div><span>Ciclo integrado</span><h2>Da contratação ao pagamento</h2></div><span class="protocol">Ambiente: {{ dados.ambiente }}</span></div>
+      <div class="execution-flow">
+        <div class="flow-step" *ngFor="let etapa of ['Contrato','Empenho','Liquidação','Pagamento']; let ultimo = last">
+          <div class="flow-card" [class.has-warning]="registrosDaEtapa($any(etapa))[0]?.status === 'Com divergência'">
+            <div class="flow-card__icon"><i class="fas" [ngClass]="etapa === 'Contrato' ? 'fa-file-signature' : etapa === 'Empenho' ? 'fa-file-invoice-dollar' : etapa === 'Liquidação' ? 'fa-clipboard-check' : 'fa-building-columns'"></i></div>
+            <span>{{ etapa }}</span><strong>{{ registrosDaEtapa($any(etapa))[0]?.numero }}</strong><b>{{ totalEtapa($any(etapa)) | currency:'BRL' }}</b><small>{{ registrosDaEtapa($any(etapa))[0]?.status }}</small>
+          </div>
+          <i *ngIf="!ultimo" class="fas fa-arrow-right flow-arrow"></i>
+        </div>
+      </div>
+    </section>
+
+    <section class="summary-grid">
+      <article class="metric"><span>Valor contratado</span><strong>{{ totalEtapa('Contrato') | currency:'BRL' }}</strong><small>Origem: Converge</small></article>
+      <article class="metric"><span>Valor empenhado</span><strong>{{ totalEtapa('Empenho') | currency:'BRL' }}</strong><small>Origem: SIAFIC</small></article>
+      <article class="metric"><span>Valor liquidado</span><strong>{{ totalEtapa('Liquidação') | currency:'BRL' }}</strong><small>Origem: SIAFIC</small></article>
+      <article class="metric"><span>Valor pago consultado</span><strong>{{ totalEtapa('Pagamento') | currency:'BRL' }}</strong><small>Origem: SIAFIC</small></article>
+      <article class="metric metric--warning"><span>Divergências</span><strong>{{ dados.divergencias.length }}</strong><small>Requerem análise</small></article>
+    </section>
+
+    <div class="content-grid">
+      <section class="panel classification-panel">
+        <div class="panel-heading"><i class="fas fa-sitemap"></i><div><h2>Classificação orçamentária</h2><span>Dados associados ao contrato no SIAFIC</span></div></div>
+        <dl><div><dt>Unidade orçamentária</dt><dd>{{ dados.classificacao.unidadeOrcamentaria }}</dd></div><div><dt>Programa</dt><dd>{{ dados.classificacao.programa }}</dd></div><div><dt>Ação</dt><dd>{{ dados.classificacao.acao }}</dd></div><div><dt>Natureza da despesa</dt><dd>{{ dados.classificacao.naturezaDespesa }}</dd></div><div><dt>Fonte de recursos</dt><dd>{{ dados.classificacao.fonteRecursos }}</dd></div><div><dt>Plano interno</dt><dd>{{ dados.classificacao.planoInterno }}</dd></div></dl>
+      </section>
+
+      <section class="panel compliance-panel">
+        <div class="panel-heading"><i class="fas fa-shield-halved"></i><div><h2>Controles apoiados</h2><span>Referências ao Decreto 10.540/2020</span></div></div>
+        <ul><li><i class="fas fa-check"></i><div><strong>Rastreabilidade</strong><span>Origem, protocolo, data e resultado de cada consulta.</span></div></li><li><i class="fas fa-check"></i><div><strong>Identificação do usuário</strong><span>Operações vinculadas à trilha de auditoria.</span></div></li><li><i class="fas fa-check"></i><div><strong>Integridade e tempestividade</strong><span>Conciliação sem sobrescrever o registro oficial.</span></div></li><li><i class="fas fa-check"></i><div><strong>Dados padronizados</strong><span>Classificações orçamentárias tratadas de forma estruturada.</span></div></li></ul>
+        <p class="compliance-note">Este módulo apoia controles de integração. A conformidade integral depende do SIAFIC, da infraestrutura e dos processos do ente.</p>
+      </section>
+    </div>
+
+    <section class="panel divergences-panel">
+      <div class="panel-heading"><i class="fas fa-code-compare"></i><div><h2>Conciliação automática</h2><span>Comparação entre gestão contratual e execução oficial</span></div><b>{{ dados.divergencias.length }} apontamentos</b></div>
+      <article class="divergence" *ngFor="let item of dados.divergencias" [class.high]="item.criticidade === 'Alta'">
+        <div class="divergence__type"><i class="fas fa-triangle-exclamation"></i><span>{{ item.tipo }}</span><small>{{ item.criticidade }}</small></div>
+        <div class="divergence__body"><strong>{{ item.descricao }}</strong><div class="comparison" *ngIf="item.valorConverge || item.valorSiafic"><span><b>Converge</b>{{ item.valorConverge }}</span><i class="fas fa-not-equal"></i><span><b>SIAFIC</b>{{ item.valorSiafic }}</span></div><p><i class="fas fa-lightbulb"></i> {{ item.orientacao }}</p></div>
+      </article>
+      <div class="empty-state" *ngIf="!dados.divergencias.length"><i class="fas fa-circle-check"></i> Todos os registros estão conciliados.</div>
+    </section>
+
+    <section class="panel logs-panel">
+      <div class="panel-heading"><i class="fas fa-clock-rotate-left"></i><div><h2>Histórico da integração</h2><span>Protocolos técnicos da demonstração</span></div><a routerLink="/auditoria">Ver auditoria completa</a></div>
+      <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Operação</th><th>Protocolo</th><th>Resultado</th><th>Detalhe</th></tr></thead><tbody><tr *ngFor="let log of dados.logs"><td>{{ log.dataHora | date:'dd/MM/yyyy HH:mm:ss' }}</td><td><strong>{{ log.operacao }}</strong></td><td><code>{{ log.protocolo }}</code></td><td><span class="status" [ngClass]="statusClass(log.resultado)">{{ log.resultado }}</span></td><td>{{ log.detalhe }}</td></tr></tbody></table></div>
+    </section>
+  </ng-container>
+</main>

@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   useLocalManagementData: true,
+  useLocalBillingData: true,
   end_point: '',
   KEYCLOAK_URL: 'https://iam.converge.com/',
   KEYCLOAK_REALM: 'internet',

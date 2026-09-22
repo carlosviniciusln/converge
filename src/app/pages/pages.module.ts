@@ -104,6 +104,13 @@ import { BuscaContratoComponent } from './dashboard/busca-contrato/busca-contrat
 import { BuscaUdComponent } from './dashboard/busca-ud/busca-ud.component';
 import { BuscaGerencialComponent } from './dashboard/busca-gerencial/busca-gerencial.component';
 import { CountUpDirective } from '../shared/directives/count-up.directive';
+import { GovernancaComponent } from './governanca/governanca.component';
+import { IntegracaoSiaficComponent } from './integracao-siafic/integracao-siafic.component';
+import { ISiaficIntegrationService, MockSiaficIntegrationService } from '../services/siafic-integration.service';
+import { FaturamentoMotorComponent } from './faturamento-motor/faturamento-motor.component';
+import { FaturamentoMotorRepository, LocalFaturamentoMotorService } from '../services/faturamento-motor.service';
+import { HttpFaturamentoMotorService } from '../services/faturamento-motor-http.service';
+import { environment } from '../../environments/environment';
 
 
 
@@ -215,6 +222,9 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ,BuscaContratoComponent
     ,BuscaUdComponent
     ,BuscaGerencialComponent
+    ,GovernancaComponent
+    ,IntegracaoSiaficComponent
+    ,FaturamentoMotorComponent
   ],
   providers: [
     ConfirmationService,
@@ -224,6 +234,15 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DecimalPipe,
     MessageService,
     DialogService,
+    MockSiaficIntegrationService,
+    LocalFaturamentoMotorService,
+    HttpFaturamentoMotorService,
+    { provide: ISiaficIntegrationService, useExisting: MockSiaficIntegrationService },
+    {
+      provide: FaturamentoMotorRepository,
+      useFactory: (local: LocalFaturamentoMotorService, http: HttpFaturamentoMotorService) => environment.useLocalBillingData ? local : http,
+      deps: [LocalFaturamentoMotorService, HttpFaturamentoMotorService],
+    },
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig },
   ],

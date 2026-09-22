@@ -1,0 +1,255 @@
+<div class="content motor-page">
+  <header class="motor-header">
+    <div>
+      <span class="eyebrow">Motor corporativo</span>
+      <h1>Configuração de faturamento</h1>
+      <p>Regras contratuais parametrizadas, versionadas e prontas para cálculo auditável.</p>
+    </div>
+    <button class="btn-outline" type="button" (click)="resetarDemonstracao()">
+      <i class="fas fa-rotate-left"></i> Restaurar demonstração
+    </button>
+  </header>
+
+  <div class="contract-toolbar" *ngIf="!carregando && contratos.length">
+    <label for="contratoMotor">Contrato em configuração</label>
+    <select id="contratoMotor" [value]="contratoSelecionado?.id" (change)="selecionarContrato($any($event.target).value)">
+      <option *ngFor="let contrato of contratos" [value]="contrato.id">{{ contrato.numero }} · {{ contrato.fornecedor }}</option>
+    </select>
+    <span class="status-chip">{{ contratoSelecionado?.status }}</span>
+  </div>
+
+  <ng-container *ngIf="contratoSelecionado as contrato">
+    <nav class="motor-tabs" aria-label="Etapas da configuração">
+      <button type="button" *ngFor="let aba of abas" [class.active]="abaAtiva === aba.id" (click)="selecionarAba(aba.id)">
+        <i class="fas" [ngClass]="aba.icone"></i><span>{{ aba.titulo }}</span>
+      </button>
+    </nav>
+
+    <section *ngIf="abaAtiva === 'cockpit'" class="cockpit-section">
+      <div class="panel cockpit-panel">
+        <div class="panel-title">
+          <div><span class="step-number">1</span><h2>Cockpit de competências</h2></div>
+          <div class="header-actions">
+            <select [(ngModel)]="filtroStatus" aria-label="Filtrar por status"><option value="">Todos os status</option><option *ngFor="let status of ['RASCUNHO','EM_APURACAO','CALCULADA','BLOQUEADA','LIBERADA','FECHADA']" [value]="status">{{ formatarEnum(status) }}</option></select>
+            <button class="btn-primary" type="button" (click)="novaCompetencia()"><i class="fas fa-plus"></i> Nova competência</button>
+          </div>
+        </div>
+        <div class="cockpit-table" *ngIf="competenciasFiltradas.length; else semCompetencias">
+          <div class="cockpit-row cockpit-row--head"><span>Competência</span><span>Status</span><span>Bruto</span><span>Deduções</span><span>Líquido</span><span>Liberação</span><span></span></div>
+          <div class="cockpit-row" *ngFor="let competencia of competenciasFiltradas">
+            <strong>{{ competencia.mes | number:'2.0-0' }}/{{ competencia.ano }}</strong><span class="status-chip">{{ formatarEnum(competencia.status) }}</span>
+            <ng-container *ngIf="resultadoDaCompetencia(competencia.id) as resumo; else semCalculo"><span>{{ resumo.valorBrutoCentavos / 100 | currency:'BRL' }}</span><span>{{ (resumo.descontoSlaCentavos + resumo.glosaCentavos + resumo.penalidadeCentavos + resumo.retencaoContratualCentavos + resumo.retencaoTributariaCentavos) / 100 | currency:'BRL' }}</span><strong>{{ resumo.valorCalculadoCentavos / 100 | currency:'BRL' }}</strong><span [class.text-danger]="resumo.statusLiberacao === 'BLOQUEADO'">{{ formatarEnum(resumo.statusLiberacao) }}</span></ng-container>
+            <ng-template #semCalculo><span>—</span><span>—</span><span>—</span><span>Pendente</span></ng-template>
+            <button type="button" class="icon-action" title="Abrir competência" (click)="abrirCompetencia(competencia)"><i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+        <ng-template #semCompetencias><div class="empty-state"><i class="fas fa-inbox"></i><strong>Nenhuma competência encontrada</strong><span>Crie a primeira competência para iniciar a medição mensal.</span><button class="btn-primary" type="button" (click)="novaCompetencia()">Criar competência</button></div></ng-template>
+      </div>
+      <aside class="panel demo-script">
+        <div class="panel-title"><div><span class="step-number">2</span><h2>Roteiro da demonstração</h2></div></div>
+        <ol><li>Escolha um contrato com regras distintas.</li><li>Abra a competência e altere medições ou eventos.</li><li>Processe e confira a memória auditável.</li><li>Valide documentos sem recalcular valores.</li><li>Recalcule com justificativa e compare versões.</li></ol>
+        <small>Tempo estimado: 8 a 10 minutos.</small>
+      </aside>
+    </section>
+
+    <section *ngIf="abaAtiva === 'visao'" class="overview-grid">
+      <article class="summary-card"><i class="fas fa-cubes"></i><div><span>Itens faturáveis</span><strong>{{ contrato.itens.length }}</strong><small>{{ contrato.unidades.length }} unidades vinculáveis</small></div></article>
+      <article class="summary-card"><i class="fas fa-code-branch"></i><div><span>Regras ativas</span><strong>{{ regrasAtivas }}</strong><small>Faturamento, SLA e penalidades</small></div></article>
+      <article class="summary-card"><i class="fas fa-file-shield"></i><div><span>Documentos bloqueadores</span><strong>{{ documentosBloqueadores }}</strong><small>Sem desconto automático</small></div></article>
+      <article class="summary-card summary-card--value"><i class="fas fa-coins"></i><div><span>Valor global</span><strong>{{ contrato.valorGlobalCentavos / 100 | currency:'BRL' }}</strong><small>{{ contrato.periodicidade | titlecase }}</small></div></article>
+
+      <div class="panel contract-profile">
+        <div class="panel-title"><div><span class="step-number">1</span><h2>Identidade contratual</h2></div><span class="version-badge">Configuração vigente</span></div>
+        <dl>
+          <div><dt>Contrato</dt><dd>{{ contrato.numero }}</dd></div><div><dt>Fornecedor</dt><dd>{{ contrato.fornecedor }}</dd></div>
+          <div class="wide"><dt>Objeto</dt><dd>{{ contrato.objeto }}</dd></div>
+          <div><dt>Vigência</dt><dd>{{ contrato.inicioVigencia | date:'dd/MM/yyyy' }} a {{ contrato.fimVigencia | date:'dd/MM/yyyy' }}</dd></div>
+          <div><dt>Ciclo</dt><dd>NF até dia {{ contrato.diaLimiteNotaFiscal }} · Pagamento dia {{ contrato.diaPagamento }}</dd></div>
+        </dl>
+      </div>
+      <div class="panel architecture-panel">
+        <div class="panel-title"><div><span class="step-number">2</span><h2>Composição parametrizada</h2></div></div>
+        <div class="flow-line"><span>Itens e unidades</span><i class="fas fa-arrow-right"></i><span>Regras vigentes</span><i class="fas fa-arrow-right"></i><span>Medição</span><i class="fas fa-arrow-right"></i><span>Memória</span></div>
+        <p>Nenhuma regra está vinculada ao nome do fornecedor. O motor processará tipos e parâmetros versionados.</p>
+      </div>
+    </section>
+
+    <section *ngIf="abaAtiva === 'itens'" class="workspace-grid">
+      <div class="panel records-panel">
+        <div class="panel-title"><div><span class="step-number">1</span><h2>Itens faturáveis</h2></div><button class="btn-primary" type="button" (click)="novoItem()"><i class="fas fa-plus"></i> Novo item</button></div>
+        <div class="record" *ngFor="let item of contrato.itens">
+          <div class="record-main"><span class="type-icon"><i class="fas fa-cube"></i></span><div><strong>{{ item.codigo }} · {{ item.descricao }}</strong><span>{{ formatarEnum(item.tipo) }} · {{ item.quantidadeContratada }} {{ item.unidadeMedida }}</span></div></div>
+          <div class="record-value"><strong>{{ (item.valorMensalCentavos || item.valorUnitarioCentavos) / 100 | currency:'BRL' }}</strong><small>{{ item.valorMensalCentavos ? 'mensal' : 'unitário' }}</small></div>
+          <div class="record-actions"><button title="Editar item" (click)="editarItem(item)"><i class="fas fa-pen"></i></button><button title="Excluir item" (click)="excluirItem(item)"><i class="fas fa-trash"></i></button></div>
+        </div>
+        <div class="empty" *ngIf="!contrato.itens.length">Nenhum item faturável configurado.</div>
+      </div>
+
+      <form class="panel editor-panel" *ngIf="editandoItemId !== undefined" [formGroup]="itemForm" (ngSubmit)="salvarItem()">
+        <div class="panel-title"><div><span class="step-number">2</span><h2>{{ editandoItemId ? 'Editar' : 'Novo' }} item</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoItemId = undefined"><i class="fas fa-xmark"></i></button></div>
+        <div class="form-grid">
+          <label>Código<input formControlName="codigo" /></label><label>Tipo<select formControlName="tipo"><option *ngFor="let tipo of tiposObjeto" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label>
+          <label class="wide">Descrição<input formControlName="descricao" /></label><label>Unidade de medida<input formControlName="unidadeMedida" /></label>
+          <label>Quantidade contratada<input type="number" min="0" formControlName="quantidadeContratada" /></label>
+          <label>Valor unitário (R$)<input type="number" min="0" step="0.01" formControlName="valorUnitario" /></label><label>Valor mensal (R$)<input type="number" min="0" step="0.01" formControlName="valorMensal" /></label>
+          <label>Unidade vinculada<select formControlName="unidadeId"><option value="">Sem vínculo</option><option *ngFor="let unidade of contrato.unidades" [value]="unidade.id">{{ unidade.codigo }}</option></select></label>
+          <label>Início da vigência<input type="date" formControlName="inicioVigencia" /></label><label>Fim da vigência<input type="date" formControlName="fimVigencia" /></label>
+        </div>
+        <div class="check-row"><label><input type="checkbox" formControlName="permiteProRata" /> Permite pro rata</label><label><input type="checkbox" formControlName="permiteRetencao" /> Permite retenção</label></div>
+        <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoItemId = undefined">Cancelar</button><button class="btn-primary" type="submit"><i class="fas fa-check"></i> Salvar item</button></div>
+      </form>
+
+      <div class="panel records-panel">
+        <div class="panel-title"><div><span class="step-number">3</span><h2>Unidades de prestação</h2></div><button class="btn-primary" type="button" (click)="novaUnidade()"><i class="fas fa-plus"></i> Nova unidade</button></div>
+        <div class="record" *ngFor="let unidade of contrato.unidades"><div class="record-main"><span class="type-icon"><i class="fas fa-location-dot"></i></span><div><strong>{{ unidade.codigo }} · {{ unidade.descricao }}</strong><span>{{ formatarEnum(unidade.tipo) }}<ng-container *ngIf="unidade.municipio"> · {{ unidade.municipio }}/{{ unidade.uf }}</ng-container></span></div></div><div class="record-actions"><button title="Editar unidade" (click)="editarUnidade(unidade)"><i class="fas fa-pen"></i></button><button title="Excluir unidade" (click)="excluirUnidade(unidade)"><i class="fas fa-trash"></i></button></div></div>
+      </div>
+      <form class="panel editor-panel" *ngIf="editandoUnidadeId !== undefined" [formGroup]="unidadeForm" (ngSubmit)="salvarUnidade()">
+        <div class="panel-title"><div><span class="step-number">4</span><h2>{{ editandoUnidadeId ? 'Editar' : 'Nova' }} unidade</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoUnidadeId = undefined"><i class="fas fa-xmark"></i></button></div>
+        <div class="form-grid"><label>Código<input formControlName="codigo" /></label><label>Tipo<select formControlName="tipo"><option *ngFor="let tipo of tiposObjeto" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label><label class="wide">Descrição<input formControlName="descricao" /></label><label>Município<input formControlName="municipio" /></label><label>UF<input maxlength="2" formControlName="uf" /></label></div>
+        <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoUnidadeId = undefined">Cancelar</button><button class="btn-primary" type="submit">Salvar unidade</button></div>
+      </form>
+    </section>
+
+    <section *ngIf="abaAtiva === 'regras'" class="rules-layout">
+      <div class="panel rules-panel">
+        <div class="panel-title"><div><span class="step-number">1</span><h2>Regras de faturamento</h2></div><button class="btn-primary" type="button" (click)="novaRegra()"><i class="fas fa-plus"></i> Nova regra</button></div>
+        <div class="rule-card" *ngFor="let regra of contrato.regrasFaturamento">
+          <div class="rule-order">{{ regra.ordemAplicacao }}</div><div class="rule-body"><div><strong>{{ regra.nome }}</strong><span class="rule-chip">{{ formatarEnum(regra.tipo) }}</span></div><p>{{ nomeItem(regra.itemId) }} · {{ formatarEnum(regra.baseCalculo) }}<ng-container *ngIf="regra.eventoGatilho"> · {{ formatarEnum(regra.eventoGatilho) }}</ng-container></p><small>Vigente desde {{ regra.inicioVigencia | date:'dd/MM/yyyy' }}<ng-container *ngIf="regra.percentual !== undefined"> · {{ regra.percentual }}%</ng-container></small></div>
+          <div class="record-actions"><button title="Editar regra" (click)="editarRegra(regra)"><i class="fas fa-pen"></i></button><button title="Excluir regra" (click)="excluirRegra(regra)"><i class="fas fa-trash"></i></button></div>
+        </div>
+      </div>
+      <form class="panel editor-panel" *ngIf="editandoRegraId !== undefined" [formGroup]="regraForm" (ngSubmit)="salvarRegra()">
+        <div class="panel-title"><div><span class="step-number">2</span><h2>{{ editandoRegraId ? 'Editar' : 'Nova' }} regra</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoRegraId = undefined"><i class="fas fa-xmark"></i></button></div>
+        <div class="form-grid"><label class="wide">Nome<input formControlName="nome" /></label><label>Tipo<select formControlName="tipo"><option *ngFor="let tipo of tiposRegra" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label><label>Item<select formControlName="itemId"><option value="">Selecione</option><option *ngFor="let item of contrato.itens" [value]="item.id">{{ item.codigo }} · {{ item.descricao }}</option></select></label><label>Evento gatilho<select formControlName="eventoGatilho"><option *ngFor="let evento of eventos" [value]="evento">{{ formatarEnum(evento) }}</option></select></label><label>Base de cálculo<select formControlName="baseCalculo"><option *ngFor="let base of basesCalculo" [value]="base">{{ formatarEnum(base) }}</option></select></label><label>Percentual (%)<input type="number" min="0" max="100" step="0.01" formControlName="percentual" /></label><label>Valor fixo (R$)<input type="number" min="0" step="0.01" formControlName="valorFixo" /></label><label>Fator de transição<input type="number" min="0" step="0.01" formControlName="fatorTransicao" /></label><label>Ordem<input type="number" min="1" formControlName="ordemAplicacao" /></label><label>Início da vigência<input type="date" formControlName="inicioVigencia" /></label><label>Fim da vigência<input type="date" formControlName="fimVigencia" /></label></div>
+        <div class="check-row"><label><input type="checkbox" formControlName="ativa" /> Regra ativa</label></div><div class="form-note"><i class="fas fa-clock-rotate-left"></i> Alterações de vigência preservam a configuração histórica do contrato.</div>
+        <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoRegraId = undefined">Cancelar</button><button class="btn-primary" type="submit">Salvar regra</button></div>
+      </form>
+    </section>
+
+    <section *ngIf="abaAtiva === 'sla'" class="rules-layout">
+      <div class="panel rules-panel">
+        <div class="panel-title"><div><span class="step-number">1</span><h2>Indicadores de SLA</h2></div><button class="btn-primary" type="button" (click)="novoIndicadorSla()"><i class="fas fa-plus"></i> Novo indicador</button></div>
+        <div class="separation-alert separation-alert--blue"><i class="fas fa-gauge-high"></i><span>Cada indicador possui vigência, base financeira, método de apuração e teto próprios.</span></div>
+        <div class="rule-card" *ngFor="let indicador of contrato.indicadoresSla">
+          <div class="rule-order"><i class="fas fa-chart-line"></i></div>
+          <div class="rule-body"><div><strong>{{ indicador.codigo }} · {{ indicador.nome }}</strong><span class="rule-chip">{{ formatarEnum(indicador.tipoRegra) }}</span></div><p>Meta {{ indicador.meta }} {{ formatarEnum(indicador.unidadeApuracao) }} · Base: {{ formatarEnum(indicador.baseCalculo) }}</p><small>{{ indicador.faixas.length }} faixa(s) · Teto {{ indicador.tetoPercentual || 0 }}% · vigente desde {{ indicador.inicioVigencia | date:'dd/MM/yyyy' }}</small></div>
+          <div class="record-actions"><button title="Editar indicador" (click)="editarIndicadorSla(indicador)"><i class="fas fa-pen"></i></button><button title="Excluir indicador" (click)="excluirIndicadorSla(indicador)"><i class="fas fa-trash"></i></button></div>
+        </div>
+        <div class="empty" *ngIf="!contrato.indicadoresSla.length">Nenhum indicador de SLA configurado.</div>
+      </div>
+
+      <form class="panel editor-panel" *ngIf="editandoSlaId !== undefined" [formGroup]="slaForm" (ngSubmit)="salvarIndicadorSla()">
+        <div class="panel-title"><div><span class="step-number">2</span><h2>{{ editandoSlaId ? 'Editar' : 'Novo' }} indicador</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoSlaId = undefined"><i class="fas fa-xmark"></i></button></div>
+        <div class="form-grid">
+          <label>Código<input formControlName="codigo" /></label><label>Unidade de apuração<select formControlName="unidadeApuracao"><option *ngFor="let unidade of unidadesSla" [value]="unidade">{{ formatarEnum(unidade) }}</option></select></label>
+          <label class="wide">Nome<input formControlName="nome" /></label><label>Meta<input type="number" step="0.0001" formControlName="meta" /></label>
+          <label>Tipo da regra<select formControlName="tipoRegra"><option *ngFor="let tipo of tiposRegraSla" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label>
+          <label>Base de cálculo<select formControlName="baseCalculo"><option *ngFor="let base of basesCalculo" [value]="base">{{ formatarEnum(base) }}</option></select></label>
+          <label>Percentual por unidade (%)<input type="number" min="0" step="0.001" formControlName="percentual" /></label><label>Teto de desconto (%)<input type="number" min="0" max="100" formControlName="tetoPercentual" /></label>
+          <label>Início da vigência<input type="date" formControlName="inicioVigencia" /></label><label>Fim da vigência<input type="date" formControlName="fimVigencia" /></label>
+        </div>
+        <div class="range-editor" *ngIf="slaForm.get('tipoRegra')?.value === 'POR_FAIXA'" formArrayName="faixas">
+          <div class="range-heading"><strong>Faixas de desconto</strong><button type="button" class="btn-secondary" (click)="adicionarFaixa()"><i class="fas fa-plus"></i> Faixa</button></div>
+          <div class="range-row" *ngFor="let faixa of faixasSla.controls; let i = index" [formGroupName]="i">
+            <label>Mínimo<input type="number" step="0.0001" formControlName="valorMinimo" /></label><label>Máximo<input type="number" step="0.0001" formControlName="valorMaximo" /></label><label>Desconto (%)<input type="number" min="0" max="100" step="0.01" formControlName="percentualDesconto" /></label><button type="button" title="Remover faixa" (click)="removerFaixa(i)"><i class="fas fa-trash"></i></button>
+          </div>
+          <div class="empty empty--compact" *ngIf="!faixasSla.length">Inclua faixas contínuas e sem sobreposição.</div>
+        </div>
+        <div class="check-row"><label><input type="checkbox" formControlName="ativo" /> Indicador ativo</label></div>
+        <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoSlaId = undefined">Cancelar</button><button class="btn-primary" type="submit">Salvar indicador</button></div>
+      </form>
+    </section>
+
+    <section *ngIf="abaAtiva === 'governanca'" class="workspace-grid">
+      <div class="panel records-panel">
+        <div class="panel-title"><div><span class="step-number">1</span><h2>Penalidades administrativas</h2></div><button class="btn-primary" type="button" (click)="novaPenalidade()"><i class="fas fa-plus"></i> Nova penalidade</button></div>
+        <div class="separation-alert"><i class="fas fa-scale-balanced"></i><span>Multas são registradas separadamente de SLA e glosas para preservar o tratamento jurídico e contábil.</span></div>
+        <div class="record" *ngFor="let regra of contrato.penalidades"><div class="record-main"><span class="type-icon type-icon--danger"><i class="fas fa-gavel"></i></span><div><strong>{{ regra.codigo }} · {{ regra.descricao }}</strong><span>{{ formatarEnum(regra.tipo) }} · Base: {{ formatarEnum(regra.baseCalculo) }}</span></div></div><div class="record-value"><strong>{{ regra.percentual || 0 }}%</strong><small>Teto {{ regra.tetoPercentual || 0 }}%</small></div><div class="record-actions"><button title="Editar penalidade" (click)="editarPenalidade(regra)"><i class="fas fa-pen"></i></button><button title="Excluir penalidade" (click)="excluirPenalidade(regra)"><i class="fas fa-trash"></i></button></div></div>
+        <div class="empty" *ngIf="!contrato.penalidades.length">Nenhuma penalidade configurada para este contrato.</div>
+      </div>
+      <form class="panel editor-panel" *ngIf="editandoPenalidadeId !== undefined" [formGroup]="penalidadeForm" (ngSubmit)="salvarPenalidade()">
+        <div class="panel-title"><div><span class="step-number">2</span><h2>{{ editandoPenalidadeId ? 'Editar' : 'Nova' }} penalidade</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoPenalidadeId = undefined"><i class="fas fa-xmark"></i></button></div>
+        <div class="form-grid"><label>Código<input formControlName="codigo" /></label><label>Tipo<select formControlName="tipo"><option *ngFor="let tipo of tiposPenalidade" [value]="tipo">{{ formatarEnum(tipo) }}</option></select></label><label class="wide">Descrição<input formControlName="descricao" /></label><label>Base de cálculo<select formControlName="baseCalculo"><option *ngFor="let base of basesCalculo" [value]="base">{{ formatarEnum(base) }}</option></select></label><label>Percentual (%)<input type="number" min="0" step="0.01" formControlName="percentual" /></label><label>Valor fixo (R$)<input type="number" min="0" step="0.01" formControlName="valorFixo" /></label><label>Teto (%)<input type="number" min="0" max="100" formControlName="tetoPercentual" /></label><label>Início da vigência<input type="date" formControlName="inicioVigencia" /></label><label>Fim da vigência<input type="date" formControlName="fimVigencia" /></label></div><div class="check-row"><label><input type="checkbox" formControlName="cumulativa" /> Penalidade cumulativa</label></div>
+        <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoPenalidadeId = undefined">Cancelar</button><button class="btn-primary" type="submit">Salvar penalidade</button></div>
+      </form>
+
+      <div class="panel records-panel">
+        <div class="panel-title"><div><span class="step-number">3</span><h2>Documentos obrigatórios</h2></div><button class="btn-primary" type="button" (click)="novoDocumento()"><i class="fas fa-plus"></i> Novo documento</button></div>
+        <div class="separation-alert separation-alert--blue"><i class="fas fa-lock"></i><span>Documento ausente bloqueia a liberação do pagamento, mas não altera o valor calculado.</span></div>
+        <div class="record" *ngFor="let documento of contrato.documentosObrigatorios"><div class="record-main"><span class="type-icon"><i class="fas fa-file-circle-check"></i></span><div><strong>{{ documento.codigo }} · {{ documento.descricao }}</strong><span>{{ documento.obrigatorioParaPagamento ? 'Bloqueia pagamento quando ausente' : 'Documento informativo' }}</span></div></div><div class="record-actions"><button title="Editar documento" (click)="editarDocumento(documento)"><i class="fas fa-pen"></i></button><button title="Excluir documento" (click)="excluirDocumento(documento)"><i class="fas fa-trash"></i></button></div></div>
+      </div>
+      <form class="panel editor-panel" *ngIf="editandoDocumentoId !== undefined" [formGroup]="documentoForm" (ngSubmit)="salvarDocumento()">
+        <div class="panel-title"><div><span class="step-number">4</span><h2>{{ editandoDocumentoId ? 'Editar' : 'Novo' }} documento</h2></div><button type="button" class="icon-close" title="Fechar" (click)="editandoDocumentoId = undefined"><i class="fas fa-xmark"></i></button></div>
+        <div class="form-grid"><label>Código<input formControlName="codigo" /></label><label class="wide">Descrição<input formControlName="descricao" /></label></div><div class="check-row"><label><input type="checkbox" formControlName="obrigatorioParaPagamento" /> Obrigatório para liberar pagamento</label></div>
+        <div class="form-actions"><button type="button" class="btn-secondary" (click)="editandoDocumentoId = undefined">Cancelar</button><button class="btn-primary" type="submit">Salvar documento</button></div>
+      </form>
+    </section>
+
+    <section *ngIf="abaAtiva === 'simulacao' && competenciaSimulacao as competencia" class="simulation-layout">
+      <div class="panel simulation-inputs">
+        <div class="panel-title"><div><span class="step-number">1</span><h2>Dados da competência 09/2026</h2></div><button type="button" class="btn-secondary" (click)="prepararSimulacao()"><i class="fas fa-rotate-left"></i> Restaurar cenário</button></div>
+        <div class="readonly-alert" *ngIf="competencia.status === 'FECHADA'"><i class="fas fa-lock"></i><span>Competência fechada. A medição está disponível somente para consulta.</span></div>
+        <fieldset class="simulation-fields" [disabled]="competencia.status === 'FECHADA'">
+
+        <h3>Medições faturáveis</h3>
+        <div class="input-table">
+          <div class="input-table__head"><span>Item</span><span>Quantidade aceita</span><span>Pro rata</span><span>Transição</span></div>
+          <div class="input-table__row" *ngFor="let medicao of competencia.medicoes">
+            <strong>{{ nomeItem(medicao.itemId) }}</strong><input type="number" min="0" [(ngModel)]="medicao.quantidadeAceita" /><input type="number" min="0" max="1" step="0.0001" [(ngModel)]="medicao.fatorProRata" /><input type="number" min="0" step="0.01" [(ngModel)]="medicao.fatorTransicao" />
+          </div>
+        </div>
+
+        <h3 *ngIf="competencia.eventos.length">Eventos da competência</h3>
+        <div class="input-table input-table--events" *ngIf="competencia.eventos.length">
+          <div class="input-table__head"><span>Evento</span><span>Referência</span><span>Quantidade</span><span>Minutos</span></div>
+          <div class="input-table__row" *ngFor="let evento of competencia.eventos">
+            <strong>{{ formatarEnum(evento.tipo) }}</strong><span>{{ nomeItem(evento.itemId) }}<ng-container *ngIf="evento.indicadorSlaId"> · {{ nomeIndicador(evento.indicadorSlaId) }}</ng-container></span><input type="number" min="0" [(ngModel)]="evento.quantidade" /><input type="number" min="0" [(ngModel)]="evento.minutos" />
+          </div>
+        </div>
+
+        <h3 *ngIf="competencia.apuracoesSla.length">Indicadores apurados</h3>
+        <div class="input-table input-table--sla" *ngIf="competencia.apuracoesSla.length">
+          <div class="input-table__head"><span>Indicador</span><span>Valor apurado</span><span>Quantidade</span><span>Base financeira</span></div>
+          <div class="input-table__row" *ngFor="let apuracao of competencia.apuracoesSla"><strong>{{ nomeIndicador(apuracao.indicadorId) }}</strong><input type="number" step="0.0001" [(ngModel)]="apuracao.valorApurado" /><input type="number" min="0" [(ngModel)]="apuracao.quantidade" /><span>{{ (apuracao.baseCalculoCentavos || 0) / 100 | currency:'BRL' }}</span></div>
+        </div>
+
+        <h3>Ajustes e documentos</h3>
+        <div class="adjustment-grid"><label>Glosa (R$)<input type="number" min="0" step="0.01" [(ngModel)]="glosaReais" /></label><label>Retenção contratual (R$)<input type="number" min="0" step="0.01" [(ngModel)]="retencaoContratualReais" /></label><label>Retenção tributária (R$)<input type="number" min="0" step="0.01" [(ngModel)]="retencaoTributariaReais" /></label></div>
+        <div class="document-checks"><label *ngFor="let documento of competencia.documentos"><input type="checkbox" [(ngModel)]="documento.entregue" (ngModelChange)="documento.validado = documento.entregue" /> {{ nomeDocumento(documento.documentoObrigatorioId) }}</label></div>
+        <label class="justification" *ngIf="resultadosCompetencia.length">Justificativa obrigatória para recálculo<textarea rows="2" [(ngModel)]="justificativaRecalculo" placeholder="Descreva a medição, regra ou evidência alterada"></textarea></label>
+        <div class="simulation-action"><button type="button" class="btn-secondary" (click)="salvarRascunho()"><i class="fas fa-floppy-disk"></i> Salvar rascunho</button><button type="button" class="btn-primary" (click)="simularCalculo()"><i class="fas fa-calculator"></i> {{ resultadosCompetencia.length ? 'Recalcular' : 'Processar competência' }}</button></div>
+        </fieldset>
+      </div>
+
+      <div class="panel result-panel" *ngIf="resultadoSimulacao as resultado; else semResultado">
+        <div class="panel-title"><div><span class="step-number">2</span><h2>Espelho do cálculo · v{{ resultado.versao }}</h2></div><span class="status-chip" [class.status-chip--blocked]="resultado.statusLiberacao === 'BLOQUEADO'">{{ resultado.statusLiberacao }}</span></div>
+        <div class="result-kpis"><div><span>Valor bruto</span><strong>{{ resultado.valorBrutoCentavos / 100 | currency:'BRL' }}</strong></div><div><span>SLA</span><strong>- {{ resultado.descontoSlaCentavos / 100 | currency:'BRL' }}</strong></div><div><span>Glosas</span><strong>- {{ resultado.glosaCentavos / 100 | currency:'BRL' }}</strong></div><div><span>Multas</span><strong>- {{ resultado.penalidadeCentavos / 100 | currency:'BRL' }}</strong></div><div><span>Retenções</span><strong>- {{ (resultado.retencaoContratualCentavos + resultado.retencaoTributariaCentavos) / 100 | currency:'BRL' }}</strong></div><div class="result-kpis__total"><span>Líquido calculado</span><strong>{{ resultado.valorCalculadoCentavos / 100 | currency:'BRL' }}</strong></div><div class="result-kpis__released"><span>Valor liberado</span><strong>{{ resultado.valorLiberadoCentavos / 100 | currency:'BRL' }}</strong></div></div>
+        <h3>Memória de cálculo</h3>
+        <details class="memory-detail" *ngFor="let linha of resultado.memoria"><summary class="memory-line"><span class="nature-chip" [attr.data-nature]="linha.natureza">{{ formatarEnum(linha.natureza) }}</span><div><strong>{{ linha.descricao }}</strong><p>{{ linha.formula }}</p><small>Base {{ linha.baseCentavos / 100 | currency:'BRL' }} · Quantidade {{ linha.quantidade }}<ng-container *ngIf="linha.aliquota !== undefined"> · Alíquota {{ linha.aliquota }}%</ng-container></small></div><b [class.negative]="linha.natureza !== 'FATURAMENTO'">{{ linha.natureza === 'FATURAMENTO' ? '' : '-' }} {{ linha.resultadoCentavos / 100 | currency:'BRL' }}</b></summary><div class="memory-origin"><span>Regra: {{ linha.regraId || 'ajuste informado' }}</span><span>Evento: {{ linha.eventoId || 'não aplicável' }}</span></div></details>
+        <div class="result-actions"><button class="btn-secondary" type="button" (click)="atualizarLiberacaoDocumental()"><i class="fas fa-file-circle-check"></i> Atualizar liberação</button><button class="btn-secondary" type="button" (click)="exportarPlanilha()"><i class="fas fa-file-csv"></i> Planilha</button><button class="btn-secondary" type="button" (click)="exportarPdf()"><i class="fas fa-file-pdf"></i> PDF</button><button class="btn-primary" type="button" [disabled]="competencia.status === 'FECHADA'" (click)="fecharCompetencia()"><i class="fas fa-lock"></i> Fechar competência</button></div>
+      </div>
+      <ng-template #semResultado><div class="panel result-placeholder"><i class="fas fa-calculator"></i><strong>Competência pronta para simulação</strong><span>Ajuste as medições e processe para gerar o espelho e a memória auditável.</span></div></ng-template>
+    </section>
+
+    <section *ngIf="abaAtiva === 'historico'" class="history-layout">
+      <div class="panel comparison-panel">
+        <div class="panel-title"><div><span class="step-number">1</span><h2>Comparação entre cálculos</h2></div><span class="version-badge" *ngIf="resultadosCompetencia.length">{{ resultadosCompetencia.length }} versão(ões)</span></div>
+        <ng-container *ngIf="resultadosCompetencia[0] as atual; else semVersoes">
+          <div class="version-summary"><div><span>Versão atual</span><strong>v{{ atual.versao }}</strong><small>{{ atual.calculadoEm | date:'dd/MM/yyyy HH:mm' }}</small></div><div><span>Líquido atual</span><strong>{{ atual.valorCalculadoCentavos / 100 | currency:'BRL' }}</strong><small>{{ atual.justificativa || 'Cálculo inicial' }}</small></div><div *ngIf="resultadoAnterior as anterior"><span>Versão anterior</span><strong>v{{ anterior.versao }}</strong><small>{{ anterior.valorCalculadoCentavos / 100 | currency:'BRL' }}</small></div><div *ngIf="resultadoAnterior as anterior"><span>Impacto</span><strong [class.text-danger]="atual.valorCalculadoCentavos < anterior.valorCalculadoCentavos">{{ (atual.valorCalculadoCentavos - anterior.valorCalculadoCentavos) / 100 | currency:'BRL' }}</strong><small>Diferença consolidada</small></div></div>
+          <div class="comparison-row comparison-row--head" *ngIf="comparacaoMemoria.length"><span>Regra ou parcela</span><span>Anterior</span><span>Atual</span><span>Diferença</span></div>
+          <div class="comparison-row" *ngFor="let item of comparacaoMemoria"><strong>{{ item.descricao }}</strong><span>{{ item.anterior / 100 | currency:'BRL' }}</span><span>{{ item.atual / 100 | currency:'BRL' }}</span><span [class.text-danger]="item.diferenca < 0">{{ item.diferenca / 100 | currency:'BRL' }}</span></div>
+        </ng-container>
+        <ng-template #semVersoes><div class="empty-state"><i class="fas fa-code-compare"></i><strong>Sem versões para comparar</strong><span>Processe a competência e depois faça um recálculo justificado.</span></div></ng-template>
+      </div>
+      <div class="panel audit-panel">
+        <div class="panel-title"><div><span class="step-number">2</span><h2>Trilha de auditoria</h2></div></div>
+        <div class="audit-filters"><select [(ngModel)]="filtroAuditoriaCompetencia" aria-label="Filtrar auditoria por competência"><option value="">Todas as competências</option><option *ngFor="let competencia of competencias" [value]="competencia.id">{{ competencia.mes | number:'2.0-0' }}/{{ competencia.ano }}</option></select><input [(ngModel)]="filtroAuditoriaUsuario" placeholder="Filtrar por usuário" aria-label="Filtrar auditoria por usuário" /></div>
+        <div class="audit-event" *ngFor="let evento of auditoriaFiltrada"><span class="audit-icon"><i class="fas fa-clock-rotate-left"></i></span><div><strong>{{ formatarEnum(evento.tipo) }}</strong><p>{{ evento.descricao }}</p><small>{{ evento.usuario }} · {{ evento.ocorridoEm | date:'dd/MM/yyyy HH:mm:ss' }}<ng-container *ngIf="evento.versaoResultado"> · v{{ evento.versaoResultado }}</ng-container></small></div></div>
+        <div class="empty" *ngIf="!auditoriaFiltrada.length">Nenhum evento de auditoria encontrado.</div>
+      </div>
+    </section>
+  </ng-container>
+
+  <div class="loading-state" *ngIf="carregando"><i class="fas fa-circle-notch fa-spin"></i> Carregando configurações...</div>
+  <div class="error-state" *ngIf="erroCarregamento"><i class="fas fa-triangle-exclamation"></i><strong>Falha ao carregar</strong><span>{{ erroCarregamento }}</span><button class="btn-secondary" type="button" (click)="ngOnInit()">Tentar novamente</button></div>
+</div>

@@ -32,6 +32,8 @@ import { ContatoItem, ContratoApiResponse, ContratoItem } from 'src/app/models/g
 import { TipoAta } from 'src/app/models/generics/tipo-ata';
 import Swal from 'sweetalert2';
 import { ProtocoloVigencia } from 'src/app/models/generics/protocolo-vigencia';
+import { GestaoCadastrosService } from 'src/app/services/gestao-cadastros.service';
+import { ValidacaoDocumento } from 'src/app/models/gestao-cadastros';
 
 @Component({
   selector: 'app-contrato-cadastro',
@@ -79,6 +81,9 @@ export class ContratoCadastroComponent implements OnInit {
   public useDtInicioPeriodo: boolean[] = [];
 
   submitted = false;
+  analisandoDocumento = false;
+  analiseDocumento?: ValidacaoDocumento;
+  nomeArquivoDocumento = '';
 
   checked1: boolean = false;
   currentUser: any;
@@ -109,10 +114,65 @@ export class ContratoCadastroComponent implements OnInit {
     private formBuilder: FormBuilder,
     private apiService: ApiService,
     private toastr: ToastrService,
-    private token: TokenStorageService
+    private token: TokenStorageService,
+    private gestaoCadastrosService: GestaoCadastrosService
   ) {
     this.obterPermissoes();
     this.currentUser = this.token.getUser();
+  }
+
+  async analisarContrato(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const arquivo = input.files?.[0];
+    if (!arquivo) return;
+
+    if (!['application/pdf', 'image/png', 'image/jpeg'].includes(arquivo.type)) {
+      this.toastr.warning('Envie um arquivo PDF, PNG ou JPG.', 'Documento não suportado');
+      input.value = '';
+      return;
+    }
+
+    this.nomeArquivoDocumento = arquivo.name;
+    this.analiseDocumento = undefined;
+    this.analisandoDocumento = true;
+    try {
+      this.analiseDocumento = await this.gestaoCadastrosService.validarDocumento(arquivo, 'contrato');
+      this.aplicarAnaliseAoFormulario(this.analiseDocumento);
+      this.toastr.success('Dados identificados e preenchidos para revisão.', 'Leitura concluída');
+    } catch {
+      this.toastr.error('Não foi possível interpretar o documento.', 'Leitura do contrato');
+    } finally {
+      this.analisandoDocumento = false;
+      input.value = '';
+    }
+  }
+
+  private aplicarAnaliseAoFormulario(analise: ValidacaoDocumento): void {
+    const campos = analise.campos;
+    const tipoExtraido = (campos['Tipo do contrato'] || '').toLocaleLowerCase('pt-BR');
+    const tipo = this.listaTipoContrato.find(item => item.noContratoTipo.toLocaleLowerCase('pt-BR').includes(tipoExtraido))
+      || this.listaTipoContrato.find(item => tipoExtraido.includes(item.noContratoTipo.toLocaleLowerCase('pt-BR')));
+    const vigencia = (campos['Vigência'] || '').match(/(\d{2})\/(\d{2})\/(\d{4})\s+a\s+(\d{2})\/(\d{2})\/(\d{4})/);
+    const valorGlobal = Number((campos['Valor global'] || '').replace(/[^\d,]/g, '').replace(',', '.'));
+
+    this.form.patchValue({
+      coContrato: campos['Número do contrato'] || '',
+      noEmpresa: campos['Contratada'] || '',
+      noObjeto: campos['Objeto'] || '',
+      nuContratoTipo: tipo?.nuContratoTipo || this.form.get('nuContratoTipo')?.value,
+    });
+
+    const primeiraVigencia = this.vigencias.at(0);
+    if (vigencia && primeiraVigencia) {
+      primeiraVigencia.patchValue({
+        dtInicio: `${vigencia[3]}-${vigencia[2]}-${vigencia[1]}`,
+        dtTermino: `${vigencia[6]}-${vigencia[5]}-${vigencia[4]}`,
+        dtInicioCompetencia: `${vigencia[2]}/${vigencia[3]}`,
+      });
+    }
+    const primeiraRubrica = primeiraVigencia?.get('rubricas') as FormArray;
+    if (primeiraRubrica?.length && Number.isFinite(valorGlobal)) primeiraRubrica.at(0).patchValue({ vrTotal: valorGlobal });
+    this.form.markAsDirty();
   }
 
   /* MÉTODOS HERDADOS */
@@ -367,6 +427,10 @@ export class ContratoCadastroComponent implements OnInit {
 
   get vigencias(): FormArray {
     return this.form.get('vigencias') as FormArray;
+  }
+
+  rubricasDaVigencia(vigencia: AbstractControl): AbstractControl[] {
+    return (vigencia.get('rubricas') as FormArray)?.controls || [];
   }
 
   onNuVigenciaTipoChange(value: any, index: number) {

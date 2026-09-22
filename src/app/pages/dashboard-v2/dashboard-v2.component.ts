@@ -10,14 +10,8 @@ import { ContratoApiResponse, ContratoItem } from 'src/app/models/generics/Gcptb
 import { ModuleEnum, PerfisEnum, TokenStorageService } from 'src/app/shared/services/token-storage.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NovosContratosComponent } from '../dashboard/novos-contratos/novos-contratos.component';
-
-interface AtividadeFeed {
-  icon: string;
-  cor: 'success' | 'danger' | 'warning' | 'info' | 'neutro';
-  titulo: string;
-  descricao: string;
-  tempo: string;
-}
+import { ResumoGovernanca } from 'src/app/models/governanca-contratual';
+import { GovernancaContratualService } from 'src/app/services/governanca-contratual.service';
 
 interface PagamentoPrevisto {
   dia: number;
@@ -62,11 +56,13 @@ export class DashboardV2Component implements OnInit, OnDestroy {
   public currentUser: any;
   public quantidadeTotal: number = 0;
 
-  public atividades: AtividadeFeed[] = [];
   public pagamentosPrevistos: PagamentoPrevisto[] = [];
   public diasCalendario: DiaCalendario[] = [];
   public nomeMesCalendario: string = '';
   public topRubricas: RubricaTop[] = [];
+  public resumoGovernanca: ResumoGovernanca;
+  public contratosGovernanca = this.governanca.listarContratos();
+  public auditoriaRecente = this.governanca.listarAuditoria().slice(0, 4);
 
   filtroRegistros: any = {
     pageNumber: 1,
@@ -79,12 +75,19 @@ export class DashboardV2Component implements OnInit, OnDestroy {
     NoTipoArp: null
   };
 
-  constructor(private apiService: ApiService, private router: Router, public token: TokenStorageService, private modalService: NgbModal) { }
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    public token: TokenStorageService,
+    private modalService: NgbModal,
+    public governanca: GovernancaContratualService
+  ) {
+    this.resumoGovernanca = this.governanca.obterResumo();
+  }
 
   async ngOnInit() {
     this.obterPermissoes();
     this.currentUser = this.token.getUser();
-    this.montarAtividadesSimuladas();
     this.montarTopRubricas();
     this.montarCalendarioEPagamentos();
 
@@ -347,32 +350,6 @@ export class DashboardV2Component implements OnInit, OnDestroy {
     if (v >= 1_000_000) return `R$ ${(v / 1_000_000).toFixed(1)}M`;
     if (v >= 1_000) return `R$ ${(v / 1_000).toFixed(0)}K`;
     return `R$ ${v.toFixed(0)}`;
-  }
-
-  // Feed simulado de atividades em tempo real (SSR-like), sem fonte de dados própria ainda no backend
-  private montarAtividadesSimuladas(): void {
-    this.atividades = [
-      { icon: 'description', cor: 'info', titulo: 'Novo contrato gerado', descricao: 'Contrato Nº 2381/2026 - Vigilância Total Ltda.', tempo: 'agora mesmo' },
-      { icon: 'payments', cor: 'success', titulo: 'Pagamento processado', descricao: 'Competência 08/2026 quitada - Contrato Nº 1190/2025', tempo: '4 min atrás' },
-      { icon: 'warning', cor: 'danger', titulo: 'Possível falta de orçamento', descricao: 'Saldo insuficiente identificado para o Contrato Nº 3342/2026 (rubrica OPEX)', tempo: '12 min atrás' },
-      { icon: 'task_alt', cor: 'success', titulo: 'Ateste aprovado', descricao: 'Competência 07/2026 atestada sem retenção - Contrato Nº 2210/2024', tempo: '25 min atrás' },
-      { icon: 'account_balance', cor: 'info', titulo: 'Empenho complementar solicitado', descricao: 'Contrato Nº 1587/2025 (CAPEX) aguardando aprovação', tempo: '38 min atrás' },
-      { icon: 'event_busy', cor: 'warning', titulo: 'Contrato próximo do vencimento', descricao: 'Contrato Nº 998/2023 vence em 15 dias', tempo: '1 h atrás' },
-      { icon: 'gavel', cor: 'info', titulo: 'Nova ata de registro de preços', descricao: 'Processo 045/2026 cadastrado com sucesso', tempo: '1 h atrás' },
-      { icon: 'block', cor: 'danger', titulo: 'Retenção aplicada', descricao: 'R$ 12.430,00 retidos no Contrato Nº 2765/2025 (penalidade vinculada)', tempo: '2 h atrás' },
-      { icon: 'fact_check', cor: 'success', titulo: 'Planejamento validado', descricao: 'Planejamento orçamentário 2027 validado pela Diretoria Financeira', tempo: '2 h atrás' },
-      { icon: 'archive', cor: 'neutro', titulo: 'Contrato encerrado', descricao: 'Contrato Nº 4021/2022 encerrado por término de vigência', tempo: '3 h atrás' },
-      { icon: 'error_outline', cor: 'danger', titulo: 'Pagamento rejeitado', descricao: 'Divergência de valor identificada no Contrato Nº 1873/2025', tempo: '3 h atrás' },
-      { icon: 'person_add', cor: 'info', titulo: 'Fiscal designado', descricao: 'Novo fiscal técnico vinculado ao Contrato Nº 2999/2026 (TI)', tempo: '4 h atrás' },
-      { icon: 'trending_down', cor: 'warning', titulo: 'Saldo orçamentário baixo', descricao: 'CAPEX abaixo de 5% do limite na unidade SP01', tempo: '5 h atrás' },
-      { icon: 'edit_note', cor: 'info', titulo: 'Aditivo contratual solicitado', descricao: 'Solicitação de aditivo enviada para o Contrato Nº 1456/2024', tempo: '6 h atrás' },
-      { icon: 'event_available', cor: 'success', titulo: 'Competência fechada', descricao: 'Competência 09/2026 fechada com 38 pagamentos processados', tempo: '7 h atrás' },
-      { icon: 'sync', cor: 'neutro', titulo: 'Contrato reprogramado', descricao: 'Contrato Nº 3120/2025 reprogramado para o próximo exercício', tempo: '8 h atrás' },
-      { icon: 'verified', cor: 'success', titulo: 'NF validada automaticamente', descricao: 'Nota Fiscal 55231 vinculada ao Contrato Nº 2044/2025', tempo: '9 h atrás' },
-      { icon: 'report', cor: 'danger', titulo: 'Penalidade aplicada', descricao: 'Multa aplicada ao fornecedor Ecoserv Ambiental Ltda.', tempo: '10 h atrás' },
-      { icon: 'autorenew', cor: 'info', titulo: 'Status atualizado', descricao: 'Contrato Nº 872/2021 migrado para "Em Renovação"', tempo: '12 h atrás' },
-      { icon: 'summarize', cor: 'success', titulo: 'Relatório gerado', descricao: 'Relatório mensal de execução orçamentária gerado com sucesso', tempo: 'ontem' },
-    ];
   }
 
   private montarTopRubricas(): void {

@@ -64,6 +64,11 @@ $shadow: 0 2px 8px rgba(0,0,0,.10);
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+    min-width: 0;
+
+    @media (max-width: 560px) {
+      width: 100%;
+    }
   }
 }
 
@@ -75,6 +80,11 @@ $shadow: 0 2px 8px rgba(0,0,0,.10);
   border: 1px solid $border;
   border-radius: 6px;
   padding: 4px 12px;
+  min-width: 0;
+
+  @media (max-width: 560px) {
+    width: 100%;
+  }
 
   .vigencia-label {
     font-size: 11px;
@@ -94,17 +104,19 @@ $shadow: 0 2px 8px rgba(0,0,0,.10);
     cursor: pointer;
     outline: none;
     font-family: inherit;
+    min-width: 0;
+    width: 100%;
   }
 }
 
 // ─── Grid 2 colunas ───────────────────────────────────────────────
 .painel-body {
   display: grid;
-  grid-template-columns: 1.55fr 1fr;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
   gap: 12px;
 
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -113,6 +125,7 @@ $shadow: 0 2px 8px rgba(0,0,0,.10);
   display: flex;
   flex-direction: column;
   gap: 12px;
+  min-width: 0;
 }
 
 // ─── Utilitários ──────────────────────────────────────────────────
@@ -137,6 +150,11 @@ $shadow: 0 2px 8px rgba(0,0,0,.10);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (max-width: 560px) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 .field-strong { font-weight: 700; }
@@ -394,6 +412,7 @@ $shadow: 0 2px 8px rgba(0,0,0,.10);
   border-radius: $radius;
   box-shadow: $shadow;
   overflow: hidden;
+  min-width: 0;
 }
 
 .card-header {

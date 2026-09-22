@@ -1,0 +1,144 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Converge - Motor de Faturamento API",
+    "version": "1.0.0",
+    "description": "Contrato para persistência, versionamento e auditoria do motor corporativo de faturamento. Valores monetários são inteiros em centavos."
+  },
+  "servers": [{ "url": "/api" }],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/faturamento-motor/contratos": {
+      "get": {
+        "operationId": "listarContratosFaturamento",
+        "tags": ["Contratos"],
+        "responses": { "200": { "description": "Contratos disponíveis", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ContratoFaturamento" } } } } } }
+      }
+    },
+    "/v1/faturamento-motor/contratos/{contratoId}": {
+      "parameters": [{ "$ref": "#/components/parameters/ContratoId" }],
+      "get": {
+        "operationId": "obterContratoFaturamento",
+        "tags": ["Contratos"],
+        "responses": { "200": { "description": "Contrato completo", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContratoFaturamento" } } } }, "404": { "$ref": "#/components/responses/NaoEncontrado" } }
+      },
+      "put": {
+        "operationId": "salvarContratoFaturamento",
+        "tags": ["Contratos"],
+        "parameters": [{ "$ref": "#/components/parameters/IfMatch" }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContratoFaturamento" } } } },
+        "responses": { "200": { "description": "Contrato salvo", "headers": { "ETag": { "schema": { "type": "string" } } }, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ContratoFaturamento" } } } }, "409": { "$ref": "#/components/responses/Conflito" } }
+      }
+    },
+    "/v1/faturamento-motor/competencias": {
+      "get": {
+        "operationId": "listarCompetenciasFaturamento",
+        "tags": ["Competências"],
+        "parameters": [{ "name": "contratoId", "in": "query", "schema": { "type": "integer", "format": "int64" } }],
+        "responses": { "200": { "description": "Competências em ordem decrescente", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/CompetenciaFaturamento" } } } } } }
+      }
+    },
+    "/v1/faturamento-motor/competencias/{competenciaId}": {
+      "parameters": [{ "$ref": "#/components/parameters/CompetenciaId" }],
+      "put": {
+        "operationId": "salvarCompetenciaFaturamento",
+        "tags": ["Competências"],
+        "parameters": [{ "$ref": "#/components/parameters/IfMatch" }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CompetenciaFaturamento" } } } },
+        "responses": { "200": { "description": "Competência salva", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CompetenciaFaturamento" } } } }, "409": { "$ref": "#/components/responses/Conflito" }, "422": { "$ref": "#/components/responses/RegraInvalida" } }
+      }
+    },
+    "/v1/faturamento-motor/resultados": {
+      "get": {
+        "operationId": "listarResultadosFaturamento",
+        "tags": ["Resultados"],
+        "parameters": [{ "name": "competenciaId", "in": "query", "schema": { "type": "integer", "format": "int64" } }],
+        "responses": { "200": { "description": "Versões em ordem decrescente", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ResultadoCompetencia" } } } } } }
+      }
+    },
+    "/v1/faturamento-motor/competencias/{competenciaId}/resultados/{versao}": {
+      "parameters": [{ "$ref": "#/components/parameters/CompetenciaId" }, { "name": "versao", "in": "path", "required": true, "schema": { "type": "integer", "minimum": 1 } }],
+      "put": {
+        "operationId": "salvarResultadoFaturamento",
+        "tags": ["Resultados"],
+        "description": "Cria uma versão imutável. Repetições com o mesmo conteúdo são idempotentes; conteúdo divergente retorna conflito.",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResultadoCompetencia" } } } },
+        "responses": { "200": { "description": "Versão já existente e idêntica", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResultadoCompetencia" } } } }, "201": { "description": "Versão criada", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResultadoCompetencia" } } } }, "409": { "$ref": "#/components/responses/Conflito" } }
+      }
+    },
+    "/v1/faturamento-motor/auditoria": {
+      "get": {
+        "operationId": "listarAuditoriaFaturamento",
+        "tags": ["Auditoria"],
+        "parameters": [{ "name": "contratoId", "in": "query", "schema": { "type": "integer", "format": "int64" } }, { "name": "competenciaId", "in": "query", "schema": { "type": "integer", "format": "int64" } }, { "name": "usuario", "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Eventos imutáveis em ordem decrescente", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/AuditoriaFaturamento" } } } } } }
+      },
+      "post": {
+        "operationId": "registrarAuditoriaFaturamento",
+        "tags": ["Auditoria"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuditoriaFaturamentoInput" } } } },
+        "responses": { "201": { "description": "Evento anexado", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuditoriaFaturamento" } } } } }
+      }
+    },
+    "/v1/faturamento-motor/demonstracao/reset": {
+      "post": {
+        "operationId": "resetarDemonstracaoFaturamento",
+        "tags": ["Demonstração"],
+        "responses": { "200": { "description": "Massa restaurada", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/ContratoFaturamento" } } } } } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": { "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" } },
+    "parameters": {
+      "ContratoId": { "name": "contratoId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } },
+      "CompetenciaId": { "name": "competenciaId", "in": "path", "required": true, "schema": { "type": "integer", "format": "int64" } },
+      "IfMatch": { "name": "If-Match", "in": "header", "required": false, "description": "Versão de concorrência otimista", "schema": { "type": "string" } }
+    },
+    "responses": {
+      "NaoEncontrado": { "description": "Recurso não encontrado", "content": { "application/problem+json": { "schema": { "$ref": "#/components/schemas/Problema" } } } },
+      "Conflito": { "description": "Conflito de versão ou idempotência", "content": { "application/problem+json": { "schema": { "$ref": "#/components/schemas/Problema" } } } },
+      "RegraInvalida": { "description": "Regra de negócio inválida", "content": { "application/problem+json": { "schema": { "$ref": "#/components/schemas/Problema" } } } }
+    },
+    "schemas": {
+      "Problema": { "type": "object", "required": ["title", "status"], "properties": { "title": { "type": "string" }, "status": { "type": "integer" }, "detail": { "type": "string" }, "traceId": { "type": "string" } } },
+      "ContratoFaturamento": {
+        "type": "object",
+        "required": ["id", "numero", "fornecedor", "objeto", "inicioVigencia", "fimVigencia", "valorGlobalCentavos", "periodicidade", "diaLimiteNotaFiscal", "diaPagamento", "status", "unidades", "itens", "regrasFaturamento", "indicadoresSla", "penalidades", "documentosObrigatorios"],
+        "properties": {
+          "id": { "type": "integer", "format": "int64" }, "numero": { "type": "string" }, "fornecedor": { "type": "string" }, "objeto": { "type": "string" },
+          "inicioVigencia": { "type": "string", "format": "date" }, "fimVigencia": { "type": "string", "format": "date" }, "valorGlobalCentavos": { "type": "integer", "format": "int64", "minimum": 0 },
+          "periodicidade": { "type": "string", "enum": ["MENSAL", "POR_EVENTO", "SOB_DEMANDA"] }, "diaLimiteNotaFiscal": { "type": "integer", "minimum": 1, "maximum": 31 }, "diaPagamento": { "type": "integer", "minimum": 1, "maximum": 31 }, "status": { "type": "string", "enum": ["ATIVO", "INATIVO"] },
+          "unidades": { "type": "array", "items": { "$ref": "#/components/schemas/UnidadePrestacao" } }, "itens": { "type": "array", "items": { "$ref": "#/components/schemas/ItemFaturavel" } }, "regrasFaturamento": { "type": "array", "items": { "$ref": "#/components/schemas/RegraFaturamento" } }, "indicadoresSla": { "type": "array", "items": { "$ref": "#/components/schemas/IndicadorSla" } }, "penalidades": { "type": "array", "items": { "$ref": "#/components/schemas/RegraPenalidade" } }, "documentosObrigatorios": { "type": "array", "items": { "$ref": "#/components/schemas/DocumentoObrigatorio" } }
+        }
+      },
+      "UnidadePrestacao": { "type": "object", "required": ["id", "contratoId", "codigo", "descricao", "tipo", "ativa"], "properties": { "id": { "type": "integer" }, "contratoId": { "type": "integer" }, "codigo": { "type": "string" }, "descricao": { "type": "string" }, "tipo": { "$ref": "#/components/schemas/TipoObjeto" }, "municipio": { "type": "string" }, "uf": { "type": "string", "minLength": 2, "maxLength": 2 }, "ativa": { "type": "boolean" } } },
+      "ItemFaturavel": { "type": "object", "required": ["id", "contratoId", "codigo", "descricao", "tipo", "unidadeMedida", "valorUnitarioCentavos", "valorMensalCentavos", "quantidadeContratada", "permiteProRata", "permiteRetencao", "inicioVigencia", "ativo"], "properties": { "id": { "type": "integer" }, "contratoId": { "type": "integer" }, "codigo": { "type": "string" }, "descricao": { "type": "string" }, "tipo": { "$ref": "#/components/schemas/TipoObjeto" }, "unidadeMedida": { "type": "string" }, "valorUnitarioCentavos": { "type": "integer", "format": "int64", "minimum": 0 }, "valorMensalCentavos": { "type": "integer", "format": "int64", "minimum": 0 }, "quantidadeContratada": { "type": "number", "minimum": 0 }, "unidadeId": { "type": "integer" }, "permiteProRata": { "type": "boolean" }, "permiteRetencao": { "type": "boolean" }, "inicioVigencia": { "type": "string", "format": "date" }, "fimVigencia": { "type": "string", "format": "date" }, "ativo": { "type": "boolean" } } },
+      "RegraFaturamento": { "type": "object", "required": ["id", "contratoId", "nome", "tipo", "baseCalculo", "ordemAplicacao", "inicioVigencia", "ativa"], "properties": { "id": { "type": "integer" }, "contratoId": { "type": "integer" }, "nome": { "type": "string" }, "tipo": { "type": "string", "enum": ["MARCO_PERCENTUAL", "MENSAL_FIXO", "MENSAL_QTD_ATIVA", "DEMANDA", "PRO_RATA", "TRANSICAO", "RETENCAO_LIBERAVEL", "DESCONTO_UNITARIO"] }, "itemId": { "type": "integer" }, "eventoGatilho": { "$ref": "#/components/schemas/EventoGatilho" }, "baseCalculo": { "$ref": "#/components/schemas/BaseCalculo" }, "percentual": { "type": "number" }, "valorFixoCentavos": { "type": "integer", "format": "int64" }, "fatorTransicao": { "type": "number" }, "ordemAplicacao": { "type": "integer" }, "inicioVigencia": { "type": "string", "format": "date" }, "fimVigencia": { "type": "string", "format": "date" }, "ativa": { "type": "boolean" } } },
+      "IndicadorSla": { "type": "object", "required": ["id", "contratoId", "codigo", "nome", "unidadeApuracao", "meta", "baseCalculo", "tipoRegra", "faixas", "inicioVigencia", "ativo"], "properties": { "id": { "type": "integer" }, "contratoId": { "type": "integer" }, "codigo": { "type": "string" }, "nome": { "type": "string" }, "unidadeApuracao": { "type": "string", "enum": ["PERCENTUAL", "MINUTOS", "HORAS", "QUANTIDADE"] }, "meta": { "type": "number" }, "baseCalculo": { "$ref": "#/components/schemas/BaseCalculo" }, "tipoRegra": { "type": "string", "enum": ["POR_FAIXA", "POR_OCORRENCIA", "POR_HORA", "POR_MINUTO"] }, "percentual": { "type": "number" }, "tetoPercentual": { "type": "number" }, "faixas": { "type": "array", "items": { "$ref": "#/components/schemas/FaixaSla" } }, "inicioVigencia": { "type": "string", "format": "date" }, "fimVigencia": { "type": "string", "format": "date" }, "ativo": { "type": "boolean" } } },
+      "FaixaSla": { "type": "object", "required": ["id", "valorMinimo", "valorMaximo", "percentualDesconto", "ordem"], "properties": { "id": { "type": "integer" }, "valorMinimo": { "type": "number" }, "valorMaximo": { "type": "number" }, "percentualDesconto": { "type": "number" }, "ordem": { "type": "integer" } } },
+      "RegraPenalidade": { "type": "object", "required": ["id", "contratoId", "codigo", "descricao", "tipo", "baseCalculo", "cumulativa", "inicioVigencia", "ativa"], "properties": { "id": { "type": "integer" }, "contratoId": { "type": "integer" }, "codigo": { "type": "string" }, "descricao": { "type": "string" }, "tipo": { "type": "string", "enum": ["MULTA_DIA", "MULTA_OCORRENCIA", "MULTA_PERCENTUAL", "MULTA_GLOBAL"] }, "baseCalculo": { "$ref": "#/components/schemas/BaseCalculo" }, "percentual": { "type": "number" }, "valorFixoCentavos": { "type": "integer", "format": "int64" }, "tetoPercentual": { "type": "number" }, "cumulativa": { "type": "boolean" }, "inicioVigencia": { "type": "string", "format": "date" }, "fimVigencia": { "type": "string", "format": "date" }, "ativa": { "type": "boolean" } } },
+      "DocumentoObrigatorio": { "type": "object", "required": ["id", "contratoId", "codigo", "descricao", "obrigatorioParaPagamento", "ativo"], "properties": { "id": { "type": "integer" }, "contratoId": { "type": "integer" }, "codigo": { "type": "string" }, "descricao": { "type": "string" }, "obrigatorioParaPagamento": { "type": "boolean" }, "ativo": { "type": "boolean" } } },
+      "CompetenciaFaturamento": {
+        "type": "object", "required": ["id", "contratoId", "ano", "mes", "inicio", "fim", "status", "statusLiberacao", "medicoes", "eventos", "apuracoesSla", "documentos", "glosaCentavos", "retencaoContratualCentavos", "retencaoTributariaCentavos"],
+        "properties": { "id": { "type": "integer", "format": "int64" }, "contratoId": { "type": "integer", "format": "int64" }, "ano": { "type": "integer" }, "mes": { "type": "integer", "minimum": 1, "maximum": 12 }, "inicio": { "type": "string", "format": "date" }, "fim": { "type": "string", "format": "date" }, "status": { "type": "string", "enum": ["RASCUNHO", "EM_APURACAO", "CALCULADA", "BLOQUEADA", "LIBERADA", "FECHADA"] }, "statusLiberacao": { "$ref": "#/components/schemas/StatusLiberacao" }, "medicoes": { "type": "array", "items": { "$ref": "#/components/schemas/MedicaoCompetencia" } }, "eventos": { "type": "array", "items": { "$ref": "#/components/schemas/EventoCompetencia" } }, "apuracoesSla": { "type": "array", "items": { "$ref": "#/components/schemas/ApuracaoSlaCompetencia" } }, "documentos": { "type": "array", "items": { "$ref": "#/components/schemas/DocumentoCompetencia" } }, "glosaCentavos": { "type": "integer", "format": "int64" }, "retencaoContratualCentavos": { "type": "integer", "format": "int64" }, "retencaoTributariaCentavos": { "type": "integer", "format": "int64" }, "fechadoEm": { "type": "string", "format": "date-time" }, "fechadoPor": { "type": "string" } }
+      },
+      "MedicaoCompetencia": { "type": "object", "required": ["id", "itemId", "quantidadeMedida", "quantidadeAceita", "fatorProRata", "fatorTransicao"], "properties": { "id": { "type": "integer" }, "itemId": { "type": "integer" }, "unidadeId": { "type": "integer" }, "quantidadeMedida": { "type": "number" }, "quantidadeAceita": { "type": "number" }, "fatorProRata": { "type": "number" }, "fatorTransicao": { "type": "number" } } },
+      "EventoCompetencia": { "type": "object", "required": ["id", "tipo", "quantidade", "ocorridoEm"], "properties": { "id": { "type": "integer" }, "tipo": { "type": "string", "enum": ["ENTREGA", "INSTALACAO", "ATIVACAO", "ACEITE", "HOMOLOGACAO", "TREINAMENTO", "COMPETENCIA", "INDISPONIBILIDADE", "ATRASO", "CHAMADO", "TRADE_IN"] }, "itemId": { "type": "integer" }, "unidadeId": { "type": "integer" }, "indicadorSlaId": { "type": "integer" }, "regraPenalidadeId": { "type": "integer" }, "quantidade": { "type": "number" }, "minutos": { "type": "number" }, "horas": { "type": "number" }, "severidade": { "type": "string" }, "ocorridoEm": { "type": "string", "format": "date" } } },
+      "ApuracaoSlaCompetencia": { "type": "object", "required": ["id", "indicadorId", "valorApurado", "quantidade"], "properties": { "id": { "type": "integer" }, "indicadorId": { "type": "integer" }, "itemId": { "type": "integer" }, "unidadeId": { "type": "integer" }, "valorApurado": { "type": "number" }, "quantidade": { "type": "number" }, "baseCalculoCentavos": { "type": "integer", "format": "int64" } } },
+      "DocumentoCompetencia": { "type": "object", "required": ["documentoObrigatorioId", "entregue", "validado"], "properties": { "documentoObrigatorioId": { "type": "integer" }, "entregue": { "type": "boolean" }, "validado": { "type": "boolean" }, "entregueEm": { "type": "string", "format": "date-time" } } },
+      "ResultadoCompetencia": {
+        "type": "object", "required": ["competenciaId", "versao", "calculadoEm", "calculadoPor", "valorBrutoCentavos", "descontoSlaCentavos", "glosaCentavos", "penalidadeCentavos", "retencaoContratualCentavos", "retencaoTributariaCentavos", "valorCalculadoCentavos", "valorLiberadoCentavos", "statusLiberacao", "memoria"],
+        "properties": { "competenciaId": { "type": "integer", "format": "int64" }, "versao": { "type": "integer", "minimum": 1 }, "calculadoEm": { "type": "string", "format": "date-time" }, "calculadoPor": { "type": "string" }, "valorBrutoCentavos": { "type": "integer", "format": "int64" }, "descontoSlaCentavos": { "type": "integer", "format": "int64" }, "glosaCentavos": { "type": "integer", "format": "int64" }, "penalidadeCentavos": { "type": "integer", "format": "int64" }, "retencaoContratualCentavos": { "type": "integer", "format": "int64" }, "retencaoTributariaCentavos": { "type": "integer", "format": "int64" }, "valorCalculadoCentavos": { "type": "integer", "format": "int64" }, "valorLiberadoCentavos": { "type": "integer", "format": "int64" }, "statusLiberacao": { "$ref": "#/components/schemas/StatusLiberacao" }, "justificativa": { "type": "string" }, "versaoAnterior": { "type": "integer" }, "memoria": { "type": "array", "items": { "$ref": "#/components/schemas/LinhaMemoriaCalculo" } } }
+      },
+      "LinhaMemoriaCalculo": { "type": "object", "required": ["id", "natureza", "descricao", "formula", "baseCentavos", "quantidade", "resultadoCentavos"], "properties": { "id": { "type": "integer" }, "natureza": { "type": "string", "enum": ["FATURAMENTO", "DESCONTO_SLA", "GLOSA", "PENALIDADE", "RETENCAO"] }, "regraId": { "type": "integer" }, "eventoId": { "type": "integer" }, "descricao": { "type": "string" }, "formula": { "type": "string" }, "baseCentavos": { "type": "integer", "format": "int64" }, "aliquota": { "type": "number" }, "quantidade": { "type": "number" }, "resultadoCentavos": { "type": "integer", "format": "int64" } } },
+      "AuditoriaFaturamentoInput": { "type": "object", "required": ["contratoId", "tipo", "descricao", "usuario"], "properties": { "contratoId": { "type": "integer" }, "competenciaId": { "type": "integer" }, "tipo": { "$ref": "#/components/schemas/TipoAuditoria" }, "descricao": { "type": "string" }, "usuario": { "type": "string" }, "versaoResultado": { "type": "integer" } } },
+      "AuditoriaFaturamento": { "allOf": [{ "$ref": "#/components/schemas/AuditoriaFaturamentoInput" }, { "type": "object", "required": ["id", "ocorridoEm"], "properties": { "id": { "type": "integer", "format": "int64" }, "ocorridoEm": { "type": "string", "format": "date-time" } } }] },
+      "TipoObjeto": { "type": "string", "enum": ["EQUIPAMENTO", "SERVICO_MENSAL", "SERVICO_EVENTUAL", "CIRCUITO", "OS", "CELULA", "LICENCA", "TRADE_IN"] },
+      "EventoGatilho": { "type": "string", "enum": ["ENTREGA", "INSTALACAO", "ATIVACAO", "ACEITE", "HOMOLOGACAO", "TREINAMENTO", "COMPETENCIA"] },
+      "BaseCalculo": { "type": "string", "enum": ["VALOR_UNITARIO_ITEM", "VALOR_MENSAL_ITEM", "VALOR_GLOBAL_CONTRATO", "VALOR_FATURA", "VALOR_UNIDADE"] },
+      "StatusLiberacao": { "type": "string", "enum": ["PENDENTE", "BLOQUEADO", "LIBERADO"] },
+      "TipoAuditoria": { "type": "string", "enum": ["CONFIGURACAO_ALTERADA", "COMPETENCIA_CRIADA", "COMPETENCIA_SALVA", "CALCULO_PROCESSADO", "COMPETENCIA_FECHADA", "PAGAMENTO_BLOQUEADO", "PAGAMENTO_LIBERADO", "RECALCULO_PROCESSADO", "DEMONSTRACAO_RESTAURADA"] }
+    }
+  }
+}

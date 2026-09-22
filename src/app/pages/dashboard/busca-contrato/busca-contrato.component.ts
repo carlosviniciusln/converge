@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as html2pdf from 'html2pdf.js';
+import { ContratoGovernanca } from 'src/app/models/governanca-contratual';
+import { GovernancaContratualService } from 'src/app/services/governanca-contratual.service';
 
 export interface DiagnosticoContrato {
   severidade: 'positivo' | 'atencao' | 'critico';
@@ -21,6 +23,7 @@ export class BuscaContratoComponent implements OnInit {
   vigenciaSelecionada: string = '9567';
   gerandoPdf: boolean = false;
   diagnostico!: DiagnosticoContrato;
+  contratoGovernanca?: ContratoGovernanca;
 
 
   // Dados simulados (serão substituídos por API)
@@ -97,14 +100,63 @@ export class BuscaContratoComponent implements OnInit {
     retencoesSub: 'RTC abertos',
   };
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    public governanca: GovernancaContratualService
+  ) {}
 
   ngOnInit(): void {
     this.nuContrato = this.route.snapshot.paramMap.get('id') || '';
     this.route.queryParams.subscribe(params => {
       this.contrato = params['contrato'] || '';
     });
+    this.contratoGovernanca = this.governanca.listarContratos().find(item =>
+      item.id === Number(this.nuContrato) || item.numero === this.contrato
+    );
+    if (this.contratoGovernanca) this.aplicarDadosGovernanca(this.contratoGovernanca);
     this.diagnostico = this.montarDiagnostico();
+  }
+
+  get saldoContratual(): number {
+    return this.contratoGovernanca
+      ? this.contratoGovernanca.valorContratado - this.contratoGovernanca.valorExecutado
+      : 0;
+  }
+
+  private aplicarDadosGovernanca(item: ContratoGovernanca): void {
+    this.contrato = item.numero;
+    const execucaoPct = item.valorContratado ? item.valorExecutado / item.valorContratado * 100 : 0;
+    this.vigenciaSelecionada = item.id.toString();
+    this.vigencias = [{
+      id: this.vigenciaSelecionada,
+      label: `${item.numero} — ${this.formatarData(item.inicio)} a ${this.formatarData(item.termino)} (Atual)`,
+    }];
+    this.infoGeral = {
+      fornecedor: item.contratada,
+      cnpj: item.cnpj,
+      objeto: item.objeto,
+      unidadeDemandante: item.unidade,
+      fiscal: item.fiscal,
+      tipoContrato: 'Contrato administrativo',
+      mensalizacao: 'Acompanhamento mensal',
+      execucaoPct: Number(execucaoPct.toFixed(1)),
+    };
+    this.resumoVigencia.inicio = this.formatarData(item.inicio);
+    this.resumoVigencia.termino = this.formatarData(item.termino);
+    this.resumoVigencia.contratado = this.formatarMoeda(item.valorContratado);
+    this.resumoVigencia.saldo = this.formatarMoeda(this.saldoContratual);
+    this.resumoVigencia.execPct = `${execucaoPct.toFixed(1).replace('.', ',')}%`;
+    this.pagamentos.estimado = this.formatarMoeda(item.valorContratado);
+    this.pagamentos.executado = this.formatarMoeda(item.valorPago);
+  }
+
+  private formatarMoeda(valor: number): string {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  private formatarData(data: string): string {
+    return new Date(`${data}T12:00:00`).toLocaleDateString('pt-BR');
   }
 
   voltar(): void {

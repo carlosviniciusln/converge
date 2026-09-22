@@ -28,7 +28,7 @@
   <div id="fichaContratoConteudo">
 
   <!-- CORPO: GRID 2 COLUNAS -->
-  <div class="painel-body">
+  <div class="painel-body" *ngIf="!contratoGovernanca">
 
     <!-- COLUNA ESQUERDA -->
     <div class="col-left">
@@ -328,8 +328,68 @@
 
   </div><!-- /painel-body -->
 
+  <section class="governanca-contract" *ngIf="contratoGovernanca as item">
+    <div class="section-heading">
+      <div><span>Visão 360°</span><h2>Governança do contrato</h2></div>
+      <span class="mock-label" *ngIf="governanca.isMock"><i class="fas fa-flask"></i> Dados demonstrativos</span>
+    </div>
+
+    <div class="governanca-summary">
+      <div><label>Órgão responsável</label><strong>{{ item.orgao }}</strong><span>{{ item.unidade }}</span></div>
+      <div><label>Processo SEI</label><strong>{{ item.processoSei }}</strong><span>Referência cadastrada, sem integração ativa</span></div>
+      <div><label>Status</label><strong>{{ item.status }}</strong><span>{{ item.inicio | date:'dd/MM/yyyy' }} a {{ item.termino | date:'dd/MM/yyyy' }}</span></div>
+      <div><label>Situação de governança</label><strong>{{ item.pendencias.length }} pendência(s)</strong><span>{{ item.documentos.length }} documentos · {{ item.aditivos.length }} aditivo(s)</span></div>
+    </div>
+
+    <div class="detail-grid">
+      <article class="detail-panel detail-panel--wide general-overview">
+        <header><i class="fas fa-file-contract"></i><h3>Informações gerais</h3></header>
+        <div class="general-overview__grid">
+          <div><span>Empresa contratada</span><strong>{{ item.contratada }}</strong><small>{{ item.cnpj }}</small></div>
+          <div class="general-overview__object"><span>Objeto do contrato</span><strong>{{ item.objeto }}</strong></div>
+        </div>
+      </article>
+
+      <article class="detail-panel detail-panel--wide">
+        <header><i class="fas fa-coins"></i><h3>Execução financeira</h3><a routerLink="/integracoes/siafic" [queryParams]="{ contratoId: item.id }"><i class="fas fa-building-columns"></i> Ver integração SIAFIC</a></header>
+        <div class="financial-line"><span>Contratado</span><strong>{{ item.valorContratado | currency:'BRL' }}</strong></div>
+        <div class="financial-line"><span>Executado</span><strong>{{ item.valorExecutado | currency:'BRL' }}</strong></div>
+        <div class="financial-line"><span>Pago</span><strong>{{ item.valorPago | currency:'BRL' }}</strong></div>
+        <div class="contract-progress"><span [style.width.%]="item.valorContratado ? (item.valorExecutado / item.valorContratado * 100) : 0"></span></div>
+        <div class="movement-row" *ngFor="let movimento of item.movimentosFinanceiros"><div><b>{{ movimento.tipo }} · {{ movimento.documento }}</b><span>{{ movimento.descricao }}</span></div><div><strong>{{ movimento.valor | currency:'BRL' }}</strong><span>{{ movimento.data | date:'dd/MM/yyyy' }} · {{ movimento.status }}</span></div></div>
+      </article>
+
+      <article class="detail-panel">
+        <header><i class="fas fa-users-gear"></i><h3>Responsáveis</h3></header>
+        <div class="responsible"><span>Responsável</span><strong>{{ item.responsavel }}</strong></div><div class="responsible"><span>Fiscal do contrato</span><strong>{{ item.fiscal }}</strong></div><div class="responsible"><span>Gestor do contrato</span><strong>{{ item.gestor }}</strong></div>
+      </article>
+
+      <article class="detail-panel">
+        <header><i class="fas fa-folder-open"></i><h3>Documentos</h3><a routerLink="/documentos">Ver repositório</a></header>
+        <div class="document-row" *ngFor="let documento of item.documentos"><i class="fas fa-file-lines"></i><div><strong>{{ documento.nome }}</strong><span>{{ documento.categoria }} · v{{ documento.versao }} · {{ documento.enviadoEm | date:'dd/MM/yyyy' }}</span></div><i class="fas" [ngClass]="documento.confidencial ? 'fa-lock' : 'fa-eye'"></i></div>
+      </article>
+
+      <article class="detail-panel">
+        <header><i class="fas fa-file-signature"></i><h3>Aditivos e reajustes</h3></header>
+        <div class="aditivo" *ngFor="let aditivo of item.aditivos"><div><strong>{{ aditivo.numero }}</strong><span>{{ aditivo.tipo }} · {{ aditivo.assinadoEm | date:'dd/MM/yyyy' }}</span></div><b>{{ aditivo.valor | currency:'BRL' }}</b><p>{{ aditivo.descricao }}</p></div>
+        <div class="empty-inline" *ngIf="!item.aditivos.length">Nenhum aditivo registrado.</div>
+      </article>
+
+      <article class="detail-panel">
+        <header><i class="fas fa-list-check"></i><h3>Pendências</h3></header>
+        <div class="pending-row" *ngFor="let pendencia of item.pendencias" [class.high]="pendencia.criticidade === 'Alta'"><div><strong>{{ pendencia.titulo }}</strong><span>{{ pendencia.responsavel }}</span></div><div><b>{{ pendencia.status }}</b><span>Prazo {{ pendencia.prazo | date:'dd/MM/yyyy' }}</span></div></div>
+        <div class="empty-inline" *ngIf="!item.pendencias.length"><i class="fas fa-circle-check"></i> Sem pendências abertas.</div>
+      </article>
+
+      <article class="detail-panel detail-panel--wide">
+        <header><i class="fas fa-clock-rotate-left"></i><h3>Histórico e eventos</h3><a routerLink="/auditoria" [queryParams]="{ contrato: item.numero }">Abrir trilha de auditoria</a></header>
+        <div class="timeline-row" *ngFor="let evento of item.eventos"><time>{{ evento.data | date:'dd/MM/yyyy HH:mm' }}</time><i></i><div><strong>{{ evento.titulo }}</strong><span>{{ evento.descricao }}</span><small>{{ evento.responsavel }} · {{ evento.tipo }}</small></div></div>
+      </article>
+    </div>
+  </section>
+
   <!-- DIAGNÓSTICO: tópico final do prontuário -->
-  <div class="card diagnostico-card" [class.diagnostico--atencao]="diagnostico.severidade === 'atencao'" [class.diagnostico--critico]="diagnostico.severidade === 'critico'">
+  <div class="card diagnostico-card" *ngIf="!contratoGovernanca" [class.diagnostico--atencao]="diagnostico.severidade === 'atencao'" [class.diagnostico--critico]="diagnostico.severidade === 'critico'">
     <div class="card-header">
       <span class="fas fa-chart-line card-header-icon"></span>
       Diagnóstico do Contrato

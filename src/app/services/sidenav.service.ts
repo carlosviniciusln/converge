@@ -36,6 +36,7 @@ export class SidenavService {
     }
     if (this.canView(ModuleEnum.Contratos) || this.canCreate(ModuleEnum.Contratos)) {
       const faturamentoChildren: DscMenu[] = [
+        { title: 'Motor de cálculo', url: '/faturamento/motor' },
         { title: 'Ateste', url: '/ateste' },
         { title: 'Validação da NF', url: '/cadastros?aba=documentos&tipoDocumento=nota-fiscal' },
       ];
@@ -49,6 +50,18 @@ export class SidenavService {
     }
     if (operacionalChildren.length > 0) {
       items.push({ title: 'Operacional', icon: 'icon-settings', children: operacionalChildren });
+    }
+
+    if (this.canView(ModuleEnum.Contratos)) {
+      items.push({
+        title: 'Governança',
+        icon: 'icon-paper',
+        children: [
+          { title: 'Documentos', url: '/documentos' },
+          { title: 'Trilha de Auditoria', url: '/auditoria' },
+          { title: 'Integração SIAFIC', url: '/integracoes/siafic' },
+        ]
+      });
     }
 
     const orcamentoChildren: DscMenu[] = [];
